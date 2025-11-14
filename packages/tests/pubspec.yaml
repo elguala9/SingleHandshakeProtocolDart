@@ -1,0 +1,19 @@
+name: shsp_tests
+description: Tests for Single HandShake Protocol
+version: 1.0.0
+publish_to: none
+
+environment:
+  sdk: '>=3.0.0 <4.0.0'
+
+dependencies:
+  shsp_types:
+    path: ../types
+  shsp_interfaces:
+    path: ../interfaces
+  shsp_implementations:
+    path: ../implementations
+
+dev_dependencies:
+  lints: ^3.0.0
+  test: ^1.24.0
