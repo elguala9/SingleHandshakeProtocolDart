@@ -30,7 +30,10 @@ class ShspPeer implements IShspPeer {
     socket.close();
   }
 
-  // ...existing code...
+  @override
+  String serializedObject() {
+    return 'ShspPeer{remotePeer: ${remotePeer.address.address}:${remotePeer.port}}';
+  }
 
   @override
   void sendMessage(List<int> message) {

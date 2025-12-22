@@ -32,3 +32,11 @@ scripts:
   clean:
     description: Clean all packages
     run: melos clean
+
+  index:
+    description: Generate index for all packages
+    run: dart pub global run index_generator
+
+  build_runner:
+    description: Run build_runner for all packages
+    run: melos exec -- dart run build_runner build
