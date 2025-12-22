@@ -6,7 +6,7 @@ abstract interface class IShspPeer {
   void close();
 
   /// Get a serialized representation of the peer
-  // ...existing code...
+  String serializedObject();
 
   /// Send a message to this peer
   void sendMessage(List<int> message);

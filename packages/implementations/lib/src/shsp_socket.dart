@@ -11,6 +11,8 @@ class ShspSocket extends RawShspSocket implements IShspSocket {
   
   void Function()? _closeCallback;
   void Function(dynamic err)? _errorCallback;
+  void Function()? _listeningCallback;
+  void Function()? _connectCallback;
 
   InternetAddress? _localAddress;
   int? _localPort;
@@ -81,6 +83,16 @@ class ShspSocket extends RawShspSocket implements IShspSocket {
   }
 
   @override
+  void setListeningCallback(void Function() cb) {
+    _listeningCallback = cb;
+  }
+
+  @override
+  void setConnectCallback(void Function() cb) {
+    _connectCallback = cb;
+  }
+
+  @override
   void onClose() {
     _closeCallback?.call();
   }
@@ -88,6 +100,21 @@ class ShspSocket extends RawShspSocket implements IShspSocket {
   @override
   void onError(dynamic err) {
     _errorCallback?.call(err);
+  }
+
+  @override
+  void onListening() {
+    _listeningCallback?.call();
+  }
+
+  @override
+  void onConnect() {
+    _connectCallback?.call();
+  }
+
+  @override
+  String serializedObject() {
+    return 'ShspSocket{localAddress: $_localAddress, localPort: $_localPort}';
   }
 
   @override
