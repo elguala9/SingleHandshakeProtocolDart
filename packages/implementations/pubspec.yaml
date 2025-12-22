@@ -13,9 +13,14 @@ dependencies:
   shsp_interfaces:
     path: ../interfaces
   meta: ^1.17.0
+  cryptdart: ^0.1.0
+
+  clock_dart: ^1.0.0
+  stun: ^1.0.0
 
 dev_dependencies:
   build_runner: ^2.10.2
   json_serializable: ^6.11.1
   lints: ^3.0.0
   test: ^1.24.0
+  index_generator: 4.1.2
