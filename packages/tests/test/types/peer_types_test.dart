@@ -115,7 +115,7 @@ void main() {
   group('HandshakeSignal', () {
     test('should create HandshakeSignal with all fields', () {
       final now = DateTime(2024, 6, 15, 12, 0);
-      final endTime = now.add(Duration(hours: 2));
+      final endTime = now.add(const Duration(hours: 2));
       
       final signal = HandshakeSignal(
         publicIPv4: PeerInfo(address: InternetAddress('203.0.113.1'), port: 8080),
@@ -149,7 +149,7 @@ void main() {
         referenceTimestamp: now,
         maxHandshakeDurationSeconds: 30,
         intervalBetweenHandshakesSeconds: 120,
-        endHandshakeAvailability: now.add(Duration(hours: 1)),
+        endHandshakeAvailability: now.add(const Duration(hours: 1)),
       );
       
       expect(signal.publicIPv4, isNull);
@@ -170,7 +170,7 @@ void main() {
         referenceTimestamp: now,
         maxHandshakeDurationSeconds: 45,
         intervalBetweenHandshakesSeconds: 180,
-        endHandshakeAvailability: now.add(Duration(hours: 3)),
+        endHandshakeAvailability: now.add(const Duration(hours: 3)),
       );
       
       final json = signal.toJson();
@@ -189,7 +189,7 @@ void main() {
         'referenceTimestamp': now.toIso8601String(),
         'maxHandshakeDurationSeconds': 90,
         'intervalBetweenHandshakesSeconds': 240,
-        'endHandshakeAvailability': now.add(Duration(hours: 4)).toIso8601String(),
+        'endHandshakeAvailability': now.add(const Duration(hours: 4)).toIso8601String(),
       };
       
       final signal = HandshakeSignal.fromJson(json);
@@ -208,7 +208,7 @@ void main() {
         referenceTimestamp: start,
         maxHandshakeDurationSeconds: 120,
         intervalBetweenHandshakesSeconds: 600,
-        endHandshakeAvailability: start.add(Duration(hours: 8)),
+        endHandshakeAvailability: start.add(const Duration(hours: 8)),
       );
       
       // Check duration calculations
@@ -233,7 +233,7 @@ void main() {
         referenceTimestamp: DateTime.now(),
         maxHandshakeDurationSeconds: 15,
         intervalBetweenHandshakesSeconds: 60,
-        endHandshakeAvailability: DateTime.now().add(Duration(minutes: 30)),
+        endHandshakeAvailability: DateTime.now().add(const Duration(minutes: 30)),
       );
       
       expect(signal.publicIPv4, isNotNull);
@@ -248,7 +248,7 @@ void main() {
         referenceTimestamp: now,
         maxHandshakeDurationSeconds: 1, // Very short handshake
         intervalBetweenHandshakesSeconds: 86400, // One day between handshakes
-        endHandshakeAvailability: now.add(Duration(days: 365)), // One year
+        endHandshakeAvailability: now.add(const Duration(days: 365)), // One year
       );
       
       expect(signal.maxHandshakeDurationSeconds, equals(1));
@@ -292,7 +292,7 @@ void main() {
     });
 
     test('should handle key with expiration in the past', () {
-      final pastDate = DateTime.now().subtract(Duration(days: 30));
+      final pastDate = DateTime.now().subtract(const Duration(days: 30));
       final signal = SecuritySignal(
         publicKey: 'expired-key',
         expirationPublicKey: pastDate,
@@ -303,7 +303,7 @@ void main() {
     });
 
     test('should handle key with future expiration', () {
-      final futureDate = DateTime.now().add(Duration(days: 365));
+      final futureDate = DateTime.now().add(const Duration(days: 365));
       final signal = SecuritySignal(
         publicKey: 'future-key',
         expirationPublicKey: futureDate,

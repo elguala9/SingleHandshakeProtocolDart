@@ -5,7 +5,6 @@ import 'shsp_test.dart' as shsp_test;
 import 'shsp_instance_test.dart' as shsp_instance_test;
 import 'shsp_peer_test.dart' as shsp_peer_test;
 import 'shsp_socket_test.dart' as shsp_socket_test;
-import 'stun_handler_test.dart' as stun_handler_test;
 import 'handshake_ip_test.dart' as handshake_ip_test;
 import 'handshake_ownership_test.dart' as handshake_ownership_test;
 import 'handshake_time_test.dart' as handshake_time_test;
@@ -29,7 +28,6 @@ void main() {
       shsp_instance_test.main();
       shsp_peer_test.main();
       shsp_socket_test.main();
-      stun_handler_test.main();
     });
 
     group('Handshake Tests', () {

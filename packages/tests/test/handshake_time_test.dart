@@ -29,7 +29,7 @@ void main() {
         handshakeTimeframe: 20,
         handshakeDuration: 10,
         startHandshakeTime: DateTime.now(),
-        endHandshakeTime: DateTime.now().add(Duration(hours: 1)),
+        endHandshakeTime: DateTime.now().add(const Duration(hours: 1)),
       ));
       
       expect(handshake, isA<IHandshakeTime>());
@@ -40,7 +40,7 @@ void main() {
         handshakeTimeframe: 60,
         handshakeDuration: 30,
         startHandshakeTime: DateTime.now(),
-        endHandshakeTime: DateTime.now().add(Duration(hours: 2)),
+        endHandshakeTime: DateTime.now().add(const Duration(hours: 2)),
       ));
 
       expect(handshake.getSecondsToNextHandshake(), equals(-1));
@@ -83,7 +83,7 @@ void main() {
 
     test('end time should be after start time in meaningful use case', () {
       final startTime = DateTime.now();
-      final endTime = startTime.add(Duration(minutes: 30));
+      final endTime = startTime.add(const Duration(minutes: 30));
 
       final handshake = HandshakeTime((
         handshakeTimeframe: 20,
