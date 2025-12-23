@@ -69,7 +69,7 @@ void testIShspSocket(IShspSocketFactory createSocket) {
       socket1.sendTo(testMsg, address2, port2);
 
       // Attendi la ricezione (fino a 2 secondi)
-      await completer.future.timeout(Duration(seconds: 2), onTimeout: () {
+      await completer.future.timeout(const Duration(seconds: 2), onTimeout: () {
         print('DEBUG: Timeout, messaggio non ricevuto');
         fail('Messaggio non ricevuto entro il timeout');
       });

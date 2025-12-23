@@ -33,7 +33,7 @@ void main() {
       expect(instanceA.handshake, isFalse);
       expect(instanceA.open, isFalse);
       instanceB.sendMessage([0x01]);
-      await Future.delayed(Duration(milliseconds: 200));
+      await Future.delayed(const Duration(milliseconds: 200));
       expect(instanceA.handshake, isTrue);
       expect(instanceA.open, isTrue);
     });
@@ -41,17 +41,17 @@ void main() {
     test('closing message sets closing', () async {
       expect(instanceA.closing, isFalse);
       instanceB.sendMessage([0x02]);
-      await Future.delayed(Duration(milliseconds: 200));
+      await Future.delayed(const Duration(milliseconds: 200));
       expect(instanceA.closing, isTrue);
     });
 
     test('closed message sets open to false', () async {
       // Simula handshake per portare open a true
       instanceB.sendMessage([0x01]);
-      await Future.delayed(Duration(milliseconds: 100));
+      await Future.delayed(const Duration(milliseconds: 100));
       expect(instanceA.open, isTrue);
       instanceB.sendMessage([0x03]);
-      await Future.delayed(Duration(milliseconds: 100));
+      await Future.delayed(const Duration(milliseconds: 100));
       expect(instanceA.open, isFalse);
     });
 
@@ -60,7 +60,7 @@ void main() {
       final prevClosing = instanceA.closing;
       final prevOpen = instanceA.open;
       instanceB.sendMessage([0x04]);
-      await Future.delayed(Duration(milliseconds: 200));
+      await Future.delayed(const Duration(milliseconds: 200));
       expect(instanceA.handshake, equals(prevHandshake));
       expect(instanceA.closing, equals(prevClosing));
       expect(instanceA.open, equals(prevOpen));
@@ -74,7 +74,7 @@ void main() {
         expect(msg, equals(userMsg));
       });
       instanceB.sendMessage(userMsg);
-      await Future.delayed(Duration(milliseconds: 200));
+      await Future.delayed(const Duration(milliseconds: 200));
       expect(received, isTrue);
     });
   });

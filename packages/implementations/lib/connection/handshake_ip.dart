@@ -1,7 +1,7 @@
 import 'dart:io';
 import 'package:shsp_types/shsp_types.dart';
 import 'package:stun/stun.dart';
-import 'package:shsp_interfaces/src/connection/i_shsp_handshake.dart';
+import 'package:shsp_interfaces/shsp_interfaces.dart';
 
 typedef InputHandshakeIP = ({
   PeerInfo? publicIPv4,
@@ -49,8 +49,12 @@ class HandshakeIP implements IHandshakeIP {
     }
   }
 
+  @override
   PeerInfo? getPublicIPv4() => publicIPv4;
+  @override
   PeerInfo? getPublicIPv6() => publicIPv6;
+  @override
   PeerInfo? getLocalIPv4() => localIPv4;
+  @override
   PeerInfo? getLocalIPv6() => localIPv6;
 }

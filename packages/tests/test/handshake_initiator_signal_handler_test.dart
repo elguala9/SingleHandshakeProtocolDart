@@ -54,7 +54,7 @@ void main() {
           referenceTimestamp: DateTime.now(),
           maxHandshakeDurationSeconds: 5,
           intervalBetweenHandshakesSeconds: 20,
-          endHandshakeAvailability: DateTime.now().add(Duration(hours: 2)),
+          endHandshakeAvailability: DateTime.now().add(const Duration(hours: 2)),
         );
 
         expect(signal.publicIPv4, isNull);
@@ -101,7 +101,7 @@ void main() {
           referenceTimestamp: DateTime.now(),
           maxHandshakeDurationSeconds: 10,
           intervalBetweenHandshakesSeconds: 30,
-          endHandshakeAvailability: DateTime.now().add(Duration(hours: 1)),
+          endHandshakeAvailability: DateTime.now().add(const Duration(hours: 2)),
         );
 
         expect(signal.expirationPublicKey, equals(expirationDate));
@@ -113,7 +113,7 @@ void main() {
           referenceTimestamp: now,
           maxHandshakeDurationSeconds: 60,
           intervalBetweenHandshakesSeconds: 300,
-          endHandshakeAvailability: now.add(Duration(hours: 2)),
+          endHandshakeAvailability: now.add(const Duration(hours: 2)),
         );
 
         expect(signal.referenceTimestamp, equals(now));
