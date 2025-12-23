@@ -33,6 +33,9 @@ class ShspSocket extends RawShspSocket implements IShspSocket {
           case RawSocketEvent.closed:
             onClose();
             break;
+          case RawSocketEvent.readClosed:
+            // Read end of socket closed
+            break;
           case RawSocketEvent.write:
             // Write events are handled synchronously, no callback needed
             break;

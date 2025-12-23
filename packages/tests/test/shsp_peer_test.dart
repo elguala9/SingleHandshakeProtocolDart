@@ -46,7 +46,7 @@ void testIShspPeer(IShspPeerFactory peerFactory) {
 
       // Invio da peerB a peerA (deve attivare la callback)
       peerB.sendMessage(testMsg);
-      await Future.delayed(Duration(milliseconds: 200));
+      await Future.delayed(const Duration(milliseconds: 200));
       expect(received, isTrue);
 
       // Invio da peerC a peerA (non deve attivare la callback)
@@ -55,14 +55,14 @@ void testIShspPeer(IShspPeerFactory peerFactory) {
       final peerC = peerFactory(remotePeer: peerInfoA, socket: socketC);
       received = false;
       peerC.sendMessage([99, 88, 77]);
-      await Future.delayed(Duration(milliseconds: 200));
+      await Future.delayed(const Duration(milliseconds: 200));
       expect(received, isFalse);
       socketC.close();
 
       // Reset e invio da socketA a peerA (non deve attivare la callback)
       received = false;
       socketA.sendTo(wrongMsg, peerInfoA.address, peerInfoA.port);
-      await Future.delayed(Duration(milliseconds: 200));
+      await Future.delayed(const Duration(milliseconds: 200));
       expect(received, isFalse);
     });
 
@@ -78,7 +78,7 @@ void testIShspPeer(IShspPeerFactory peerFactory) {
 
       // peerC invia a peerA (peerA non deve ricevere)
       peerC.sendMessage([123, 45, 67]);
-      await Future.delayed(Duration(milliseconds: 200));
+      await Future.delayed(const Duration(milliseconds: 200));
       expect(received, isFalse);
 
       socketC.close();
@@ -90,7 +90,7 @@ void testIShspPeer(IShspPeerFactory peerFactory) {
       // Non impostare la callback
       peerB.sendMessage(testMsg);
       // Attendi e verifica che non venga chiamata
-      await Future.delayed(Duration(milliseconds: 200));
+      await Future.delayed(const Duration(milliseconds: 200));
       expect(called, isFalse);
     });
 
@@ -117,7 +117,7 @@ void testIShspPeer(IShspPeerFactory peerFactory) {
         received = true;
       });
       peerB.sendMessage([99]);
-      await Future.delayed(Duration(milliseconds: 200));
+      await Future.delayed(const Duration(milliseconds: 200));
       expect(received, isFalse);
     });
   });

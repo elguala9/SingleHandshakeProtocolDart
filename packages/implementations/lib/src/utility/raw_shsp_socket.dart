@@ -64,8 +64,10 @@ class RawShspSocket implements RawDatagramSocket {
   set multicastHops(int value) => socket.multicastHops = value;
 
   @override
+  // ignore: deprecated_member_use
   NetworkInterface? get multicastInterface => socket.multicastInterface;
   @override
+  // ignore: deprecated_member_use
   set multicastInterface(NetworkInterface? value) => socket.multicastInterface = value;
 
   // Stream interface
@@ -108,7 +110,7 @@ class RawShspSocket implements RawDatagramSocket {
   Future<T> fold<T>(T initialValue, T Function(T, RawSocketEvent) combine) => socket.fold(initialValue, combine);
 
   @override
-  Future<String> join([String separator = ""]) => socket.join(separator);
+  Future<String> join([String separator = '']) => socket.join(separator);
 
   @override
   Future<bool> any(bool Function(RawSocketEvent) test) => socket.any(test);

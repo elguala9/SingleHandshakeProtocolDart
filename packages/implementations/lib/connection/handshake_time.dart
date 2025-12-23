@@ -1,5 +1,5 @@
 import 'package:clock_dart/clock_dart.dart';
-import 'package:shsp_interfaces/src/connection/i_shsp_handshake.dart';
+import 'package:shsp_interfaces/shsp_interfaces.dart';
 
 typedef InputHandshakeTime = ({
   int handshakeTimeframe, // how much from an handshake and the other
