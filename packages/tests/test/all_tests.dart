@@ -19,7 +19,6 @@ import 'utility/message_callback_map_test.dart' as message_callback_map_test;
 // Type tests
 import 'types/peer_types_test.dart' as peer_types_test;
 import 'types/remote_info_test.dart' as remote_info_test;
-import 'types/stun_types_test.dart' as stun_types_test;
 
 void main() {
   group('SHSP Tests', () {
@@ -47,7 +46,6 @@ void main() {
     group('Type Tests', () {
       peer_types_test.main();
       remote_info_test.main();
-      stun_types_test.main();
     });
   });
 }
