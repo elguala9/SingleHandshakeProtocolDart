@@ -1,10 +1,12 @@
 name: shsp_types
-description: Type definitions for Single HandShake Protocol
+description: Type definitions and serializable models for Single HandShake Protocol (SHSP) - a custom networking protocol for peer-to-peer communication.
 version: 1.0.0
-publish_to: none
+homepage: https://github.com/lgualandi/SingleHandShakeProtocolDart
+repository: https://github.com/lgualandi/SingleHandShakeProtocolDart
+issue_tracker: https://github.com/lgualandi/SingleHandShakeProtocolDart/issues
 
 environment:
-  sdk: ^3.8.0
+  sdk: '>=3.0.0 <4.0.0'
 
 dependencies:
   json_annotation: ^4.9.0
