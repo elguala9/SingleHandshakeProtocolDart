@@ -364,9 +364,10 @@ packages:
   shsp_types:
     dependency: "direct main"
     description:
-      path: "../types"
-      relative: true
-    source: path
+      name: shsp_types
+      sha256: b62cac3c2e747f3173c799bb6d7f1aae7561af8d2048cff9ff7ec8a7ca7ddf1d
+      url: "https://pub.dev"
+    source: hosted
     version: "1.0.0"
   source_gen:
     dependency: transitive
