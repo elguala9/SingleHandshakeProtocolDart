@@ -4,7 +4,7 @@ version: 1.0.0
 publish_to: none
 
 environment:
-  sdk: '>=3.0.0 <4.0.0'
+  sdk: '>=3.9.4 <4.0.0'
 
 dependencies:
   shsp_types:
@@ -18,6 +18,120 @@ dependencies:
   build_runner: ^2.10.4
 
 dev_dependencies:
-  melos: ^3.4.0
+  melos: ^7.3.0
   lints: ^3.0.0
   test: ^1.24.0
+
+workspace:
+  - packages/types
+  - packages/interfaces
+  - packages/implementations
+  - packages/tests
+
+# Melos configuration for workspace
+melos:
+  command:
+    bootstrap:
+      environment:
+        sdk: ">=3.3.0 <4.0.0"
+      
+    version:
+      # Only allow versioning to happen on main branch.
+      branch: main
+      # Generate commit links in package changelogs.
+      linkToCommits: false
+      # Changelog formatting.
+      message: "chore(release): publish packages"
+
+  scripts:
+    # Analyze all packages
+    analyze:
+      run: melos exec -- dart analyze .
+      description: Run Dart analyzer in all packages.
+      
+    # Analyze all packages with detailed output
+    analyze:all:
+      run: melos exec --scope="types,interfaces,implementations,tests" -- dart analyze . --fatal-infos
+      description: Analyze all packages with detailed output.
+      
+    # Format all packages
+    format:
+      run: melos exec -- dart format .
+      description: Format all Dart files.
+      
+    # === TEST COMMANDS ===
+    
+    # Run all tests
+    test:
+      run: melos exec --fail-fast -- dart test
+      description: Run all tests in packages that have them.
+      packageFilters:
+        dirExists: test
+        
+    # Run tests in specific packages
+    test:types:
+      run: melos exec --fail-fast --scope="types" -- dart test  
+      description: Run tests in shsp_types package only.
+      
+    test:implementations:
+      run: melos exec --fail-fast --scope="implementations" -- dart test
+      description: Run tests in shsp_implementations package only.
+      
+    test:all:
+      run: melos exec --fail-fast --scope="tests" -- dart test
+      description: Run all tests in shsp_tests package.
+      
+    # Run tests with coverage
+    test:coverage:
+      run: melos exec --fail-fast -- dart test --coverage=coverage
+      description: Run tests with coverage collection.
+      packageFilters:
+        dirExists: test
+        
+    # Run tests in verbose mode
+    test:verbose:
+      run: melos exec --fail-fast -- dart test --reporter=expanded
+      description: Run tests with verbose output.
+      packageFilters:
+        dirExists: test
+      
+    # === DEVELOPMENT COMMANDS ===
+      
+    # Check formatting
+    format:check:
+      run: melos exec -- dart format --set-exit-if-changed .
+      description: Check formatting in all packages.
+      
+    # Get dependencies for all packages
+    get:
+      run: melos exec -- dart pub get
+      description: Get dependencies for all packages.
+      
+    # Clean all packages
+    clean:
+      run: melos clean
+      description: Clean all packages.
+      
+    # Run build_runner for code generation
+    build:
+      run: melos exec -- dart run build_runner build --delete-conflicting-outputs
+      description: Run build_runner in all applicable packages.
+      packageFilters:
+        dependsOn: build_runner
+        
+    # Watch mode for build_runner
+    build:watch:
+      run: melos exec -- dart run build_runner watch --delete-conflicting-outputs
+      description: Run build_runner in watch mode.
+      packageFilters:
+        dependsOn: build_runner
+        
+    # Complete CI pipeline
+    ci:
+      run: melos clean && melos get && melos analyze && melos format:check && melos test
+      description: Run complete CI pipeline (clean, get, analyze, format check, test).
+      
+    # Quick development check  
+    check:
+      run: melos analyze && melos test
+      description: Quick check for development (analyze + all tests).

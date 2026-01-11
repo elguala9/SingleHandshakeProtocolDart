@@ -3,12 +3,14 @@ import 'package:test/test.dart';
 // Import all test files
 import 'shsp_test.dart' as shsp_test;
 import 'shsp_instance_test.dart' as shsp_instance_test;
+import 'shsp_instance_integration_test.dart' as shsp_instance_integration_test;
 import 'shsp_peer_test.dart' as shsp_peer_test;
 import 'shsp_socket_test.dart' as shsp_socket_test;
 import 'handshake_ip_test.dart' as handshake_ip_test;
 import 'handshake_ownership_test.dart' as handshake_ownership_test;
 import 'handshake_time_test.dart' as handshake_time_test;
 import 'handshake_initiator_signal_handler_test.dart' as handshake_initiator_signal_handler_test;
+import 'keep_alive_timer_test.dart' as keep_alive_timer_test;
 
 // Utility tests
 import 'utility/address_utility_test.dart' as address_utility_test;
@@ -25,8 +27,13 @@ void main() {
     group('Core Implementation Tests', () {
       shsp_test.main();
       shsp_instance_test.main();
+      shsp_instance_integration_test.main();
       shsp_peer_test.main();
       shsp_socket_test.main();
+    });
+
+    group('Timer Tests', () {
+      keep_alive_timer_test.main();
     });
 
     group('Handshake Tests', () {
