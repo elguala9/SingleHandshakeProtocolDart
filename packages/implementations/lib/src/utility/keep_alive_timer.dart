@@ -27,7 +27,10 @@ class KeepAliveTimer implements Timer {
     _isRunning = false;
   }
 
-  factory KeepAliveTimer.periodic(Duration duration, void callback(Timer timer)) {
+  factory KeepAliveTimer.periodic(
+    Duration duration,
+    void Function(Timer timer) callback,
+  ) {
     if (Zone.current == Zone.root) {
       return KeepAliveTimer.from(
         Zone.current.createPeriodicTimer(duration, callback),
