@@ -56,7 +56,23 @@ class ShspSocket extends RawShspSocket implements IShspSocket {
     }
   }
 
-  /// Create and bind a new SHSP socket
+  /// Create and bind a new SHSP socket to a specific address and port
+  /// 
+  /// This factory method:
+  /// - Binds the socket to the specified local address and port
+  /// - Initializes the message callback map
+  /// - Sets up all event listeners (read, close, error, etc.)
+  /// 
+  /// Parameters:
+  ///   - [address]: The local InternetAddress to bind to (e.g., InternetAddress.anyIPv4)
+  ///   - [port]: The local port number to listen on
+  /// 
+  /// Returns: A Future that resolves to a new ShspSocket instance
+  /// 
+  /// Example:
+  /// ```dart
+  /// final socket = await ShspSocket.bind(InternetAddress.anyIPv4, 8000);
+  /// ```
   static Future<ShspSocket> bind(InternetAddress address, int port) async {
     final rawSocket = await RawDatagramSocket.bind(address, port);
     final callbacks = MessageCallbackMap();

@@ -19,6 +19,82 @@ class ShspInstance extends ShspPeer implements IShspInstance {
     int keepAliveSeconds = 30,
   }) : _keepAliveSeconds = keepAliveSeconds;
 
+  /// Factory constructor - creates a ShspInstance with configurable keep-alive timer
+  /// 
+  /// This factory method:
+  /// - Creates a new ShspInstance extending ShspPeer
+  /// - Configures keep-alive timer interval (default: 30 seconds)
+  /// - Handles protocol messages (handshake, closing, closed, keep-alive)
+  /// - Sets up automatic message callback routing
+  /// 
+  /// Parameters:
+  ///   - [remotePeer]: Information about the remote peer (address and port)
+  ///   - [socket]: The underlying SHSP socket for communication
+  ///   - [keepAliveSeconds]: Interval for keep-alive messages (default: 30 seconds)
+  /// 
+  /// Returns: A new ShspInstance ready for protocol-aware communication
+  /// 
+  /// Example:
+  /// ```dart
+  /// final instance = ShspInstance.create(
+  ///   remotePeer: PeerInfo(
+  ///     address: InternetAddress('192.168.1.100'),
+  ///     port: 9000,
+  ///   ),
+  ///   socket: mySocket,
+  ///   keepAliveSeconds: 20,  // Keep-alive every 20 seconds
+  /// );
+  /// await instance.startKeepAlive();
+  /// ```
+  factory ShspInstance.create({
+    required PeerInfo remotePeer,
+    required IShspSocket socket,
+    int keepAliveSeconds = 30,
+  }) {
+    return ShspInstance(
+      remotePeer: remotePeer,
+      socket: socket,
+      keepAliveSeconds: keepAliveSeconds,
+    );
+  }
+
+  /// Factory constructor - creates a ShspInstance from an existing ShspPeer
+  /// 
+  /// This factory method:
+  /// - Converts an existing ShspPeer to a ShspInstance
+  /// - Reuses the same socket and remote peer information
+  /// - Adds protocol message handling (handshake, keep-alive, etc.)
+  /// - Allows setting a different keep-alive interval
+  /// 
+  /// Parameters:
+  ///   - [peer]: An existing ShspPeer instance to convert
+  ///   - [keepAliveSeconds]: Interval for keep-alive messages (default: 30 seconds)
+  /// 
+  /// Returns: A new ShspInstance wrapping the peer's socket and remote info
+  /// 
+  /// Example:
+  /// ```dart
+  /// final peer = ShspPeer.create(
+  ///   remotePeer: myRemotePeer,
+  ///   socket: mySocket,
+  /// );
+  /// // Later, upgrade to ShspInstance with protocol support
+  /// final instance = ShspInstance.fromPeer(
+  ///   peer,
+  ///   keepAliveSeconds: 25,
+  /// );
+  /// ```
+  factory ShspInstance.fromPeer(
+    ShspPeer peer, {
+    int keepAliveSeconds = 30,
+  }) {
+    return ShspInstance(
+      remotePeer: peer.remotePeer,
+      socket: peer.socket,
+      keepAliveSeconds: keepAliveSeconds,
+    );
+  }
+
   @override
   void onMessage(List<int> msg, PeerInfo info) {
     // Check protocol messages first
