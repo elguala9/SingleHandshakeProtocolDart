@@ -12,7 +12,45 @@ class ShspPeer implements IShspPeer {
     required this.remotePeer,
     required this.socket,
   }) {
-    // Initialize the local callback in the socket
+    _setupMessageCallback();
+  }
+
+  /// Factory constructor - creates a ShspPeer with a remote peer and socket
+  /// 
+  /// This factory method:
+  /// - Creates a new ShspPeer instance
+  /// - Automatically registers message callbacks with the socket
+  /// - Sets up routing for messages from the remote peer
+  /// 
+  /// Parameters:
+  ///   - [remotePeer]: Information about the remote peer (address and port)
+  ///   - [socket]: The underlying SHSP socket for communication
+  /// 
+  /// Returns: A new ShspPeer instance ready to send/receive messages
+  /// 
+  /// Example:
+  /// ```dart
+  /// final remotePeer = PeerInfo(
+  ///   address: InternetAddress('192.168.1.100'),
+  ///   port: 9000,
+  /// );
+  /// final peer = ShspPeer.create(
+  ///   remotePeer: remotePeer,
+  ///   socket: mySocket,
+  /// );
+  /// ```
+  factory ShspPeer.create({
+    required PeerInfo remotePeer,
+    required IShspSocket socket,
+  }) {
+    return ShspPeer(
+      remotePeer: remotePeer,
+      socket: socket,
+    );
+  }
+
+  /// Setup message callback in the socket
+  void _setupMessageCallback() {
     final key = '${remotePeer.address.address}:${remotePeer.port}';
     socket.setMessageCallback(
       key,

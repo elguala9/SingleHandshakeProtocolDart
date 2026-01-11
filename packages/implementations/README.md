@@ -102,6 +102,212 @@ void advancedExample() async {
 }
 ```
 
+## Creating SHSP Objects
+
+This package provides factory methods for creating each main SHSP component:
+
+### 1. Creating a ShspSocket
+
+The socket is the foundation for all network communication. Use the `bind()` factory to create and bind a socket:
+
+```dart
+import 'dart:io';
+import 'package:shsp_implementations/shsp_implementations.dart';
+
+void main() async {
+  // Create and bind a new socket to listen on all IPv4 interfaces, port 8000
+  final socket = await ShspSocket.bind(InternetAddress.anyIPv4, 8000);
+  print('Socket listening on port 8000');
+  
+  // Set up callbacks for socket events
+  socket.setCloseCallback(() => print('Socket closed'));
+  socket.setErrorCallback((err) => print('Socket error: $err'));
+  
+  // Clean up when done
+  socket.close();
+}
+```
+
+### 2. Creating a ShspPeer
+
+A peer represents a remote connection. Use the `create()` factory to create a peer:
+
+```dart
+import 'dart:io';
+import 'package:shsp_implementations/shsp_implementations.dart';
+import 'package:shsp_types/shsp_types.dart';
+
+void main() async {
+  final socket = await ShspSocket.bind(InternetAddress.anyIPv4, 8000);
+  
+  // Define the remote peer's information
+  final remotePeer = PeerInfo(
+    address: InternetAddress('192.168.1.100'),
+    port: 9000,
+  );
+  
+  // Create a peer for communication with that remote address
+  final peer = ShspPeer.create(
+    remotePeer: remotePeer,
+    socket: socket,
+  );
+  
+  // Send a message to the peer
+  peer.sendMessage([1, 2, 3, 4]);
+  
+  peer.close();
+  socket.close();
+}
+```
+
+### 3. Creating a ShspInstance
+
+ShspInstance extends ShspPeer with protocol-aware message handling (handshakes, keep-alive, etc.):
+
+```dart
+import 'dart:io';
+import 'package:shsp_implementations/shsp_implementations.dart';
+import 'package:shsp_types/shsp_types.dart';
+
+void main() async {
+  final socket = await ShspSocket.bind(InternetAddress.anyIPv4, 8000);
+  
+  final remotePeer = PeerInfo(
+    address: InternetAddress('192.168.1.100'),
+    port: 9000,
+  );
+  
+  // Create a protocol instance with 20-second keep-alive
+  final instance = ShspInstance.create(
+    remotePeer: remotePeer,
+    socket: socket,
+    keepAliveSeconds: 20,
+  );
+  
+  // Set up message callback
+  instance.setMessageCallback((msg) {
+    print('Received message: $msg');
+  });
+  
+  // Start sending keep-alive messages
+  instance.startKeepAlive();
+  
+  // Send handshake
+  instance.sendHandshake();
+  
+  instance.stopKeepAlive();
+  instance.close();
+  socket.close();
+}
+```
+
+### 4. Converting a Peer to an Instance
+
+You can upgrade an existing ShspPeer to a ShspInstance using `fromPeer()`:
+
+```dart
+import 'dart:io';
+import 'package:shsp_implementations/shsp_implementations.dart';
+import 'package:shsp_types/shsp_types.dart';
+
+void main() async {
+  final socket = await ShspSocket.bind(InternetAddress.anyIPv4, 8000);
+  
+  final remotePeer = PeerInfo(
+    address: InternetAddress('192.168.1.100'),
+    port: 9000,
+  );
+  
+  // Start with a basic peer
+  final peer = ShspPeer.create(
+    remotePeer: remotePeer,
+    socket: socket,
+  );
+  
+  // Later, upgrade to protocol instance with keep-alive
+  final instance = ShspInstance.fromPeer(
+    peer,
+    keepAliveSeconds: 25,
+  );
+  
+  instance.startKeepAlive();
+  instance.close();
+  socket.close();
+}
+```
+
+### 5. Creating a Low-Level Shsp Object
+
+For direct socket management, use the `Shsp.create()` factory:
+
+```dart
+import 'dart:io';
+import 'package:shsp_implementations/shsp_implementations.dart';
+
+void main() async {
+  // Create a raw UDP socket first
+  final rawSocket = await RawDatagramSocket.bind(
+    InternetAddress.anyIPv4,
+    8000,
+  );
+  
+  // Wrap it in a Shsp object with remote peer info and optional signal
+  final shsp = Shsp.create(
+    socket: rawSocket,
+    remoteIp: '192.168.1.100',
+    remotePort: 9000,
+    signal: 'CLIENT_HELLO',
+  );
+  
+  print('SHSP signal: ${shsp.getSignal()}');
+  
+  shsp.close();
+}
+```
+
+### Complete Example: Creating All Objects Together
+
+```dart
+import 'dart:io';
+import 'package:shsp_implementations/shsp_implementations.dart';
+import 'package:shsp_types/shsp_types.dart';
+
+void main() async {
+  // Step 1: Create a socket
+  final socket = await ShspSocket.bind(InternetAddress.anyIPv4, 8000);
+  print('✓ Socket created on port 8000');
+  
+  // Step 2: Create a peer
+  final remotePeer = PeerInfo(
+    address: InternetAddress('192.168.1.100'),
+    port: 9000,
+  );
+  final peer = ShspPeer.create(
+    remotePeer: remotePeer,
+    socket: socket,
+  );
+  print('✓ Peer created for 192.168.1.100:9000');
+  
+  // Step 3: Upgrade to protocol instance
+  final instance = ShspInstance.fromPeer(peer, keepAliveSeconds: 20);
+  print('✓ Instance created with 20s keep-alive');
+  
+  // Step 4: Set up and start
+  instance.setMessageCallback((msg) {
+    print('Message received: $msg');
+  });
+  
+  instance.startKeepAlive();
+  print('✓ Keep-alive started');
+  
+  // Step 5: Clean up
+  instance.stopKeepAlive();
+  instance.close();
+  socket.close();
+  print('✓ All objects closed');
+}
+```
+
 ## Related Packages
 
 - [`shsp_types`](https://pub.dev/packages/shsp_types) - Type definitions
