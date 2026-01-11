@@ -4,14 +4,18 @@ version: 1.0.0
 homepage: https://github.com/lgualandi/SingleHandShakeProtocolDart
 repository: https://github.com/lgualandi/SingleHandShakeProtocolDart
 issue_tracker: https://github.com/lgualandi/SingleHandShakeProtocolDart/issues
+publish_to: none
+resolution: workspace
 
 environment:
-  sdk: '>=3.0.0 <4.0.0'
+  sdk: '>=3.5.0 <4.0.0'
 
 dependencies:
   json_annotation: ^4.9.0
-  shsp_types: ^1.0.0
-  shsp_interfaces: ^1.0.0
+  shsp_types:
+    path: ../types
+  shsp_interfaces:
+    path: ../interfaces
   meta: ^1.17.0
   clock_dart: ^1.0.0
   stun: ^1.0.0

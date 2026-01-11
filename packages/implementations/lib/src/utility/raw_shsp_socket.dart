@@ -3,7 +3,7 @@ import 'dart:async';
 import 'dart:typed_data';
 import 'package:meta/meta.dart';
 
-/// Hoping that in a future RawDatagramSocket (or similar) will become a real class
+/// Hoping that in a future RawDatagramSocket (or similar) will become a real class (AS NOW THERE IS NOT OTHER OPTION BECAUSE RawDatagramSocket IS AN ABSTRACT CLASS)
 class RawShspSocket implements RawDatagramSocket {
   @protected
   final RawDatagramSocket socket;

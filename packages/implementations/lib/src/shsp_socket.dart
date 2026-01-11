@@ -5,7 +5,7 @@ import 'package:shsp_interfaces/shsp_interfaces.dart';
 import 'utility/message_callback_map.dart';
 import 'utility/raw_shsp_socket.dart';
 
-/// SHSP Socket implementation wrapping RawDatagramSocket
+/// SHSP Socket implementation wrapping RawDatagramSocket 
 class ShspSocket extends RawShspSocket implements IShspSocket {
   final MessageCallbackMap _messageCallbacks;
   
