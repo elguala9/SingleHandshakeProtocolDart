@@ -1,4 +1,3 @@
-import 'dart:async';
 import 'package:shsp_interfaces/shsp_interfaces.dart';
 import 'package:shsp_types/shsp_types.dart';
 import 'shsp_peer.dart';
