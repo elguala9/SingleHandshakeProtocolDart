@@ -21,9 +21,7 @@ class KeepAliveTimer implements Timer {
   }
 
   void stop() {
-    if (_internalTimer != null) {
-      _internalTimer.cancel();
-    }
+    _internalTimer.cancel();
     _isRunning = false;
   }
 
