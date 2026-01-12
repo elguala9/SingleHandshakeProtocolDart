@@ -134,7 +134,6 @@ void main() {
       // After reset, callback should fire ~200ms later (at ~280ms total)
       // Wait to verify it hasn't fired yet at intermediate time
       await Future.delayed(const Duration(milliseconds: 150));
-      final countAfter150 = callCount;
 
       // Wait more to let callback fire
       await Future.delayed(const Duration(milliseconds: 150));

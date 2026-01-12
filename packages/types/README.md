@@ -19,7 +19,7 @@ Add this to your package's `pubspec.yaml`:
 
 ```yaml
 dependencies:
-  shsp_types: ^1.0.0
+  shsp_types: ^1.0.1
 ```
 
 ## Usage

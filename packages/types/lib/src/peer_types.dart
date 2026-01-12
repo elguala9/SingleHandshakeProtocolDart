@@ -2,8 +2,6 @@ import 'package:json_annotation/json_annotation.dart';
 import 'dart:io';
 import 'internet_address_converter.dart';
 
-part 'peer_types.g.dart';
-
 @JsonSerializable()
 class PeerInfo {
   @InternetAddressConverter()
@@ -12,9 +10,21 @@ class PeerInfo {
 
   PeerInfo({required this.address, required this.port});
 
-  factory PeerInfo.fromJson(Map<String, dynamic> json) => _$PeerInfoFromJson(json);
-  Map<String, dynamic> toJson() => _$PeerInfoToJson(this);
+  factory PeerInfo.fromJson(Map<String, dynamic> json) {
+    return PeerInfo(
+      address: const InternetAddressConverter().fromJson(json['address'] as String),
+      port: (json['port'] as num).toInt(),
+    );
+  }
+  
+  Map<String, dynamic> toJson() {
+    return <String, dynamic>{
+      'address': const InternetAddressConverter().toJson(address),
+      'port': port,
+    };
+  }
 }
+
 @JsonSerializable()
 class HandshakeSignal {
   final PeerInfo? publicIPv6;
@@ -41,9 +51,47 @@ class HandshakeSignal {
     required this.endHandshakeAvailability,
   });
 
-  factory HandshakeSignal.fromJson(Map<String, dynamic> json) => _$HandshakeSignalFromJson(json);
-  Map<String, dynamic> toJson() => _$HandshakeSignalToJson(this);
+  factory HandshakeSignal.fromJson(Map<String, dynamic> json) {
+    return HandshakeSignal(
+      publicIPv6: json['publicIPv6'] == null
+          ? null
+          : PeerInfo.fromJson(json['publicIPv6'] as Map<String, dynamic>),
+      publicIPv4: json['publicIPv4'] == null
+          ? null
+          : PeerInfo.fromJson(json['publicIPv4'] as Map<String, dynamic>),
+      localIPv4: json['localIPv4'] == null
+          ? null
+          : PeerInfo.fromJson(json['localIPv4'] as Map<String, dynamic>),
+      localIPv6: json['localIPv6'] == null
+          ? null
+          : PeerInfo.fromJson(json['localIPv6'] as Map<String, dynamic>),
+      publicKey: json['publicKey'] as String?,
+      expirationPublicKey: json['expirationPublicKey'] == null
+          ? null
+          : DateTime.parse(json['expirationPublicKey'] as String),
+      referenceTimestamp: DateTime.parse(json['referenceTimestamp'] as String),
+      maxHandshakeDurationSeconds: (json['maxHandshakeDurationSeconds'] as num).toInt(),
+      intervalBetweenHandshakesSeconds: (json['intervalBetweenHandshakesSeconds'] as num).toInt(),
+      endHandshakeAvailability: DateTime.parse(json['endHandshakeAvailability'] as String),
+    );
+  }
+
+  Map<String, dynamic> toJson() {
+    return <String, dynamic>{
+      'publicIPv6': publicIPv6?.toJson(),
+      'publicIPv4': publicIPv4?.toJson(),
+      'localIPv4': localIPv4?.toJson(),
+      'localIPv6': localIPv6?.toJson(),
+      'publicKey': publicKey,
+      'expirationPublicKey': expirationPublicKey?.toIso8601String(),
+      'referenceTimestamp': referenceTimestamp.toIso8601String(),
+      'maxHandshakeDurationSeconds': maxHandshakeDurationSeconds,
+      'intervalBetweenHandshakesSeconds': intervalBetweenHandshakesSeconds,
+      'endHandshakeAvailability': endHandshakeAvailability.toIso8601String(),
+    };
+  }
 }
+
 @JsonSerializable()
 class SecuritySignal {
   final String? publicKey;
@@ -51,20 +99,21 @@ class SecuritySignal {
 
   SecuritySignal({this.publicKey, this.expirationPublicKey});
 
-  factory SecuritySignal.fromJson(Map<String, dynamic> json) => _$SecuritySignalFromJson(json);
-  Map<String, dynamic> toJson() => _$SecuritySignalToJson(this);
-}
-typedef MessageCallback = void Function(List<int> msg, PeerInfo rinfo);
-// ...existing code...
+  factory SecuritySignal.fromJson(Map<String, dynamic> json) {
+    return SecuritySignal(
+      publicKey: json['publicKey'] as String?,
+      expirationPublicKey: json['expirationPublicKey'] == null
+          ? null
+          : DateTime.parse(json['expirationPublicKey'] as String),
+    );
+  }
 
-/// Peer information containing address and port
-/// Uses InternetAddress for type-safe, validated IP addresses
-/// 
-/// Example:
-/// ```dart
-/// final peer = (
-///   address: InternetAddress('192.168.1.1'),
-///   port: 8080,
-/// );
-/// ```
-// ...existing code...
+  Map<String, dynamic> toJson() {
+    return <String, dynamic>{
+      'publicKey': publicKey,
+      'expirationPublicKey': expirationPublicKey?.toIso8601String(),
+    };
+  }
+}
+
+typedef MessageCallback = void Function(List<int> msg, PeerInfo rinfo);

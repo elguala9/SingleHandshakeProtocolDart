@@ -1,8 +1,6 @@
 import 'package:json_annotation/json_annotation.dart';
 import 'dart:typed_data';
 
-part 'stun_types.g.dart';
-
 /// STUN response containing public IP information
 @JsonSerializable()
 class StunResponse {
@@ -31,8 +29,25 @@ class StunResponse {
     this.attrs,
   });
 
-  factory StunResponse.fromJson(Map<String, dynamic> json) => _$StunResponseFromJson(json);
-  Map<String, dynamic> toJson() => _$StunResponseToJson(this);
+  factory StunResponse.fromJson(Map<String, dynamic> json) {
+    return StunResponse(
+      publicIp: json['publicIp'] as String,
+      publicPort: (json['publicPort'] as num).toInt(),
+      transactionId: _listToUint8List(json['transactionId'] as List),
+      raw: _listToUint8List(json['raw'] as List),
+      attrs: json['attrs'] as Map<String, dynamic>?,
+    );
+  }
+
+  Map<String, dynamic> toJson() {
+    return <String, dynamic>{
+      'publicIp': publicIp,
+      'publicPort': publicPort,
+      'transactionId': _uint8ListToList(transactionId),
+      'raw': _uint8ListToList(raw),
+      'attrs': attrs,
+    };
+  }
 
   static Uint8List _listToUint8List(List<dynamic> list) {
     return Uint8List.fromList(list.cast<int>());
@@ -57,6 +72,17 @@ class LocalInfo {
     required this.localPort,
   });
 
-  factory LocalInfo.fromJson(Map<String, dynamic> json) => _$LocalInfoFromJson(json);
-  Map<String, dynamic> toJson() => _$LocalInfoToJson(this);
+  factory LocalInfo.fromJson(Map<String, dynamic> json) {
+    return LocalInfo(
+      localIp: json['localIp'] as String,
+      localPort: (json['localPort'] as num).toInt(),
+    );
+  }
+
+  Map<String, dynamic> toJson() {
+    return <String, dynamic>{
+      'localIp': localIp,
+      'localPort': localPort,
+    };
+  }
 }

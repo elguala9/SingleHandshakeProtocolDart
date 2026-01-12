@@ -2,8 +2,6 @@ import 'package:json_annotation/json_annotation.dart';
 import 'dart:io';
 import 'internet_address_converter.dart';
 
-part 'remote_info.g.dart';
-
 /// Remote information containing address and port
 @JsonSerializable()
 class RemoteInfo {
@@ -13,6 +11,17 @@ class RemoteInfo {
 
   RemoteInfo({required this.address, required this.port});
 
-  factory RemoteInfo.fromJson(Map<String, dynamic> json) => _$RemoteInfoFromJson(json);
-  Map<String, dynamic> toJson() => _$RemoteInfoToJson(this);
+  factory RemoteInfo.fromJson(Map<String, dynamic> json) {
+    return RemoteInfo(
+      address: const InternetAddressConverter().fromJson(json['address'] as String),
+      port: (json['port'] as num).toInt(),
+    );
+  }
+
+  Map<String, dynamic> toJson() {
+    return <String, dynamic>{
+      'address': const InternetAddressConverter().toJson(address),
+      'port': port,
+    };
+  }
 }
