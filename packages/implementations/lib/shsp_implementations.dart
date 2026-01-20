@@ -8,3 +8,6 @@ export 'src/utility/address_utility.dart';
 export 'src/utility/callback_map.dart';
 export 'src/utility/message_callback_map.dart';
 export 'src/utility/concat_utility.dart';
+export 'src/shsp_factories.dart';
+export 'src/factory_inputs.dart';
+export 'src/utility/utility_factories.dart';
