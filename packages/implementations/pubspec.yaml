@@ -1,6 +1,6 @@
 name: shsp_implementations
 description: Complete implementation of Single HandShake Protocol (SHSP) - provides UDP sockets, handshake logic, and utilities for peer-to-peer networking.
-version: 1.0.1
+version: 1.0.3
 homepage: https://github.com/lgualandi/SingleHandShakeProtocolDart
 repository: https://github.com/lgualandi/SingleHandShakeProtocolDart
 issue_tracker: https://github.com/lgualandi/SingleHandShakeProtocolDart/issues

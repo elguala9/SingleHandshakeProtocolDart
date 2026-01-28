@@ -15,11 +15,6 @@ class AddressUtility {
     return '${peerInfo.address.address}:${peerInfo.port}';
   }
 
-  /// Format a StunResponse into a string key
-  /// Format: "address:port"
-  static String formatAddressStun(StunResponse response) {
-    return '${response.publicIp}:${response.publicPort}';
-  }
 
   /// Parse a formatted address string back to components
   /// Returns a Map with 'address' and 'port' keys
