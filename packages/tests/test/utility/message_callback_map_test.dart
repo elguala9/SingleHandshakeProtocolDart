@@ -1,7 +1,7 @@
 import 'dart:io';
 import 'package:test/test.dart';
 import 'package:shsp_types/shsp_types.dart';
-import 'package:shsp_implementations/src/utility/message_callback_map.dart';
+import 'package:shsp_implementations/utility/message_callback_map.dart';
 
 void main() {
   group('MessageCallbackMap', () {

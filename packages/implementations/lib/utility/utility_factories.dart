@@ -4,7 +4,7 @@ import 'message_callback_map.dart';
 import 'callback_map.dart';
 import 'address_utility.dart';
 
-import '../factory_inputs.dart';
+import '../factory/factory_inputs.dart';
 
 
 class KeepAliveTimerFactory {

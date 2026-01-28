@@ -3,7 +3,7 @@ import 'dart:async';
 
 import 'package:shsp_types/shsp_types.dart';
 import 'package:shsp_interfaces/shsp_interfaces.dart';
-import 'utility/message_callback_map.dart';
+import '../utility/message_callback_map.dart';
 
 // Inputs for implementations factories
 
