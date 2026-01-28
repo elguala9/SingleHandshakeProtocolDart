@@ -23,6 +23,17 @@ class PeerInfo {
       'port': port,
     };
   }
+
+  @override
+  bool operator ==(Object other) =>
+      identical(this, other) ||
+      other is PeerInfo &&
+          runtimeType == other.runtimeType &&
+          address == other.address &&
+          port == other.port;
+
+  @override
+  int get hashCode => address.hashCode ^ port.hashCode;
 }
 
 @JsonSerializable()

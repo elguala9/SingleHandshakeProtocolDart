@@ -1,5 +1,5 @@
 import 'package:test/test.dart';
-import 'package:shsp_implementations/src/utility/callback_map.dart';
+import 'package:shsp_implementations/utility/callback_map.dart';
 
 void main() {
   group('CallbackMap', () {
