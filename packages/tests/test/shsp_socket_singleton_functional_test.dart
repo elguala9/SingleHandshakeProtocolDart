@@ -3,7 +3,6 @@ import 'package:shsp_implementations/shsp_base/shsp_socket.dart';
 import 'package:test/test.dart';
 import 'package:shsp_implementations/shsp_base/shsp_socket_singleton.dart';
 import 'package:shsp_implementations/utility/message_callback_map.dart';
-import 'package:shsp_types/shsp_types.dart';
 
 void main() {
   group('ShspSocketSingleton handshake e funzionalità', () {
@@ -29,7 +28,7 @@ void main() {
       );
       // Invia handshake dalla singleton alla socket normale
       singleton.sendTo([0x01], rawOther.address, rawOther.port);
-      await Future.delayed(Duration(milliseconds: 100));
+      await Future.delayed(const Duration(milliseconds: 100));
       expect(received, isTrue, reason: 'Il messaggio handshake deve essere ricevuto dalla socket normale');
     });
 
@@ -48,7 +47,7 @@ void main() {
         },
       );
       singleton.sendTo([0x00, 42], rawOther.address, rawOther.port);
-      await Future.delayed(Duration(milliseconds: 100));
+      await Future.delayed(const Duration(milliseconds: 100));
       expect(received, isTrue, reason: 'Il messaggio dati deve essere ricevuto dalla socket normale');
     });
   });
