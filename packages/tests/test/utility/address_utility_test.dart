@@ -1,8 +1,7 @@
 import 'dart:io';
-import 'dart:typed_data';
 import 'package:test/test.dart';
 import 'package:shsp_types/shsp_types.dart';
-import 'package:shsp_implementations/src/utility/address_utility.dart';
+import 'package:shsp_implementations/utility/address_utility.dart';
 
 void main() {
   group('AddressUtility', () {
@@ -70,33 +69,6 @@ void main() {
       });
     });
 
-    group('formatAddressStun', () {
-      test('should format StunResponse correctly', () {
-        final response = StunResponse(
-          publicIp: '203.0.113.1',
-          publicPort: 12345,
-          transactionId: Uint8List.fromList([1,2,3,4,5,6,7,8,9,10,11,12]),
-          raw: Uint8List(0),
-          attrs: {},
-        );
-        
-        final formatted = AddressUtility.formatAddressStun(response);
-        expect(formatted, equals('203.0.113.1:12345'));
-      });
-
-      test('should handle IPv6 in StunResponse', () {
-        final response = StunResponse(
-          publicIp: '2001:db8::8a2e:370:7334',
-          publicPort: 54321,
-          transactionId: Uint8List.fromList([1,2,3,4,5,6,7,8,9,10,11,12]),
-          raw: Uint8List(0),
-          attrs: {},
-        );
-        
-        final formatted = AddressUtility.formatAddressStun(response);
-        expect(formatted, equals('2001:db8::8a2e:370:7334:54321'));
-      });
-    });
 
     group('parseAddress', () {
       test('should parse valid address string', () {

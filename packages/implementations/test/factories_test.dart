@@ -1,9 +1,9 @@
 import 'dart:io';
 
 import 'package:test/test.dart';
-import 'package:shsp_implementations/src/shsp_factories.dart';
-import 'package:shsp_implementations/src/factory_inputs.dart';
-import 'package:shsp_implementations/src/utility/utility_factories.dart';
+import 'package:shsp_implementations/factory/shsp_factories.dart';
+import 'package:shsp_implementations/factory/factory_inputs.dart';
+import 'package:shsp_implementations/utility/utility_factories.dart';
 import 'package:shsp_types/shsp_types.dart';
 
 void main() {

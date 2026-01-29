@@ -2,7 +2,7 @@ import 'dart:convert';
 import 'dart:io';
 import 'package:test/test.dart';
 import 'package:shsp_interfaces/shsp_interfaces.dart';
-import 'package:shsp_implementations/src/shsp.dart';
+import 'package:shsp_implementations/shsp_base/shsp.dart';
 
 void main() {
   group('Shsp', () {
