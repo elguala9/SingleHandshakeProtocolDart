@@ -1,12 +1,17 @@
 // ...existing code...
 import 'package:shsp_interfaces/shsp_interfaces.dart';
 import 'package:shsp_types/shsp_types.dart';
+import '../utility/message_callback_map.dart';
 
 /// SHSP Peer implementation
 class ShspPeer implements IShspPeer {
+  /// Maximum UDP message size (65507 = 65535 - 8 bytes UDP header - 20 bytes IP header)
+  static const int maxMessageSize = 65507;
+
   final PeerInfo remotePeer;
   final IShspSocket socket;
   MessageCallback? _onMessageCallback;
+  bool _closed = false;
 
   ShspPeer(
       {required this.remotePeer,
@@ -52,7 +57,7 @@ class ShspPeer implements IShspPeer {
 
   /// Setup message callback in the socket
   void _setupMessageCallback() {
-    final key = '${remotePeer.address.address}:${remotePeer.port}';
+    final key = MessageCallbackMap.formatKey(remotePeer.address, remotePeer.port);
     socket.setMessageCallback(
       key,
       (msg, rinfo) {
@@ -68,7 +73,21 @@ class ShspPeer implements IShspPeer {
 
   @override
   void close() {
-    socket.close();
+    // Make close() idempotent - can be called multiple times safely
+    if (_closed) return;
+    _closed = true;
+
+    // Remove the message callback to prevent memory leaks
+    try {
+      final key = MessageCallbackMap.formatKey(remotePeer.address, remotePeer.port);
+      socket.removeMessageCallback(key);
+    } catch (e) {
+      // Log error but continue with close
+      // In production, you might want to use a proper logger here
+    }
+
+    // Note: We don't close the socket itself as it may be shared with other peers
+    // The socket should be closed by the owner (ShspSocket or ShspInstance)
   }
 
   @override
@@ -78,11 +97,53 @@ class ShspPeer implements IShspPeer {
 
   @override
   void sendMessage(List<int> message) {
+    // Check if peer is closed
+    if (_closed) {
+      throw ShspNetworkException(
+        'Cannot send message: peer is closed',
+        address: remotePeer.address.address,
+        port: remotePeer.port,
+      );
+    }
+
+    // Validate message is not empty
+    if (message.isEmpty) {
+      throw ShspValidationException(
+        'Message cannot be empty',
+        field: 'message',
+        value: message,
+      );
+    }
+
+    // Validate message size (UDP has a maximum packet size)
+    if (message.length > maxMessageSize) {
+      throw ShspValidationException(
+        'Message size ${message.length} exceeds maximum $maxMessageSize bytes',
+        field: 'message.length',
+        value: message.length,
+      );
+    }
+
     // Note: sendTo is synchronous in Dart (UDP is non-blocking)
-    int bytes = socket.sendTo(message, remotePeer.address, remotePeer.port);
-    if (bytes == 0)
-      throw Exception(
-          'Failed to send message to ${remotePeer.address.address}:${remotePeer.port}, the block is too big');
+    try {
+      int bytes = socket.sendTo(message, remotePeer.address, remotePeer.port);
+      if (bytes == 0) {
+        throw ShspNetworkException(
+          'Failed to send message - socket buffer may be full',
+          address: remotePeer.address.address,
+          port: remotePeer.port,
+        );
+      }
+    } on ShspNetworkException {
+      rethrow;
+    } catch (e) {
+      throw ShspNetworkException(
+        'Failed to send message',
+        address: remotePeer.address.address,
+        port: remotePeer.port,
+        cause: e,
+      );
+    }
   }
 
   @override

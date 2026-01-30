@@ -76,9 +76,15 @@ class ShspInstance extends ShspPeer implements IShspInstance {
     if (_isKeepAlive(msg)) return;
 
     // Pass to parent for user callback
-    if (_isData(msg)) super.onMessage(msg, info);
+    if (_isData(msg)) {
+      super.onMessage(msg, info);
+      return;
+    }
 
-    throw Exception('Message type not recognized by ShspInstance: $msg');
+    throw ShspProtocolException(
+      'Message type not recognized by ShspInstance',
+      messageType: msg.isNotEmpty ? '0x${msg[0].toRadixString(16)}' : 'empty',
+    );
   }
 
   bool _isData(List<int> msg) {
@@ -189,7 +195,14 @@ class ShspInstance extends ShspPeer implements IShspInstance {
     _keepAliveTimer = KeepAliveTimer.periodic(
       Duration(seconds: keepAliveSeconds),
       (_) {
-        keepAlive();
+        try {
+          keepAlive();
+        } catch (e, stackTrace) {
+          // Log error but don't crash the timer
+          // In production, use a proper logger
+          print('Error in keep-alive callback: $e\n$stackTrace');
+          // Optionally close the connection on repeated errors
+        }
       },
     );
   }
@@ -197,8 +210,16 @@ class ShspInstance extends ShspPeer implements IShspInstance {
   /// Stops periodic keep-alive sending.
   @override
   void stopKeepAlive() {
-    _keepAliveTimer?.cancel();
-    _keepAliveTimer = null;
+    if (_keepAliveTimer != null) {
+      try {
+        _keepAliveTimer!.cancel();
+      } catch (e) {
+        // Log error but continue cleanup
+        print('Error canceling keep-alive timer: $e');
+      } finally {
+        _keepAliveTimer = null;
+      }
+    }
   }
 
   /// Resets the keep-alive timer (postpones the next sending).
@@ -209,14 +230,22 @@ class ShspInstance extends ShspPeer implements IShspInstance {
   @override
   void sendMessage(List<int> message) {
     message.insert(0, dataPrefix);
-    if (open == false)
-      throw Exception('Cannot send message: connection is not open.');
+    if (open == false) {
+      throw ShspInstanceException(
+        'Cannot send message: connection is not open',
+        instanceId: '${remotePeer.address.address}:${remotePeer.port}',
+      );
+    }
     _sendMessage(message);
   }
 
   void _sendMessage(List<int> message) {
-    if (closing == true)
-      throw Exception('Cannot send message: connection is closing.');
+    if (closing == true) {
+      throw ShspInstanceException(
+        'Cannot send message: connection is closing',
+        instanceId: '${remotePeer.address.address}:${remotePeer.port}',
+      );
+    }
 
     _sendMessageNoCheck(message);
     // Reset keep-alive timer on any outgoing message
@@ -225,5 +254,15 @@ class ShspInstance extends ShspPeer implements IShspInstance {
 
   void _sendMessageNoCheck(List<int> message) {
     super.sendMessage(message);
+  }
+
+  /// Override close() to ensure keep-alive timer is stopped
+  @override
+  void close() {
+    // Stop keep-alive timer to prevent resource leak
+    stopKeepAlive();
+
+    // Call parent close() to remove callbacks
+    super.close();
   }
 }

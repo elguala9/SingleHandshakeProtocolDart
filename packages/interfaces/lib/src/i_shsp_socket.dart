@@ -23,6 +23,10 @@ abstract interface class IShspSocket {
   void setMessageCallback(
       String key, void Function(List<int> msg, RemoteInfo rinfo) cb);
 
+  /// Removes a message callback associated with a specific remote endpoint
+  /// Returns true if a callback was removed, false if no callback was found
+  bool removeMessageCallback(String key);
+
   /// Internal callback triggered when the socket starts listening
   void onListening();
 

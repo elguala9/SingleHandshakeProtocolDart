@@ -11,11 +11,11 @@ environment:
 
 dependencies:
   json_annotation: ^4.9.0
-  shsp_types: ^1.0.0
-  shsp_interfaces: ^1.0.1
+  shsp_types: ^1.0.5
+  shsp_interfaces: ^1.0.5
   meta: ^1.17.0
   clock_dart: ^1.0.0
-  stun: ^1.0.0
+  stun: ^1.0.1
 
 dev_dependencies:
   build_runner: ^2.10.2
