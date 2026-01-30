@@ -4,6 +4,7 @@ import 'dart:async';
 class KeepAliveTimer implements Timer {
   late Timer _internalTimer;
   bool _isRunning = false;
+  // ignore: unused_field
   DateTime? _lastActivity;
   int _tickCount = 0;
 
@@ -39,10 +40,13 @@ class KeepAliveTimer implements Timer {
     }
 
     if (Zone.current == Zone.root) {
-      instance._internalTimer = Zone.current.createPeriodicTimer(duration, wrappedCallback);
+      instance._internalTimer =
+          Zone.current.createPeriodicTimer(duration, wrappedCallback);
     } else {
-      var boundCallback = Zone.current.bindUnaryCallbackGuarded<Timer>(wrappedCallback);
-      instance._internalTimer = Zone.current.createPeriodicTimer(duration, boundCallback);
+      var boundCallback =
+          Zone.current.bindUnaryCallbackGuarded<Timer>(wrappedCallback);
+      instance._internalTimer =
+          Zone.current.createPeriodicTimer(duration, boundCallback);
     }
 
     instance._isRunning = true;

@@ -15,28 +15,23 @@ class ShspSocketInfoSingleton {
   /// Parameters:
   ///   - [configPath]: Optional path to config JSON file
   ///   - [defaultAddress]: Default address if no config file (default: '127.0.0.1')
-  ///   - [defaultPort]: Default port if no config file (default: 9000)
+  ///   - [defaultPort]: Default port if no config file (default: 6969)
   ///
   /// If a config file path is provided and exists, loads from file.
   /// Otherwise, uses default values.
-  factory ShspSocketInfoSingleton({
-    String? configPath,
-    String defaultAddress = '127.0.0.1',
-    int defaultPort = 9000,
-  }) {
+  factory ShspSocketInfoSingleton() {
     if (_instance != null) return _instance!;
 
-    String address = defaultAddress;
-    int port = defaultPort;
+    // Try to load from config file
+    const String configPath = 'shsp_socket_config.json';
+    const String defaultAddress = '127.0.0.1';
+    const int defaultPort = 6969;
 
-    // Try to load from config file if path provided
-    if (configPath != null) {
-      final config = _loadConfig(configPath);
-      if (config != null) {
-        address = config['address'] as String? ?? defaultAddress;
-        port = config['port'] as int? ?? defaultPort;
-      }
-    }
+    final config = _loadConfig(configPath);
+
+    // Use config values if available, otherwise use defaults
+    final address = config?['address'] as String? ?? defaultAddress;
+    final port = config?['port'] as int? ?? defaultPort;
 
     _instance = ShspSocketInfoSingleton._(address, port);
     return _instance!;

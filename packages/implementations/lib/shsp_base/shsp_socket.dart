@@ -88,7 +88,6 @@ class ShspSocket extends RawShspSocket implements IShspSocket {
       );
     }
 
-
     RawDatagramSocket? rawSocket = await RawDatagramSocket.bind(address, port);
     final callbacks = MessageCallbackMap();
     final socket = ShspSocket.internal(rawSocket, callbacks);
@@ -97,7 +96,6 @@ class ShspSocket extends RawShspSocket implements IShspSocket {
     socket._localPort = port;
 
     return socket;
-    
   }
 
   @override

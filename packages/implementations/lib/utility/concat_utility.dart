@@ -28,7 +28,7 @@ class ConcatUtility {
     return result;
   }
 
-  /// Concatenate multiple List<int> (generic int lists)
+  /// Concatenate multiple `List<int>` (generic int lists)
   static List<int> concatIntLists(List<List<int>> lists) {
     if (lists.isEmpty) return [];
 
