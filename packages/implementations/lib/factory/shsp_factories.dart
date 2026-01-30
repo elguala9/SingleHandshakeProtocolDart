@@ -41,11 +41,13 @@ class ShspPeerFactory {
   /// Create a `ShspPeer` from a `ShspPeerConfig` object.
   /// If `config.socket` is provided it will be used; otherwise `config.rawSocket` will be used to build a socket.
   static ShspPeer createFromConfig(ShspPeerInput config) {
-    if (config.socket != null)
+    if (config.socket != null) {
       return ShspPeer(remotePeer: config.remotePeer, socket: config.socket!);
-    if (config.rawSocket != null)
+    }
+    if (config.rawSocket != null) {
       return createFromRemoteInfo(
           remotePeer: config.remotePeer, rawSocket: config.rawSocket!);
+    }
     // Fallback: create a RawDatagramSocket bound to any IPv4 port
     // Note: binding is synchronous here; callers can prefer to pass a rawSocket.
     final raw =
@@ -85,16 +87,18 @@ class ShspInstanceFactory {
 
   /// Create a `ShspInstance` from a `ShspInstanceConfig` object.
   static ShspInstance createFromConfig(ShspInstanceInput config) {
-    if (config.socket != null)
+    if (config.socket != null) {
       return ShspInstance(
           remotePeer: config.remotePeer,
           socket: config.socket!,
           keepAliveSeconds: config.keepAliveSeconds);
-    if (config.rawSocket != null)
+    }
+    if (config.rawSocket != null) {
       return createFromSocket(
           remotePeer: config.remotePeer,
           rawSocket: config.rawSocket!,
           keepAliveSeconds: config.keepAliveSeconds);
+    }
     final raw =
         RawDatagramSocket.bind(InternetAddress.anyIPv4, 0) as RawDatagramSocket;
     final messageCallbacks = MessageCallbackMapFactory.create();

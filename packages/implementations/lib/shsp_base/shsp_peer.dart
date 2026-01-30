@@ -57,7 +57,8 @@ class ShspPeer implements IShspPeer {
 
   /// Setup message callback in the socket
   void _setupMessageCallback() {
-    final key = MessageCallbackMap.formatKey(remotePeer.address, remotePeer.port);
+    final key =
+        MessageCallbackMap.formatKey(remotePeer.address, remotePeer.port);
     socket.setMessageCallback(
       key,
       (msg, rinfo) {
@@ -79,7 +80,8 @@ class ShspPeer implements IShspPeer {
 
     // Remove the message callback to prevent memory leaks
     try {
-      final key = MessageCallbackMap.formatKey(remotePeer.address, remotePeer.port);
+      final key =
+          MessageCallbackMap.formatKey(remotePeer.address, remotePeer.port);
       socket.removeMessageCallback(key);
     } catch (e) {
       // Log error but continue with close

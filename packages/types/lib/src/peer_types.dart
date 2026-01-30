@@ -67,16 +67,20 @@ class HandshakeSignal {
     try {
       // Validate required fields exist
       if (!json.containsKey('referenceTimestamp')) {
-        throw FormatException('Missing required field: referenceTimestamp');
+        throw const FormatException(
+            'Missing required field: referenceTimestamp');
       }
       if (!json.containsKey('maxHandshakeDurationSeconds')) {
-        throw FormatException('Missing required field: maxHandshakeDurationSeconds');
+        throw const FormatException(
+            'Missing required field: maxHandshakeDurationSeconds');
       }
       if (!json.containsKey('intervalBetweenHandshakesSeconds')) {
-        throw FormatException('Missing required field: intervalBetweenHandshakesSeconds');
+        throw const FormatException(
+            'Missing required field: intervalBetweenHandshakesSeconds');
       }
       if (!json.containsKey('endHandshakeAvailability')) {
-        throw FormatException('Missing required field: endHandshakeAvailability');
+        throw const FormatException(
+            'Missing required field: endHandshakeAvailability');
       }
 
       return HandshakeSignal(
@@ -96,7 +100,8 @@ class HandshakeSignal {
         expirationPublicKey: json['expirationPublicKey'] == null
             ? null
             : DateTime.parse(json['expirationPublicKey'] as String),
-        referenceTimestamp: DateTime.parse(json['referenceTimestamp'] as String),
+        referenceTimestamp:
+            DateTime.parse(json['referenceTimestamp'] as String),
         maxHandshakeDurationSeconds:
             (json['maxHandshakeDurationSeconds'] as num).toInt(),
         intervalBetweenHandshakesSeconds:

@@ -22,12 +22,12 @@ Add this to your package's `pubspec.yaml`:
 
 ```yaml
 dependencies:
-  shsp_implementations: ^1.0.0
+  shsp_implementations: ^1.0.5
 ```
 
 This will automatically include the required dependencies:
-- `shsp_types`
-- `shsp_interfaces`
+- `shsp_types` ^1.0.5
+- `shsp_interfaces` ^1.0.5
 
 ## Quick Start
 
@@ -307,6 +307,190 @@ void main() async {
   print('✓ All objects closed');
 }
 ```
+
+## Working with Singletons
+
+The package provides singleton implementations for managing global SHSP resources. Singletons ensure you have only one instance of critical components throughout your application.
+
+### 1. ShspSocketInfoSingleton
+
+Manages socket configuration (address and port) globally. Loads configuration from `shsp_socket_config.json` file or uses defaults (127.0.0.1:6969).
+
+```dart
+import 'package:shsp_implementations/shsp_implementations.dart';
+
+void main() {
+  // Get singleton instance (loads from shsp_socket_config.json if exists)
+  final info = ShspSocketInfoSingleton();
+  print('Address: ${info.address}, Port: ${info.port}');
+
+  // Subsequent calls return the same instance
+  final sameInfo = ShspSocketInfoSingleton();
+  assert(identical(info, sameInfo));
+
+  // Clean up when needed
+  ShspSocketInfoSingleton.destroy();
+}
+```
+
+**Configuration File (`shsp_socket_config.json`):**
+
+The singleton automatically looks for a file named `shsp_socket_config.json` in the current directory. If the file exists, it loads the configuration from there. If not, it uses default values.
+
+```json
+{
+  "address": "192.168.1.100",
+  "port": 8080
+}
+```
+
+**Default values (if file not found or fields missing):**
+- Address: `127.0.0.1`
+- Port: `6969`
+
+### 2. ShspSocketSingleton
+
+Global socket instance with thread-safe initialization. Prevents multiple socket bindings.
+
+```dart
+import 'package:shsp_implementations/shsp_implementations.dart';
+
+void main() async {
+  // Create singleton socket (thread-safe)
+  final socket = await ShspSocketSingleton.bind();
+
+  // Subsequent calls return the same instance
+  final socket2 = await ShspSocketSingleton.bind();
+  assert(identical(socket, socket2));
+
+  // Access existing instance without async
+  final existing = ShspSocketSingleton.instance;
+
+  // Set up message handling
+  socket.onMessage = (data, remoteInfo) {
+    print('Received: $data from $remoteInfo');
+  };
+
+  // Clean up
+  ShspSocketSingleton.destroy();
+}
+```
+
+### 3. MessageCallbackMapSingleton
+
+Global callback registry for message handling across your application.
+
+```dart
+import 'package:shsp_implementations/shsp_implementations.dart';
+
+void main() {
+  // Get singleton instance
+  final callbacks = MessageCallbackMapSingleton();
+
+  // Register callbacks for different message types
+  callbacks.addCallback((data, remoteInfo) {
+    print('Handler 1: $data');
+  });
+
+  callbacks.addCallback((data, remoteInfo) {
+    print('Handler 2: $data');
+  });
+
+  // All parts of your app use the same callback map
+  final sameCallbacks = MessageCallbackMapSingleton();
+  assert(identical(callbacks, sameCallbacks));
+
+  // Clean up
+  MessageCallbackMapSingleton.destroy();
+}
+```
+
+### 4. ShspInstanceHandlerSingleton
+
+Global handler for managing SHSP protocol instances.
+
+```dart
+import 'package:shsp_implementations/shsp_implementations.dart';
+
+void main() {
+  // Get singleton handler
+  final handler = ShspInstanceHandlerSingleton();
+
+  // Use it to manage instances across your application
+  // (manages peer connections and protocol instances)
+
+  // Subsequent calls return the same instance
+  final sameHandler = ShspInstanceHandlerSingleton();
+  assert(identical(handler, sameHandler));
+
+  // Clean up
+  ShspInstanceHandlerSingleton.destroy();
+}
+```
+
+### Complete Singleton Usage Example
+
+```dart
+import 'package:shsp_implementations/shsp_implementations.dart';
+
+void main() async {
+  // NOTE: All singleton constructors have NO parameters
+  // Configuration is loaded from shsp_socket_config.json if it exists
+
+  // Step 1: Get socket info singleton (no parameters)
+  final info = ShspSocketInfoSingleton();
+  print('✓ Socket info: ${info.address}:${info.port}');
+
+  // Step 2: Set up global callbacks (no parameters)
+  final callbacks = MessageCallbackMapSingleton();
+  callbacks.addCallback((data, remoteInfo) {
+    print('Global handler received: $data');
+  });
+  print('✓ Global callbacks registered');
+
+  // Step 3: Create singleton socket (no parameters)
+  final socket = await ShspSocketSingleton.bind();
+  print('✓ Singleton socket created');
+
+  // Step 4: Get instance handler (no parameters)
+  final handler = ShspInstanceHandlerSingleton();
+  print('✓ Instance handler ready');
+
+  // Now all parts of your application share these instances
+  // Calling the constructors again returns the same instances
+
+  // Clean up all singletons when done
+  ShspSocketSingleton.destroy();
+  ShspSocketInfoSingleton.destroy();
+  MessageCallbackMapSingleton.destroy();
+  ShspInstanceHandlerSingleton.destroy();
+  print('✓ All singletons cleaned up');
+}
+```
+
+### When to Use Singletons
+
+Use singletons when you need:
+- **Global socket configuration** across multiple modules
+- **Single socket binding** to prevent port conflicts
+- **Shared callback registry** for centralized message handling
+- **Unified instance management** across your application
+
+### Important Notes
+
+- **Empty constructors**: All singleton constructors have no parameters - this ensures proper singleton behavior
+  - `ShspSocketInfoSingleton()` - no parameters, loads from `shsp_socket_config.json` or uses defaults
+  - `MessageCallbackMapSingleton()` - no parameters
+  - `ShspInstanceHandlerSingleton()` - no parameters
+  - `ShspSocketSingleton.bind()` - no parameters, automatically uses the other singletons
+
+- **Configuration**: To customize socket address/port, create a `shsp_socket_config.json` file before calling any singleton
+
+- **Thread-safe**: All singletons are thread-safe, especially `ShspSocketSingleton.bind()` which uses a Completer to prevent race conditions
+
+- **Testing**: Call `.destroy()` on each singleton to reset state during testing or reconfiguration
+
+- **Use case**: Singletons are ideal for applications with a single SHSP connection. For multiple connections or dynamic configurations, use the non-singleton classes instead
 
 ## Related Packages
 

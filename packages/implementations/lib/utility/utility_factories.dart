@@ -7,10 +7,12 @@ import '../factory/factory_inputs.dart';
 
 class KeepAliveTimerFactory {
   static KeepAliveTimer createFromInput(KeepAliveTimerInput input) {
-    if (input.existingTimer != null)
+    if (input.existingTimer != null) {
       return KeepAliveTimer.from(input.existingTimer!);
-    if (input.duration != null && input.callback != null)
+    }
+    if (input.duration != null && input.callback != null) {
       return KeepAliveTimer.periodic(input.duration!, input.callback!);
+    }
     throw ArgumentError(
         'KeepAliveTimerInput must include either existingTimer or (duration and callback)');
   }

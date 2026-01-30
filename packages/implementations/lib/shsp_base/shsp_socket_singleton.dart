@@ -15,9 +15,7 @@ class ShspSocketSingleton extends ShspSocket {
 
   /// Async factory to create or return the singleton instance
   /// Thread-safe: uses Completer to prevent race conditions
-  static Future<ShspSocketSingleton> bind(
-      {ShspSocketInfoSingleton? info,
-      MessageCallbackMapSingleton? callbacks}) async {
+  static Future<ShspSocketSingleton> bind() async {
     // If already initialized, return existing instance
     if (_instance != null) return _instance!;
 
@@ -29,18 +27,16 @@ class ShspSocketSingleton extends ShspSocket {
     // Start initialization
     _initializationCompleter = Completer<ShspSocketSingleton>();
 
-    try {
-      info ??= ShspSocketInfoSingleton();
-      callbacks ??= MessageCallbackMapSingleton();
-      final rawSocket = await RawDatagramSocket.bind(info.address, info.port);
-      _instance = ShspSocketSingleton._internal(rawSocket, callbacks);
-      _initializationCompleter!.complete(_instance!);
-      return _instance!;
-    } catch (e) {
-      _initializationCompleter!.completeError(e);
-      _initializationCompleter = null;
-      rethrow;
-    }
+
+    ShspSocketInfoSingleton info = ShspSocketInfoSingleton();
+    MessageCallbackMapSingleton callbacks = MessageCallbackMapSingleton();
+    final rawSocket = await RawDatagramSocket.bind(info.address, info.port);
+    _instance = ShspSocketSingleton._internal(rawSocket, callbacks);
+    _initializationCompleter!.complete(_instance!);
+    return _instance!;
+
+
+ 
   }
 
   /// Returns the instance if already created, otherwise null

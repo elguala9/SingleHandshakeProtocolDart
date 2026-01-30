@@ -70,8 +70,8 @@ class RawShspSocket implements RawDatagramSocket {
   // ignore: deprecated_member_use
   NetworkInterface? get multicastInterface => socket.multicastInterface;
   @override
-  // ignore: deprecated_member_use
   set multicastInterface(NetworkInterface? value) =>
+      // ignore: deprecated_member_use
       socket.multicastInterface = value;
 
   // Stream interface

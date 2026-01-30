@@ -14,39 +14,28 @@ void main() {
     });
 
     test('bind returns a singleton instance', () async {
-      final info = ShspSocketInfoSingleton();
-      final callbacks = MessageCallbackMapSingleton();
-      final s1 =
-          await ShspSocketSingleton.bind(info: info, callbacks: callbacks);
-      final s2 =
-          await ShspSocketSingleton.bind(info: info, callbacks: callbacks);
+      final s1 = await ShspSocketSingleton.bind();
+      final s2 = await ShspSocketSingleton.bind();
       expect(s1, same(s2),
           reason: 'bind deve restituire sempre la stessa istanza');
     });
 
     test('instance getter returns the singleton', () async {
-      final info = ShspSocketInfoSingleton();
-      final callbacks = MessageCallbackMapSingleton();
-      await ShspSocketSingleton.bind(info: info, callbacks: callbacks);
+      await ShspSocketSingleton.bind();
       final instance = ShspSocketSingleton.instance;
       expect(instance, isNotNull,
           reason: 'instance deve restituire la singleton creata');
     });
 
     test('destroy resets the singleton', () async {
-      final info = ShspSocketInfoSingleton();
-      final callbacks = MessageCallbackMapSingleton();
-      await ShspSocketSingleton.bind(info: info, callbacks: callbacks);
+      await ShspSocketSingleton.bind();
       ShspSocketSingleton.destroy();
       expect(ShspSocketSingleton.instance, isNull,
           reason: 'destroy deve azzerare la singleton');
     });
 
     test('can use as ShspSocket', () async {
-      final info = ShspSocketInfoSingleton();
-      final callbacks = MessageCallbackMapSingleton();
-      final singleton =
-          await ShspSocketSingleton.bind(info: info, callbacks: callbacks);
+      final singleton = await ShspSocketSingleton.bind();
       expect(singleton, isA<ShspSocket>(),
           reason: 'ShspSocketSingleton deve essere usabile come ShspSocket');
     });
