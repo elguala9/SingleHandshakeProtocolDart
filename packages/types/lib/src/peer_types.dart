@@ -64,31 +64,53 @@ class HandshakeSignal {
   });
 
   factory HandshakeSignal.fromJson(Map<String, dynamic> json) {
-    return HandshakeSignal(
-      publicIPv6: json['publicIPv6'] == null
-          ? null
-          : PeerInfo.fromJson(json['publicIPv6'] as Map<String, dynamic>),
-      publicIPv4: json['publicIPv4'] == null
-          ? null
-          : PeerInfo.fromJson(json['publicIPv4'] as Map<String, dynamic>),
-      localIPv4: json['localIPv4'] == null
-          ? null
-          : PeerInfo.fromJson(json['localIPv4'] as Map<String, dynamic>),
-      localIPv6: json['localIPv6'] == null
-          ? null
-          : PeerInfo.fromJson(json['localIPv6'] as Map<String, dynamic>),
-      publicKey: json['publicKey'] as String?,
-      expirationPublicKey: json['expirationPublicKey'] == null
-          ? null
-          : DateTime.parse(json['expirationPublicKey'] as String),
-      referenceTimestamp: DateTime.parse(json['referenceTimestamp'] as String),
-      maxHandshakeDurationSeconds:
-          (json['maxHandshakeDurationSeconds'] as num).toInt(),
-      intervalBetweenHandshakesSeconds:
-          (json['intervalBetweenHandshakesSeconds'] as num).toInt(),
-      endHandshakeAvailability:
-          DateTime.parse(json['endHandshakeAvailability'] as String),
-    );
+    try {
+      // Validate required fields exist
+      if (!json.containsKey('referenceTimestamp')) {
+        throw FormatException('Missing required field: referenceTimestamp');
+      }
+      if (!json.containsKey('maxHandshakeDurationSeconds')) {
+        throw FormatException('Missing required field: maxHandshakeDurationSeconds');
+      }
+      if (!json.containsKey('intervalBetweenHandshakesSeconds')) {
+        throw FormatException('Missing required field: intervalBetweenHandshakesSeconds');
+      }
+      if (!json.containsKey('endHandshakeAvailability')) {
+        throw FormatException('Missing required field: endHandshakeAvailability');
+      }
+
+      return HandshakeSignal(
+        publicIPv6: json['publicIPv6'] == null
+            ? null
+            : PeerInfo.fromJson(json['publicIPv6'] as Map<String, dynamic>),
+        publicIPv4: json['publicIPv4'] == null
+            ? null
+            : PeerInfo.fromJson(json['publicIPv4'] as Map<String, dynamic>),
+        localIPv4: json['localIPv4'] == null
+            ? null
+            : PeerInfo.fromJson(json['localIPv4'] as Map<String, dynamic>),
+        localIPv6: json['localIPv6'] == null
+            ? null
+            : PeerInfo.fromJson(json['localIPv6'] as Map<String, dynamic>),
+        publicKey: json['publicKey'] as String?,
+        expirationPublicKey: json['expirationPublicKey'] == null
+            ? null
+            : DateTime.parse(json['expirationPublicKey'] as String),
+        referenceTimestamp: DateTime.parse(json['referenceTimestamp'] as String),
+        maxHandshakeDurationSeconds:
+            (json['maxHandshakeDurationSeconds'] as num).toInt(),
+        intervalBetweenHandshakesSeconds:
+            (json['intervalBetweenHandshakesSeconds'] as num).toInt(),
+        endHandshakeAvailability:
+            DateTime.parse(json['endHandshakeAvailability'] as String),
+      );
+    } on FormatException catch (e) {
+      throw FormatException('Invalid HandshakeSignal JSON: ${e.message}');
+    } on TypeError catch (e) {
+      throw FormatException('Invalid HandshakeSignal JSON type: $e');
+    } catch (e) {
+      throw FormatException('Failed to parse HandshakeSignal JSON: $e');
+    }
   }
 
   Map<String, dynamic> toJson() {

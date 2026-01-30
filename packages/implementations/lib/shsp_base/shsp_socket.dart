@@ -59,22 +59,40 @@ class ShspSocket extends RawShspSocket implements IShspSocket {
   /// Create and bind a new SHSP socket to a specific address and port
   ///
   /// This factory method:
+  /// - Validates the port number (must be between 0 and 65535)
   /// - Binds the socket to the specified local address and port
   /// - Initializes the message callback map
   /// - Sets up all event listeners (read, close, error, etc.)
   ///
   /// Parameters:
   ///   - [address]: The local InternetAddress to bind to (e.g., InternetAddress.anyIPv4)
-  ///   - [port]: The local port number to listen on
+  ///   - [port]: The local port number to listen on (0-65535)
   ///
   /// Returns: A Future that resolves to a new ShspSocket instance
+  ///
+  /// Throws:
+  ///   - [ShspValidationException] if port is invalid
+  ///   - [ShspNetworkException] if binding fails
   ///
   /// Example:
   /// ```dart
   /// final socket = await ShspSocket.bind(InternetAddress.anyIPv4, 8000);
   /// ```
   static Future<ShspSocket> bind(InternetAddress address, int port) async {
-    final rawSocket = await RawDatagramSocket.bind(address, port);
+    // Validate port range
+    if (port < 0 || port > 65535) {
+      throw ShspValidationException(
+        'Port must be between 0 and 65535',
+        field: 'port',
+        value: port,
+      );
+    }
+
+
+    RawDatagramSocket?  rawSocket = await RawDatagramSocket.bind(address, port).catchError((e) {
+      rawSocket?.close();
+      rethrow;
+    });
     final callbacks = MessageCallbackMap();
     final socket = ShspSocket.internal(rawSocket, callbacks);
 
@@ -82,12 +100,22 @@ class ShspSocket extends RawShspSocket implements IShspSocket {
     socket._localPort = port;
 
     return socket;
+    
   }
 
   @override
   void setMessageCallback(
       String key, void Function(List<int> msg, RemoteInfo rinfo) cb) {
     _messageCallbacks.add(key, cb);
+  }
+
+  @override
+  bool removeMessageCallback(String key) {
+    if (_messageCallbacks.containsKey(key)) {
+      _messageCallbacks.remove(key);
+      return true;
+    }
+    return false;
   }
 
   @override
