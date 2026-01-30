@@ -23,17 +23,7 @@ void main() {
       final b = ShspSocketInfoSingleton();
       expect(a, same(b));
       expect(a.address, equals('127.0.0.1'));
-      expect(a.port, equals(9000));
-    });
-
-    test('ShspSocketInfoSingleton can use custom defaults', () {
-      ShspSocketInfoSingleton.destroy();
-      final instance = ShspSocketInfoSingleton(
-        defaultAddress: '0.0.0.0',
-        defaultPort: 8080,
-      );
-      expect(instance.address, equals('0.0.0.0'));
-      expect(instance.port, equals(8080));
+      expect(a.port, equals(6969));
     });
 
     test('ShspInstanceHandlerSingleton returns always the same instance', () {

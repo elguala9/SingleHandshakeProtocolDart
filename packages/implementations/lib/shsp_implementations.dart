@@ -1,5 +1,3 @@
-library shsp_implementations;
-
 export 'shsp_instance/shsp_instance_handler_singleton.dart';
 export 'utility/message_callback_map_singleton.dart';
 export 'utility/shsp_socket_info_singleton.dart';

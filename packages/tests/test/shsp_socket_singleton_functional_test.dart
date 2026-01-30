@@ -14,11 +14,9 @@ void main() {
     });
 
     test('può inviare e ricevere messaggi handshake', () async {
-      // Usa i singleton
+      // Usa i singleton (senza parametri)
+      final singleton = await ShspSocketSingleton.bind();
       final info = ShspSocketInfoSingleton();
-      final callbacksSingleton = MessageCallbackMapSingleton();
-      final singleton = await ShspSocketSingleton.bind(
-          info: info, callbacks: callbacksSingleton);
       final rawOther =
           await RawDatagramSocket.bind(InternetAddress.loopbackIPv4, 0);
       final callbacksOther = MessageCallbackMapSingleton();
@@ -40,10 +38,8 @@ void main() {
     });
 
     test('può inviare e ricevere messaggi dati', () async {
+      final singleton = await ShspSocketSingleton.bind();
       final info = ShspSocketInfoSingleton();
-      final callbacksSingleton = MessageCallbackMapSingleton();
-      final singleton = await ShspSocketSingleton.bind(
-          info: info, callbacks: callbacksSingleton);
       final rawOther =
           await RawDatagramSocket.bind(InternetAddress.loopbackIPv4, 0);
       final callbacksOther = MessageCallbackMapSingleton();
