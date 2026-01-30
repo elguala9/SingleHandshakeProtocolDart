@@ -15,7 +15,6 @@ class AddressUtility {
     return '${peerInfo.address.address}:${peerInfo.port}';
   }
 
-
   /// Parse a formatted address string back to components
   /// Returns a Map with 'address' and 'port' keys
   static Map<String, dynamic>? parseAddress(String formatted) {
@@ -48,17 +47,17 @@ class AddressUtility {
   /// Returns the first non-loopback IPv4 address found
   static Future<String> getLocalIp() async {
     final interfaces = await NetworkInterface.list();
-    
+
     for (final interface in interfaces) {
       for (final addr in interface.addresses) {
-        if (addr.type == InternetAddressType.IPv4 && 
-            !addr.isLoopback && 
+        if (addr.type == InternetAddressType.IPv4 &&
+            !addr.isLoopback &&
             _isPrivateIp(addr.address)) {
           return addr.address;
         }
       }
     }
-    
+
     throw Exception('Unable to determine local IP address');
   }
 

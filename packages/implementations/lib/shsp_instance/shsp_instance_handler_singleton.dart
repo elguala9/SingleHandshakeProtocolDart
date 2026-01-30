@@ -1,8 +1,5 @@
 import 'package:shsp_implementations/shsp_instance/shsp_instance_handler.dart';
 
-
-
-
 class ShspInstanceHandlerSingleton extends ShspInstanceHandler {
   static ShspInstanceHandlerSingleton? _instance;
 
@@ -13,7 +10,7 @@ class ShspInstanceHandlerSingleton extends ShspInstanceHandler {
 
   ShspInstanceHandlerSingleton._internal() : super();
 
-  /// Distrugge il singleton
+  /// Destroys the singleton instance
   static void destroy() {
     _instance = null;
   }

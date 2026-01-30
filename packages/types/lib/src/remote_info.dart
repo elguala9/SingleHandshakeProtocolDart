@@ -13,7 +13,8 @@ class RemoteInfo {
 
   factory RemoteInfo.fromJson(Map<String, dynamic> json) {
     return RemoteInfo(
-      address: const InternetAddressConverter().fromJson(json['address'] as String),
+      address:
+          const InternetAddressConverter().fromJson(json['address'] as String),
       port: (json['port'] as num).toInt(),
     );
   }

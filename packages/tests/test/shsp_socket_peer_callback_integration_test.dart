@@ -37,7 +37,6 @@ void main() {
     const message3 = 'msg_from_peer_3';
     const message4 = 'msg_from_peer_4';
 
-
     setUp(() async {
       final address = InternetAddress.loopbackIPv4;
       principalSocket = await ShspSocket.bind(address, principalPort);
@@ -58,57 +57,63 @@ void main() {
       peer2 = ShspPeer(remotePeer: principalInfo, socket: peerSocket2);
       peer3 = ShspPeer(remotePeer: principalInfo, socket: peerSocket3);
       peer4 = ShspPeer(remotePeer: principalInfo, socket: peerSocket4);
-      
-
     });
 
-  
-
-    test('Secondary peers send messages to both principals, both receive correctly', () async {
+    test(
+        'Secondary peers send messages to both principals, both receive correctly',
+        () async {
       final completer1 = Completer<void>();
       final completer2 = Completer<void>();
       final completer3 = Completer<void>();
       final completer4 = Completer<void>();
 
       principalPeer1.setMessageCallback((msg, info) {
-          print('principalPeer1 callback: msg=${String.fromCharCodes(msg)} from port=${info.port}');
-          if (message1 == String.fromCharCodes(msg)) {
-            expect(info.address, principalInfo.address);
-            expect(info.port, peerPort1);
-            if (!completer1.isCompleted) completer1.complete();
-          } else {
-            fail('PrincipalPeer1 received unexpected message: ${String.fromCharCodes(msg)}');
-          }
+        print(
+            'principalPeer1 callback: msg=${String.fromCharCodes(msg)} from port=${info.port}');
+        if (message1 == String.fromCharCodes(msg)) {
+          expect(info.address, principalInfo.address);
+          expect(info.port, peerPort1);
+          if (!completer1.isCompleted) completer1.complete();
+        } else {
+          fail(
+              'PrincipalPeer1 received unexpected message: ${String.fromCharCodes(msg)}');
+        }
       });
       principalPeer2.setMessageCallback((msg, info) {
-          print('principalPeer2 callback: msg=${String.fromCharCodes(msg)} from port=${info.port}');
-          if (message2 == String.fromCharCodes(msg)) {
-            expect(info.address, principalInfo.address);
-            expect(info.port, peerPort2);
-            if (!completer2.isCompleted) completer2.complete();
-          } else {
-            fail('PrincipalPeer2 received unexpected message: ${String.fromCharCodes(msg)}');
-          }
+        print(
+            'principalPeer2 callback: msg=${String.fromCharCodes(msg)} from port=${info.port}');
+        if (message2 == String.fromCharCodes(msg)) {
+          expect(info.address, principalInfo.address);
+          expect(info.port, peerPort2);
+          if (!completer2.isCompleted) completer2.complete();
+        } else {
+          fail(
+              'PrincipalPeer2 received unexpected message: ${String.fromCharCodes(msg)}');
+        }
       });
       principalPeer3.setMessageCallback((msg, info) {
-          print('principalPeer3 callback: msg=${String.fromCharCodes(msg)} from port=${info.port}');
-          if (message3 == String.fromCharCodes(msg)) {
-            expect(info.address, principalInfo.address);
-            expect(info.port, peerPort3);
-            if (!completer3.isCompleted) completer3.complete();
-          } else {
-            fail('PrincipalPeer3 received unexpected message: ${String.fromCharCodes(msg)}');
-          }
+        print(
+            'principalPeer3 callback: msg=${String.fromCharCodes(msg)} from port=${info.port}');
+        if (message3 == String.fromCharCodes(msg)) {
+          expect(info.address, principalInfo.address);
+          expect(info.port, peerPort3);
+          if (!completer3.isCompleted) completer3.complete();
+        } else {
+          fail(
+              'PrincipalPeer3 received unexpected message: ${String.fromCharCodes(msg)}');
+        }
       });
       principalPeer4.setMessageCallback((msg, info) {
-          print('principalPeer4 callback: msg=${String.fromCharCodes(msg)} from port=${info.port}');
-          if (message4 == String.fromCharCodes(msg)) {
-            expect(info.address, principalInfo.address);
-            expect(info.port, peerPort4);
-            if (!completer4.isCompleted) completer4.complete();
-          } else {
-            fail('PrincipalPeer4 received unexpected message: ${String.fromCharCodes(msg)}');
-          }
+        print(
+            'principalPeer4 callback: msg=${String.fromCharCodes(msg)} from port=${info.port}');
+        if (message4 == String.fromCharCodes(msg)) {
+          expect(info.address, principalInfo.address);
+          expect(info.port, peerPort4);
+          if (!completer4.isCompleted) completer4.complete();
+        } else {
+          fail(
+              'PrincipalPeer4 received unexpected message: ${String.fromCharCodes(msg)}');
+        }
       });
 
       // Invio dei messaggi dai peer secondari
@@ -119,17 +124,20 @@ void main() {
 
       // Attendi che tutte le callback siano chiamate (o timeout)
       await Future.wait([
-        completer1.future.timeout(const Duration(seconds: 5), onTimeout: () => fail('Timeout attesa callback 1')),
-        completer2.future.timeout(const Duration(seconds: 5), onTimeout: () => fail('Timeout attesa callback 2')),
-        completer3.future.timeout(const Duration(seconds: 5), onTimeout: () => fail('Timeout attesa callback 3')),
-        completer4.future.timeout(const Duration(seconds: 5), onTimeout: () => fail('Timeout attesa callback 4')),
+        completer1.future.timeout(const Duration(seconds: 5),
+            onTimeout: () => fail('Timeout attesa callback 1')),
+        completer2.future.timeout(const Duration(seconds: 5),
+            onTimeout: () => fail('Timeout attesa callback 2')),
+        completer3.future.timeout(const Duration(seconds: 5),
+            onTimeout: () => fail('Timeout attesa callback 3')),
+        completer4.future.timeout(const Duration(seconds: 5),
+            onTimeout: () => fail('Timeout attesa callback 4')),
       ]);
 
       peer1.sendMessage(message1.codeUnits);
       peer2.sendMessage(message2.codeUnits);
       peer3.sendMessage(message3.codeUnits);
       peer4.sendMessage(message4.codeUnits);
-      
     });
   });
 }
