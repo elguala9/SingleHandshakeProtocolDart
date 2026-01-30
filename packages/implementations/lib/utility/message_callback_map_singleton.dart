@@ -1,18 +1,17 @@
 import 'package:shsp_implementations/utility/message_callback_map.dart';
 
-
 class MessageCallbackMapSingleton extends MessageCallbackMap {
-	static MessageCallbackMapSingleton? _instance;
+  static MessageCallbackMapSingleton? _instance;
 
-	factory MessageCallbackMapSingleton() {
-		_instance ??= MessageCallbackMapSingleton._internal();
-		return _instance!;
-	}
+  factory MessageCallbackMapSingleton() {
+    _instance ??= MessageCallbackMapSingleton._internal();
+    return _instance!;
+  }
 
-	MessageCallbackMapSingleton._internal() : super();
+  MessageCallbackMapSingleton._internal() : super();
 
-	/// Distrugge il singleton (opzionale)
-	static void destroy() {
-		_instance = null;
-	}
+  /// Destroys the singleton instance
+  static void destroy() {
+    _instance = null;
+  }
 }

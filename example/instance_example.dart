@@ -8,7 +8,9 @@ void main() async {
 
   // Create and bind a socket
   final socket = await ShspSocket.bind(InternetAddress.loopbackIPv4, 8080);
-  print('Socket bound on ${socket.localAddress?.address}:${socket.localPort}\n');
+  print(
+    'Socket bound on ${socket.localAddress?.address}:${socket.localPort}\n',
+  );
 
   // Create a remote peer info
   final remotePeer = PeerInfo(
@@ -17,10 +19,7 @@ void main() async {
   );
 
   // Create an instance for the remote peer
-  final instance = ShspInstance(
-    remotePeer: remotePeer,
-    socket: socket,
-  );
+  final instance = ShspInstance(remotePeer: remotePeer, socket: socket);
 
   // Register message callback
   instance.setMessageCallback((msg, info) {
@@ -34,7 +33,9 @@ void main() async {
   // Handshake message (0x01)
   final handshakeMsg = [0x01];
   instance.onMessage(handshakeMsg, remotePeer);
-  print('After handshake: open=${instance.open}, handshake=${instance.handshake}\n');
+  print(
+    'After handshake: open=${instance.open}, handshake=${instance.handshake}\n',
+  );
 
   // User message (should trigger callback)
   final userMsg = 'Hello World!'.codeUnits.toList();
@@ -48,7 +49,9 @@ void main() async {
   // Closing message (0x02)
   final closingMsg = [0x02];
   instance.onMessage(closingMsg, remotePeer);
-  print('After closing signal: closing=${instance.closing}, open=${instance.open}\n');
+  print(
+    'After closing signal: closing=${instance.closing}, open=${instance.open}\n',
+  );
 
   // Closed message (0x03)
   final closedMsg = [0x03];

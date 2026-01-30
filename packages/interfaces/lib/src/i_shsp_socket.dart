@@ -20,7 +20,8 @@ abstract interface class IShspSocket {
   void setConnectCallback(void Function() cb);
 
   /// Associates a callback with incoming messages from a specific remote endpoint
-  void setMessageCallback(String key, void Function(List<int> msg, RemoteInfo rinfo) cb);
+  void setMessageCallback(
+      String key, void Function(List<int> msg, RemoteInfo rinfo) cb);
 
   /// Internal callback triggered when the socket starts listening
   void onListening();
@@ -43,5 +44,4 @@ abstract interface class IShspSocket {
 
   /// Close the socket
   void close();
-
 }

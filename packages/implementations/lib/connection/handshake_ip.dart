@@ -38,13 +38,17 @@ class HandshakeIP implements IHandshakeIP {
     final public = await handler.performStunRequest();
     if (socket.address.type == InternetAddressType.IPv4) {
       return HandshakeIP._iPv4(
-        PeerInfo(address: InternetAddress(public.publicIp), port: public.publicPort),
-        PeerInfo(address: InternetAddress(local.localIp), port: local.localPort),
+        PeerInfo(
+            address: InternetAddress(public.publicIp), port: public.publicPort),
+        PeerInfo(
+            address: InternetAddress(local.localIp), port: local.localPort),
       );
     } else {
       return HandshakeIP._iPv6(
-        PeerInfo(address: InternetAddress(public.publicIp), port: public.publicPort),
-        PeerInfo(address: InternetAddress(local.localIp), port: local.localPort),
+        PeerInfo(
+            address: InternetAddress(public.publicIp), port: public.publicPort),
+        PeerInfo(
+            address: InternetAddress(local.localIp), port: local.localPort),
       );
     }
   }

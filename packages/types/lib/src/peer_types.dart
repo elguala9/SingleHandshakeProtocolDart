@@ -12,11 +12,12 @@ class PeerInfo {
 
   factory PeerInfo.fromJson(Map<String, dynamic> json) {
     return PeerInfo(
-      address: const InternetAddressConverter().fromJson(json['address'] as String),
+      address:
+          const InternetAddressConverter().fromJson(json['address'] as String),
       port: (json['port'] as num).toInt(),
     );
   }
-  
+
   Map<String, dynamic> toJson() {
     return <String, dynamic>{
       'address': const InternetAddressConverter().toJson(address),
@@ -81,9 +82,12 @@ class HandshakeSignal {
           ? null
           : DateTime.parse(json['expirationPublicKey'] as String),
       referenceTimestamp: DateTime.parse(json['referenceTimestamp'] as String),
-      maxHandshakeDurationSeconds: (json['maxHandshakeDurationSeconds'] as num).toInt(),
-      intervalBetweenHandshakesSeconds: (json['intervalBetweenHandshakesSeconds'] as num).toInt(),
-      endHandshakeAvailability: DateTime.parse(json['endHandshakeAvailability'] as String),
+      maxHandshakeDurationSeconds:
+          (json['maxHandshakeDurationSeconds'] as num).toInt(),
+      intervalBetweenHandshakesSeconds:
+          (json['intervalBetweenHandshakesSeconds'] as num).toInt(),
+      endHandshakeAvailability:
+          DateTime.parse(json['endHandshakeAvailability'] as String),
     );
   }
 
