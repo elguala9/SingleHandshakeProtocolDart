@@ -1,16 +1,14 @@
-import 'dart:io';
-import 'dart:convert';
-import 'package:shsp_interfaces/shsp_interfaces.dart';
-
+// ...existing code...
+/*
 /// Implementation of IShsp interface
 /// Manages SHSP peer with signal and socket
-class Shsp implements IShsp {
+class ShspSingleton extends RawDatagramSocket implements IShsp {
   final RawDatagramSocket _socket;
   final String _remoteIp;
   final int _remotePort;
   String _signal = '';
 
-  Shsp({
+  ShspSingleton({
     required RawDatagramSocket socket,
     required String remoteIp,
     required int remotePort,
@@ -47,13 +45,13 @@ class Shsp implements IShsp {
   ///   signal: 'CLIENT_HELLO',
   /// );
   /// ```
-  factory Shsp.create({
+  factory ShspSingleton.create({
     required RawDatagramSocket socket,
     required String remoteIp,
     required int remotePort,
     String signal = '',
   }) {
-    final instance = Shsp(
+    final instance = ShspSingleton(
       socket: socket,
       remoteIp: remoteIp,
       remotePort: remotePort,
@@ -63,27 +61,10 @@ class Shsp implements IShsp {
   }
 
   @override
-  String getSignal() {
-    return _signal;
-  }
-
-  @override
-  void setSignal(String signal) {
-    _signal = signal;
-  }
-
+  
   @override
   RawDatagramSocket getSocket() {
     return _socket;
-  }
-
-  @override
-  String serializedObject() {
-    return jsonEncode({
-      'remoteIp': _remoteIp,
-      'remotePort': _remotePort,
-      'signal': _signal,
-    });
   }
 
   /// Close the socket
@@ -91,3 +72,4 @@ class Shsp implements IShsp {
     _socket.close();
   }
 }
+*/

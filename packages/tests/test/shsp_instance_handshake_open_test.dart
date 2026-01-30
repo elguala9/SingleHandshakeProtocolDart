@@ -15,10 +15,10 @@ void main() {
 
     setUp(() async {
       final address = InternetAddress.loopbackIPv4;
-      socketA = await ShspSocket.bind(address, 9300);
-      socketB = await ShspSocket.bind(address, 9301);
-      peerInfoA = PeerInfo(address: address, port: 9300);
-      peerInfoB = PeerInfo(address: address, port: 9301);
+      socketA = await ShspSocket.bind(address, 9305);
+      socketB = await ShspSocket.bind(address, 9306);
+      peerInfoA = PeerInfo(address: address, port: 9305);
+      peerInfoB = PeerInfo(address: address, port: 9306);
       instanceA = ShspInstance(remotePeer: peerInfoB, socket: socketA);
       instanceB = ShspInstance(remotePeer: peerInfoA, socket: socketB);
     });
