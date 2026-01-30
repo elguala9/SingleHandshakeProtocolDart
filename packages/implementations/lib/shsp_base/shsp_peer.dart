@@ -8,28 +8,27 @@ class ShspPeer implements IShspPeer {
   final IShspSocket socket;
   MessageCallback? _onMessageCallback;
 
-  ShspPeer({
-    required this.remotePeer,
-    required this.socket,
-    MessageCallback? onMessageCallback
-  }) {
-    if(onMessageCallback != null) setMessageCallback(onMessageCallback);
+  ShspPeer(
+      {required this.remotePeer,
+      required this.socket,
+      MessageCallback? onMessageCallback}) {
+    if (onMessageCallback != null) setMessageCallback(onMessageCallback);
     _setupMessageCallback();
   }
 
   /// Factory constructor - creates a ShspPeer with a remote peer and socket
-  /// 
+  ///
   /// This factory method:
   /// - Creates a new ShspPeer instance
   /// - Automatically registers message callbacks with the socket
   /// - Sets up routing for messages from the remote peer
-  /// 
+  ///
   /// Parameters:
   ///   - [remotePeer]: Information about the remote peer (address and port)
   ///   - [socket]: The underlying SHSP socket for communication
-  /// 
+  ///
   /// Returns: A new ShspPeer instance ready to send/receive messages
-  /// 
+  ///
   /// Example:
   /// ```dart
   /// final remotePeer = PeerInfo(
@@ -57,10 +56,12 @@ class ShspPeer implements IShspPeer {
     socket.setMessageCallback(
       key,
       (msg, rinfo) {
-        onMessage(msg, PeerInfo(
-          address: rinfo.address,
-          port: rinfo.port,
-        ));
+        onMessage(
+            msg,
+            PeerInfo(
+              address: rinfo.address,
+              port: rinfo.port,
+            ));
       },
     );
   }
@@ -79,7 +80,9 @@ class ShspPeer implements IShspPeer {
   void sendMessage(List<int> message) {
     // Note: sendTo is synchronous in Dart (UDP is non-blocking)
     int bytes = socket.sendTo(message, remotePeer.address, remotePeer.port);
-    if(bytes == 0) throw Exception('Failed to send message to ${remotePeer.address.address}:${remotePeer.port}, the block is too big');
+    if (bytes == 0)
+      throw Exception(
+          'Failed to send message to ${remotePeer.address.address}:${remotePeer.port}, the block is too big');
   }
 
   @override

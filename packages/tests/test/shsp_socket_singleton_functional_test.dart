@@ -10,14 +10,17 @@ void main() {
     setUp(() {
       ShspSocketSingleton.destroy();
       MessageCallbackMapSingleton.destroy();
+      ShspSocketInfoSingleton.destroy();
     });
 
     test('può inviare e ricevere messaggi handshake', () async {
       // Usa i singleton
       final info = ShspSocketInfoSingleton();
       final callbacksSingleton = MessageCallbackMapSingleton();
-      final singleton = await ShspSocketSingleton.bind(info: info, callbacks: callbacksSingleton);
-      final rawOther = await RawDatagramSocket.bind(InternetAddress.loopbackIPv4, 0);
+      final singleton = await ShspSocketSingleton.bind(
+          info: info, callbacks: callbacksSingleton);
+      final rawOther =
+          await RawDatagramSocket.bind(InternetAddress.loopbackIPv4, 0);
       final callbacksOther = MessageCallbackMapSingleton();
       final other = ShspSocket.internal(rawOther, callbacksOther);
       // Registra una callback handshake su other
@@ -31,14 +34,18 @@ void main() {
       // Invia handshake dalla singleton alla socket normale
       singleton.sendTo([0x01], rawOther.address, rawOther.port);
       await Future.delayed(const Duration(milliseconds: 100));
-      expect(received, isTrue, reason: 'Il messaggio handshake deve essere ricevuto dalla socket normale');
+      expect(received, isTrue,
+          reason:
+              'Il messaggio handshake deve essere ricevuto dalla socket normale');
     });
 
     test('può inviare e ricevere messaggi dati', () async {
       final info = ShspSocketInfoSingleton();
       final callbacksSingleton = MessageCallbackMapSingleton();
-      final singleton = await ShspSocketSingleton.bind(info: info, callbacks: callbacksSingleton);
-      final rawOther = await RawDatagramSocket.bind(InternetAddress.loopbackIPv4, 0);
+      final singleton = await ShspSocketSingleton.bind(
+          info: info, callbacks: callbacksSingleton);
+      final rawOther =
+          await RawDatagramSocket.bind(InternetAddress.loopbackIPv4, 0);
       final callbacksOther = MessageCallbackMapSingleton();
       final other = ShspSocket.internal(rawOther, callbacksOther);
       bool received = false;
@@ -50,7 +57,9 @@ void main() {
       );
       singleton.sendTo([0x00, 42], rawOther.address, rawOther.port);
       await Future.delayed(const Duration(milliseconds: 100));
-      expect(received, isTrue, reason: 'Il messaggio dati deve essere ricevuto dalla socket normale');
+      expect(received, isTrue,
+          reason:
+              'Il messaggio dati deve essere ricevuto dalla socket normale');
     });
   });
 }

@@ -59,7 +59,7 @@ void main() {
 
     test('constructor with null should work and sign() should return null', () {
       final handshake = HandshakeOwnership(null);
-      
+
       expect(handshake.sign(), isNull);
       expect(handshake.sign(), isNot(equals('')));
     });
@@ -81,10 +81,10 @@ void main() {
     test('InputHandshakeOwnership record should work with constructor', () {
       const testNonce = 'record-based-nonce';
       final input = (signedNonce: testNonce,);
-      
+
       // Nota: Il costruttore attuale non usa il record, ma per completezza testiamo che il record funzioni
       expect(input.signedNonce, equals(testNonce));
-      
+
       final handshake = HandshakeOwnership(input.signedNonce);
       expect(handshake.sign(), equals(testNonce));
     });

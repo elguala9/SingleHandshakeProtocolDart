@@ -54,5 +54,4 @@ class KeepAliveTimer implements Timer {
   void resetTick() {
     _lastActivity = DateTime.now();
   }
-  
 }

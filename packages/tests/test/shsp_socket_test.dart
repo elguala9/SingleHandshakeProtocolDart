@@ -6,7 +6,8 @@ import 'package:shsp_implementations/shsp_base/shsp_socket.dart';
 import 'package:shsp_types/shsp_types.dart';
 
 /// Factory function type for creating IShspSocket
-typedef IShspSocketFactory = Future<IShspSocket> Function(InternetAddress address, int port);
+typedef IShspSocketFactory = Future<IShspSocket> Function(
+    InternetAddress address, int port);
 
 void testIShspSocket(IShspSocketFactory createSocket) {
   group('IShspSocket interface', () {
@@ -57,7 +58,8 @@ void testIShspSocket(IShspSocketFactory createSocket) {
       socket2.setMessageCallback(
         callbackKey,
         (msg, info) {
-          print('DEBUG: Ricevuto messaggio: $msg da ${info.address}:${info.port}');
+          print(
+              'DEBUG: Ricevuto messaggio: $msg da ${info.address}:${info.port}');
           expect(msg, equals(testMsg));
           expect(info.address, equals(address));
           expect(info.port, equals(port));
@@ -97,7 +99,6 @@ void testIShspSocket(IShspSocketFactory createSocket) {
       socket.onError(error);
       expect(errored, isTrue);
     });
-
   });
 }
 

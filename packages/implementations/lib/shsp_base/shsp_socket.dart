@@ -5,10 +5,10 @@ import 'package:shsp_interfaces/shsp_interfaces.dart';
 import '../utility/message_callback_map.dart';
 import '../utility/raw_shsp_socket.dart';
 
-/// SHSP Socket implementation wrapping RawDatagramSocket 
+/// SHSP Socket implementation wrapping RawDatagramSocket
 class ShspSocket extends RawShspSocket implements IShspSocket {
   final MessageCallbackMap _messageCallbacks;
-  
+
   void Function()? _closeCallback;
   void Function(dynamic err)? _errorCallback;
   void Function()? _listeningCallback;
@@ -57,18 +57,18 @@ class ShspSocket extends RawShspSocket implements IShspSocket {
   }
 
   /// Create and bind a new SHSP socket to a specific address and port
-  /// 
+  ///
   /// This factory method:
   /// - Binds the socket to the specified local address and port
   /// - Initializes the message callback map
   /// - Sets up all event listeners (read, close, error, etc.)
-  /// 
+  ///
   /// Parameters:
   ///   - [address]: The local InternetAddress to bind to (e.g., InternetAddress.anyIPv4)
   ///   - [port]: The local port number to listen on
-  /// 
+  ///
   /// Returns: A Future that resolves to a new ShspSocket instance
-  /// 
+  ///
   /// Example:
   /// ```dart
   /// final socket = await ShspSocket.bind(InternetAddress.anyIPv4, 8000);
@@ -77,17 +77,16 @@ class ShspSocket extends RawShspSocket implements IShspSocket {
     final rawSocket = await RawDatagramSocket.bind(address, port);
     final callbacks = MessageCallbackMap();
     final socket = ShspSocket.internal(rawSocket, callbacks);
-    
+
     socket._localAddress = address;
     socket._localPort = port;
-    
+
     return socket;
   }
 
-
-
   @override
-  void setMessageCallback(String key, void Function(List<int> msg, RemoteInfo rinfo) cb) {
+  void setMessageCallback(
+      String key, void Function(List<int> msg, RemoteInfo rinfo) cb) {
     _messageCallbacks.add(key, cb);
   }
 
