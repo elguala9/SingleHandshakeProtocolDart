@@ -89,10 +89,7 @@ class ShspSocket extends RawShspSocket implements IShspSocket {
     }
 
 
-    RawDatagramSocket?  rawSocket = await RawDatagramSocket.bind(address, port).catchError((e) {
-      rawSocket?.close();
-      rethrow;
-    });
+    RawDatagramSocket?  rawSocket = await RawDatagramSocket.bind(address, port);
     final callbacks = MessageCallbackMap();
     final socket = ShspSocket.internal(rawSocket, callbacks);
 
