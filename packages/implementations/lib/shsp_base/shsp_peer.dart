@@ -53,7 +53,6 @@ class ShspPeer implements IShspPeer {
 
   /// Setup message callback in the socket
   void _setupMessageCallback() {
-      print('ShspPeer._setupMessageCallback chiamata'); // test
     final key = '${remotePeer.address.address}:${remotePeer.port}';
     socket.setMessageCallback(
       key,
@@ -68,7 +67,6 @@ class ShspPeer implements IShspPeer {
 
   @override
   void close() {
-      print('ShspPeer.close chiamata'); // test
     socket.close();
   }
 
@@ -79,7 +77,6 @@ class ShspPeer implements IShspPeer {
 
   @override
   void sendMessage(List<int> message) {
-      print('ShspPeer.sendMessage chiamata'); // test
     // Note: sendTo is synchronous in Dart (UDP is non-blocking)
     int bytes = socket.sendTo(message, remotePeer.address, remotePeer.port);
     if(bytes == 0) throw Exception('Failed to send message to ${remotePeer.address.address}:${remotePeer.port}, the block is too big');
@@ -87,13 +84,11 @@ class ShspPeer implements IShspPeer {
 
   @override
   void setMessageCallback(MessageCallback cb) {
-      print('ShspPeer.setMessageCallback chiamata'); // test
     _onMessageCallback = cb;
   }
 
   @override
   void onMessage(List<int> msg, PeerInfo info) {
-      print('ShspPeer.onMessage chiamata'); // test
     if (_onMessageCallback != null) {
       _onMessageCallback!(msg, info);
     }

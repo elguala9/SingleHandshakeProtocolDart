@@ -90,27 +90,4 @@ class ShspInstanceFactory {
   }
 }
 
-
-class ShspFactory {
-  static Shsp create({
-    required RawDatagramSocket socket,
-    required String remoteIp,
-    required int remotePort
-  }) => Shsp(
-    socket: socket,
-    remoteIp: remoteIp,
-    remotePort: remotePort,
-  );
-
-  /// Create a `Shsp` from a `ShspConfig` object.
-  static Shsp createFromConfig(ShspInput config) {
-    final ip = config.peerInfo?.address.address ?? config.remoteIp;
-    final port = config.peerInfo?.port ?? config.remotePort;
-    if (ip == null || port == null) {
-      throw ArgumentError('Either peerInfo or remoteIp and remotePort must be provided in ShspInput');
-    }
-    return Shsp(socket: config.socket, remoteIp: ip, remotePort: port);
-  }
-}
-
 // Inputs are defined in factory_inputs.dart
