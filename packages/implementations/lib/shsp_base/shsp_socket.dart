@@ -24,7 +24,6 @@ class ShspSocket extends RawShspSocket implements IShspSocket {
 
   /// Setup event listeners for the raw socket
   void _setupEventListeners() {
-      print('ShspSocket._setupEventListeners chiamata'); // test
     socket.listen(
       (event) {
         switch (event) {
@@ -50,7 +49,6 @@ class ShspSocket extends RawShspSocket implements IShspSocket {
 
   /// Handle incoming data from the socket
   void _handleReadEvent() {
-      print('ShspSocket._handleReadEvent chiamata'); // test
     final Datagram? datagram = socket.receive();
     if (datagram != null) {
       final rinfo = RemoteInfo(address: datagram.address, port: datagram.port);
@@ -90,55 +88,46 @@ class ShspSocket extends RawShspSocket implements IShspSocket {
 
   @override
   void setMessageCallback(String key, void Function(List<int> msg, RemoteInfo rinfo) cb) {
-      print('ShspSocket.setMessageCallback chiamata'); // test
     _messageCallbacks.add(key, cb);
   }
 
   @override
   void setCloseCallback(void Function() cb) {
-      print('ShspSocket.setCloseCallback chiamata'); // test
     _closeCallback = cb;
   }
 
   @override
   void setErrorCallback(void Function(dynamic err) cb) {
-      print('ShspSocket.setErrorCallback chiamata'); // test
     _errorCallback = cb;
   }
 
   @override
   void setListeningCallback(void Function() cb) {
-      print('ShspSocket.setListeningCallback chiamata'); // test
     _listeningCallback = cb;
   }
 
   @override
   void setConnectCallback(void Function() cb) {
-      print('ShspSocket.setConnectCallback chiamata'); // test
     _connectCallback = cb;
   }
 
   @override
   void onClose() {
-      print('ShspSocket.onClose chiamata'); // test
     _closeCallback?.call();
   }
 
   @override
   void onError(dynamic err) {
-      print('ShspSocket.onError chiamata'); // test
     _errorCallback?.call(err);
   }
 
   @override
   void onListening() {
-      print('ShspSocket.onListening chiamata'); // test
     _listeningCallback?.call();
   }
 
   @override
   void onConnect() {
-      print('ShspSocket.onConnect chiamata'); // test
     _connectCallback?.call();
   }
 
@@ -149,7 +138,6 @@ class ShspSocket extends RawShspSocket implements IShspSocket {
 
   @override
   void onMessage(List<int> msg, RemoteInfo rinfo) {
-      print('ShspSocket.onMessage chiamata'); // test
     final key = MessageCallbackMap.formatKey(rinfo.address, rinfo.port);
     final cb = _messageCallbacks.get(key);
     cb?.call(msg, rinfo);
@@ -157,7 +145,6 @@ class ShspSocket extends RawShspSocket implements IShspSocket {
 
   @override
   int sendTo(List<int> buffer, InternetAddress address, int port) {
-      print('ShspSocket.sendTo chiamata'); // test
     return super.send(buffer, address, port);
   }
 

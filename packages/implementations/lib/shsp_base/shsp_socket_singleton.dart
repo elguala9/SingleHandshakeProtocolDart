@@ -1,7 +1,8 @@
 import 'dart:io';
 
 import 'package:shsp_implementations/shsp_base/shsp_socket.dart';
-import 'package:shsp_implementations/utility/message_callback_map.dart';
+import 'package:shsp_implementations/utility/message_callback_map_singleton.dart';
+import 'package:shsp_implementations/utility/shsp_socket_info_singleton.dart';
 
 
 /// SHSP Socket implementation wrapping RawDatagramSocket 
@@ -11,8 +12,11 @@ class ShspSocketSingleton extends ShspSocket {
 	ShspSocketSingleton._internal(super.socket, super._messageCallbacks) : super.internal();
 
 	/// Factory async per creare o restituire il singleton
-	static Future<ShspSocketSingleton> bind(RawDatagramSocket rawSocket, MessageCallbackMap callbacks) async {
-		if (_instance != null) return _instance!;
+	static Future<ShspSocketSingleton> bind({ShspSocketInfoSingleton? info, MessageCallbackMapSingleton? callbacks}) async {
+    if (_instance != null) return _instance!;
+    info ??= ShspSocketInfoSingleton();
+    callbacks ??= MessageCallbackMapSingleton();
+    final rawSocket = await RawDatagramSocket.bind(info.address, info.port);
 		_instance = ShspSocketSingleton._internal(rawSocket, callbacks);
 		return _instance!;
 	}

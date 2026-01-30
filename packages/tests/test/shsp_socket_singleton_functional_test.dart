@@ -2,26 +2,28 @@ import 'dart:io';
 import 'package:shsp_implementations/shsp_base/shsp_socket.dart';
 import 'package:test/test.dart';
 import 'package:shsp_implementations/shsp_base/shsp_socket_singleton.dart';
-import 'package:shsp_implementations/utility/message_callback_map.dart';
+import 'package:shsp_implementations/utility/message_callback_map_singleton.dart';
+import 'package:shsp_implementations/utility/shsp_socket_info_singleton.dart';
 
 void main() {
   group('ShspSocketSingleton handshake e funzionalità', () {
     setUp(() {
       ShspSocketSingleton.destroy();
+      MessageCallbackMapSingleton.destroy();
     });
 
     test('può inviare e ricevere messaggi handshake', () async {
-      // Setup una singleton e una socket normale
-      final rawSingleton = await RawDatagramSocket.bind(InternetAddress.loopbackIPv4, 0);
+      // Usa i singleton
+      final info = ShspSocketInfoSingleton();
+      final callbacksSingleton = MessageCallbackMapSingleton();
+      final singleton = await ShspSocketSingleton.bind(info: info, callbacks: callbacksSingleton);
       final rawOther = await RawDatagramSocket.bind(InternetAddress.loopbackIPv4, 0);
-      final callbacksSingleton = MessageCallbackMap();
-      final callbacksOther = MessageCallbackMap();
-      final singleton = await ShspSocketSingleton.bind(rawSingleton, callbacksSingleton);
+      final callbacksOther = MessageCallbackMapSingleton();
       final other = ShspSocket.internal(rawOther, callbacksOther);
       // Registra una callback handshake su other
       bool received = false;
       other.setMessageCallback(
-        '${rawSingleton.address.address}:${rawSingleton.port}',
+        '${info.address}:${info.port}',
         (msg, rinfo) {
           if (msg.isNotEmpty && msg[0] == 0x01) received = true;
         },
@@ -33,15 +35,15 @@ void main() {
     });
 
     test('può inviare e ricevere messaggi dati', () async {
-      final rawSingleton = await RawDatagramSocket.bind(InternetAddress.loopbackIPv4, 0);
+      final info = ShspSocketInfoSingleton();
+      final callbacksSingleton = MessageCallbackMapSingleton();
+      final singleton = await ShspSocketSingleton.bind(info: info, callbacks: callbacksSingleton);
       final rawOther = await RawDatagramSocket.bind(InternetAddress.loopbackIPv4, 0);
-      final callbacksSingleton = MessageCallbackMap();
-      final callbacksOther = MessageCallbackMap();
-      final singleton = await ShspSocketSingleton.bind(rawSingleton, callbacksSingleton);
+      final callbacksOther = MessageCallbackMapSingleton();
       final other = ShspSocket.internal(rawOther, callbacksOther);
       bool received = false;
       other.setMessageCallback(
-        '${rawSingleton.address.address}:${rawSingleton.port}',
+        '${info.address}:${info.port}',
         (msg, rinfo) {
           if (msg.isNotEmpty && msg[0] == 0x00 && msg[1] == 42) received = true;
         },

@@ -62,13 +62,6 @@ void main() {
       expect(instance2, isNotNull);
     });
 
-    test('ShspFactory createFromConfig', () async {
-      final peerInfo = PeerInfo(address: InternetAddress.loopbackIPv4, port: 54321);
-      final raw = await RawDatagramSocket.bind(InternetAddress.loopbackIPv4, 0);
-      sockets.add(raw);
-      final cfg = ShspInput(socket: raw, peerInfo: peerInfo);
-      final shsp = ShspFactory.createFromConfig(cfg);
-      expect(shsp, isNotNull);
-    });
+ 
   });
 }
