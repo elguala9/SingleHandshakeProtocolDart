@@ -1,5 +1,6 @@
 import 'dart:io';
 import 'package:shsp_types/shsp_types.dart';
+import 'package:shsp_interfaces/shsp_interfaces.dart';
 
 /// Utility functions for address formatting
 class AddressUtility {
@@ -31,34 +32,56 @@ class AddressUtility {
   }
 
   /// Create RemoteInfo from string format "address:port"
+  /// Returns null if the format is invalid or the address/port cannot be parsed
   static RemoteInfo? fromString(String formatted) {
     final parsed = parseAddress(formatted);
     if (parsed == null) return null;
 
+    final port = parsed['port'] as int;
+
+    // Validate port range
+    if (port < 0 || port > 65535) {
+      return null;
+    }
+
     try {
       final address = InternetAddress(parsed['address'] as String);
-      return RemoteInfo(address: address, port: parsed['port'] as int);
+      return RemoteInfo(address: address, port: port);
+    } on SocketException {
+      // Invalid IP address format
+      return null;
     } catch (e) {
+      // Other errors
       return null;
     }
   }
 
   /// Get local private IP address
   /// Returns the first non-loopback IPv4 address found
+  /// Throws [ShspNetworkException] if no suitable address is found
   static Future<String> getLocalIp() async {
-    final interfaces = await NetworkInterface.list();
+    try {
+      final interfaces = await NetworkInterface.list();
 
-    for (final interface in interfaces) {
-      for (final addr in interface.addresses) {
-        if (addr.type == InternetAddressType.IPv4 &&
-            !addr.isLoopback &&
-            _isPrivateIp(addr.address)) {
-          return addr.address;
+      for (final interface in interfaces) {
+        for (final addr in interface.addresses) {
+          if (addr.type == InternetAddressType.IPv4 &&
+              !addr.isLoopback &&
+              _isPrivateIp(addr.address)) {
+            return addr.address;
+          }
         }
       }
-    }
 
-    throw Exception('Unable to determine local IP address');
+      throw ShspNetworkException(
+        'Unable to determine local private IP address - no suitable network interface found',
+      );
+    } on SocketException catch (e) {
+      throw ShspNetworkException(
+        'Failed to list network interfaces',
+        cause: e,
+      );
+    }
   }
 
   /// Check if an IP address is in private range

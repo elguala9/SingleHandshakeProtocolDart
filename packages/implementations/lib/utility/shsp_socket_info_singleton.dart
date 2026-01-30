@@ -42,17 +42,27 @@ class ShspSocketInfoSingleton {
     return _instance!;
   }
 
-  /// Loads config from file, returns null if file doesn't exist
+  /// Loads config from file, returns null if file doesn't exist or parsing fails
   static Map<String, dynamic>? _loadConfig(String path) {
     final file = File(path);
     if (!file.existsSync()) {
+      print('Config file not found at: $path (using defaults)');
       return null;
     }
     try {
       final content = file.readAsStringSync();
       return jsonDecode(content) as Map<String, dynamic>;
+    } on FileSystemException catch (e) {
+      // File system error (permissions, etc.)
+      print('Error reading config file at $path: ${e.message}');
+      return null;
+    } on FormatException catch (e) {
+      // JSON parsing error
+      print('Error parsing JSON config file at $path: ${e.message}');
+      return null;
     } catch (e) {
-      // If JSON parsing fails, return null
+      // Other unexpected errors
+      print('Unexpected error loading config from $path: $e');
       return null;
     }
   }
