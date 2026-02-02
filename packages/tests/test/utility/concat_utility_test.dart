@@ -42,7 +42,7 @@ void main() {
           Uint8List.fromList([4, 5]),
           Uint8List.fromList([6, 7, 8, 9]),
         ];
-        
+
         final result = ConcatUtility.concatBytes(arrays);
         expect(result, equals(Uint8List.fromList([1, 2, 3, 4, 5, 6, 7, 8, 9])));
       });
@@ -54,7 +54,9 @@ void main() {
       });
 
       test('should handle single array', () {
-        final arrays = [Uint8List.fromList([10, 20, 30])];
+        final arrays = [
+          Uint8List.fromList([10, 20, 30])
+        ];
         final result = ConcatUtility.concatBytes(arrays);
         expect(result, equals(Uint8List.fromList([10, 20, 30])));
       });
@@ -65,7 +67,7 @@ void main() {
           Uint8List(0), // empty array
           Uint8List.fromList([3, 4]),
         ];
-        
+
         final result = ConcatUtility.concatBytes(arrays);
         expect(result, equals(Uint8List.fromList([1, 2, 3, 4])));
       });
@@ -75,7 +77,7 @@ void main() {
         final array2 = Uint8List(500);
         array1.fillRange(0, 1000, 255);
         array2.fillRange(0, 500, 128);
-        
+
         final result = ConcatUtility.concatBytes([array1, array2]);
         expect(result.length, equals(1500));
         expect(result.sublist(0, 1000), equals(array1));
@@ -90,7 +92,7 @@ void main() {
           [4, 5],
           [6, 7, 8, 9],
         ];
-        
+
         final result = ConcatUtility.concatIntLists(lists);
         expect(result, equals([1, 2, 3, 4, 5, 6, 7, 8, 9]));
       });
@@ -102,7 +104,9 @@ void main() {
       });
 
       test('should handle single list', () {
-        final lists = [[10, 20, 30]];
+        final lists = [
+          [10, 20, 30]
+        ];
         final result = ConcatUtility.concatIntLists(lists);
         expect(result, equals([10, 20, 30]));
       });
@@ -113,7 +117,7 @@ void main() {
           <int>[], // empty list
           [3, 4],
         ];
-        
+
         final result = ConcatUtility.concatIntLists(lists);
         expect(result, equals([1, 2, 3, 4]));
       });
@@ -124,9 +128,10 @@ void main() {
           [255, 256, 65535],
           [2147483647, -2147483648],
         ];
-        
+
         final result = ConcatUtility.concatIntLists(lists);
-        expect(result, equals([-1, 0, 1, 255, 256, 65535, 2147483647, -2147483648]));
+        expect(result,
+            equals([-1, 0, 1, 255, 256, 65535, 2147483647, -2147483648]));
       });
     });
 
@@ -146,7 +151,8 @@ void main() {
       test('should handle Unicode characters', () {
         const input = 'Hello 🌍';
         final result = ConcatUtility.stringToBytes(input);
-        expect(result.length, greaterThan(7)); // UTF-8 encoding of emoji takes multiple bytes
+        expect(result.length,
+            greaterThan(7)); // UTF-8 encoding of emoji takes multiple bytes
       });
 
       test('should handle special characters', () {
@@ -218,7 +224,8 @@ void main() {
         final original2 = ConcatUtility.stringToBytes(' ');
         final original3 = ConcatUtility.stringToBytes('World');
 
-        final concatenated = ConcatUtility.concatBytes([original1, original2, original3]);
+        final concatenated =
+            ConcatUtility.concatBytes([original1, original2, original3]);
         final result = ConcatUtility.bytesToString(concatenated);
 
         expect(result, equals('Hello World'));
@@ -229,9 +236,9 @@ void main() {
       test('should handle invalid UTF-8 bytes gracefully', () {
         // Invalid UTF-8 sequence
         final invalidBytes = Uint8List.fromList([0xFF, 0xFE]);
-        
-        expect(() => ConcatUtility.bytesToString(invalidBytes), 
-               throwsA(isA<FormatException>()));
+
+        expect(() => ConcatUtility.bytesToString(invalidBytes),
+            throwsA(isA<FormatException>()));
       });
     });
 
@@ -241,7 +248,7 @@ void main() {
         final largeString = 'A' * 10000;
         final bytes = ConcatUtility.stringToBytes(largeString);
         final result = ConcatUtility.bytesToString(bytes);
-        
+
         expect(result, equals(largeString));
         expect(result.length, equals(10000));
       });
@@ -249,7 +256,7 @@ void main() {
       test('should handle many small concatenations', () {
         final manyStrings = List.generate(1000, (i) => 'str$i');
         final result = ConcatUtility.concatStrings(manyStrings);
-        
+
         expect(result.length, greaterThan(3000));
         expect(result, startsWith('str0'));
         expect(result, endsWith('str999'));

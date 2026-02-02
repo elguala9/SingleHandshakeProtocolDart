@@ -15,10 +15,10 @@ void main() {
 
     setUp(() async {
       final address = InternetAddress.loopbackIPv4;
-      socketA = await ShspSocket.bind(address, 9300);
-      socketB = await ShspSocket.bind(address, 9301);
-      peerInfoA = PeerInfo(address: address, port: 9300);
-      peerInfoB = PeerInfo(address: address, port: 9301);
+      socketA = await ShspSocket.bind(address, 9305);
+      socketB = await ShspSocket.bind(address, 9306);
+      peerInfoA = PeerInfo(address: address, port: 9305);
+      peerInfoB = PeerInfo(address: address, port: 9306);
       instanceA = ShspInstance(remotePeer: peerInfoB, socket: socketA);
       instanceB = ShspInstance(remotePeer: peerInfoA, socket: socketB);
     });
@@ -29,22 +29,30 @@ void main() {
     });
 
     test('Initial handshake and open flags are false', () {
-      expect(instanceA.handshake, isFalse); // handshake deve essere false all'inizio per A
-      expect(instanceA.open, isFalse); // open deve essere false all'inizio per A
-      expect(instanceB.handshake, isFalse); // handshake deve essere false all'inizio per B
-      expect(instanceB.open, isFalse); // open deve essere false all'inizio per B
+      expect(instanceA.handshake,
+          isFalse); // handshake deve essere false all'inizio per A
+      expect(
+          instanceA.open, isFalse); // open deve essere false all'inizio per A
+      expect(instanceB.handshake,
+          isFalse); // handshake deve essere false all'inizio per B
+      expect(
+          instanceB.open, isFalse); // open deve essere false all'inizio per B
     });
 
     test('Handshake sets handshake flags', () async {
       // Simula handshake da B verso A
       instanceB.sendHandshake();
       await Future.delayed(const Duration(milliseconds: 500));
-      expect(instanceA.handshake, isTrue, reason: 'A should have received handshake'); // handshake deve essere true dopo handshake ricevuto
+      expect(instanceA.handshake, isTrue,
+          reason:
+              'A should have received handshake'); // handshake deve essere true dopo handshake ricevuto
       //expect(instanceA.open, isTrue, reason: 'A should be open after handshake'); // open deve essere true dopo handshake
       // Ora A invia handshake a B
       instanceA.sendHandshake();
       await Future.delayed(const Duration(milliseconds: 500));
-      expect(instanceB.handshake, isTrue, reason: 'B should have received handshake'); // handshake deve essere true dopo handshake ricevuto
+      expect(instanceB.handshake, isTrue,
+          reason:
+              'B should have received handshake'); // handshake deve essere true dopo handshake ricevuto
       //expect(instanceB.open, isTrue, reason: 'B should be open after handshake'); // open deve essere true dopo handshake
     });
 
@@ -52,14 +60,18 @@ void main() {
       // Simula handshake da B verso A
       instanceA.sendHandshake();
       instanceB.sendHandshake();
-      
+
       await Future.delayed(const Duration(milliseconds: 500));
       instanceA.sendHandshake();
       instanceB.sendHandshake();
       await Future.delayed(const Duration(milliseconds: 500));
-      expect(instanceA.open, isTrue, reason: 'A should be open after handshake'); // open deve essere true dopo handshake
+      expect(instanceA.open, isTrue,
+          reason:
+              'A should be open after handshake'); // open deve essere true dopo handshake
       // Ora A invia handshake a B
-      expect(instanceB.open, isTrue, reason: 'B should be open after handshake'); // open deve essere true dopo handshake
+      expect(instanceB.open, isTrue,
+          reason:
+              'B should be open after handshake'); // open deve essere true dopo handshake
     });
 
     test('Open flag is false after closed message', () async {
@@ -86,8 +98,8 @@ void main() {
       expect(instanceA.open, isTrue); // open deve essere true dopo handshake
       instanceB.sendClosing();
       await Future.delayed(const Duration(milliseconds: 500));
-      expect(instanceB.closing, isTrue); 
-      expect(instanceA.open, isTrue); 
+      expect(instanceB.closing, isTrue);
+      expect(instanceA.open, isTrue);
     });
 
     test('Open and handshake remain unchanged on keep-alive', () async {
@@ -97,9 +109,10 @@ void main() {
       final prevOpen = instanceA.open;
       instanceB.keepAlive();
       await Future.delayed(const Duration(milliseconds: 100));
-      expect(instanceA.handshake, equals(prevHandshake)); // handshake non deve cambiare dopo keep-alive
-      expect(instanceA.open, equals(prevOpen)); // open non deve cambiare dopo keep-alive
+      expect(instanceA.handshake,
+          equals(prevHandshake)); // handshake non deve cambiare dopo keep-alive
+      expect(instanceA.open,
+          equals(prevOpen)); // open non deve cambiare dopo keep-alive
     });
-
   });
 }

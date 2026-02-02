@@ -12,18 +12,18 @@ abstract interface class IHandshakeIP {
 // assure the ownership of the handshake (to avoid man in the middle)
 abstract interface class IHandshakeOwnership {
   // return a cripted string (cripted with the other peer public key), the string is a nonce signed with a private key of this peer (the other peer need the public key to verify the signature)
-  String? sign();     
+  String? sign();
 }
 
 abstract interface class IHandshakeTime {
   int getHandshakeTimeframe();
-  DateTime getStartHandshakeTime(); 
-  DateTime getEndHandshakeTime(); 
+  DateTime getStartHandshakeTime();
+  DateTime getEndHandshakeTime();
   int getSecondsToNextHandshake(); // -1 no handshake planned
-
 }
 
-abstract class IHandshake implements IHandshakeOwnership, IHandshakeIP, IHandshakeTime {}
+abstract class IHandshake
+    implements IHandshakeOwnership, IHandshakeIP, IHandshakeTime {}
 
 external IHandshake getMySignal(RawDatagramSocket socket);
 external IHandshake processSignal(String signal);

@@ -30,7 +30,7 @@ void main() {
         const Duration(milliseconds: 100),
         (_) => callbackCount++,
       );
-      
+
       await Future.delayed(const Duration(milliseconds: 150));
       expect(callbackCount, greaterThan(0));
     });
@@ -48,7 +48,7 @@ void main() {
         const Duration(milliseconds: 100),
         (_) => callbackCount++,
       );
-      
+
       timer.cancel();
       await Future.delayed(const Duration(milliseconds: 50));
       expect(timer.isActive, isFalse);
@@ -59,7 +59,7 @@ void main() {
         const Duration(milliseconds: 100),
         (_) => callbackCount++,
       );
-      
+
       // Tick funziona solo se _lastActivity è settato
       // Questo è un test semplice che verifica la proprietà
       expect(timer.tick, isNotNull);
@@ -70,7 +70,7 @@ void main() {
         const Duration(milliseconds: 100),
         (_) => callbackCount++,
       );
-      
+
       // resetTick aggiorna _lastActivity
       timer.resetTick();
       expect(timer.tick, isNotNull);
@@ -81,7 +81,7 @@ void main() {
         const Duration(milliseconds: 100),
         (_) => callbackCount++,
       );
-      
+
       await Future.delayed(const Duration(milliseconds: 350));
       expect(callbackCount, greaterThanOrEqualTo(2));
     });
@@ -91,7 +91,7 @@ void main() {
         const Duration(milliseconds: 100),
         (_) => callbackCount++,
       );
-      
+
       timer = KeepAliveTimer.from(originalTimer);
       expect(timer, isA<KeepAliveTimer>());
       expect(timer.isActive, isTrue);
@@ -111,9 +111,9 @@ void main() {
 
       await Future.delayed(const Duration(milliseconds: 120));
       timer.cancel();
-      
+
       await Future.delayed(const Duration(milliseconds: 100));
-      
+
       expect(beforeCancelCount, greaterThan(0));
       expect(timer.isActive, isFalse);
     });
@@ -137,9 +137,9 @@ void main() {
 
       // Wait more to let callback fire
       await Future.delayed(const Duration(milliseconds: 150));
-      
+
       stopwatch.stop();
-      
+
       // Should have fired after resetTick
       expect(callCount, greaterThan(0));
       // The total time should be roughly 80 + 200 (+ some delay)

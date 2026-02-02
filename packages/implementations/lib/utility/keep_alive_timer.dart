@@ -4,7 +4,9 @@ import 'dart:async';
 class KeepAliveTimer implements Timer {
   late Timer _internalTimer;
   bool _isRunning = false;
+  // ignore: unused_field
   DateTime? _lastActivity;
+  int _tickCount = 0;
 
   KeepAliveTimer._empty();
 
@@ -29,15 +31,26 @@ class KeepAliveTimer implements Timer {
     Duration duration,
     void Function(Timer timer) callback,
   ) {
-    if (Zone.current == Zone.root) {
-      return KeepAliveTimer.from(
-        Zone.current.createPeriodicTimer(duration, callback),
-      );
+    final instance = KeepAliveTimer._empty();
+
+    // Wrap the callback to increment tick count
+    void wrappedCallback(Timer timer) {
+      instance._tickCount++;
+      callback(timer);
     }
-    var boundCallback = Zone.current.bindUnaryCallbackGuarded<Timer>(callback);
-    return KeepAliveTimer.from(
-      Zone.current.createPeriodicTimer(duration, boundCallback),
-    );
+
+    if (Zone.current == Zone.root) {
+      instance._internalTimer =
+          Zone.current.createPeriodicTimer(duration, wrappedCallback);
+    } else {
+      var boundCallback =
+          Zone.current.bindUnaryCallbackGuarded<Timer>(wrappedCallback);
+      instance._internalTimer =
+          Zone.current.createPeriodicTimer(duration, boundCallback);
+    }
+
+    instance._isRunning = true;
+    return instance;
   }
 
   @override
@@ -45,8 +58,8 @@ class KeepAliveTimer implements Timer {
 
   @override
   int get tick {
-    if (_lastActivity == null) return 0;
-    return DateTime.now().difference(_lastActivity!).inMilliseconds ~/ 1000;
+    // Return the actual number of times the timer callback has been invoked
+    return _tickCount;
   }
 
   /// Reset the tick countdown, restarts the keep-alive timer
@@ -54,5 +67,4 @@ class KeepAliveTimer implements Timer {
   void resetTick() {
     _lastActivity = DateTime.now();
   }
-  
 }
