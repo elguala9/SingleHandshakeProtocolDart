@@ -1,4 +1,3 @@
-
 import 'package:shsp_implementations/shsp_implementations.dart';
 // ...existing code...
 import 'package:shsp_interfaces/shsp_interfaces.dart';
@@ -12,7 +11,7 @@ const int keepAlivePrefix = 0x04;
 
 // TO DO (Extension) : Add callback for extra data after prefixes (eg. handshake with data)
 
-/// Istanza SHSP: gestisce handshake, chiusura, keep-alive e messaggi dati.
+/// SHSP Instance: manages handshake, closure, keep-alive and data messages.
 class ShspInstance extends ShspPeer implements IShspInstance {
   bool _handshake = false;
   bool _closing = false;
@@ -43,7 +42,7 @@ class ShspInstance extends ShspPeer implements IShspInstance {
     int keepAliveSeconds = 30,
   }) : _keepAliveSeconds = keepAliveSeconds;
 
-  /// Factory: crea una nuova istanza SHSP con keep-alive configurabile.
+  /// Factory: creates a new SHSP instance with configurable keep-alive.
   factory ShspInstance.create({
     required PeerInfo remotePeer,
     required IShspSocket socket,
@@ -56,7 +55,7 @@ class ShspInstance extends ShspPeer implements IShspInstance {
     );
   }
 
-  /// Factory: crea una nuova istanza SHSP da uno ShspPeer esistente.
+  /// Factory: creates a new SHSP instance from an existing ShspPeer.
   factory ShspInstance.fromPeer(
     ShspPeer peer, {
     int keepAliveSeconds = 30,
@@ -70,7 +69,6 @@ class ShspInstance extends ShspPeer implements IShspInstance {
 
   @override
   void onMessage(List<int> msg, PeerInfo info) {
-    print('ShspInstance.onMessage chiamata: $msg'); // test
     // Check protocol messages first
     if (_isHandshake(msg)) return;
     if (_isClosing(msg)) return;
@@ -78,13 +76,18 @@ class ShspInstance extends ShspPeer implements IShspInstance {
     if (_isKeepAlive(msg)) return;
 
     // Pass to parent for user callback
-    if(_isData(msg)) super.onMessage(msg, info);
+    if (_isData(msg)) {
+      super.onMessage(msg, info);
+      return;
+    }
 
-    throw Exception('Message type not recognized by ShspInstance: $msg');
+    throw ShspProtocolException(
+      'Message type not recognized by ShspInstance',
+      messageType: msg.isNotEmpty ? '0x${msg[0].toRadixString(16)}' : 'empty',
+    );
   }
 
   bool _isData(List<int> msg) {
-    print('ShspInstance._isData chiamata'); // test
     if (msg.isNotEmpty && msg[0] == dataPrefix) {
       return true;
     }
@@ -93,12 +96,11 @@ class ShspInstance extends ShspPeer implements IShspInstance {
 
   /// Check if message is a handshake (0x01)
   bool _isHandshake(List<int> msg) {
-    print('ShspInstance._isHandshake chiamata'); // test
     if (msg.isNotEmpty && msg[0] == handshakePrefix) {
       _handshake = true; // i got the handshake of the other peer
       if (_onHandshake != null) _onHandshake!();
       // if [0x01, 0x01] then the other peer got my handshake
-      if(msg.length > 1 && msg[1] == handshakePrefix){
+      if (msg.length > 1 && msg[1] == handshakePrefix) {
         _open = true;
         if (_onOpen != null) _onOpen!();
       }
@@ -109,7 +111,6 @@ class ShspInstance extends ShspPeer implements IShspInstance {
 
   /// Check if message is a closing signal (0x02)
   bool _isClosing(List<int> msg) {
-    print('ShspInstance._isClosing chiamata'); // test
     if (msg.isNotEmpty && msg[0] == closingPrefix) {
       _closing = true;
       if (_onClosing != null) _onClosing!();
@@ -120,7 +121,6 @@ class ShspInstance extends ShspPeer implements IShspInstance {
 
   /// Check if message is a closed signal (0x03)
   bool _isClosed(List<int> msg) {
-    print('ShspInstance._isClosed chiamata'); // test
     if (msg.isNotEmpty && msg[0] == closedPrefix) {
       _closing = false;
       _open = false;
@@ -132,7 +132,6 @@ class ShspInstance extends ShspPeer implements IShspInstance {
 
   /// Check if message is a keep-alive (0x04)
   bool _isKeepAlive(List<int> msg) {
-    print('ShspInstance._isKeepAlive chiamata'); // test
     if (msg.isNotEmpty && msg[0] == keepAlivePrefix) {
       return true;
     }
@@ -157,13 +156,12 @@ class ShspInstance extends ShspPeer implements IShspInstance {
     stopKeepAlive();
     startKeepAlive();
   }
-  
-    
+
   @override
   void sendHandshake() {
-    print('ShspInstance.sendHandshake chiamata'); // test
     List<int> msg = [handshakePrefix];
-    if(_handshake) { // if i got the handshake i add a 0x01 to inform the other peer
+    if (_handshake) {
+      // if i got the handshake i add a 0x01 to inform the other peer
       msg.add(handshakePrefix);
     }
     _sendMessage(msg);
@@ -171,74 +169,90 @@ class ShspInstance extends ShspPeer implements IShspInstance {
 
   @override
   void keepAlive() {
-    print('ShspInstance.keepAlive chiamata'); // test
-    if(closing || !open) return; // do not send keep-alive if closing or closed
+    if (closing || !open) return; // do not send keep-alive if closing or closed
     _sendMessage([keepAlivePrefix]);
   }
-  
+
   @override
   void sendClosing() {
-    print('ShspInstance.sendClosing chiamata'); // test
     _sendMessage([closingPrefix]);
     _closing = true;
   }
 
   @override
   void sendClosed() {
-    print('ShspInstance.sendClosed chiamata'); // test
     _sendMessageNoCheck([closedPrefix]);
     _closing = false;
     _open = false;
   }
 
-  /// Avvia l'invio periodico di keep-alive.
+  /// Starts periodic keep-alive sending.
   @override
   void startKeepAlive() {
-    print('ShspInstance.startKeepAlive chiamata'); // test
     if (_keepAliveTimer != null && _keepAliveTimer!.isActive) {
       return; // Already running
     }
     _keepAliveTimer = KeepAliveTimer.periodic(
       Duration(seconds: keepAliveSeconds),
       (_) {
-        keepAlive();
+        try {
+          keepAlive();
+        } catch (e, stackTrace) {
+          // Log error but don't crash the timer
+          // In production, use a proper logger
+          print('Error in keep-alive callback: $e\n$stackTrace');
+          // Optionally close the connection on repeated errors
+        }
       },
     );
   }
 
-  /// Ferma l'invio periodico di keep-alive.
+  /// Stops periodic keep-alive sending.
   @override
   void stopKeepAlive() {
-   print('ShspInstance.stopKeepAlive chiamata'); // test
-    _keepAliveTimer?.cancel();
-    _keepAliveTimer = null;
+    if (_keepAliveTimer != null) {
+      try {
+        _keepAliveTimer!.cancel();
+      } catch (e) {
+        // Log error but continue cleanup
+        print('Error canceling keep-alive timer: $e');
+      } finally {
+        _keepAliveTimer = null;
+      }
+    }
   }
 
-  /// Reset del timer keep-alive (posticipa il prossimo invio).
+  /// Resets the keep-alive timer (postpones the next sending).
   void resetKeepAlive() {
-    print('ShspInstance.resetKeepAlive chiamata'); // test
     _keepAliveTimer?.resetTick();
   }
 
   @override
   void sendMessage(List<int> message) {
-    print('ShspInstance.sendMessage chiamata'); // test
     message.insert(0, dataPrefix);
-    if(open == false) throw Exception('Cannot send message: connection is not open.');
+    if (open == false) {
+      throw ShspInstanceException(
+        'Cannot send message: connection is not open',
+        instanceId: '${remotePeer.address.address}:${remotePeer.port}',
+      );
+    }
     _sendMessage(message);
   }
 
   void _sendMessage(List<int> message) {
-    print('ShspInstance._sendMessage chiamata. $message'); // test
-    if(closing == true) throw Exception('Cannot send message: connection is closing.');
+    if (closing == true) {
+      throw ShspInstanceException(
+        'Cannot send message: connection is closing',
+        instanceId: '${remotePeer.address.address}:${remotePeer.port}',
+      );
+    }
 
     _sendMessageNoCheck(message);
-    // Reset keep-alive timer on any outgoing message 
+    // Reset keep-alive timer on any outgoing message
     resetKeepAlive();
   }
 
   void _sendMessageNoCheck(List<int> message) {
-    print('ShspInstance._sendMessageNoCheck chiamata. $message'); // test
     super.sendMessage(message);
   }
 
