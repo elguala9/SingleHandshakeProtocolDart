@@ -32,15 +32,20 @@ class HandshakeTime implements IHandshakeTime {
         startHandshakeTime = input.startHandshakeTime,
         endHandshakeTime = input.endHandshakeTime;
 
-  static Future<HandshakeTime> createAsync(InputFactoryHandshakeTime input) async {
+  static Future<HandshakeTime> createAsync(
+      InputFactoryHandshakeTime input) async {
     final clock = NTPClock();
     await clock.refresh();
     final now = clock.now();
     return HandshakeTime((
-      handshakeTimeframe: input.handshakeTimeframe ?? defaultHandshakeTimeInput.handshakeTimeframe!,
-      handshakeDuration: input.handshakeDuration ?? defaultHandshakeTimeInput.handshakeDuration!,
+      handshakeTimeframe: input.handshakeTimeframe ??
+          defaultHandshakeTimeInput.handshakeTimeframe!,
+      handshakeDuration: input.handshakeDuration ??
+          defaultHandshakeTimeInput.handshakeDuration!,
       startHandshakeTime: now,
-      endHandshakeTime: now.add(Duration(seconds: input.whenLastHandshake ?? defaultHandshakeTimeInput.whenLastHandshake!)),
+      endHandshakeTime: now.add(Duration(
+          seconds: input.whenLastHandshake ??
+              defaultHandshakeTimeInput.whenLastHandshake!)),
     ));
   }
 

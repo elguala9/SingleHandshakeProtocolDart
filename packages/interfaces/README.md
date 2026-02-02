@@ -19,8 +19,8 @@ Add this to your package's `pubspec.yaml`:
 
 ```yaml
 dependencies:
-  shsp_interfaces: ^1.0.0
-  shsp_types: ^1.0.0  # Required dependency
+  shsp_interfaces: ^1.0.5
+  shsp_types: ^1.0.5  # Required dependency
 ```
 
 ## Usage

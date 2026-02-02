@@ -29,17 +29,18 @@ void main() {
     });
 
     test('Initial handshake and open flags are false', () {
-      expect(instanceA.handshake, isFalse); // handshake deve essere false all'inizio per A
-      expect(instanceA.open, isFalse); // open deve essere false all'inizio per A
-      expect(instanceB.handshake, isFalse); // handshake deve essere false all'inizio per B
-      expect(instanceB.open, isFalse); // open deve essere false all'inizio per B
+      expect(instanceA.handshake,
+          isFalse); // handshake deve essere false all'inizio per A
+      expect(
+          instanceA.open, isFalse); // open deve essere false all'inizio per A
+      expect(instanceB.handshake,
+          isFalse); // handshake deve essere false all'inizio per B
+      expect(
+          instanceB.open, isFalse); // open deve essere false all'inizio per B
     });
 
-
-
-
-
-    test('Closing flag is true after closing message and cannot send message', () async {
+    test('Closing flag is true after closing message and cannot send message',
+        () async {
       instanceB.sendHandshake();
       instanceA.sendHandshake();
       await Future.delayed(const Duration(milliseconds: 500));
@@ -49,8 +50,8 @@ void main() {
       expect(instanceA.open, isTrue); // open deve essere true dopo handshake
       instanceB.sendClosing();
       await Future.delayed(const Duration(milliseconds: 500));
-      expect(instanceB.closing, isTrue); 
-      expect(instanceA.open, isTrue); 
+      expect(instanceB.closing, isTrue);
+      expect(instanceA.open, isTrue);
 
       expect(() => instanceA.sendMessage([1, 2, 3]), throwsException);
       expect(() => instanceB.sendMessage([1, 2, 3]), throwsException);
@@ -77,8 +78,5 @@ void main() {
       await Future.delayed(const Duration(milliseconds: 500));
       expect(instanceA.open, isTrue); // open deve essere true dopo handshake
     });
-
-
-
   });
 }

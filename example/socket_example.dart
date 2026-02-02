@@ -7,7 +7,9 @@ void main() async {
 
   // Create and bind a new SHSP socket
   final socket = await ShspSocket.bind(InternetAddress.loopbackIPv4, 8080);
-  print('Socket bound on ${socket.localAddress?.address}:${socket.localPort}\n');
+  print(
+    'Socket bound on ${socket.localAddress?.address}:${socket.localPort}\n',
+  );
 
   // Set up callbacks
   socket.setErrorCallback((error) {
@@ -23,7 +25,6 @@ void main() async {
     print('Received message from ${rinfo.address.address}:${rinfo.port}');
     print('Message: ${String.fromCharCodes(msg)}');
   });
-
 
   // Simulate sending a message
   final message = 'Hello from Dart!'.codeUnits.toList();

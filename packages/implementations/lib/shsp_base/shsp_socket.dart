@@ -5,10 +5,10 @@ import 'package:shsp_interfaces/shsp_interfaces.dart';
 import '../utility/message_callback_map.dart';
 import '../utility/raw_shsp_socket.dart';
 
-/// SHSP Socket implementation wrapping RawDatagramSocket 
+/// SHSP Socket implementation wrapping RawDatagramSocket
 class ShspSocket extends RawShspSocket implements IShspSocket {
   final MessageCallbackMap _messageCallbacks;
-  
+
   void Function()? _closeCallback;
   void Function(dynamic err)? _errorCallback;
   void Function()? _listeningCallback;
@@ -24,7 +24,6 @@ class ShspSocket extends RawShspSocket implements IShspSocket {
 
   /// Setup event listeners for the raw socket
   void _setupEventListeners() {
-      print('ShspSocket._setupEventListeners chiamata'); // test
     socket.listen(
       (event) {
         switch (event) {
@@ -50,7 +49,6 @@ class ShspSocket extends RawShspSocket implements IShspSocket {
 
   /// Handle incoming data from the socket
   void _handleReadEvent() {
-      print('ShspSocket._handleReadEvent chiamata'); // test
     final Datagram? datagram = socket.receive();
     if (datagram != null) {
       final rinfo = RemoteInfo(address: datagram.address, port: datagram.port);
@@ -59,86 +57,99 @@ class ShspSocket extends RawShspSocket implements IShspSocket {
   }
 
   /// Create and bind a new SHSP socket to a specific address and port
-  /// 
+  ///
   /// This factory method:
+  /// - Validates the port number (must be between 0 and 65535)
   /// - Binds the socket to the specified local address and port
   /// - Initializes the message callback map
   /// - Sets up all event listeners (read, close, error, etc.)
-  /// 
+  ///
   /// Parameters:
   ///   - [address]: The local InternetAddress to bind to (e.g., InternetAddress.anyIPv4)
-  ///   - [port]: The local port number to listen on
-  /// 
+  ///   - [port]: The local port number to listen on (0-65535)
+  ///
   /// Returns: A Future that resolves to a new ShspSocket instance
-  /// 
+  ///
+  /// Throws:
+  ///   - [ShspValidationException] if port is invalid
+  ///   - [ShspNetworkException] if binding fails
+  ///
   /// Example:
   /// ```dart
   /// final socket = await ShspSocket.bind(InternetAddress.anyIPv4, 8000);
   /// ```
   static Future<ShspSocket> bind(InternetAddress address, int port) async {
-    final rawSocket = await RawDatagramSocket.bind(address, port);
+    // Validate port range
+    if (port < 0 || port > 65535) {
+      throw ShspValidationException(
+        'Port must be between 0 and 65535',
+        field: 'port',
+        value: port,
+      );
+    }
+
+    RawDatagramSocket? rawSocket = await RawDatagramSocket.bind(address, port);
     final callbacks = MessageCallbackMap();
     final socket = ShspSocket.internal(rawSocket, callbacks);
-    
+
     socket._localAddress = address;
     socket._localPort = port;
-    
+
     return socket;
   }
 
-
-
   @override
-  void setMessageCallback(String key, void Function(List<int> msg, RemoteInfo rinfo) cb) {
-      print('ShspSocket.setMessageCallback chiamata'); // test
+  void setMessageCallback(
+      String key, void Function(List<int> msg, RemoteInfo rinfo) cb) {
     _messageCallbacks.add(key, cb);
   }
 
   @override
+  bool removeMessageCallback(String key) {
+    if (_messageCallbacks.containsKey(key)) {
+      _messageCallbacks.remove(key);
+      return true;
+    }
+    return false;
+  }
+
+  @override
   void setCloseCallback(void Function() cb) {
-      print('ShspSocket.setCloseCallback chiamata'); // test
     _closeCallback = cb;
   }
 
   @override
   void setErrorCallback(void Function(dynamic err) cb) {
-      print('ShspSocket.setErrorCallback chiamata'); // test
     _errorCallback = cb;
   }
 
   @override
   void setListeningCallback(void Function() cb) {
-      print('ShspSocket.setListeningCallback chiamata'); // test
     _listeningCallback = cb;
   }
 
   @override
   void setConnectCallback(void Function() cb) {
-      print('ShspSocket.setConnectCallback chiamata'); // test
     _connectCallback = cb;
   }
 
   @override
   void onClose() {
-      print('ShspSocket.onClose chiamata'); // test
     _closeCallback?.call();
   }
 
   @override
   void onError(dynamic err) {
-      print('ShspSocket.onError chiamata'); // test
     _errorCallback?.call(err);
   }
 
   @override
   void onListening() {
-      print('ShspSocket.onListening chiamata'); // test
     _listeningCallback?.call();
   }
 
   @override
   void onConnect() {
-      print('ShspSocket.onConnect chiamata'); // test
     _connectCallback?.call();
   }
 
@@ -149,7 +160,6 @@ class ShspSocket extends RawShspSocket implements IShspSocket {
 
   @override
   void onMessage(List<int> msg, RemoteInfo rinfo) {
-      print('ShspSocket.onMessage chiamata'); // test
     final key = MessageCallbackMap.formatKey(rinfo.address, rinfo.port);
     final cb = _messageCallbacks.get(key);
     cb?.call(msg, rinfo);
@@ -157,7 +167,6 @@ class ShspSocket extends RawShspSocket implements IShspSocket {
 
   @override
   int sendTo(List<int> buffer, InternetAddress address, int port) {
-      print('ShspSocket.sendTo chiamata'); // test
     return super.send(buffer, address, port);
   }
 

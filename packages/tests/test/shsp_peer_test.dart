@@ -6,7 +6,8 @@ import 'package:shsp_types/shsp_types.dart';
 import 'package:shsp_implementations/shsp_base/shsp_peer.dart';
 import 'package:shsp_implementations/shsp_base/shsp_socket.dart';
 
-typedef IShspPeerFactory = IShspPeer Function({required PeerInfo remotePeer, required IShspSocket socket});
+typedef IShspPeerFactory = IShspPeer Function(
+    {required PeerInfo remotePeer, required IShspSocket socket});
 
 void testIShspPeer(IShspPeerFactory peerFactory) {
   group('IShspPeer', () {
@@ -32,7 +33,8 @@ void testIShspPeer(IShspPeerFactory peerFactory) {
       socketB.close();
     });
 
-    test('onMessage should trigger only for messages from remotePeer', () async {
+    test('onMessage should trigger only for messages from remotePeer',
+        () async {
       final testMsg = [42, 99, 77];
       final wrongMsg = [1, 2, 3];
       bool received = false;
@@ -107,7 +109,7 @@ void testIShspPeer(IShspPeerFactory peerFactory) {
     //   expect(received, isTrue);
     // });
 
-      // Removed serializedObject test as it is no longer needed.
+    // Removed serializedObject test as it is no longer needed.
 
     test('close closes the socket', () async {
       peerA.close();
@@ -124,5 +126,6 @@ void testIShspPeer(IShspPeerFactory peerFactory) {
 }
 
 void main() {
-  testIShspPeer(({required remotePeer, required socket}) => ShspPeer(remotePeer: remotePeer, socket: socket));
+  testIShspPeer(({required remotePeer, required socket}) =>
+      ShspPeer(remotePeer: remotePeer, socket: socket));
 }

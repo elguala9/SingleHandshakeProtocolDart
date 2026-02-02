@@ -13,14 +13,16 @@ dependencies:
     path: packages/interfaces
   shsp_implementations:
     path: packages/implementations
-  stun: 1.0.1
-  json_serializable: ^6.11.1
-  build_runner: ^2.10.4
+  stun: ^1.0.1
+  json_serializable: ^6.12.0
+  build_runner: ^2.10.5
+  json_annotation: ^4.10.0
+  meta: ^1.18.1
 
 dev_dependencies:
-  melos: ^7.3.0
-  lints: ^3.0.0
-  test: ^1.24.0
+  melos: ^7.4.0
+  lints: ^6.0.0
+  test: ^1.29.0
 
 workspace:
   - packages/types
