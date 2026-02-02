@@ -242,4 +242,15 @@ class ShspInstance extends ShspPeer implements IShspInstance {
     super.sendMessage(message);
   }
 
+  /// Override close() to ensure keep-alive timer is stopped
+  @override
+  void close() {
+    // Stop keep-alive timer to prevent resource leak
+    stopKeepAlive();
+    // only if already not send the close i send it
+    if(open) sendClosed();
+
+    // Call parent close() to remove callbacks
+    super.close();
+  }
 }
