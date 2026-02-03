@@ -1,3 +1,4 @@
+import 'package:meta/meta.dart';
 import 'package:shsp_implementations/shsp_implementations.dart';
 // ...existing code...
 import 'package:shsp_interfaces/shsp_interfaces.dart';
@@ -17,24 +18,38 @@ class ShspInstance extends ShspPeer implements IShspInstance {
   bool _closing = false;
   bool _open = false;
   int _keepAliveSeconds;
-  KeepAliveTimer? _keepAliveTimer;
+  @protected
+  KeepAliveTimer? keepAliveTimer;
 
-  void Function()? _onHandshake;
-  void Function()? _onOpen;
-  void Function()? _onClosing;
-  void Function()? _onClosed;
+  @protected
+  void Function()? onHandshake;
+  @protected
+  void Function()? onOpen;
+  @protected
+  void Function()? onClosing;
+  @protected
+  void Function()? onClosed;
   @override
-  void setCallbacks({
-    required void Function()? onHandshake,
-    required void Function()? onOpen,
-    required void Function()? onClosing,
-    required void Function()? onClosed,
-  }) {
-    _onHandshake = onHandshake;
-    _onOpen = onOpen;
-    _onClosing = onClosing;
-    _onClosed = onClosed;
+  void setCallbacks(InstanceCallbacks callbacks) {
+    final (:onHandshake, :onOpen, :onClosing, :onClosed) = callbacks;
+    this.onHandshake = onHandshake;
+    this.onOpen = onOpen;
+    this.onClosing = onClosing;
+    this.onClosed = onClosed;
   }
+
+  @override
+  InstanceCallbacks getCallbacks(){
+
+      return (
+        onHandshake: onHandshake,
+        onOpen: onOpen,
+        onClosing: onClosing,
+        onClosed: onClosed,
+      );
+  }
+
+  
 
   ShspInstance({
     required super.remotePeer,
@@ -98,11 +113,11 @@ class ShspInstance extends ShspPeer implements IShspInstance {
   bool _isHandshake(List<int> msg) {
     if (msg.isNotEmpty && msg[0] == handshakePrefix) {
       _handshake = true; // i got the handshake of the other peer
-      if (_onHandshake != null) _onHandshake!();
+      if (onHandshake != null) onHandshake!();
       // if [0x01, 0x01] then the other peer got my handshake
       if (msg.length > 1 && msg[1] == handshakePrefix) {
         _open = true;
-        if (_onOpen != null) _onOpen!();
+        if (onOpen != null) onOpen!();
       }
       return true;
     }
@@ -113,7 +128,7 @@ class ShspInstance extends ShspPeer implements IShspInstance {
   bool _isClosing(List<int> msg) {
     if (msg.isNotEmpty && msg[0] == closingPrefix) {
       _closing = true;
-      if (_onClosing != null) _onClosing!();
+      if (onClosing != null) onClosing!();
       return true;
     }
     return false;
@@ -124,7 +139,7 @@ class ShspInstance extends ShspPeer implements IShspInstance {
     if (msg.isNotEmpty && msg[0] == closedPrefix) {
       _closing = false;
       _open = false;
-      if (_onClosed != null) _onClosed!();
+      if (onClosed != null) onClosed!();
       return true;
     }
     return false;
@@ -189,10 +204,10 @@ class ShspInstance extends ShspPeer implements IShspInstance {
   /// Starts periodic keep-alive sending.
   @override
   void startKeepAlive() {
-    if (_keepAliveTimer != null && _keepAliveTimer!.isActive) {
+    if (keepAliveTimer != null && keepAliveTimer!.isActive) {
       return; // Already running
     }
-    _keepAliveTimer = KeepAliveTimer.periodic(
+    keepAliveTimer = KeepAliveTimer.periodic(
       Duration(seconds: keepAliveSeconds),
       (_) {
         try {
@@ -210,21 +225,21 @@ class ShspInstance extends ShspPeer implements IShspInstance {
   /// Stops periodic keep-alive sending.
   @override
   void stopKeepAlive() {
-    if (_keepAliveTimer != null) {
+    if (keepAliveTimer != null) {
       try {
-        _keepAliveTimer!.cancel();
+        keepAliveTimer!.cancel();
       } catch (e) {
         // Log error but continue cleanup
         print('Error canceling keep-alive timer: $e');
       } finally {
-        _keepAliveTimer = null;
+        keepAliveTimer = null;
       }
     }
   }
 
   /// Resets the keep-alive timer (postpones the next sending).
   void resetKeepAlive() {
-    _keepAliveTimer?.resetTick();
+    keepAliveTimer?.resetTick();
   }
 
   @override
