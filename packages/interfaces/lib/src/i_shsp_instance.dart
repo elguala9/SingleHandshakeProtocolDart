@@ -1,5 +1,12 @@
 import 'i_shsp_peer.dart';
 
+typedef InstanceCallbacks = ({
+  void Function()? onHandshake,
+  void Function()? onOpen,
+  void Function()? onClosing,
+  void Function()? onClosed,
+});
+
 /// Interface for SHSP Instance
 /// Extends IShspPeer with handshake and connection state management
 abstract interface class IShspInstance implements IShspPeer {
@@ -36,10 +43,6 @@ abstract interface class IShspInstance implements IShspPeer {
   /// Stop sending keep-alive messages
   void stopKeepAlive();
 
-  void setCallbacks({
-    required void Function()? onHandshake,
-    required void Function()? onOpen,
-    required void Function()? onClosing,
-    required void Function()? onClosed,
-  });
+  void setCallbacks(InstanceCallbacks callbacks);
+  InstanceCallbacks getCallbacks();
 }
