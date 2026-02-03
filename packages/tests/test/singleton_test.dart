@@ -1,6 +1,5 @@
 import 'package:test/test.dart';
 import 'package:shsp_implementations/shsp_implementations.dart';
-import 'dart:io';
 
 void main() {
   group('Singletons', () {
