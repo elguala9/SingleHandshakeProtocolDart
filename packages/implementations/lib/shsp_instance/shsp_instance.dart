@@ -276,6 +276,8 @@ class ShspInstance extends ShspPeer implements IShspInstance {
   void close() {
     // Stop keep-alive timer to prevent resource leak
     stopKeepAlive();
+    // only if already not send the close i send it
+    if(open) sendClosed();
 
     // Call parent close() to remove callbacks
     super.close();
