@@ -26,11 +26,12 @@ void main() {
     late ShspPeer peer3;
     late ShspPeer peer4;
 
-    const principalPort = 9500;
-    const peerPort1 = 9601;
-    const peerPort2 = 9602;
-    const peerPort3 = 9603;
-    const peerPort4 = 9604;
+    // Port variables (will be assigned by OS)
+    late int principalPort;
+    late int peerPort1;
+    late int peerPort2;
+    late int peerPort3;
+    late int peerPort4;
 
     const message1 = 'msg_from_peer_1';
     const message2 = 'msg_from_peer_2';
@@ -39,11 +40,21 @@ void main() {
 
     setUp(() async {
       final address = InternetAddress.loopbackIPv4;
-      principalSocket = await ShspSocket.bind(address, principalPort);
-      peerSocket1 = await ShspSocket.bind(address, peerPort1);
-      peerSocket2 = await ShspSocket.bind(address, peerPort2);
-      peerSocket3 = await ShspSocket.bind(address, peerPort3);
-      peerSocket4 = await ShspSocket.bind(address, peerPort4);
+
+      // Use ephemeral ports (0) to avoid conflicts when tests run in parallel
+      principalSocket = await ShspSocket.bind(address, 0);
+      peerSocket1 = await ShspSocket.bind(address, 0);
+      peerSocket2 = await ShspSocket.bind(address, 0);
+      peerSocket3 = await ShspSocket.bind(address, 0);
+      peerSocket4 = await ShspSocket.bind(address, 0);
+
+      // Read actual ports assigned by OS
+      principalPort = principalSocket.localPort!;
+      peerPort1 = peerSocket1.localPort!;
+      peerPort2 = peerSocket2.localPort!;
+      peerPort3 = peerSocket3.localPort!;
+      peerPort4 = peerSocket4.localPort!;
+
       principalInfo = PeerInfo(address: address, port: principalPort);
       peerInfo1 = PeerInfo(address: address, port: peerPort1);
       peerInfo2 = PeerInfo(address: address, port: peerPort2);
