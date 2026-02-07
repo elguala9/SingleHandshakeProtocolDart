@@ -18,6 +18,7 @@ platforms:
   windows:
 
 dependencies:
+  callback_handler: ^0.0.2
   json_annotation: ^4.10.0
   shsp_types: ^1.0.5
 

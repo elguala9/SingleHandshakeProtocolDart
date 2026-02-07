@@ -1,5 +1,7 @@
+import 'dart:async';
 import 'dart:io';
 // ...existing code...
+import 'package:meta/meta.dart';
 import 'package:shsp_types/shsp_types.dart';
 import 'package:shsp_interfaces/shsp_interfaces.dart';
 import '../utility/message_callback_map.dart';
@@ -8,30 +10,33 @@ import '../utility/raw_shsp_socket.dart';
 /// SHSP Socket implementation wrapping RawDatagramSocket
 class ShspSocket extends RawShspSocket implements IShspSocket {
   final MessageCallbackMap _messageCallbacks;
+  StreamSubscription<RawSocketEvent>? _socketSubscription;
 
-  void Function()? _closeCallback;
-  void Function(dynamic err)? _errorCallback;
-  void Function()? _listeningCallback;
-  void Function()? _connectCallback;
+  late CallbackOn _onClose;
+  late CallbackOnError _onError;
+  late CallbackOn _onListening;
 
   InternetAddress? _localAddress;
   int? _localPort;
 
   /// Internal constructor for factory creation
   ShspSocket.internal(super.socket, this._messageCallbacks) {
+    _onClose = CallbackOn();
+    _onError = CallbackOnError();
+    _onListening = CallbackOn();
     _setupEventListeners();
   }
 
   /// Setup event listeners for the raw socket
   void _setupEventListeners() {
-    socket.listen(
+    _socketSubscription = socket.listen(
       (event) {
         switch (event) {
           case RawSocketEvent.read:
             _handleReadEvent();
             break;
           case RawSocketEvent.closed:
-            onClose();
+            _invokeOnClose();
             break;
           case RawSocketEvent.readClosed:
             // Read end of socket closed
@@ -42,7 +47,7 @@ class ShspSocket extends RawShspSocket implements IShspSocket {
         }
       },
       onError: (error) {
-        onError(error);
+        _invokeOnError(error);
       },
     );
   }
@@ -93,7 +98,9 @@ class ShspSocket extends RawShspSocket implements IShspSocket {
     final socket = ShspSocket.internal(rawSocket, callbacks);
 
     socket._localAddress = address;
-    socket._localPort = port;
+    socket._localPort = rawSocket.port;  // Read actual port from OS, not parameter
+
+    socket._invokeOnListening();
 
     return socket;
   }
@@ -115,50 +122,53 @@ class ShspSocket extends RawShspSocket implements IShspSocket {
 
   @override
   void setCloseCallback(void Function() cb) {
-    _closeCallback = cb;
+    _onClose.register((_) => cb());
   }
 
   @override
   void setErrorCallback(void Function(dynamic err) cb) {
-    _errorCallback = cb;
+    _onError.register(cb);
   }
 
   @override
   void setListeningCallback(void Function() cb) {
-    _listeningCallback = cb;
+    _onListening.register((_) => cb());
   }
 
-  @override
-  void setConnectCallback(void Function() cb) {
-    _connectCallback = cb;
-  }
 
   @override
-  void onClose() {
-    _closeCallback?.call();
-  }
+  CallbackOn get onClose => _onClose;
 
   @override
-  void onError(dynamic err) {
-    _errorCallback?.call(err);
-  }
+  CallbackOnError get onError => _onError;
 
   @override
-  void onListening() {
-    _listeningCallback?.call();
+  CallbackOn get onListening => _onListening;
+
+
+  @protected
+  void _invokeOnClose() {
+    _onClose.invoke(null);
   }
 
-  @override
-  void onConnect() {
-    _connectCallback?.call();
+  @protected
+  void _invokeOnError(dynamic err) {
+    _onError.invoke(err);
   }
+
+  @protected
+  void _invokeOnListening() {
+    _onListening.invoke(null);
+  }
+
+
 
   @override
   String serializedObject() {
     return 'ShspSocket{localAddress: $_localAddress, localPort: $_localPort}';
   }
 
-  @override
+  @protected
   void onMessage(List<int> msg, RemoteInfo rinfo) {
     final key = MessageCallbackMap.formatKey(rinfo.address, rinfo.port);
     final cb = _messageCallbacks.get(key);
@@ -172,6 +182,7 @@ class ShspSocket extends RawShspSocket implements IShspSocket {
 
   @override
   void close() {
+    _socketSubscription?.cancel();
     socket.close();
   }
 

@@ -17,8 +17,10 @@ void testIShspSocket(IShspSocketFactory createSocket) {
 
     setUp(() async {
       address = InternetAddress.loopbackIPv4;
-      port = 9000;
-      socket = await createSocket(address, port);
+      // Use ephemeral port (0) to avoid conflicts when tests run in parallel
+      socket = await createSocket(address, 0);
+      // Read actual port assigned by OS
+      port = (socket as ShspSocket).localPort!;
     });
 
     tearDown(() {
@@ -44,9 +46,9 @@ void testIShspSocket(IShspSocketFactory createSocket) {
 
     test('should send and receive messages between two sockets', () async {
       final address2 = InternetAddress.loopbackIPv4;
-      final port2 = port + 1;
       final socket1 = socket;
-      final socket2 = await createSocket(address2, port2);
+      final socket2 = await createSocket(address2, 0);
+      final port2 = (socket2 as ShspSocket).localPort!;
 
       final testMsg = [10, 20, 30];
       final completer = Completer<void>();

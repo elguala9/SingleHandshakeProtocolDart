@@ -16,10 +16,17 @@ void main() {
 
     setUp(() async {
       final address = InternetAddress.loopbackIPv4;
-      socketA = await ShspSocket.bind(address, 9400);
-      socketB = await ShspSocket.bind(address, 9401);
-      peerInfoA = PeerInfo(address: address, port: 9400);
-      peerInfoB = PeerInfo(address: address, port: 9401);
+
+      // Use ephemeral ports (0) to avoid conflicts when tests run in parallel
+      socketA = await ShspSocket.bind(address, 0);
+      socketB = await ShspSocket.bind(address, 0);
+
+      // Read actual ports assigned by OS
+      final portA = socketA.localPort!;
+      final portB = socketB.localPort!;
+
+      peerInfoA = PeerInfo(address: address, port: portA);
+      peerInfoB = PeerInfo(address: address, port: portB);
       instanceA = ShspInstance(remotePeer: peerInfoB, socket: socketA);
       instanceB = ShspInstance(remotePeer: peerInfoA, socket: socketB);
     });

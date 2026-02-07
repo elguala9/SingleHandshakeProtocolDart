@@ -20,10 +20,17 @@ void testIShspPeer(IShspPeerFactory peerFactory) {
 
     setUp(() async {
       final address = InternetAddress.loopbackIPv4;
-      socketA = await ShspSocket.bind(address, 9100);
-      socketB = await ShspSocket.bind(address, 9101);
-      peerInfoA = PeerInfo(address: address, port: 9100);
-      peerInfoB = PeerInfo(address: address, port: 9101);
+
+      // Use ephemeral ports (0) to avoid conflicts when tests run in parallel
+      socketA = await ShspSocket.bind(address, 0);
+      socketB = await ShspSocket.bind(address, 0);
+
+      // Read actual ports assigned by OS
+      final portA = (socketA as ShspSocket).localPort!;
+      final portB = (socketB as ShspSocket).localPort!;
+
+      peerInfoA = PeerInfo(address: address, port: portA);
+      peerInfoB = PeerInfo(address: address, port: portB);
       peerA = peerFactory(remotePeer: peerInfoB, socket: socketA);
       peerB = peerFactory(remotePeer: peerInfoA, socket: socketB);
     });
@@ -53,7 +60,7 @@ void testIShspPeer(IShspPeerFactory peerFactory) {
 
       // Invio da peerC a peerA (non deve attivare la callback)
       final address = InternetAddress.loopbackIPv4;
-      final socketC = await ShspSocket.bind(address, 9102);
+      final socketC = await ShspSocket.bind(address, 0);
       final peerC = peerFactory(remotePeer: peerInfoA, socket: socketC);
       received = false;
       peerC.sendMessage([99, 88, 77]);
@@ -70,7 +77,7 @@ void testIShspPeer(IShspPeerFactory peerFactory) {
 
     test('peer should ignore UDP packets from unknown peer', () async {
       final address = InternetAddress.loopbackIPv4;
-      final socketC = await ShspSocket.bind(address, 9102);
+      final socketC = await ShspSocket.bind(address, 0);
       final peerC = peerFactory(remotePeer: peerInfoA, socket: socketC);
 
       bool received = false;
