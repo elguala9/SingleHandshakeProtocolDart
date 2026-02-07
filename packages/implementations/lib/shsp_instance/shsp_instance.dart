@@ -21,33 +21,16 @@ class ShspInstance extends ShspPeer implements IShspInstance {
   @protected
   KeepAliveTimer? keepAliveTimer;
 
-  @protected
-  void Function()? onHandshake;
-  @protected
-  void Function()? onOpen;
-  @protected
-  void Function()? onClosing;
-  @protected
-  void Function()? onClosed;
   @override
-  void setCallbacks(InstanceCallbacks callbacks) {
-    final (:onHandshake, :onOpen, :onClosing, :onClosed) = callbacks;
-    this.onHandshake = onHandshake;
-    this.onOpen = onOpen;
-    this.onClosing = onClosing;
-    this.onClosed = onClosed;
-  }
-
+  late CallbackOn onHandshake;
   @override
-  InstanceCallbacks getCallbacks(){
-
-      return (
-        onHandshake: onHandshake,
-        onOpen: onOpen,
-        onClosing: onClosing,
-        onClosed: onClosed,
-      );
-  }
+  late CallbackOn onOpen;
+  @override
+  late CallbackOn onClosing;
+  @override
+  late CallbackOn onClose;
+  
+  
 
   
 
@@ -55,7 +38,12 @@ class ShspInstance extends ShspPeer implements IShspInstance {
     required super.remotePeer,
     required super.socket,
     int keepAliveSeconds = 30,
-  }) : _keepAliveSeconds = keepAliveSeconds;
+  }) : _keepAliveSeconds = keepAliveSeconds {
+    onHandshake = CallbackOn();
+    onOpen = CallbackOn();
+    onClosing = CallbackOn();
+    onClose = CallbackOn();
+  }
 
   /// Factory: creates a new SHSP instance with configurable keep-alive.
   factory ShspInstance.create({
@@ -113,11 +101,11 @@ class ShspInstance extends ShspPeer implements IShspInstance {
   bool _isHandshake(List<int> msg) {
     if (msg.isNotEmpty && msg[0] == handshakePrefix) {
       _handshake = true; // i got the handshake of the other peer
-      if (onHandshake != null) onHandshake!();
+      onHandshake.invoke(null);
       // if [0x01, 0x01] then the other peer got my handshake
       if (msg.length > 1 && msg[1] == handshakePrefix) {
         _open = true;
-        if (onOpen != null) onOpen!();
+        onOpen.invoke(null);
       }
       return true;
     }
@@ -128,7 +116,7 @@ class ShspInstance extends ShspPeer implements IShspInstance {
   bool _isClosing(List<int> msg) {
     if (msg.isNotEmpty && msg[0] == closingPrefix) {
       _closing = true;
-      if (onClosing != null) onClosing!();
+      onClosing.invoke(null);
       return true;
     }
     return false;
@@ -139,7 +127,7 @@ class ShspInstance extends ShspPeer implements IShspInstance {
     if (msg.isNotEmpty && msg[0] == closedPrefix) {
       _closing = false;
       _open = false;
-      if (onClosed != null) onClosed!();
+      onClose.invoke(null);
       return true;
     }
     return false;

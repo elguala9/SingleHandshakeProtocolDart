@@ -24,6 +24,7 @@ dependencies:
   meta: ^1.18.1
   clock_dart: ^1.0.0
   stun: ^1.0.1
+  callback_handler: ^0.0.2
 
 dev_dependencies:
   build_runner: ^2.10.5
