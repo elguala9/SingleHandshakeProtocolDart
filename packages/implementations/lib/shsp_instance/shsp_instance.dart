@@ -101,11 +101,11 @@ class ShspInstance extends ShspPeer implements IShspInstance {
   bool _isHandshake(List<int> msg) {
     if (msg.isNotEmpty && msg[0] == handshakePrefix) {
       _handshake = true; // i got the handshake of the other peer
-      onHandshake.invoke(null);
+      onHandshake.call(null);
       // if [0x01, 0x01] then the other peer got my handshake
       if (msg.length > 1 && msg[1] == handshakePrefix) {
         _open = true;
-        onOpen.invoke(null);
+        onOpen.call(null);
       }
       return true;
     }
@@ -116,7 +116,7 @@ class ShspInstance extends ShspPeer implements IShspInstance {
   bool _isClosing(List<int> msg) {
     if (msg.isNotEmpty && msg[0] == closingPrefix) {
       _closing = true;
-      onClosing.invoke(null);
+      onClosing.call(null);
       return true;
     }
     return false;
@@ -127,7 +127,7 @@ class ShspInstance extends ShspPeer implements IShspInstance {
     if (msg.isNotEmpty && msg[0] == closedPrefix) {
       _closing = false;
       _open = false;
-      onClose.invoke(null);
+      onClose.call(null);
       return true;
     }
     return false;

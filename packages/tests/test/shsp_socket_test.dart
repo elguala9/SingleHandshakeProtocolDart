@@ -33,14 +33,14 @@ void testIShspSocket(IShspSocketFactory createSocket) {
       bool called = false;
       socket.setMessageCallback(
         '${address.address}:$port',
-        (msg, info) {
+        (record) {
           called = true;
-          expect(msg, equals(testMsg));
-          expect(info.address, equals(address));
-          expect(info.port, equals(port));
+          expect(record.msg, equals(testMsg));
+          expect(record.rinfo.address, equals(address));
+          expect(record.rinfo.port, equals(port));
         },
       );
-      socket.onMessage(testMsg, rinfo);
+      (socket as ShspSocket).onMessage(testMsg, rinfo);
       expect(called, isTrue);
     });
 
@@ -59,12 +59,12 @@ void testIShspSocket(IShspSocketFactory createSocket) {
 
       socket2.setMessageCallback(
         callbackKey,
-        (msg, info) {
+        (record) {
           print(
-              'DEBUG: Ricevuto messaggio: $msg da ${info.address}:${info.port}');
-          expect(msg, equals(testMsg));
-          expect(info.address, equals(address));
-          expect(info.port, equals(port));
+              'DEBUG: Ricevuto messaggio: ${record.msg} da ${record.rinfo.address}:${record.rinfo.port}');
+          expect(record.msg, equals(testMsg));
+          expect(record.rinfo.address, equals(address));
+          expect(record.rinfo.port, equals(port));
           completer.complete();
         },
       );
@@ -87,7 +87,7 @@ void testIShspSocket(IShspSocketFactory createSocket) {
       socket.setCloseCallback(() {
         closed = true;
       });
-      socket.onClose();
+      (socket as ShspSocket).onClose.call(null);
       expect(closed, isTrue);
     });
 
@@ -98,8 +98,20 @@ void testIShspSocket(IShspSocketFactory createSocket) {
         errored = true;
         expect(err, equals(error));
       });
-      socket.onError(error);
+      (socket as ShspSocket).onError.call(error);
       expect(errored, isTrue);
+    });
+
+    test('close() should be idempotent - can be called multiple times', () async {
+      // Create a new socket for this test
+      final testSocket = await createSocket(address, 0);
+
+      // Call close multiple times - should not throw
+      expect(() {
+        testSocket.close();
+        testSocket.close();
+        testSocket.close();
+      }, returnsNormally);
     });
   });
 }

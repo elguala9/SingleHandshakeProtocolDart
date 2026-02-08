@@ -1,7 +1,7 @@
 # SHSP Types
 
 [![pub package](https://img.shields.io/pub/v/shsp_types.svg)](https://pub.dev/packages/shsp_types)
-[![License](https://img.shields.io/badge/license-MIT-blue.svg)](https://github.com/lgualandi/SingleHandShakeProtocolDart/blob/main/LICENSE)
+[![License](https://img.shields.io/badge/license-LGPL--3.0-blue.svg)](https://github.com/lgualandi/SingleHandShakeProtocolDart/blob/main/LICENSE)
 
 Type definitions and serializable models for Single HandShake Protocol (SHSP) - a custom networking protocol for peer-to-peer communication.
 
@@ -19,7 +19,7 @@ Add this to your package's `pubspec.yaml`:
 
 ```yaml
 dependencies:
-  shsp_types: ^1.0.5
+  shsp_types: ^1.0.7
 ```
 
 ## Usage

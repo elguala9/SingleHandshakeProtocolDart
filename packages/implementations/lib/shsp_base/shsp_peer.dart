@@ -11,6 +11,7 @@ class ShspPeer implements IShspPeer {
   final PeerInfo remotePeer;
   final IShspSocket socket;
   MessageCallback? _onMessageCallback;
+  MessageCallbackFunction? _socketCallback;
   bool _closed = false;
 
   ShspPeer(
@@ -59,17 +60,15 @@ class ShspPeer implements IShspPeer {
   void _setupMessageCallback() {
     final key =
         MessageCallbackMap.formatKey(remotePeer.address, remotePeer.port);
-    socket.setMessageCallback(
-      key,
-      (msg, rinfo) {
-        onMessage(
-            msg,
-            PeerInfo(
-              address: rinfo.address,
-              port: rinfo.port,
-            ));
-      },
-    );
+    _socketCallback = (record) {
+      onMessage(
+          record.msg,
+          PeerInfo(
+            address: record.rinfo.address,
+            port: record.rinfo.port,
+          ));
+    };
+    socket.setMessageCallback(key, _socketCallback!);
   }
 
   @override
@@ -79,13 +78,15 @@ class ShspPeer implements IShspPeer {
     _closed = true;
 
     // Remove the message callback to prevent memory leaks
-    try {
-      final key =
-          MessageCallbackMap.formatKey(remotePeer.address, remotePeer.port);
-      socket.removeMessageCallback(key);
-    } catch (e) {
-      // Log error but continue with close
-      // In production, you might want to use a proper logger here
+    if (_socketCallback != null) {
+      try {
+        final key =
+            MessageCallbackMap.formatKey(remotePeer.address, remotePeer.port);
+        socket.removeMessageCallback(key, _socketCallback!);
+      } catch (e) {
+        // Log error but continue with close
+        // In production, you might want to use a proper logger here
+      }
     }
 
     // Note: We don't close the socket itself as it may be shared with other peers

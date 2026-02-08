@@ -32,12 +32,11 @@ abstract interface class IShspSocket {
 
 
   /// Associates a callback with incoming messages from a specific remote endpoint
-  void setMessageCallback(
-      String key, void Function(List<int> msg, RemoteInfo rinfo) cb);
+  void setMessageCallback(String key, MessageCallbackFunction cb);
 
   /// Removes a message callback associated with a specific remote endpoint
   /// Returns true if a callback was removed, false if no callback was found
-  bool removeMessageCallback(String key);
+  bool removeMessageCallback(String key, MessageCallbackFunction cb);
 
   /// Send data to a remote address (as string) and port
   /// Returns the number of bytes written

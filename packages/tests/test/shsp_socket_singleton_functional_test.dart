@@ -25,8 +25,8 @@ void main() {
       bool received = false;
       other.setMessageCallback(
         '${info.address}:${info.port}',
-        (msg, rinfo) {
-          if (msg.isNotEmpty && msg[0] == 0x01) received = true;
+        (record) {
+          if (record.msg.isNotEmpty && record.msg[0] == 0x01) received = true;
         },
       );
       // Invia handshake dalla singleton alla socket normale
@@ -47,8 +47,8 @@ void main() {
       bool received = false;
       other.setMessageCallback(
         '${info.address}:${info.port}',
-        (msg, rinfo) {
-          if (msg.isNotEmpty && msg[0] == 0x00 && msg[1] == 42) received = true;
+        (record) {
+          if (record.msg.isNotEmpty && record.msg[0] == 0x00 && record.msg[1] == 42) received = true;
         },
       );
       singleton.sendTo([0x00, 42], rawOther.address, rawOther.port);
