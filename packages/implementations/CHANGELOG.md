@@ -5,6 +5,33 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [1.0.7] - 2026-02-08
+
+### Changed
+- Updated dependencies: shsp_types ^1.0.7, shsp_interfaces ^1.0.7 (from ^1.0.5)
+- Consolidated callback handler integration
+- Version synchronization across all packages in monorepo
+
+### Fixed
+- Finalized callback handler implementation across all components
+- Ensured consistency in callback management patterns
+
+## [1.0.6] - 2026-02-05
+
+### Added
+- Callback handler get and set methods
+- Enhanced callback management capabilities
+- Improved callback lifecycle management
+
+### Changed
+- Refactored callback handler to use callback_handler package
+- Enhanced ShspInstance callback support
+- Improved ShspSocket callback management
+
+### Fixed
+- Fixed callback execution and state management
+- Resolved issues in message callback mapping
+
 ## [1.0.5] - 2026-01-30
 
 ### Changed

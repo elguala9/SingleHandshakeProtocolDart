@@ -1,7 +1,7 @@
 # SHSP Interfaces
 
 [![pub package](https://img.shields.io/pub/v/shsp_interfaces.svg)](https://pub.dev/packages/shsp_interfaces)
-[![License](https://img.shields.io/badge/license-MIT-blue.svg)](https://github.com/lgualandi/SingleHandShakeProtocolDart/blob/main/LICENSE)
+[![License](https://img.shields.io/badge/license-LGPL--3.0-blue.svg)](https://github.com/lgualandi/SingleHandShakeProtocolDart/blob/main/LICENSE)
 
 Abstract interfaces and contracts for Single HandShake Protocol (SHSP) implementations - defines the core API for peer-to-peer networking.
 
@@ -19,8 +19,8 @@ Add this to your package's `pubspec.yaml`:
 
 ```yaml
 dependencies:
-  shsp_interfaces: ^1.0.5
-  shsp_types: ^1.0.5  # Required dependency
+  shsp_interfaces: ^1.0.7
+  shsp_types: ^1.0.7  # Required dependency
 ```
 
 ## Usage

@@ -1,7 +1,7 @@
 # SHSP Implementations
 
 [![pub package](https://img.shields.io/pub/v/shsp_implementations.svg)](https://pub.dev/packages/shsp_implementations)
-[![License](https://img.shields.io/badge/license-MIT-blue.svg)](https://github.com/lgualandi/SingleHandShakeProtocolDart/blob/main/LICENSE)
+[![License](https://img.shields.io/badge/license-LGPL--3.0-blue.svg)](https://github.com/lgualandi/SingleHandShakeProtocolDart/blob/main/LICENSE)
 
 Complete implementation of Single HandShake Protocol (SHSP) - provides UDP sockets, handshake logic, and utilities for peer-to-peer networking.
 
@@ -22,12 +22,12 @@ Add this to your package's `pubspec.yaml`:
 
 ```yaml
 dependencies:
-  shsp_implementations: ^1.0.5
+  shsp_implementations: ^1.0.7
 ```
 
 This will automatically include the required dependencies:
-- `shsp_types` ^1.0.5
-- `shsp_interfaces` ^1.0.5
+- `shsp_types` ^1.0.7
+- `shsp_interfaces` ^1.0.7
 
 ## Quick Start
 

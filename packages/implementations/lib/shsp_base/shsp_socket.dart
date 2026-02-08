@@ -18,6 +18,7 @@ class ShspSocket extends RawShspSocket implements IShspSocket {
 
   InternetAddress? _localAddress;
   int? _localPort;
+  bool _closed = false;
 
   /// Internal constructor for factory creation
   ShspSocket.internal(super.socket, this._messageCallbacks) {
@@ -106,15 +107,14 @@ class ShspSocket extends RawShspSocket implements IShspSocket {
   }
 
   @override
-  void setMessageCallback(
-      String key, void Function(List<int> msg, RemoteInfo rinfo) cb) {
+  void setMessageCallback(String key, MessageCallbackFunction cb) {
     _messageCallbacks.add(key, cb);
   }
 
   @override
-  bool removeMessageCallback(String key) {
+  bool removeMessageCallback(String key, MessageCallbackFunction cb) {
     if (_messageCallbacks.containsKey(key)) {
-      _messageCallbacks.remove(key);
+      _messageCallbacks.removeCallback(key, cb);
       return true;
     }
     return false;
@@ -148,17 +148,17 @@ class ShspSocket extends RawShspSocket implements IShspSocket {
 
   @protected
   void _invokeOnClose() {
-    _onClose.invoke(null);
+    _onClose.call(null);
   }
 
   @protected
   void _invokeOnError(dynamic err) {
-    _onError.invoke(err);
+    _onError.call(err);
   }
 
   @protected
   void _invokeOnListening() {
-    _onListening.invoke(null);
+    _onListening.call(null);
   }
 
 
@@ -172,7 +172,7 @@ class ShspSocket extends RawShspSocket implements IShspSocket {
   void onMessage(List<int> msg, RemoteInfo rinfo) {
     final key = MessageCallbackMap.formatKey(rinfo.address, rinfo.port);
     final cb = _messageCallbacks.get(key);
-    cb?.call(msg, rinfo);
+    cb?.call((msg: msg, rinfo: rinfo));
   }
 
   @override
@@ -182,8 +182,26 @@ class ShspSocket extends RawShspSocket implements IShspSocket {
 
   @override
   void close() {
-    _socketSubscription?.cancel();
-    socket.close();
+    // Make close() idempotent - can be called multiple times safely
+    if (_closed) return;
+    _closed = true;
+
+    // Cancel the stream subscription if active
+    try {
+      _socketSubscription?.cancel();
+    } catch (e) {
+      // Log error but continue with close
+    }
+
+    // Clear all message callbacks to prevent memory leaks
+    _messageCallbacks.clear();
+
+    // Close the underlying socket
+    try {
+      socket.close();
+    } catch (e) {
+      // Socket may already be closed, ignore
+    }
   }
 
   // ...existing code...
