@@ -1,72 +1,98 @@
 import 'dart:io';
+import 'package:callback_handler/callback_handler.dart';
 import 'package:shsp_types/shsp_types.dart';
 
+typedef CallbackOnMessage = CallbackHandler<MessageRecord, void>;
 /// A specialized callback map for handling messages from remote endpoints
 /// Supports both IPv4 and IPv6 addresses
 /// Key format:
 /// - IPv4: "192.168.1.100:8080"
 /// - IPv6: "[2001:db8::1]:8080"
 class MessageCallbackMap {
-  final Map<String, void Function(List<int> msg, RemoteInfo rinfo)> _callbacks =
-      {};
+  final Map<String, CallbackOnMessage>
+      _handlers = {};
 
   /// Add a callback for a specific remote endpoint
   /// Key format: IPv4 "192.168.1.100:8080" or IPv6 "[2001:db8::1]:8080"
-  void add(
-      String key, void Function(List<int> msg, RemoteInfo rinfo) callback) {
-    _callbacks[key] = callback;
+  /// If a callback already exists for this key, it will be replaced
+  void add(String key, MessageCallbackFunction callback) {
+    final handler = CallbackOnMessage();
+    handler.register((params) => callback(params));
+    _handlers[key] = handler;
   }
 
-  /// Get a callback for a specific remote endpoint
-  void Function(List<int> msg, RemoteInfo rinfo)? get(String key) {
-    return _callbacks[key];
+  /// Get a callback invoker for a specific remote endpoint
+  /// Returns a function that invokes the registered callback for this key
+  MessageCallbackFunction? get(String key) {
+    return _handlers[key]?.call;
+  }
+
+  /// Get a callback invoker for a specific remote endpoint
+  /// Returns a function that invokes the registered callback for this key
+  CallbackOnMessage? getHandler(String key) {
+    final handler = _handlers[key];
+    if (handler == null) return null;
+    return handler;
   }
 
   /// Add a callback using InternetAddress and port
   void addByAddress(InternetAddress address, int port,
-      void Function(List<int> msg, RemoteInfo rinfo) callback) {
+      MessageCallbackFunction callback) {
     final key = formatKey(address, port);
-    _callbacks[key] = callback;
+    add(key, callback);
   }
 
-  /// Get a callback using InternetAddress and port
-  void Function(List<int> msg, RemoteInfo rinfo)? getByAddress(
+  /// Get a callback invoker using InternetAddress and port
+  MessageCallbackFunction? getByAddress(
       InternetAddress address, int port) {
     final key = formatKey(address, port);
-    return _callbacks[key];
+    return get(key);
   }
 
-  /// Remove a callback by key
+
+
+  /// Remove the callback for a key
   void remove(String key) {
-    _callbacks.remove(key);
+    _handlers.remove(key);
   }
 
-  /// Remove a callback using InternetAddress and port
+  /// Remove athe designed key
+  void removeKey(String key) {
+    _handlers.remove(key);
+  }
+
+  /// Remove all callbacks using InternetAddress and port
   void removeByAddress(InternetAddress address, int port) {
     final key = formatKey(address, port);
-    _callbacks.remove(key);
+    removeKey(key);
   }
 
-  /// Check if a key exists
+  /// Check if a key has registered callbacks
   bool containsKey(String key) {
-    return _callbacks.containsKey(key);
+    return _handlers.containsKey(key);
   }
 
-  /// Check if an address:port combination exists
+  /// Check if an address:port combination has registered callbacks
   bool containsAddress(InternetAddress address, int port) {
     final key = formatKey(address, port);
-    return _callbacks.containsKey(key);
+    return containsKey(key);
   }
 
-  /// Get all keys
-  Iterable<String> get keys => _callbacks.keys;
+  /// Get all keys with registered callbacks
+  Iterable<String> get keys => _handlers.keys;
 
-  /// Get the number of callbacks
-  int get length => _callbacks.length;
+  /// Get the number of registered callback keys
+  int get length => _handlers.length;
 
-  /// Clear all callbacks
+  /// Clear all registered callbacks
   void clear() {
-    _callbacks.clear();
+    _handlers.clear();
+  }
+
+  /// Remove the callback for a specific key
+  void removeCallback(String key,
+      MessageCallbackFunction callback) {
+    _handlers.remove(key);
   }
 
   /// Format an InternetAddress and port into a key string

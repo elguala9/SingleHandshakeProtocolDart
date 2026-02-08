@@ -18,13 +18,23 @@ void main() {
       });
 
       test('add and get should work with string key', () {
-        void testCallback(List<int> msg, RemoteInfo rinfo) {}
+        bool callbackExecuted = false;
+        void testCallback(MessageRecord record) {
+          callbackExecuted = true;
+        }
 
         callbackMap.add('127.0.0.1:8080', testCallback);
 
         expect(callbackMap.length, equals(1));
         expect(callbackMap.containsKey('127.0.0.1:8080'), isTrue);
-        expect(callbackMap.get('127.0.0.1:8080'), equals(testCallback));
+
+        final invoker = callbackMap.get('127.0.0.1:8080');
+        expect(invoker, isNotNull);
+
+        invoker!(
+          (msg: [1, 2, 3], rinfo: RemoteInfo(address: InternetAddress('127.0.0.1'), port: 8080)),
+        );
+        expect(callbackExecuted, isTrue);
       });
 
       test('should return null for non-existent key', () {
@@ -32,7 +42,7 @@ void main() {
       });
 
       test('remove should delete callback', () {
-        void testCallback(List<int> msg, RemoteInfo rinfo) {}
+        void testCallback(MessageRecord record) {}
 
         callbackMap.add('192.168.1.1:9090', testCallback);
         expect(callbackMap.containsKey('192.168.1.1:9090'), isTrue);
@@ -43,8 +53,8 @@ void main() {
       });
 
       test('clear should remove all callbacks', () {
-        void callback1(List<int> msg, RemoteInfo rinfo) {}
-        void callback2(List<int> msg, RemoteInfo rinfo) {}
+        void callback1(MessageRecord record) {}
+        void callback2(MessageRecord record) {}
 
         callbackMap.add('10.0.0.1:80', callback1);
         callbackMap.add('10.0.0.2:443', callback2);
@@ -58,29 +68,43 @@ void main() {
 
     group('address-based operations', () {
       test('addByAddress and getByAddress should work for IPv4', () {
-        void testCallback(List<int> msg, RemoteInfo rinfo) {}
+        bool callbackExecuted = false;
+        void testCallback(MessageRecord record) {
+          callbackExecuted = true;
+        }
+
         final address = InternetAddress('192.168.1.100');
         const port = 8080;
 
         callbackMap.addByAddress(address, port, testCallback);
 
         expect(callbackMap.containsAddress(address, port), isTrue);
-        expect(callbackMap.getByAddress(address, port), equals(testCallback));
+        final invoker = callbackMap.getByAddress(address, port);
+        expect(invoker, isNotNull);
+        invoker!((msg: [1, 2, 3], rinfo: RemoteInfo(address: address, port: port)));
+        expect(callbackExecuted, isTrue);
       });
 
       test('addByAddress and getByAddress should work for IPv6', () {
-        void testCallback(List<int> msg, RemoteInfo rinfo) {}
+        bool callbackExecuted = false;
+        void testCallback(MessageRecord record) {
+          callbackExecuted = true;
+        }
+
         final address = InternetAddress('2001:db8::1');
         const port = 8443;
 
         callbackMap.addByAddress(address, port, testCallback);
 
         expect(callbackMap.containsAddress(address, port), isTrue);
-        expect(callbackMap.getByAddress(address, port), equals(testCallback));
+        final invoker = callbackMap.getByAddress(address, port);
+        expect(invoker, isNotNull);
+        invoker!((msg: [1, 2, 3], rinfo: RemoteInfo(address: address, port: port)));
+        expect(callbackExecuted, isTrue);
       });
 
       test('removeByAddress should work', () {
-        void testCallback(List<int> msg, RemoteInfo rinfo) {}
+        void testCallback(MessageRecord record) {}
         final address = InternetAddress('10.0.0.1');
         const port = 3000;
 
@@ -92,7 +116,7 @@ void main() {
       });
 
       test('should handle loopback addresses', () {
-        void testCallback(List<int> msg, RemoteInfo rinfo) {}
+        void testCallback(MessageRecord record) {}
 
         callbackMap.addByAddress(
             InternetAddress.loopbackIPv4, 8080, testCallback);
@@ -257,10 +281,10 @@ void main() {
         List<int>? receivedMsg;
         RemoteInfo? receivedRinfo;
 
-        void testCallback(List<int> msg, RemoteInfo rinfo) {
+        void testCallback(MessageRecord record) {
           callbackExecuted = true;
-          receivedMsg = msg;
-          receivedRinfo = rinfo;
+          receivedMsg = record.msg;
+          receivedRinfo = record.rinfo;
         }
 
         callbackMap.add('127.0.0.1:8080', testCallback);
@@ -272,7 +296,7 @@ void main() {
           port: 8080,
         );
 
-        callback!(testMsg, testRinfo);
+        callback!((msg: testMsg, rinfo: testRinfo));
 
         expect(callbackExecuted, isTrue);
         expect(receivedMsg, equals(testMsg));
@@ -284,18 +308,18 @@ void main() {
         int callback1Count = 0;
         int callback2Count = 0;
 
-        void callback1(List<int> msg, RemoteInfo rinfo) => callback1Count++;
-        void callback2(List<int> msg, RemoteInfo rinfo) => callback2Count++;
+        void callback1(MessageRecord record) => callback1Count++;
+        void callback2(MessageRecord record) => callback2Count++;
 
         callbackMap.add('peer1', callback1);
         callbackMap.add('peer2', callback2);
 
         callbackMap.get('peer1')!(
-            [1], RemoteInfo(address: InternetAddress('127.0.0.1'), port: 1));
+            (msg: [1], rinfo: RemoteInfo(address: InternetAddress('127.0.0.1'), port: 1)));
         callbackMap.get('peer2')!(
-            [2], RemoteInfo(address: InternetAddress('127.0.0.1'), port: 2));
+            (msg: [2], rinfo: RemoteInfo(address: InternetAddress('127.0.0.1'), port: 2)));
         callbackMap.get('peer1')!(
-            [3], RemoteInfo(address: InternetAddress('127.0.0.1'), port: 1));
+            (msg: [3], rinfo: RemoteInfo(address: InternetAddress('127.0.0.1'), port: 1)));
 
         expect(callback1Count, equals(2));
         expect(callback2Count, equals(1));
@@ -304,8 +328,8 @@ void main() {
 
     group('complex scenarios', () {
       test('should handle mixed IPv4 and IPv6 addresses', () {
-        void callback1(List<int> msg, RemoteInfo rinfo) {}
-        void callback2(List<int> msg, RemoteInfo rinfo) {}
+        void callback1(MessageRecord record) {}
+        void callback2(MessageRecord record) {}
 
         callbackMap.addByAddress(InternetAddress('192.168.1.1'), 80, callback1);
         callbackMap.addByAddress(InternetAddress('2001:db8::1'), 80, callback2);
@@ -322,28 +346,53 @@ void main() {
       });
 
       test('should differentiate between same IP with different ports', () {
-        void callback1(List<int> msg, RemoteInfo rinfo) {}
-        void callback2(List<int> msg, RemoteInfo rinfo) {}
+        int callback1Count = 0;
+        int callback2Count = 0;
+
+        void callback1(MessageRecord record) => callback1Count++;
+        void callback2(MessageRecord record) => callback2Count++;
 
         final address = InternetAddress('10.0.0.1');
         callbackMap.addByAddress(address, 8080, callback1);
         callbackMap.addByAddress(address, 8081, callback2);
 
         expect(callbackMap.length, equals(2));
-        expect(callbackMap.getByAddress(address, 8080), equals(callback1));
-        expect(callbackMap.getByAddress(address, 8081), equals(callback2));
+
+        final invoker8080 = callbackMap.getByAddress(address, 8080)!;
+        final invoker8081 = callbackMap.getByAddress(address, 8081)!;
+
+        invoker8080((msg: [1], rinfo: RemoteInfo(address: address, port: 8080)));
+        invoker8081((msg: [2], rinfo: RemoteInfo(address: address, port: 8081)));
+
+        expect(callback1Count, equals(1));
+        expect(callback2Count, equals(1));
       });
 
       test('should handle callback replacement', () {
-        void callback1(List<int> msg, RemoteInfo rinfo) {}
-        void callback2(List<int> msg, RemoteInfo rinfo) {}
+        int callback1Count = 0;
+        int callback2Count = 0;
+
+        void callback1(MessageRecord record) => callback1Count++;
+        void callback2(MessageRecord record) => callback2Count++;
 
         const key = '127.0.0.1:8080';
+        final testMsg = [1, 2, 3];
+        final testRinfo = RemoteInfo(
+          address: InternetAddress('127.0.0.1'),
+          port: 8080,
+        );
+
         callbackMap.add(key, callback1);
-        expect(callbackMap.get(key), equals(callback1));
+        var invoker = callbackMap.get(key)!;
+        invoker((msg: testMsg, rinfo: testRinfo));
+        expect(callback1Count, equals(1));
+        expect(callback2Count, equals(0));
 
         callbackMap.add(key, callback2);
-        expect(callbackMap.get(key), equals(callback2));
+        invoker = callbackMap.get(key)!;
+        invoker((msg: testMsg, rinfo: testRinfo));
+        expect(callback1Count, equals(1)); // callback1 should not be called again
+        expect(callback2Count, equals(1)); // callback2 should be called
         expect(callbackMap.length, equals(1));
       });
     });

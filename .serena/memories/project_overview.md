@@ -11,7 +11,7 @@ A Dart project implementing the Single Hand Shake Protocol, organized as a multi
 
 ## License
 GNU Lesser General Public License v3 (LGPL3)
-- Copyright (c) 2026 Lorenzo Gualandi
+- Copyright (c) 2026 Luca Gualandi
 - License files located in each package:
   - `packages/implementations/LICENSE`
   - `packages/interfaces/LICENSE`
