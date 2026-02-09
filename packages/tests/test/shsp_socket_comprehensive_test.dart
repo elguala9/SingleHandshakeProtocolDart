@@ -101,7 +101,7 @@ void main() {
         RemoteInfo? receivedRinfo;
 
         socket.setMessageCallback(
-          '${address.address}:$port',
+          PeerInfo(address: address, port: port),
           (record) {
             called = true;
             receivedMsg = record.msg;
@@ -123,13 +123,13 @@ void main() {
         final rinfo = RemoteInfo(address: address, port: port);
         int callCount = 0;
 
-        socket.setMessageCallback('${address.address}:$port', (record) {
+        socket.setMessageCallback(PeerInfo(address: address, port: port), (record) {
           callCount++;
         });
-        socket.setMessageCallback('${address.address}:$port', (record) {
+        socket.setMessageCallback(PeerInfo(address: address, port: port), (record) {
           callCount++;
         });
-        socket.setMessageCallback('${address.address}:$port', (record) {
+        socket.setMessageCallback(PeerInfo(address: address, port: port), (record) {
           callCount++;
         });
 
@@ -144,16 +144,14 @@ void main() {
         final addr2 = InternetAddress.loopbackIPv4;
         final port1 = 1234;
         final port2 = 5678;
-        final key1 = '${addr1.address}:$port1';
-        final key2 = '${addr2.address}:$port2';
 
         bool called1 = false;
         bool called2 = false;
 
-        socket.setMessageCallback(key1, (record) {
+        socket.setMessageCallback(PeerInfo(address: addr1, port: port1), (record) {
           called1 = true;
         });
-        socket.setMessageCallback(key2, (record) {
+        socket.setMessageCallback(PeerInfo(address: addr2, port: port2), (record) {
           called2 = true;
         });
 
@@ -172,7 +170,7 @@ void main() {
         final rinfo = RemoteInfo(address: address, port: port);
         bool called = false;
 
-        socket.setMessageCallback('${address.address}:$port', (record) {
+        socket.setMessageCallback(PeerInfo(address: address, port: port), (record) {
           called = true;
           expect(record.msg.isEmpty, isTrue);
         });
@@ -186,7 +184,7 @@ void main() {
         final rinfo = RemoteInfo(address: address, port: port);
         bool called = false;
 
-        socket.setMessageCallback('${address.address}:$port', (record) {
+        socket.setMessageCallback(PeerInfo(address: address, port: port), (record) {
           called = true;
           expect(record.msg.length, equals(65507));
         });
@@ -198,7 +196,7 @@ void main() {
       test('removeMessageCallback should remove callback', () async {
         final testMsg = [7, 8, 9];
         final rinfo = RemoteInfo(address: address, port: port);
-        final key = '${address.address}:$port';
+        final key = PeerInfo(address: address, port: port);
         bool called = false;
 
         void callback(MessageRecord record) {
@@ -216,7 +214,7 @@ void main() {
 
       test('removeMessageCallback should return false for non-existent callback',
           () async {
-        final key = '${address.address}:$port';
+        final key = PeerInfo(address: address, port: port);
 
         bool removed = socket.removeMessageCallback(key, (record) {
           // Dummy callback
@@ -227,7 +225,8 @@ void main() {
 
       test('removeMessageCallback should return false for non-existent key',
           () async {
-        bool removed = socket.removeMessageCallback('999.999.999.999:99999',
+        bool removed = socket.removeMessageCallback(
+            PeerInfo(address: InternetAddress('192.0.2.255'), port: 99999),
             (record) {
           // Dummy callback
         });
@@ -238,7 +237,7 @@ void main() {
       test('should not call removed callback', () async {
         final testMsg = [10, 11];
         final rinfo = RemoteInfo(address: address, port: port);
-        final key = '${address.address}:$port';
+        final key = PeerInfo(address: address, port: port);
         int callCount = 0;
 
         void callback(MessageRecord record) {
@@ -441,14 +440,14 @@ void main() {
         final socket2Port = socket2.localPort!;
 
         socket2.setMessageCallback(
-          '${address.address}:${socket1.localPort}',
+          PeerInfo(address: address, port: socket1.localPort!),
           (record) {
             expect(record.msg, equals(testMsg));
             completer.complete();
           },
         );
 
-        socket1.sendTo(testMsg, address, socket2Port);
+        socket1.sendTo(testMsg, PeerInfo(address: address, port: socket2Port));
 
         await completer.future
             .timeout(const Duration(seconds: 2), onTimeout: () {
@@ -458,13 +457,13 @@ void main() {
 
       test('sendTo should return bytes sent', () async {
         final testMsg = [1, 2, 3];
-        final bytesSent = socket1.sendTo(testMsg, address, socket2.localPort!);
+        final bytesSent = socket1.sendTo(testMsg, PeerInfo(address: address, port: socket2.localPort!));
         expect(bytesSent, equals(3));
       });
 
       test('should send empty message', () async {
         final testMsg = <int>[];
-        final bytesSent = socket1.sendTo(testMsg, address, socket2.localPort!);
+        final bytesSent = socket1.sendTo(testMsg, PeerInfo(address: address, port: socket2.localPort!));
         expect(bytesSent, equals(0));
       });
 
@@ -474,14 +473,14 @@ void main() {
         final socket2Port = socket2.localPort!;
 
         socket2.setMessageCallback(
-          '${address.address}:${socket1.localPort}',
+          PeerInfo(address: address, port: socket1.localPort!),
           (record) {
             expect(record.msg.length, equals(1000));
             completer.complete();
           },
         );
 
-        final bytesSent = socket1.sendTo(testMsg, address, socket2Port);
+        final bytesSent = socket1.sendTo(testMsg, PeerInfo(address: address, port: socket2Port));
         expect(bytesSent, equals(1000));
 
         await completer.future
@@ -496,14 +495,14 @@ void main() {
         final socket2Port = socket2.localPort!;
 
         socket2.setMessageCallback(
-          '${address.address}:${socket1.localPort}',
+          PeerInfo(address: address, port: socket1.localPort!),
           (record) {
             expect(record.msg, equals(testMsg));
             completer.complete();
           },
         );
 
-        socket1.sendTo(testMsg, address, socket2Port);
+        socket1.sendTo(testMsg, PeerInfo(address: address, port: socket2Port));
 
         await completer.future
             .timeout(const Duration(seconds: 2), onTimeout: () {
@@ -521,7 +520,7 @@ void main() {
         final socket1Port = socket1.localPort!;
 
         socket2.setMessageCallback(
-          '${address.address}:$socket1Port',
+          PeerInfo(address: address, port: socket1Port),
           (record) {
             receivedMessages.add(record.msg);
             if (receivedMessages.length == 3) {
@@ -530,11 +529,11 @@ void main() {
           },
         );
 
-        socket1.sendTo(msg1, address, socket2Port);
+        socket1.sendTo(msg1, PeerInfo(address: address, port: socket2Port));
         await Future.delayed(const Duration(milliseconds: 50));
-        socket1.sendTo(msg2, address, socket2Port);
+        socket1.sendTo(msg2, PeerInfo(address: address, port: socket2Port));
         await Future.delayed(const Duration(milliseconds: 50));
-        socket1.sendTo(msg3, address, socket2Port);
+        socket1.sendTo(msg3, PeerInfo(address: address, port: socket2Port));
 
         await completer.future
             .timeout(const Duration(seconds: 2), onTimeout: () {
@@ -607,7 +606,7 @@ void main() {
         final address = InternetAddress.loopbackIPv4;
         int callCount = 0;
 
-        socket.setMessageCallback('${address.address}:1234', (record) {
+        socket.setMessageCallback(PeerInfo(address: address, port: 1234), (record) {
           callCount++;
         });
 
@@ -706,11 +705,11 @@ void main() {
         bool callback1Called = false;
         bool callback2Called = false;
 
-        socket1.setMessageCallback('127.0.0.1:5000', (record) {
+        socket1.setMessageCallback(PeerInfo(address: InternetAddress('127.0.0.1'), port: 5000), (record) {
           callback1Called = true;
         });
 
-        socket2.setMessageCallback('127.0.0.1:6000', (record) {
+        socket2.setMessageCallback(PeerInfo(address: InternetAddress('127.0.0.1'), port: 6000), (record) {
           callback2Called = true;
         });
 
@@ -731,7 +730,7 @@ void main() {
         int messageCount = 0;
 
         socket2.setMessageCallback(
-          '${InternetAddress.loopbackIPv4.address}:${socket1.localPort}',
+          PeerInfo(address: InternetAddress.loopbackIPv4, port: socket1.localPort!),
           (record) {
             messageCount++;
             if (messageCount == 5) {
@@ -742,7 +741,7 @@ void main() {
 
         for (int i = 0; i < 5; i++) {
           socket1.sendTo(
-              [i], InternetAddress.loopbackIPv4, socket2.localPort!);
+              [i], PeerInfo(address: InternetAddress.loopbackIPv4, port: socket2.localPort!));
           await Future.delayed(const Duration(milliseconds: 10));
         }
 

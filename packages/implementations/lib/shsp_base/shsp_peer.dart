@@ -1,7 +1,6 @@
 // ...existing code...
 import 'package:shsp_interfaces/shsp_interfaces.dart';
 import 'package:shsp_types/shsp_types.dart';
-import '../utility/message_callback_map.dart';
 
 /// SHSP Peer implementation
 class ShspPeer implements IShspPeer {
@@ -10,16 +9,31 @@ class ShspPeer implements IShspPeer {
 
   final PeerInfo remotePeer;
   final IShspSocket socket;
-  MessageCallback? _onMessageCallback;
-  MessageCallbackFunction? _socketCallback;
+  late final MessageCallback _messageCallback;
+  late MessageCallbackFunction _socketCallback;
   bool _closed = false;
 
   ShspPeer(
       {required this.remotePeer,
       required this.socket,
-      MessageCallback? onMessageCallback}) {
-    if (onMessageCallback != null) setMessageCallback(onMessageCallback);
-    _setupMessageCallback();
+      MessageCallback? messageCallback}) {
+
+    if (messageCallback != null) {
+      _messageCallback = messageCallback;
+    } else {
+      _messageCallback = MessageCallback();
+    }
+    _socketCallback = (record) {
+      onMessage(
+          record.msg,
+          PeerInfo(
+            address: record.rinfo.address,
+            port: record.rinfo.port,
+          ));
+    };
+
+    // Register this peer with the socket so it receives messages
+    socket.setMessageCallback(remotePeer, _socketCallback);
   }
 
   /// Factory constructor - creates a ShspPeer with a remote peer and socket
@@ -56,20 +70,7 @@ class ShspPeer implements IShspPeer {
     );
   }
 
-  /// Setup message callback in the socket
-  void _setupMessageCallback() {
-    final key =
-        MessageCallbackMap.formatKey(remotePeer.address, remotePeer.port);
-    _socketCallback = (record) {
-      onMessage(
-          record.msg,
-          PeerInfo(
-            address: record.rinfo.address,
-            port: record.rinfo.port,
-          ));
-    };
-    socket.setMessageCallback(key, _socketCallback!);
-  }
+
 
   @override
   void close() {
@@ -78,19 +79,7 @@ class ShspPeer implements IShspPeer {
     _closed = true;
 
     // Remove the message callback to prevent memory leaks
-    if (_socketCallback != null) {
-      try {
-        final key =
-            MessageCallbackMap.formatKey(remotePeer.address, remotePeer.port);
-        socket.removeMessageCallback(key, _socketCallback!);
-      } catch (e) {
-        // Log error but continue with close
-        // In production, you might want to use a proper logger here
-      }
-    }
-
-    // Note: We don't close the socket itself as it may be shared with other peers
-    // The socket should be closed by the owner (ShspSocket or ShspInstance)
+    socket.removeMessageCallback(remotePeer, _socketCallback);
   }
 
   @override
@@ -128,36 +117,23 @@ class ShspPeer implements IShspPeer {
     }
 
     // Note: sendTo is synchronous in Dart (UDP is non-blocking)
-    try {
-      int bytes = socket.sendTo(message, remotePeer.address, remotePeer.port);
-      if (bytes == 0) {
-        throw ShspNetworkException(
-          'Failed to send message - socket buffer may be full',
-          address: remotePeer.address.address,
-          port: remotePeer.port,
-        );
-      }
-    } on ShspNetworkException {
-      rethrow;
-    } catch (e) {
+    int bytes = socket.sendTo(message, remotePeer);
+    if (bytes == 0) {
       throw ShspNetworkException(
-        'Failed to send message',
+        'Failed to send message - socket buffer may be full',
         address: remotePeer.address.address,
         port: remotePeer.port,
-        cause: e,
       );
     }
   }
 
-  @override
-  void setMessageCallback(MessageCallback cb) {
-    _onMessageCallback = cb;
-  }
+
 
   @override
   void onMessage(List<int> msg, PeerInfo info) {
-    if (_onMessageCallback != null) {
-      _onMessageCallback!(msg, info);
-    }
+    _messageCallback.call(info);
   }
+  
+  @override
+  MessageCallback get messageCallback => _messageCallback;
 }
