@@ -47,12 +47,12 @@ void main() {
   // Test with MessageCallbackMap
   final map = MessageCallbackMap();
 
-  map.addByAddress(ipv4, 8080, (msg, rinfo) {
-    print('IPv4 callback triggered');
+  map.addByAddress(ipv4, 8080, (record) {
+    print('IPv4 callback triggered: ${String.fromCharCodes(record.msg)}');
   });
 
-  map.addByAddress(ipv6, 8080, (msg, rinfo) {
-    print('IPv6 callback triggered');
+  map.addByAddress(ipv6, 8080, (record) {
+    print('IPv6 callback triggered: ${String.fromCharCodes(record.msg)}');
   });
 
   print('Map contains IPv4: ${map.containsAddress(ipv4, 8080)}');
