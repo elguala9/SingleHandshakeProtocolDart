@@ -107,12 +107,16 @@ class ShspSocket extends RawShspSocket implements IShspSocket {
   }
 
   @override
-  void setMessageCallback(String key, MessageCallbackFunction cb) {
+  void setMessageCallback(PeerInfo peer, MessageCallbackFunction cb) {
+    final key =
+            MessageCallbackMap.formatKey(peer.address, peer.port);
     _messageCallbacks.add(key, cb);
   }
 
   @override
-  bool removeMessageCallback(String key, MessageCallbackFunction cb) {
+  bool removeMessageCallback(PeerInfo peer, MessageCallbackFunction cb) {
+    final key =
+            MessageCallbackMap.formatKey(peer.address, peer.port);
     if (_messageCallbacks.containsKey(key)) {
       _messageCallbacks.removeCallback(key, cb);
       return true;
@@ -176,8 +180,8 @@ class ShspSocket extends RawShspSocket implements IShspSocket {
   }
 
   @override
-  int sendTo(List<int> buffer, InternetAddress address, int port) {
-    return super.send(buffer, address, port);
+  int sendTo(List<int> buffer, PeerInfo peer) {
+    return super.send(buffer, peer.address, peer.port);
   }
 
   @override
@@ -187,21 +191,13 @@ class ShspSocket extends RawShspSocket implements IShspSocket {
     _closed = true;
 
     // Cancel the stream subscription if active
-    try {
-      _socketSubscription?.cancel();
-    } catch (e) {
-      // Log error but continue with close
-    }
+    _socketSubscription?.cancel();
 
     // Clear all message callbacks to prevent memory leaks
     _messageCallbacks.clear();
 
     // Close the underlying socket
-    try {
-      socket.close();
-    } catch (e) {
-      // Socket may already be closed, ignore
-    }
+    socket.close();
   }
 
   // ...existing code...
