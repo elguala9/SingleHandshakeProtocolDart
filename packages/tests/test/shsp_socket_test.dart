@@ -30,9 +30,10 @@ void testIShspSocket(IShspSocketFactory createSocket) {
     test('should set and call message callback', () async {
       final testMsg = [1, 2, 3];
       final rinfo = RemoteInfo(address: address, port: port);
+      final peerInfo = PeerInfo(address: address, port: port);
       bool called = false;
       socket.setMessageCallback(
-        '${address.address}:$port',
+        peerInfo,
         (record) {
           called = true;
           expect(record.msg, equals(testMsg));
@@ -53,12 +54,12 @@ void testIShspSocket(IShspSocketFactory createSocket) {
       final testMsg = [10, 20, 30];
       final completer = Completer<void>();
 
-      final callbackKey = '${address.address}:$port';
-      print('DEBUG: callbackKey = $callbackKey');
+      final peerInfo = PeerInfo(address: address, port: port);
+      print('DEBUG: peerInfo = ${peerInfo.address.address}:${peerInfo.port}');
       print('DEBUG: socket1 port = $port, socket2 port = $port2');
 
       socket2.setMessageCallback(
-        callbackKey,
+        peerInfo,
         (record) {
           print(
               'DEBUG: Ricevuto messaggio: ${record.msg} da ${record.rinfo.address}:${record.rinfo.port}');
@@ -70,7 +71,8 @@ void testIShspSocket(IShspSocketFactory createSocket) {
       );
 
       print('DEBUG: Invio messaggio da socket1 a socket2');
-      socket1.sendTo(testMsg, address2, port2);
+      final peerInfo2 = PeerInfo(address: address2, port: port2);
+      socket1.sendTo(testMsg, peerInfo2);
 
       // Attendi la ricezione (fino a 2 secondi)
       await completer.future.timeout(const Duration(seconds: 2), onTimeout: () {
@@ -84,7 +86,7 @@ void testIShspSocket(IShspSocketFactory createSocket) {
 
     test('should set and call close callback', () async {
       bool closed = false;
-      socket.setCloseCallback(() {
+      socket.onClose.register((_) {
         closed = true;
       });
       (socket as ShspSocket).onClose.call(null);
@@ -94,7 +96,7 @@ void testIShspSocket(IShspSocketFactory createSocket) {
     test('should set and call error callback', () async {
       bool errored = false;
       final error = Exception('Test error');
-      socket.setErrorCallback((err) {
+      socket.onError.register((err) {
         errored = true;
         expect(err, equals(error));
       });

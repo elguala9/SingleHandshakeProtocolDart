@@ -46,9 +46,8 @@ void testIShspPeer(IShspPeerFactory peerFactory) {
       final wrongMsg = [1, 2, 3];
       bool received = false;
 
-      peerA.setMessageCallback((msg, info) {
+      peerA.messageCallback.register((info) {
         received = true;
-        expect(msg, equals(testMsg));
         expect(info.address, equals(peerInfoB.address));
         expect(info.port, equals(peerInfoB.port));
       });
@@ -70,7 +69,7 @@ void testIShspPeer(IShspPeerFactory peerFactory) {
 
       // Reset e invio da socketA a peerA (non deve attivare la callback)
       received = false;
-      socketA.sendTo(wrongMsg, peerInfoA.address, peerInfoA.port);
+      socketA.sendTo(wrongMsg, peerInfoA);
       await Future.delayed(const Duration(milliseconds: 200));
       expect(received, isFalse);
     });
@@ -81,7 +80,7 @@ void testIShspPeer(IShspPeerFactory peerFactory) {
       final peerC = peerFactory(remotePeer: peerInfoA, socket: socketC);
 
       bool received = false;
-      peerA.setMessageCallback((msg, info) {
+      peerA.messageCallback.register((info) {
         received = true;
       });
 
@@ -122,7 +121,7 @@ void testIShspPeer(IShspPeerFactory peerFactory) {
       peerA.close();
       // Dopo la chiusura, invio non dovrebbe generare errori ma non riceve
       bool received = false;
-      peerA.setMessageCallback((msg, info) {
+      peerA.messageCallback.register((info) {
         received = true;
       });
       peerB.sendMessage([99]);

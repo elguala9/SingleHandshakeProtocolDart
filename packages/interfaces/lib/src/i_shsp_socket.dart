@@ -32,15 +32,15 @@ abstract interface class IShspSocket {
 
 
   /// Associates a callback with incoming messages from a specific remote endpoint
-  void setMessageCallback(String key, MessageCallbackFunction cb);
+  void setMessageCallback(PeerInfo peer, MessageCallbackFunction cb);
 
   /// Removes a message callback associated with a specific remote endpoint
   /// Returns true if a callback was removed, false if no callback was found
-  bool removeMessageCallback(String key, MessageCallbackFunction cb);
+  bool removeMessageCallback(PeerInfo peer, MessageCallbackFunction cb);
 
   /// Send data to a remote address (as string) and port
   /// Returns the number of bytes written
-  int sendTo(List<int> buffer, InternetAddress address, int port);
+  int sendTo(List<int> buffer, PeerInfo peer);
 
   /// Close the socket
   void close();
