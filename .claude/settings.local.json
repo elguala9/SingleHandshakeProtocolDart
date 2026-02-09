@@ -7,7 +7,11 @@
       "Bash(dart test:*)",
       "mcp__serena__replace_symbol_body",
       "mcp__serena__search_for_pattern",
-      "mcp__serena__find_file"
+      "mcp__serena__find_file",
+      "mcp__serena__get_symbols_overview",
+      "Bash(dart analyze:*)",
+      "mcp__serena__find_symbol",
+      "mcp__serena__read_memory"
     ]
   }
 }

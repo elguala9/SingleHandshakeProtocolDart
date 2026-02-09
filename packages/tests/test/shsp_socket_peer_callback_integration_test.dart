@@ -78,53 +78,33 @@ void main() {
       final completer3 = Completer<void>();
       final completer4 = Completer<void>();
 
-      principalPeer1.setMessageCallback((msg, info) {
+      principalPeer1.messageCallback.register((info) {
         print(
-            'principalPeer1 callback: msg=${String.fromCharCodes(msg)} from port=${info.port}');
-        if (message1 == String.fromCharCodes(msg)) {
-          expect(info.address, principalInfo.address);
-          expect(info.port, peerPort1);
-          if (!completer1.isCompleted) completer1.complete();
-        } else {
-          fail(
-              'PrincipalPeer1 received unexpected message: ${String.fromCharCodes(msg)}');
-        }
+            'principalPeer1 callback: from port=${info.port}');
+        expect(info.address, principalInfo.address);
+        expect(info.port, peerPort1);
+        if (!completer1.isCompleted) completer1.complete();
       });
-      principalPeer2.setMessageCallback((msg, info) {
+      principalPeer2.messageCallback.register((info) {
         print(
-            'principalPeer2 callback: msg=${String.fromCharCodes(msg)} from port=${info.port}');
-        if (message2 == String.fromCharCodes(msg)) {
-          expect(info.address, principalInfo.address);
-          expect(info.port, peerPort2);
-          if (!completer2.isCompleted) completer2.complete();
-        } else {
-          fail(
-              'PrincipalPeer2 received unexpected message: ${String.fromCharCodes(msg)}');
-        }
+            'principalPeer2 callback: from port=${info.port}');
+        expect(info.address, principalInfo.address);
+        expect(info.port, peerPort2);
+        if (!completer2.isCompleted) completer2.complete();
       });
-      principalPeer3.setMessageCallback((msg, info) {
+      principalPeer3.messageCallback.register((info) {
         print(
-            'principalPeer3 callback: msg=${String.fromCharCodes(msg)} from port=${info.port}');
-        if (message3 == String.fromCharCodes(msg)) {
-          expect(info.address, principalInfo.address);
-          expect(info.port, peerPort3);
-          if (!completer3.isCompleted) completer3.complete();
-        } else {
-          fail(
-              'PrincipalPeer3 received unexpected message: ${String.fromCharCodes(msg)}');
-        }
+            'principalPeer3 callback: from port=${info.port}');
+        expect(info.address, principalInfo.address);
+        expect(info.port, peerPort3);
+        if (!completer3.isCompleted) completer3.complete();
       });
-      principalPeer4.setMessageCallback((msg, info) {
+      principalPeer4.messageCallback.register((info) {
         print(
-            'principalPeer4 callback: msg=${String.fromCharCodes(msg)} from port=${info.port}');
-        if (message4 == String.fromCharCodes(msg)) {
-          expect(info.address, principalInfo.address);
-          expect(info.port, peerPort4);
-          if (!completer4.isCompleted) completer4.complete();
-        } else {
-          fail(
-              'PrincipalPeer4 received unexpected message: ${String.fromCharCodes(msg)}');
-        }
+            'principalPeer4 callback: from port=${info.port}');
+        expect(info.address, principalInfo.address);
+        expect(info.port, peerPort4);
+        if (!completer4.isCompleted) completer4.complete();
       });
 
       // Invio dei messaggi dai peer secondari

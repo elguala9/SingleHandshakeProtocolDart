@@ -29,10 +29,6 @@ class ShspInstance extends ShspPeer implements IShspInstance {
   late CallbackOn onClosing;
   @override
   late CallbackOn onClose;
-  
-  
-
-  
 
   ShspInstance({
     required super.remotePeer,
