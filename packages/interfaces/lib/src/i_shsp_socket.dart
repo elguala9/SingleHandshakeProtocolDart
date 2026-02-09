@@ -1,5 +1,3 @@
-import 'dart:io';
-
 import 'package:shsp_types/shsp_types.dart';
 import 'i_shsp_instance.dart';
 

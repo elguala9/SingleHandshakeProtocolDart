@@ -19,7 +19,7 @@ Add this to your package's `pubspec.yaml`:
 
 ```yaml
 dependencies:
-  shsp_types: ^1.0.7
+  shsp_types: ^1.1.0
 ```
 
 ## Usage
@@ -49,4 +49,4 @@ For complete documentation, visit [pub.dev/packages/shsp_types](https://pub.dev/
 
 ## License
 
-This project is licensed under the MIT License.
+This project is licensed under the LGPL-3.0 License.

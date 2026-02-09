@@ -5,6 +5,22 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [1.1.0] - 2026-02-09
+
+### Added
+- Complete callback handler integration in ShspSocket, ShspPeer, and ShspInstance
+- Enhanced callback management with proper lifecycle handling
+
+### Changed
+- Updated dependencies: shsp_types ^1.1.0, shsp_interfaces ^1.1.0
+- Refactored callback routing for improved consistency and reliability
+- Enhanced callback handler in peer and instance management
+
+### Fixed
+- Resolved callback execution flow in socket and peer instances
+- Fixed callback routing between peer and instance handlers
+- Improved callback handler consistency across components
+
 ## [1.0.7] - 2026-02-08
 
 ### Changed
