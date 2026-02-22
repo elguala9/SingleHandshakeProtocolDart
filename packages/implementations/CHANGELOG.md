@@ -5,6 +5,24 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [1.2.0] - 2026-02-22
+
+### Added
+- `GZipCodec`, `LZ4Codec`, `ZstdCodec` compression implementations
+- Pluggable compression codec system in ShspSocket
+- Support for custom compression algorithms via `ICompressionCodec` interface
+- Compression tests (14 new tests covering all codecs)
+
+### Changed
+- Updated dependencies: shsp_interfaces ^1.2.0, archive ^3.6.1
+- ShspSocket now accepts optional compression codec parameter (defaults to GZip)
+- Data messages (0x00) are now transparently compressed/decompressed
+- Protocol messages (0x01-0x04) remain uncompressed for minimal overhead
+
+### Improved
+- UDP bandwidth efficiency through automatic data message compression
+- Real-time communication support with low-latency compression codecs
+
 ## [1.1.0] - 2026-02-09
 
 ### Added

@@ -5,6 +5,17 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [1.2.0] - 2026-02-22
+
+### Added
+- `ICompressionCodec` interface for pluggable data message compression
+- Support for GZip, LZ4, and ZSTD compression algorithms
+- Compression documentation in COMPRESSION_CODEC_USAGE.md
+
+### Changed
+- Enhanced SHSP with configurable compression support for UDP data messages
+- Protocol messages (handshake, keepalive, etc.) remain uncompressed
+
 ## [1.1.0] - 2026-02-09
 
 ### Added
