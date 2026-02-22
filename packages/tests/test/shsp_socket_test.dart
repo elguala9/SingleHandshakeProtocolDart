@@ -4,6 +4,7 @@ import 'package:test/test.dart';
 import 'package:shsp_interfaces/shsp_interfaces.dart';
 import 'package:shsp_implementations/shsp_base/shsp_socket.dart';
 import 'package:shsp_types/shsp_types.dart';
+import 'helpers/testable_shsp_socket.dart';
 
 /// Factory function type for creating IShspSocket
 typedef IShspSocketFactory = Future<IShspSocket> Function(
@@ -41,7 +42,7 @@ void testIShspSocket(IShspSocketFactory createSocket) {
           expect(record.rinfo.port, equals(port));
         },
       );
-      (socket as ShspSocket).onMessage(testMsg, rinfo);
+      (socket as ShspSocket).testOnMessage(testMsg, rinfo);
       expect(called, isTrue);
     });
 
