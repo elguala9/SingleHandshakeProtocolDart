@@ -6,10 +6,12 @@ import 'package:shsp_types/shsp_types.dart';
 import 'package:shsp_interfaces/shsp_interfaces.dart';
 import '../utility/message_callback_map.dart';
 import '../utility/raw_shsp_socket.dart';
+import 'compression/gzip_codec.dart';
 
 /// SHSP Socket implementation wrapping RawDatagramSocket
 class ShspSocket extends RawShspSocket implements IShspSocket {
   final MessageCallbackMap _messageCallbacks;
+  final ICompressionCodec _compressionCodec;
   StreamSubscription<RawSocketEvent>? _socketSubscription;
 
   late CallbackOn _onClose;
@@ -21,7 +23,11 @@ class ShspSocket extends RawShspSocket implements IShspSocket {
   bool _closed = false;
 
   /// Internal constructor for factory creation
-  ShspSocket.internal(super.socket, this._messageCallbacks) {
+  ShspSocket.internal(
+    super.socket,
+    this._messageCallbacks, [
+    ICompressionCodec? compressionCodec,
+  ]) : _compressionCodec = compressionCodec ?? GZipCodec() {
     _onClose = CallbackOn();
     _onError = CallbackOnError();
     _onListening = CallbackOn();
@@ -58,8 +64,22 @@ class ShspSocket extends RawShspSocket implements IShspSocket {
     final Datagram? datagram = socket.receive();
     if (datagram != null) {
       final rinfo = RemoteInfo(address: datagram.address, port: datagram.port);
-      onMessage(datagram.data, rinfo);
+      final data = _decompressIfData(datagram.data);
+      onMessage(data, rinfo);
     }
+  }
+
+  /// Decompress data messages (0x00) while keeping protocol messages as-is
+  List<int> _decompressIfData(List<int> msg) {
+    // Check if it's a data message (0x00)
+    if (msg.isNotEmpty && msg[0] == 0x00) {
+      // Decompress the payload (everything after the prefix)
+      final decompressed = _compressionCodec.decode(msg.sublist(1));
+      // Return with prefix restored: [0x00] + decompressed
+      return [0x00, ...decompressed];
+    }
+    // Not a data message, return as-is
+    return msg;
   }
 
   /// Create and bind a new SHSP socket to a specific address and port
@@ -84,7 +104,11 @@ class ShspSocket extends RawShspSocket implements IShspSocket {
   /// ```dart
   /// final socket = await ShspSocket.bind(InternetAddress.anyIPv4, 8000);
   /// ```
-  static Future<ShspSocket> bind(InternetAddress address, int port) async {
+  static Future<ShspSocket> bind(
+    InternetAddress address,
+    int port, [
+    ICompressionCodec? compressionCodec,
+  ]) async {
     // Validate port range
     if (port < 0 || port > 65535) {
       throw ShspValidationException(
@@ -96,7 +120,7 @@ class ShspSocket extends RawShspSocket implements IShspSocket {
 
     RawDatagramSocket? rawSocket = await RawDatagramSocket.bind(address, port);
     final callbacks = MessageCallbackMap();
-    final socket = ShspSocket.internal(rawSocket, callbacks);
+    final socket = ShspSocket.internal(rawSocket, callbacks, compressionCodec);
 
     socket._localAddress = address;
     socket._localPort = rawSocket.port;  // Read actual port from OS, not parameter
@@ -181,7 +205,21 @@ class ShspSocket extends RawShspSocket implements IShspSocket {
 
   @override
   int sendTo(List<int> buffer, PeerInfo peer) {
-    return super.send(buffer, peer.address, peer.port);
+    final data = _compressIfData(buffer);
+    return super.send(data, peer.address, peer.port);
+  }
+
+  /// Compress data messages (0x00) while keeping protocol messages as-is
+  List<int> _compressIfData(List<int> msg) {
+    // Check if it's a data message (0x00)
+    if (msg.isNotEmpty && msg[0] == 0x00) {
+      // Compress the payload (everything after the prefix)
+      final compressed = _compressionCodec.encode(msg.sublist(1));
+      // Return with prefix: [0x00] + compressed
+      return [0x00, ...compressed];
+    }
+    // Not a data message, return as-is
+    return msg;
   }
 
   @override
@@ -207,6 +245,9 @@ class ShspSocket extends RawShspSocket implements IShspSocket {
 
   /// Get local port (null if not bound)
   int? get localPort => _localPort;
+
+  /// Get the compression codec used for data messages
+  ICompressionCodec get compressionCodec => _compressionCodec;
 
   /// Get the underlying RawDatagramSocket
   @override

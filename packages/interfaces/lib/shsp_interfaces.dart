@@ -4,3 +4,4 @@ export 'src/i_shsp_instance.dart';
 export 'src/connection/i_shsp_handshake.dart';
 export 'src/i_shsp_instance_handler.dart';
 export 'src/exceptions/shsp_exceptions.dart';
+export 'src/i_compression_codec.dart';
