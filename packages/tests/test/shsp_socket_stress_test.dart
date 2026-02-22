@@ -4,6 +4,7 @@ import 'package:test/test.dart';
 import 'package:shsp_implementations/shsp_base/shsp_socket.dart';
 import 'package:shsp_types/shsp_types.dart';
 import 'package:shsp_interfaces/shsp_interfaces.dart';
+import 'helpers/testable_shsp_socket.dart';
 
 /// Stress and integration tests for ShspSocket
 /// Tests socket resilience, concurrent operations, and edge cases
@@ -216,13 +217,13 @@ void main() {
 
         // This should not crash even though first callback throws
         try {
-          (socket as ShspSocket).onMessage(
+          socket.testOnMessage(
               [1], RemoteInfo(address: InternetAddress.loopbackIPv4, port: 9000));
         } catch (e) {
           // Expected to throw
         }
 
-        (socket as ShspSocket).onMessage(
+        socket.testOnMessage(
             [2], RemoteInfo(address: InternetAddress.loopbackIPv4, port: 9001));
 
         expect(finalCallbackCalled, isTrue);
@@ -236,6 +237,7 @@ void main() {
         });
 
         socket.onError.call(Exception('Test exception'));
+        // ignore: prefer_const_constructors
         socket.onError.call(SocketException('Socket error'));
         socket.onError.call('String error');
         socket.onError.call(123);

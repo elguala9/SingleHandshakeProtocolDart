@@ -4,6 +4,7 @@ import 'package:test/test.dart';
 import 'package:shsp_interfaces/shsp_interfaces.dart';
 import 'package:shsp_implementations/shsp_base/shsp_socket.dart';
 import 'package:shsp_types/shsp_types.dart';
+import 'helpers/testable_shsp_socket.dart';
 
 /// Comprehensive test suite for ShspSocket
 /// Tests binding, callbacks, message handling, error cases, and resource cleanup
@@ -109,7 +110,7 @@ void main() {
           },
         );
 
-        (socket as ShspSocket).onMessage(testMsg, rinfo);
+        socket.testOnMessage(testMsg, rinfo);
 
         expect(called, isTrue);
         expect(receivedMsg, equals(testMsg));
@@ -133,7 +134,7 @@ void main() {
           callCount++;
         });
 
-        (socket as ShspSocket).onMessage(testMsg, rinfo);
+        socket.testOnMessage(testMsg, rinfo);
 
         // Last callback should be the only one invoked
         expect(callCount, equals(1));
@@ -155,12 +156,12 @@ void main() {
           called2 = true;
         });
 
-        socket.onMessage([1], RemoteInfo(address: addr1, port: port1));
+        socket.testOnMessage([1], RemoteInfo(address: addr1, port: port1));
         expect(called1, isTrue);
         expect(called2, isFalse);
 
         called1 = false;
-        socket.onMessage([2], RemoteInfo(address: addr2, port: port2));
+        socket.testOnMessage([2], RemoteInfo(address: addr2, port: port2));
         expect(called1, isFalse);
         expect(called2, isTrue);
       });
@@ -175,7 +176,7 @@ void main() {
           expect(record.msg.isEmpty, isTrue);
         });
 
-        (socket as ShspSocket).onMessage(testMsg, rinfo);
+        socket.testOnMessage(testMsg, rinfo);
         expect(called, isTrue);
       });
 
@@ -189,7 +190,7 @@ void main() {
           expect(record.msg.length, equals(65507));
         });
 
-        (socket as ShspSocket).onMessage(testMsg, rinfo);
+        socket.testOnMessage(testMsg, rinfo);
         expect(called, isTrue);
       });
 
@@ -208,7 +209,7 @@ void main() {
 
         expect(removed, isTrue);
 
-        (socket as ShspSocket).onMessage(testMsg, rinfo);
+        socket.testOnMessage(testMsg, rinfo);
         expect(called, isFalse);
       });
 
@@ -248,7 +249,7 @@ void main() {
         socket.setMessageCallback(key, callback);
 
         socket.removeMessageCallback(key, callback);
-        (socket as ShspSocket).onMessage(testMsg, rinfo);
+        socket.testOnMessage(testMsg, rinfo);
 
         // Callback should be removed, so no call should happen
         expect(callCount, equals(0));
@@ -333,6 +334,7 @@ void main() {
 
       test('should support multiple error callbacks', () async {
         final errors = <dynamic>[];
+        // ignore: prefer_const_constructors
         final testError = SocketException('Network error');
 
         socket.setErrorCallback((err) {
@@ -613,7 +615,7 @@ void main() {
         socket.close();
 
         // After close, message callbacks should be cleared
-        socket.onMessage([1, 2, 3], RemoteInfo(address: address, port: 1234));
+        socket.testOnMessage([1, 2, 3], RemoteInfo(address: address, port: 1234));
         expect(callCount, equals(0));
       });
     });
@@ -713,8 +715,8 @@ void main() {
           callback2Called = true;
         });
 
-        socket1.onMessage([1], RemoteInfo(address: InternetAddress.loopbackIPv4, port: 5000));
-        socket2.onMessage([2], RemoteInfo(address: InternetAddress.loopbackIPv4, port: 6000));
+        socket1.testOnMessage([1], RemoteInfo(address: InternetAddress.loopbackIPv4, port: 5000));
+        socket2.testOnMessage([2], RemoteInfo(address: InternetAddress.loopbackIPv4, port: 6000));
 
         expect(callback1Called, isTrue);
         expect(callback2Called, isTrue);
