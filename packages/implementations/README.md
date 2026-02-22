@@ -22,12 +22,12 @@ Add this to your package's `pubspec.yaml`:
 
 ```yaml
 dependencies:
-  shsp_implementations: ^1.1.0
+  shsp_implementations: ^1.2.0
 ```
 
 This will automatically include the required dependencies:
-- `shsp_types` ^1.1.0
-- `shsp_interfaces` ^1.1.0
+- `shsp_types` ^1.0.7
+- `shsp_interfaces` ^1.2.0
 
 ## Quick Start
 
