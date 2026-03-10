@@ -66,6 +66,38 @@ class ShspInstance extends ShspPeer implements IShspInstance {
     );
   }
 
+  /// Factory: creates a new SHSP instance from an existing profile.
+  ///
+  /// This is useful when reconnecting over a new socket (e.g., UDP reconnection).
+  /// The handshake will be redone, but all callbacks and configuration are restored.
+  factory ShspInstance.withProfile({
+    required PeerInfo remotePeer,
+    required IShspSocket socket,
+    required ShspInstanceProfile profile,
+  }) {
+    final instance = ShspInstance(
+      remotePeer: remotePeer,
+      socket: socket,
+      keepAliveSeconds: profile.keepAliveSeconds,
+    );
+    for (final cb in profile.onHandshakeListeners) {
+      instance.onHandshake.register(cb);
+    }
+    for (final cb in profile.onOpenListeners) {
+      instance.onOpen.register(cb);
+    }
+    for (final cb in profile.onClosingListeners) {
+      instance.onClosing.register(cb);
+    }
+    for (final cb in profile.onCloseListeners) {
+      instance.onClose.register(cb);
+    }
+    for (final cb in profile.onMessageListeners) {
+      instance.messageCallback.register(cb);
+    }
+    return instance;
+  }
+
   @override
   void onMessage(List<int> msg, PeerInfo info) {
     // Check protocol messages first
@@ -265,5 +297,32 @@ class ShspInstance extends ShspPeer implements IShspInstance {
 
     // Call parent close() to remove callbacks
     super.close();
+  }
+
+  /// Extracts all registered listeners and configuration from this instance.
+  ///
+  /// Returns a [ShspInstanceProfile] containing copies of all callbacks and the
+  /// keep-alive configuration. This can be applied to a new instance via
+  /// [ShspInstance.withProfile].
+  ///
+  /// The returned profile does NOT include connection state (_handshake, _open, _closing),
+  /// which will be reset on the new instance (as required for reconnection over a new socket).
+  ShspInstanceProfile extractProfile() {
+    List<T> _listeners<T>(dynamic handler) {
+      final result = <T>[];
+      for (var i = 0; i < handler.map.length; i++) {
+        result.add(handler.map.getByIndex(i) as T);
+      }
+      return result;
+    }
+
+    return ShspInstanceProfile(
+      keepAliveSeconds: _keepAliveSeconds,
+      onHandshakeListeners: _listeners<OnVoidListener>(onHandshake),
+      onOpenListeners: _listeners<OnVoidListener>(onOpen),
+      onClosingListeners: _listeners<OnVoidListener>(onClosing),
+      onCloseListeners: _listeners<OnVoidListener>(onClose),
+      onMessageListeners: _listeners<OnPeerListener>(messageCallback),
+    );
   }
 }
