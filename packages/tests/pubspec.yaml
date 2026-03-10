@@ -1,11 +1,11 @@
 name: shsp_tests
 description: Tests for Single HandShake Protocol
-version: 1.1.0
+version: 1.0.0
 publish_to: none
 resolution: workspace
 
 environment:
-  sdk: '>=3.5.0 <4.0.0'
+  sdk: '>=3.9.4 <4.0.0'
 
 dependencies:
   shsp:
