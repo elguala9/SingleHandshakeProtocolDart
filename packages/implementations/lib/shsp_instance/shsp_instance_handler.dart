@@ -53,12 +53,7 @@ class ShspInstanceHandler implements IShspInstanceHandler {
 
     // Close all instances after clearing the map
     for (final instance in instancesToClose) {
-      try {
-        instance.close();
-      } catch (e) {
-        // Log error but continue closing other instances
-        print('Error closing instance: $e');
-      }
+      instance.close();
     }
   }
 }

@@ -130,6 +130,35 @@ class ShspSocket extends RawShspSocket implements IShspSocket {
     return socket;
   }
 
+  /// Creates a new ShspSocket from an existing RawDatagramSocket.
+  ///
+  /// This factory method wraps an already-bound RawDatagramSocket without
+  /// performing another bind operation. Useful when you have an existing socket
+  /// from external sources and want to use it with the SHSP protocol.
+  ///
+  /// Parameters:
+  ///   - [rawSocket]: The existing RawDatagramSocket to wrap
+  ///   - [compressionCodec]: Optional compression codec (default: GZipCodec)
+  ///
+  /// Returns: A new ShspSocket instance wrapping the provided socket
+  ///
+  /// Example:
+  /// ```dart
+  /// final rawSocket = await RawDatagramSocket.bind(address, port);
+  /// final socket = ShspSocket.fromRaw(rawSocket);
+  /// ```
+  static ShspSocket fromRaw(
+    RawDatagramSocket rawSocket, [
+    ICompressionCodec? compressionCodec,
+  ]) {
+    final callbacks = MessageCallbackMap();
+    final socket = ShspSocket.internal(rawSocket, callbacks, compressionCodec);
+    socket._localAddress = rawSocket.address;
+    socket._localPort = rawSocket.port;
+    socket._invokeOnListening();
+    return socket;
+  }
+
   @override
   void setMessageCallback(PeerInfo peer, MessageCallbackFunction cb) {
     final key =
@@ -309,5 +338,29 @@ class ShspSocket extends RawShspSocket implements IShspSocket {
     }
 
     return newSocket;
+  }
+
+  /// Applies a profile (message callbacks) to this existing socket.
+  ///
+  /// This instance method restores all message callbacks from a [ShspSocketProfile]
+  /// to this socket. Useful when transferring state from an old socket to a new one.
+  /// The callbacks are added to any existing callbacks in this socket (merge, not replace).
+  ///
+  /// Parameters:
+  ///   - [profile]: The ShspSocketProfile containing message listeners to apply
+  ///
+  /// Example:
+  /// ```dart
+  /// final profile = oldSocket.extractProfile();
+  /// final newSocket = ShspSocket.fromRaw(rawSocket);
+  /// newSocket.applyProfile(profile);
+  /// ```
+  void applyProfile(ShspSocketProfile profile) {
+    for (final entry in profile.messageListeners.entries) {
+      final key = entry.key;
+      for (final listener in entry.value) {
+        _messageCallbacks.add(key, (record) => listener(record));
+      }
+    }
   }
 }

@@ -137,3 +137,7 @@ melos:
     check:
       run: melos analyze && melos test
       description: Quick check for development (analyze + all tests).
+    # Generate barrel files for all packages
+    barrels:
+      run: melos exec --ignore=shsp_tests -- dart pub run index_generator
+      description: Generate barrel files (indexes) for all packages using index_generator.

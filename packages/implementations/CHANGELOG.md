@@ -5,6 +5,17 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [1.3.0] - 2026-03-10
+
+### Added
+- `AutoShspPeer`: high-level peer class that automatically binds to `ShspSocketSingleton` and re-registers its message callback when the socket is replaced (reconnection support)
+- `AutoShspInstance`: high-level instance class with the same auto-wiring behavior, plus configurable `keepAliveSeconds`
+- `socketChangedCallback` getter on `ShspSocketSingleton`: exposes a `CallbackHandler<ShspSocket, void>` notified whenever the socket is replaced (used by `AutoShspPeer` / `AutoShspInstance`)
+- Exported `AutoShspPeer` and `AutoShspInstance` from the barrel file `shsp_implementations.dart`
+
+### Changed
+- `packages/implementations/pubspec.yaml`: added `index_generator` configuration block
+
 ## [1.2.0] - 2026-02-22
 
 ### Added
