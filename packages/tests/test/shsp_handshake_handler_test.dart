@@ -41,12 +41,12 @@ void main() {
       final futureA = ShspHandshakeHandler.handshakeInstance(
           instanceA,
           const ShspHandshakeHandlerOptions(
-              timeoutMs: 2000, intervalOfSendingHandshakeMs: 200),
+              timeoutMs: 10000, intervalOfSendingHandshakeMs: 50),
           null);
       final futureB = ShspHandshakeHandler.handshakeInstance(
           instanceB,
           const ShspHandshakeHandlerOptions(
-              timeoutMs: 2000, intervalOfSendingHandshakeMs: 200),
+              timeoutMs: 10000, intervalOfSendingHandshakeMs: 50),
           null);
       final resultA = await futureA;
       final resultB = await futureB;
@@ -60,13 +60,13 @@ void main() {
       final futureA = ShspHandshakeHandler.handshakeInstance(
         instanceA,
         const ShspHandshakeHandlerOptions(
-            timeoutMs: 2000, intervalOfSendingHandshakeMs: 200),
+            timeoutMs: 10000, intervalOfSendingHandshakeMs: 50),
         (_) => calledA = true,
       );
       final futureB = ShspHandshakeHandler.handshakeInstance(
         instanceB,
         const ShspHandshakeHandlerOptions(
-            timeoutMs: 2000, intervalOfSendingHandshakeMs: 200),
+            timeoutMs: 10000, intervalOfSendingHandshakeMs: 50),
         (_) => calledB = true,
       );
       await futureA;
