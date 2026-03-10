@@ -1,5 +1,6 @@
 import 'i_shsp_peer.dart';
 import 'package:callback_handler/callback_handler.dart';
+import 'package:shsp_types/shsp_types.dart';
 
 
 
@@ -46,4 +47,12 @@ abstract interface class IShspInstance implements IShspPeer {
 
   /// Stop sending keep-alive messages
   void stopKeepAlive();
+
+  /// Extract all registered listeners and configuration as a profile.
+  ///
+  /// Returns a snapshot of the current callback listeners and configuration
+  /// that can be applied to a new instance via [ShspInstance.withProfile].
+  /// This is useful when reconnecting over a new socket while preserving
+  /// all callback registrations.
+  ShspInstanceProfile extractProfile();
 }

@@ -108,6 +108,22 @@ class ShspInstanceFactory {
         socket: shspSocket,
         keepAliveSeconds: config.keepAliveSeconds);
   }
+
+  /// Create a `ShspInstance` from an existing profile extracted from another instance.
+  ///
+  /// This is useful for reconnecting over a new socket (e.g., UDP reconnection)
+  /// while preserving all registered callbacks and configuration.
+  /// The new instance will still perform a full handshake.
+  static ShspInstance createWithProfile({
+    required PeerInfo remotePeer,
+    required IShspSocket socket,
+    required ShspInstanceProfile profile,
+  }) =>
+      ShspInstance.withProfile(
+        remotePeer: remotePeer,
+        socket: socket,
+        profile: profile,
+      );
 }
 
 // Inputs are defined in factory_inputs.dart
