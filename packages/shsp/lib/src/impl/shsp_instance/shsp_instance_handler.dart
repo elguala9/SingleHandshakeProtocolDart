@@ -1,19 +1,10 @@
 import 'dart:async';
 
 import './shsp_handshake_handler.dart';
-import '../../interfaces/connection/i_shsp_handshake.dart';
 import '../../interfaces/exceptions/shsp_exceptions.dart';
-import '../../interfaces/i_compression_codec.dart';
 import '../../interfaces/i_shsp_instance.dart';
 import '../../interfaces/i_shsp_instance_handler.dart';
-import '../../interfaces/i_shsp_peer.dart';
-import '../../interfaces/i_shsp_socket.dart';
-import '../../types/callback_types.dart';
-import '../../types/instance_profile.dart';
-import '../../types/internet_address_converter.dart';
 import '../../types/peer_types.dart';
-import '../../types/remote_info.dart';
-import '../../types/socket_profile.dart';
 
 class ShspInstanceHandler implements IShspInstanceHandler {
   final Map<PeerInfo, IShspInstance> _instances = {};

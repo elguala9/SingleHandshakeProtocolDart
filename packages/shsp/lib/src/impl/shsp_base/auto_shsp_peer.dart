@@ -1,19 +1,9 @@
 import 'dart:io';
 
 import 'package:meta/meta.dart';
-import '../../interfaces/connection/i_shsp_handshake.dart';
-import '../../interfaces/exceptions/shsp_exceptions.dart';
 import '../../interfaces/i_compression_codec.dart';
-import '../../interfaces/i_shsp_instance.dart';
-import '../../interfaces/i_shsp_instance_handler.dart';
-import '../../interfaces/i_shsp_peer.dart';
 import '../../interfaces/i_shsp_socket.dart';
-import '../../types/callback_types.dart';
-import '../../types/instance_profile.dart';
-import '../../types/internet_address_converter.dart';
 import '../../types/peer_types.dart';
-import '../../types/remote_info.dart';
-import '../../types/socket_profile.dart';
 
 import 'shsp_peer.dart';
 import 'shsp_socket_singleton.dart';
@@ -51,7 +41,7 @@ class AutoShspPeer extends ShspPeer {
       // Register to be notified when the singleton socket changes
       singleton.socketChangedCallback.register((newSocket) {
         // Re-register this peer's callback with the new socket
-        newSocket.setMessageCallback(this.remotePeer, this.socketCallbackFunction);
+        newSocket.setMessageCallback(remotePeer, socketCallbackFunction);
       });
     }
   }
