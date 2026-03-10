@@ -1,25 +1,7 @@
 // GENERATED CODE - DO NOT MODIFY BY HAND
 
-library shsp;
+library;
 
-// Export types
-export 'src/types/callback_types.dart';
-export 'src/types/instance_profile.dart';
-export 'src/types/internet_address_converter.dart';
-export 'src/types/peer_types.dart';
-export 'src/types/remote_info.dart';
-export 'src/types/socket_profile.dart';
-
-// Export interfaces
-export 'src/interfaces/connection/i_shsp_handshake.dart';
-export 'src/interfaces/exceptions/shsp_exceptions.dart';
-export 'src/interfaces/i_compression_codec.dart';
-export 'src/interfaces/i_shsp_instance.dart';
-export 'src/interfaces/i_shsp_instance_handler.dart';
-export 'src/interfaces/i_shsp_peer.dart';
-export 'src/interfaces/i_shsp_socket.dart';
-
-// Export implementations
 export 'src/impl/connection/connection.dart';
 export 'src/impl/connection/handshake_ip.dart';
 export 'src/impl/connection/handshake_ownership.dart';
@@ -48,3 +30,18 @@ export 'src/impl/utility/message_callback_map_singleton.dart';
 export 'src/impl/utility/raw_shsp_socket.dart';
 export 'src/impl/utility/shsp_socket_info_singleton.dart';
 export 'src/impl/utility/utility_factories.dart';
+export 'src/interfaces/connection/i_shsp_handshake.dart';
+export 'src/interfaces/exceptions/shsp_exceptions.dart';
+export 'src/interfaces/i_compression_codec.dart';
+export 'src/interfaces/i_shsp_instance.dart';
+export 'src/interfaces/i_shsp_instance_handler.dart';
+export 'src/interfaces/i_shsp_peer.dart';
+export 'src/interfaces/i_shsp_socket.dart';
+export 'src/interfaces/index.dart';
+export 'src/types/callback_types.dart';
+export 'src/types/index.dart';
+export 'src/types/instance_profile.dart';
+export 'src/types/internet_address_converter.dart';
+export 'src/types/peer_types.dart';
+export 'src/types/remote_info.dart';
+export 'src/types/socket_profile.dart';

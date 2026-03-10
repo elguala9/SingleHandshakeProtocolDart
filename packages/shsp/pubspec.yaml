@@ -1,6 +1,6 @@
 name: shsp
 description: Single HandShake Protocol (SHSP) - a custom networking protocol for peer-to-peer communication. Unified package containing types, interfaces, and implementations.
-version: 2.0.0
+version: 1.0.0
 homepage: https://github.com/lgualandi/SingleHandShakeProtocolDart
 repository: https://github.com/lgualandi/SingleHandShakeProtocolDart
 issue_tracker: https://github.com/lgualandi/SingleHandShakeProtocolDart/issues
@@ -15,7 +15,7 @@ keywords:
   - handshake
 
 environment:
-  sdk: '>=3.5.0 <4.0.0'
+  sdk: '>=3.9.4 <4.0.0'
 
 platforms:
   android:
