@@ -72,6 +72,12 @@ class ShspPeer implements IShspPeer {
 
 
 
+  /// Gets the socket callback function for re-registration with a new socket.
+  ///
+  /// This is useful for subclasses like AutoShspPeer that need to update
+  /// their socket references and re-register callbacks.
+  MessageCallbackFunction get socketCallbackFunction => _socketCallback;
+
   @override
   void close() {
     // Make close() idempotent - can be called multiple times safely

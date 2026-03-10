@@ -1,6 +1,6 @@
 name: shsp_interfaces
 description: Abstract interfaces and contracts for Single HandShake Protocol (SHSP) implementations - defines the core API for peer-to-peer networking.
-version: 1.2.0
+version: 1.2.1
 homepage: https://github.com/lgualandi/SingleHandShakeProtocolDart
 repository: https://github.com/lgualandi/SingleHandShakeProtocolDart
 issue_tracker: https://github.com/lgualandi/SingleHandShakeProtocolDart/issues
@@ -33,3 +33,10 @@ dependencies:
 dev_dependencies:
   lints: ^6.0.0
   test: ^1.29.0
+  index_generator: 4.1.2
+
+index_generator:
+  exclude:
+    - "**/test/**"
+  libraries:
+    - directory_path: lib
