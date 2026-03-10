@@ -6,7 +6,7 @@ Implemented the ability to extract callback listeners and configuration from a S
 ## Changes Made
 
 ### 1. New Type: `ShspInstanceProfile` 
-- Created `packages/types/lib/src/instance_profile.dart`
+- Created `packages/shsp/lib/src/types/instance_profile.dart`
 - Immutable class capturing listeners and keepAliveSeconds configuration
 - Exports two typedef aliases:
   - `OnVoidListener = CallbackWithReturn<void, void>`
@@ -14,7 +14,7 @@ Implemented the ability to extract callback listeners and configuration from a S
 
 ### 2. ShspInstance Methods
 - **`extractProfile(): ShspInstanceProfile`** - Extracts all registered listeners from CallbackHandler.map
-  - Located in `packages/implementations/lib/shsp_instance/shsp_instance.dart`
+  - Located in `packages/shsp/lib/src/impl/shsp_instance/shsp_instance.dart`
   - Accesses listeners via `handler.map.getByIndex(i)` in a loop
   - Does NOT include connection state (_handshake, _open, _closing)
 
@@ -23,12 +23,8 @@ Implemented the ability to extract callback listeners and configuration from a S
   - Registers all extracted listeners via `handler.register(cb)`
   - Connection state starts fresh (as required for UDP reconnection)
 
-### 3. Factory Support
-- Added `ShspInstanceFactory.createWithProfile(...)` in `packages/implementations/lib/factory/shsp_factories.dart`
-
-### 4. Interface Update
-- Added `ShspInstanceProfile extractProfile()` method to `IShspInstance` interface
-- Required import of `ShspInstanceProfile` in `packages/interfaces/lib/src/i_shsp_instance.dart`
+### 3. Barrel Export
+- Added export for `ShspInstanceProfile` in `packages/shsp/lib/shsp.dart`
 
 ### 5. Test Coverage
 - Created comprehensive test suite in `packages/tests/test/shsp_instance_profile_test.dart`

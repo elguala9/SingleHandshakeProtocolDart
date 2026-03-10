@@ -4,7 +4,7 @@
 Created `AutoShspInstance` class following Option A from the plan to provide automatic socket management at the instance level, mirroring the pattern established by `AutoShspPeer`.
 
 ## Files created
-1. **packages/implementations/lib/shsp_instance/auto_shsp_instance.dart**
+1. **packages/shsp/lib/src/impl/shsp_instance/auto_shsp_instance.dart**
    - Extends `ShspInstance`
    - Automatically uses `ShspSocketSingleton` for socket management
    - Tracks socket changes and re-registers callbacks on reconnection
@@ -23,7 +23,7 @@ Created `AutoShspInstance` class following Option A from the plan to provide aut
      - Test factory usage
 
 ## Changes to existing files
-- **packages/implementations/lib/shsp_implementations.dart**: Added export for `AutoShspInstance`
+- **packages/shsp/lib/shsp.dart**: Added export for `AutoShspInstance`
 
 ## Key features
 - **Automatic socket management**: Gets socket from `ShspSocketSingleton` automatically

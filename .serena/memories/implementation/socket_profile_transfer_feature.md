@@ -6,14 +6,14 @@ Implemented the ability to extract message callback registrations from a ShspSoc
 ## Changes Made
 
 ### 1. New Type: `ShspSocketProfile`
-- Created `packages/types/lib/src/socket_profile.dart`
+- Created `packages/shsp/lib/src/types/socket_profile.dart`
 - Immutable class capturing message listener registrations by peer
 - Uses typedef `OnMessageListener = CallbackWithReturn<MessageRecord, void>`
 - Maps peer keys (formatted as "address:port") to their message listeners
 
 ### 2. ShspSocket Methods
 - **`extractProfile(): ShspSocketProfile`** - Extracts all registered message callbacks
-  - Located in `packages/implementations/lib/shsp_base/shsp_socket.dart`
+  - Located in `packages/shsp/lib/src/impl/shsp_base/shsp_socket.dart`
   - Accesses listeners via `handler.map.getByIndex(i)` 
   - Returns Map<String, List<OnMessageListener>>
 
@@ -23,7 +23,7 @@ Implemented the ability to extract message callback registrations from a ShspSoc
   - Supports custom compression codec
 
 ### 3. Export Support
-- Added ShspSocketProfile export to `packages/types/lib/shsp_types.dart`
+- Added ShspSocketProfile export to `packages/shsp/lib/shsp.dart`
 
 ### 4. Test Coverage
 - Created test suite in `packages/tests/test/shsp_socket_profile_test.dart`

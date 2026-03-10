@@ -1,8 +1,8 @@
 import 'dart:io';
 import 'dart:async';
-import 'package:shsp/src/impl/shsp_base/shsp_socket.dart';
+import 'package:shsp/src/impl/socket/shsp_socket.dart';
 import 'package:test/test.dart';
-import 'package:shsp/src/impl/shsp_base/shsp_socket_singleton.dart';
+import 'package:shsp/src/impl/socket/shsp_socket_singleton.dart';
 import 'package:shsp/src/impl/utility/message_callback_map_singleton.dart';
 import 'package:shsp/src/impl/utility/shsp_socket_info_singleton.dart';
 import 'package:shsp/src/impl/utility/message_callback_map.dart';
