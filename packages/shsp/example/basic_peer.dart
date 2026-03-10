@@ -5,32 +5,31 @@
 /// - Sending and receiving messages
 /// - Proper cleanup
 
+import 'dart:io';
 import 'dart:typed_data';
 import 'package:shsp/shsp.dart';
 
 void main() async {
   // Create a peer for communication with a remote address
-  final peer = await AutoShspPeer.create(
-    remoteInfo: RemoteInfo.fromString('127.0.0.1:9000')!,
+  final remotePeer = PeerInfo(
+    address: InternetAddress('127.0.0.1'),
+    port: 9000,
   );
 
-  print('Peer created with address: ${peer.socket.localAddress}:${peer.socket.localPort}');
+  final peer = await AutoShspPeer.create(remotePeer: remotePeer);
 
-  // Register a callback to handle incoming messages
-  peer.onMessage((message) {
-    print('Received message from ${message.remotePeer.address.address}:${message.remotePeer.port}');
-    print('Payload: ${message.payload}');
-  });
+  print('Peer created with local address: ${peer.socket.localAddress}:${peer.socket.localPort}');
+  print('Remote peer: ${remotePeer.address.address}:${remotePeer.port}');
 
   // Send some data
   final data = Uint8List.fromList([1, 2, 3, 4, 5]);
-  await peer.sendData(data);
+  peer.sendMessage(data);
   print('Sent data: $data');
 
-  // Keep the peer alive for a bit to receive responses
+  // Keep the peer alive for a bit
   await Future.delayed(Duration(seconds: 2));
 
   // Clean up
-  await peer.close();
+  peer.close();
   print('Peer closed');
 }
