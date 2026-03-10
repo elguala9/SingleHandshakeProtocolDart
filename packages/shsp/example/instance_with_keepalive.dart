@@ -2,51 +2,43 @@
 ///
 /// This example demonstrates:
 /// - Creating an instance with keep-alive support
-/// - Long-lived connections
-/// - Receiving data with lifecycle callbacks
+/// - Long-lived connections with handshake verification
+/// - Receiving messages
+/// - Proper cleanup
 
+import 'dart:io';
 import 'dart:typed_data';
 import 'package:shsp/shsp.dart';
 
 void main() async {
   // Create an instance with 30-second keep-alive
+  final remotePeer = PeerInfo(
+    address: InternetAddress('127.0.0.1'),
+    port: 9000,
+  );
+
+  print('Creating instance with keep-alive support...');
+
   final instance = await AutoShspInstance.create(
-    remoteInfo: RemoteInfo.fromString('127.0.0.1:9000')!,
+    remotePeer: remotePeer,
     keepAliveSeconds: 30,
   );
 
-  print('Instance created and handshaking with remote peer...');
-
-  // Register lifecycle callbacks
-  instance.onHandshake(() {
-    print('✓ Handshake completed - connection established');
-  });
-
-  instance.onOpening(() {
-    print('→ Connection opening...');
-  });
-
-  instance.onData((data) {
-    print('← Received ${data.length} bytes');
-  });
-
-  instance.onClosing(() {
-    print('← Connection closing...');
-  });
-
-  instance.onClose(() {
-    print('✗ Connection closed');
-  });
+  print('✓ Instance created');
+  print('  Local: ${instance.socket.localAddress}:${instance.socket.localPort}');
+  print('  Remote: ${remotePeer.address.address}:${remotePeer.port}');
+  print('  Keep-alive: 30 seconds');
 
   // Send some data
   final data = Uint8List.fromList(List.generate(10, (i) => i));
-  await instance.sendData(data);
-  print('Sent ${data.length} bytes');
+  instance.sendMessage(data);
+  print('\n✓ Sent ${data.length} bytes');
 
   // Keep the instance alive for communication
+  print('Keeping connection alive for 5 seconds...');
   await Future.delayed(Duration(seconds: 5));
 
   // Close the connection
-  await instance.close();
-  print('Instance closed');
+  instance.close();
+  print('\n✓ Instance closed');
 }
