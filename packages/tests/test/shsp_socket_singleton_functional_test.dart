@@ -1,10 +1,12 @@
 import 'dart:io';
-import 'package:shsp_implementations/shsp_base/shsp_socket.dart';
+import 'dart:async';
+import 'package:shsp/src/impl/shsp_base/shsp_socket.dart';
 import 'package:test/test.dart';
-import 'package:shsp_implementations/shsp_base/shsp_socket_singleton.dart';
-import 'package:shsp_implementations/utility/message_callback_map_singleton.dart';
-import 'package:shsp_implementations/utility/shsp_socket_info_singleton.dart';
-import 'package:shsp_types/shsp_types.dart';
+import 'package:shsp/src/impl/shsp_base/shsp_socket_singleton.dart';
+import 'package:shsp/src/impl/utility/message_callback_map_singleton.dart';
+import 'package:shsp/src/impl/utility/shsp_socket_info_singleton.dart';
+import 'package:shsp/src/impl/utility/message_callback_map.dart';
+import 'package:shsp/shsp.dart';
 
 void main() {
   group('ShspSocketSingleton handshake e funzionalità', () {
@@ -15,48 +17,76 @@ void main() {
     });
 
     test('può inviare e ricevere messaggi handshake', () async {
-      // Usa i singleton (senza parametri)
-      final singleton = await ShspSocketSingleton.bind();
-      final info = ShspSocketInfoSingleton();
+      // Create singleton socket and get its address/port
+      final singleton = await ShspSocketSingleton.getInstance();
+      final singletonPort = singleton.localPort!;
+      final singletonAddr = InternetAddress.loopbackIPv4;
+
+      // Create receiving socket
       final rawOther =
           await RawDatagramSocket.bind(InternetAddress.loopbackIPv4, 0);
-      final callbacksOther = MessageCallbackMapSingleton();
+      final callbacksOther = MessageCallbackMap();
       final other = ShspSocket.internal(rawOther, callbacksOther);
-      // Registra una callback handshake su other
-      bool received = false;
+      final otherPort = rawOther.port;
+
+      // Register callback on receiving socket to listen for singleton's address
+      final completer = Completer<void>();
       other.setMessageCallback(
-        PeerInfo(address: InternetAddress(info.address), port: info.port),
+        PeerInfo(address: singletonAddr, port: singletonPort),
         (record) {
-          if (record.msg.isNotEmpty && record.msg[0] == 0x01) received = true;
+          if (record.msg.isNotEmpty && record.msg[0] == 0x01) {
+            completer.complete();
+          }
         },
       );
-      // Invia handshake dalla singleton alla socket normale
-      singleton.sendTo([0x01], PeerInfo(address: rawOther.address, port: rawOther.port));
-      await Future.delayed(const Duration(milliseconds: 100));
-      expect(received, isTrue,
-          reason:
-              'Il messaggio handshake deve essere ricevuto dalla socket normale');
+
+      // Send handshake from singleton to other socket
+      singleton.socket.sendTo([0x01], PeerInfo(address: InternetAddress.loopbackIPv4, port: otherPort));
+
+      // Wait for message with timeout
+      await completer.future.timeout(const Duration(seconds: 2), onTimeout: () {
+        throw Exception('Timeout waiting for handshake message');
+      });
+
+      other.close();
     });
 
     test('può inviare e ricevere messaggi dati', () async {
-      final singleton = await ShspSocketSingleton.bind();
-      final info = ShspSocketInfoSingleton();
+      // Create singleton socket and get its address/port
+      final singleton = await ShspSocketSingleton.getInstance();
+      final singletonPort = singleton.localPort!;
+      final singletonAddr = InternetAddress.loopbackIPv4;
+
+      // Create receiving socket
       final rawOther =
           await RawDatagramSocket.bind(InternetAddress.loopbackIPv4, 0);
-      final callbacksOther = MessageCallbackMapSingleton();
+      final callbacksOther = MessageCallbackMap();
       final other = ShspSocket.internal(rawOther, callbacksOther);
-      bool received = false;
+      final otherPort = rawOther.port;
+
+      // Register callback on receiving socket to listen for singleton's address
+      final completer = Completer<void>();
       other.setMessageCallback(
-        PeerInfo(address: InternetAddress(info.address), port: info.port),
+        PeerInfo(address: singletonAddr, port: singletonPort),
         (record) {
-          if (record.msg.isNotEmpty && record.msg[0] == 0x00 && record.msg[1] == 42) received = true;
+          if (record.msg.isNotEmpty &&
+              record.msg[0] == 0x00 &&
+              record.msg.length > 1 &&
+              record.msg[1] == 42) {
+            completer.complete();
+          }
         },
       );
-      singleton.sendTo([0x00, 42], PeerInfo(address: rawOther.address, port: rawOther.port));
-      await Future.delayed(const Duration(milliseconds: 100));
-      expect(received, isTrue,
-          reason:
-              'Il messaggio dati deve essere ricevuto dalla socket normale');
+
+      // Send data message from singleton to other socket
+      singleton.socket.sendTo([0x00, 42], PeerInfo(address: InternetAddress.loopbackIPv4, port: otherPort));
+
+      // Wait for message with timeout
+      await completer.future.timeout(const Duration(seconds: 2), onTimeout: () {
+        throw Exception('Timeout waiting for data message');
+      });
+
+      other.close();
     });
   });
 }

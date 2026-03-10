@@ -1,6 +1,6 @@
 import 'package:test/test.dart';
-import 'package:shsp_interfaces/src/connection/i_shsp_handshake.dart';
-import 'package:shsp_implementations/connection/handshake_time.dart';
+import 'package:shsp/src/interfaces/connection/i_shsp_handshake.dart';
+import 'package:shsp/src/impl/connection/handshake_time.dart';
 
 void main() {
   group('HandshakeTime', () {

@@ -1,11 +1,11 @@
 import 'dart:io';
 import 'package:test/test.dart';
-import 'package:shsp_interfaces/shsp_interfaces.dart';
-import 'package:shsp_types/shsp_types.dart';
-import 'package:shsp_implementations/shsp_base/shsp_socket.dart';
-import 'package:shsp_implementations/shsp_base/shsp_socket_singleton.dart';
-import 'package:shsp_implementations/shsp_base/auto_shsp_peer.dart';
-import 'package:shsp_implementations/shsp_instance/auto_shsp_instance.dart';
+import 'package:shsp/shsp.dart';
+import 'package:shsp/shsp.dart';
+import 'package:shsp/src/impl/shsp_base/shsp_socket.dart';
+import 'package:shsp/src/impl/shsp_base/shsp_socket_singleton.dart';
+import 'package:shsp/src/impl/shsp_base/auto_shsp_peer.dart';
+import 'package:shsp/src/impl/shsp_instance/auto_shsp_instance.dart';
 
 void main() {
   group('ShspSocketSingleton Integration Tests', () {

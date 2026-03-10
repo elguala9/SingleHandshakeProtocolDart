@@ -1,6 +1,5 @@
 import 'dart:io';
-import 'package:shsp_implementations/shsp_implementations.dart';
-import 'package:shsp_types/shsp_types.dart';
+import 'package:shsp/shsp.dart';
 
 /// Example demonstrating ShspInstance usage with protocol messages
 void main() async {
