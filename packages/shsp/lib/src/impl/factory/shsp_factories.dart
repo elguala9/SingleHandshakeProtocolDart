@@ -11,6 +11,8 @@ import '../utility/utility_factories.dart';
 import './factory_inputs.dart';
 // imports for factories are exported by the package barrel; keep minimal imports here
 
+/// Static factory for creating ShspSocket instances
+/// See IShspSocketFactory for the interface contract
 class ShspSocketFactory {
   static ShspSocket create(
           RawDatagramSocket socket, MessageCallbackMap messageCallbacks) =>
@@ -30,6 +32,8 @@ class ShspSocketFactory {
   }
 }
 
+/// Static factory for creating ShspPeer instances
+/// See IShspPeerFactory for the interface contract
 class ShspPeerFactory {
   static ShspPeer create(
           {required PeerInfo remotePeer, required IShspSocket socket}) =>
@@ -64,6 +68,8 @@ class ShspPeerFactory {
   }
 }
 
+/// Static factory for creating ShspInstance instances
+/// See IShspInstanceFactory for the interface contract
 class ShspInstanceFactory {
   static ShspInstance create({
     required PeerInfo remotePeer,

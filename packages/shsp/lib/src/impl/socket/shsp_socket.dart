@@ -276,12 +276,15 @@ class ShspSocket extends RawShspSocket implements IShspSocket {
   // ...existing code...
 
   /// Get local address (null if not bound)
+  @override
   InternetAddress? get localAddress => _localAddress;
 
   /// Get local port (null if not bound)
+  @override
   int? get localPort => _localPort;
 
   /// Get the compression codec used for data messages
+  @override
   ICompressionCodec get compressionCodec => _compressionCodec;
 
   /// Get the underlying RawDatagramSocket

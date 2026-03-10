@@ -2,9 +2,10 @@ import 'dart:io';
 import 'dart:async';
 import 'dart:typed_data';
 import 'package:meta/meta.dart';
+import '../../interfaces/utility/i_raw_shsp_socket.dart';
 
 /// Hoping that in a future RawDatagramSocket (or similar) will become a real class (AS NOW THERE IS NOT OTHER OPTION BECAUSE RawDatagramSocket IS AN ABSTRACT CLASS)
-class RawShspSocket implements RawDatagramSocket {
+class RawShspSocket implements IRawShspSocket {
   @protected
   final RawDatagramSocket socket;
 

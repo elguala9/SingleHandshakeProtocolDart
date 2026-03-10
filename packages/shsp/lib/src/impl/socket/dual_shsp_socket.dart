@@ -1,7 +1,7 @@
 import 'dart:io';
 import '../../interfaces/i_compression_codec.dart';
-import '../../interfaces/i_shsp_socket.dart';
 import '../../interfaces/i_shsp_instance.dart';
+import '../../interfaces/socket/i_dual_shsp_socket.dart';
 import '../../types/callback_types.dart';
 import '../../types/peer_types.dart';
 import '../../types/socket_profile.dart';
@@ -9,14 +9,14 @@ import 'shsp_socket.dart';
 
 /// Routing adapter that manages both IPv4 and IPv6 sockets as a single unified interface.
 ///
-/// This class implements [IShspSocket] and internally holds two [ShspSocket] instances:
+/// This class implements [IDualShspSocket] and internally holds two [ShspSocket] instances:
 /// - `_ipv4Socket`: IPv4 socket, always required
 /// - `_ipv6Socket`: IPv6 socket, optional (may be null on systems without IPv6)
 ///
 /// All outgoing messages are routed to the appropriate socket based on the peer's
 /// address family. Message callbacks are registered on both sockets so that either
 /// can receive and deliver messages to the appropriate handler.
-class DualShspSocket implements IShspSocket {
+class DualShspSocket implements IDualShspSocket {
   final ShspSocket _ipv4Socket;
   final ShspSocket? _ipv6Socket;
 
@@ -56,12 +56,15 @@ class DualShspSocket implements IShspSocket {
   }
 
   /// Exposes the IPv4 socket for direct access if needed
+  @override
   ShspSocket get ipv4Socket => _ipv4Socket;
 
   /// Exposes the IPv6 socket for direct access if available
+  @override
   ShspSocket? get ipv6Socket => _ipv6Socket;
 
   /// Get the underlying RawDatagramSocket from the IPv4 socket (for backward compatibility)
+  @override
   RawDatagramSocket get socket => _ipv4Socket.socket;
 
   @override
@@ -210,5 +213,6 @@ class DualShspSocket implements IShspSocket {
   }
 
   /// Get the compression codec (from IPv4 socket)
+  @override
   ICompressionCodec get compressionCodec => _ipv4Socket.compressionCodec;
 }
