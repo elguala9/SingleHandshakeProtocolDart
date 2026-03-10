@@ -137,12 +137,13 @@ Core type definitions:
 - Callback type definitions
 
 ### Interfaces
-Protocol contracts:
-- `IShspSocket`: Core socket interface
-- `IShspPeer`: Peer abstraction
-- `IShspInstance`: Instance abstraction
-- `IShspInstanceHandler`: Handler for managing instances
-- `ICompressionCodec`: Compression interface
+Protocol contracts for extensibility:
+- **Core**: `IShspSocket`, `IShspPeer`, `IShspInstance`, `IShspInstanceHandler`
+- **Compression**: `ICompressionCodec`
+- **Handshake**: `IShspHandshake`
+- **Factories** (for dependency injection): `IShspSocketFactory`, `IShspPeerFactory`, `IShspInstanceFactory`
+- **Utilities**: `IAddressUtility`, `ICallbackMap<T>`, `IKeepAliveTimer`, `IMessageCallbackMap`, `IRawShspSocket`, `IDualShspSocket`
+- **Singletons**: `IMessageCallbackMapSingleton`, `IShspSocketInfoSingleton`
 
 ### Implementations
 Concrete implementations:

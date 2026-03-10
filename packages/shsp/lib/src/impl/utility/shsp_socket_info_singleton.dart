@@ -1,10 +1,13 @@
 import 'dart:convert';
 import 'dart:io';
+import '../../interfaces/utility/i_shsp_socket_info_singleton.dart';
 
-class ShspSocketInfoSingleton {
+class ShspSocketInfoSingleton implements IShspSocketInfoSingleton {
   static ShspSocketInfoSingleton? _instance;
 
+  @override
   final String address;
+  @override
   final int port;
 
   /// Private constructor with address and port
@@ -62,8 +65,14 @@ class ShspSocketInfoSingleton {
     }
   }
 
-  /// Destroys the singleton instance
-  static void destroy() {
+  /// Destroys the singleton instance (instance method for interface compliance)
+  @override
+  void destroy() {
+    _instance = null;
+  }
+
+  /// Destroys the singleton instance (static method for convenience)
+  static void destroyStatic() {
     _instance = null;
   }
 }

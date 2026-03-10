@@ -4,6 +4,7 @@ import '../../types/remote_info.dart';
 import '../../interfaces/exceptions/shsp_exceptions.dart';
 
 /// Utility functions for address formatting
+/// See IAddressUtility for the interface contract
 class AddressUtility {
   /// Format a RemoteInfo object into a string key
   /// Format: "address:port"
