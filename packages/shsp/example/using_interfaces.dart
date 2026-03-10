@@ -1,10 +1,3 @@
-/// Using SHSP Interfaces for Type-Safe Programming
-///
-/// This example demonstrates:
-/// - Using factory interfaces for dependency injection
-/// - Type-safe programming with interfaces
-/// - Creating services with interface dependencies
-
 import 'dart:io';
 import 'dart:typed_data';
 import 'package:shsp/shsp.dart';

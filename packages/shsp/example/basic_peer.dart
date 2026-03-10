@@ -1,10 +1,3 @@
-/// Basic SHSP Peer Example
-///
-/// This example demonstrates:
-/// - Creating a simple peer connection
-/// - Sending and receiving messages
-/// - Proper cleanup
-
 import 'dart:io';
 import 'dart:typed_data';
 import 'package:shsp/shsp.dart';
@@ -27,7 +20,7 @@ void main() async {
   print('Sent data: $data');
 
   // Keep the peer alive for a bit
-  await Future.delayed(Duration(seconds: 2));
+  await Future.delayed(const Duration(seconds: 2));
 
   // Clean up
   peer.close();

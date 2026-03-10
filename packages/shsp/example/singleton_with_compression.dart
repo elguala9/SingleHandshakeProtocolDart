@@ -1,10 +1,3 @@
-/// SHSP with Socket Singleton and Compression Example
-///
-/// This example demonstrates:
-/// - Using ShspSocketSingleton for global socket management
-/// - Automatic compression for data
-/// - Multiple peers sharing the same socket
-
 import 'dart:io';
 import 'dart:typed_data';
 import 'package:shsp/shsp.dart';
@@ -57,7 +50,7 @@ void main() async {
   print('✓ Peer2 sent ${largeData.length} bytes (compressed with Zstd)\n');
 
   // Keep alive briefly
-  await Future.delayed(Duration(seconds: 2));
+  await Future.delayed(const Duration(seconds: 2));
 
   // Clean up
   print('Cleaning up...');
