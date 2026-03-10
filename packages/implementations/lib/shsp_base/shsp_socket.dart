@@ -253,6 +253,9 @@ class ShspSocket extends RawShspSocket implements IShspSocket {
   @override
   RawDatagramSocket get socket => super.socket;
 
+  /// Check if the socket is closed
+  bool get isClosed => _closed;
+
   /// Extracts all registered message callbacks for remote peers.
   ///
   /// Returns a [ShspSocketProfile] containing all message listener registrations.
