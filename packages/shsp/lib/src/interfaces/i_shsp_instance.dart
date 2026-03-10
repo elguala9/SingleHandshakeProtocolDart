@@ -1,11 +1,6 @@
 import 'i_shsp_peer.dart';
 import 'package:callback_handler/callback_handler.dart';
-import '../types/callback_types.dart';
 import '../types/instance_profile.dart';
-import '../types/internet_address_converter.dart';
-import '../types/peer_types.dart';
-import '../types/remote_info.dart';
-import '../types/socket_profile.dart';
 
 
 
