@@ -1,6 +1,7 @@
 import 'dart:io';
 import 'package:callback_handler/callback_handler.dart';
 import '../../types/callback_types.dart';
+import '../../interfaces/utility/i_message_callback_map.dart';
 
 typedef CallbackOnMessage = CallbackHandler<MessageRecord, void>;
 /// A specialized callback map for handling messages from remote endpoints
@@ -8,13 +9,14 @@ typedef CallbackOnMessage = CallbackHandler<MessageRecord, void>;
 /// Key format:
 /// - IPv4: "192.168.1.100:8080"
 /// - IPv6: "[2001:db8::1]:8080"
-class MessageCallbackMap {
+class MessageCallbackMap implements IMessageCallbackMap {
   final Map<String, CallbackOnMessage>
       _handlers = {};
 
   /// Add a callback for a specific remote endpoint
   /// Key format: IPv4 "192.168.1.100:8080" or IPv6 "[2001:db8::1]:8080"
   /// If a callback already exists for this key, it will be replaced
+  @override
   void add(String key, MessageCallbackFunction callback) {
     final handler = CallbackOnMessage();
     handler.register((params) => callback(params));
@@ -23,6 +25,7 @@ class MessageCallbackMap {
 
   /// Get a callback invoker for a specific remote endpoint
   /// Returns a function that invokes the registered callback for this key
+  @override
   MessageCallbackFunction? get(String key) {
     return _handlers[key]?.call;
   }
@@ -36,6 +39,7 @@ class MessageCallbackMap {
   }
 
   /// Add a callback using InternetAddress and port
+  @override
   void addByAddress(InternetAddress address, int port,
       MessageCallbackFunction callback) {
     final key = formatKey(address, port);
@@ -43,6 +47,7 @@ class MessageCallbackMap {
   }
 
   /// Get a callback invoker using InternetAddress and port
+  @override
   MessageCallbackFunction? getByAddress(
       InternetAddress address, int port) {
     final key = formatKey(address, port);
@@ -52,6 +57,7 @@ class MessageCallbackMap {
 
 
   /// Remove the callback for a key
+  @override
   void remove(String key) {
     _handlers.remove(key);
   }
@@ -62,29 +68,35 @@ class MessageCallbackMap {
   }
 
   /// Remove all callbacks using InternetAddress and port
+  @override
   void removeByAddress(InternetAddress address, int port) {
     final key = formatKey(address, port);
     removeKey(key);
   }
 
   /// Check if a key has registered callbacks
+  @override
   bool containsKey(String key) {
     return _handlers.containsKey(key);
   }
 
   /// Check if an address:port combination has registered callbacks
+  @override
   bool containsAddress(InternetAddress address, int port) {
     final key = formatKey(address, port);
     return containsKey(key);
   }
 
   /// Get all keys with registered callbacks
+  @override
   Iterable<String> get keys => _handlers.keys;
 
   /// Get the number of registered callback keys
+  @override
   int get length => _handlers.length;
 
   /// Clear all registered callbacks
+  @override
   void clear() {
     _handlers.clear();
   }

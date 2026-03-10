@@ -12,8 +12,8 @@ void main() {
   group('ShspSocketSingleton handshake e funzionalità', () {
     setUp(() {
       ShspSocketSingleton.destroy();
-      MessageCallbackMapSingleton.destroy();
-      ShspSocketInfoSingleton.destroy();
+      MessageCallbackMapSingleton().destroy();
+      ShspSocketInfoSingleton().destroy();
     });
 
     test('può inviare e ricevere messaggi handshake', () async {

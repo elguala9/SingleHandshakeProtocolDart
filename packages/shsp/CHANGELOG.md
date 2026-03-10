@@ -5,6 +5,22 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [Unreleased]
+
+### Added
+
+- 11 new public interfaces for better extensibility and dependency injection:
+  - Factory interfaces: `IShspSocketFactory`, `IShspPeerFactory`, `IShspInstanceFactory`
+  - Utility interfaces: `IAddressUtility`, `ICallbackMap<T>`, `IKeepAliveTimer`, `IMessageCallbackMap`
+  - Socket interfaces: `IRawShspSocket`, `IDualShspSocket`
+  - Singleton interfaces: `IMessageCallbackMapSingleton`, `IShspSocketInfoSingleton`
+- All @override annotations for better code clarity
+
+### Fixed
+
+- Resolved all dart analyze warnings (36 missing @override annotations)
+- API consistency for singleton destroy methods
+
 ## [1.0.0] - 2026-03-10
 
 ### Added

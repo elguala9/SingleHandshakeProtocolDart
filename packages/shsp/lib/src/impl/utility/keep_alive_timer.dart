@@ -1,7 +1,8 @@
 import 'dart:async';
+import '../../interfaces/utility/i_keep_alive_timer.dart';
 
 /// Custom timer for managing keep-alive messages with intelligent activity tracking
-class KeepAliveTimer implements Timer {
+class KeepAliveTimer implements IKeepAliveTimer {
   late Timer _internalTimer;
   bool _isRunning = false;
   // ignore: unused_field
@@ -22,6 +23,7 @@ class KeepAliveTimer implements Timer {
     stop();
   }
 
+  @override
   void stop() {
     _internalTimer.cancel();
     _isRunning = false;
@@ -64,6 +66,7 @@ class KeepAliveTimer implements Timer {
 
   /// Reset the tick countdown, restarts the keep-alive timer
   /// The next keep-alive message will be sent after the full interval
+  @override
   void resetTick() {
     _lastActivity = DateTime.now();
   }
