@@ -5,7 +5,7 @@ import '../../interfaces/i_shsp_instance.dart';
 import '../../interfaces/i_shsp_socket.dart';
 import '../../types/instance_profile.dart';
 import '../../types/peer_types.dart';
-import '../shsp_base/shsp_peer.dart';
+import '../peer/shsp_peer.dart';
 import '../utility/keep_alive_timer.dart';
 
 const int dataPrefix = 0x00;

@@ -1,7 +1,7 @@
 import 'dart:async';
 import 'dart:io';
 import 'package:test/test.dart';
-import 'package:shsp/src/impl/shsp_base/shsp_socket.dart';
+import 'package:shsp/src/impl/socket/shsp_socket.dart';
 import 'package:shsp/shsp.dart';
 import 'package:shsp/shsp.dart';
 import 'helpers/testable_shsp_socket.dart';

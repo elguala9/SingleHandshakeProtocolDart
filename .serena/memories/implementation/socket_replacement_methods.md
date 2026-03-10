@@ -5,7 +5,7 @@ Implemented two new methods for ShspSocket and ShspSocketSingleton to allow repl
 
 ## Files Modified
 
-### 1. `packages/implementations/lib/shsp_base/shsp_socket.dart`
+### 1. `packages/shsp/lib/src/impl/shsp_base/shsp_socket.dart`
 
 **Added Methods:**
 
@@ -23,7 +23,7 @@ Implemented two new methods for ShspSocket and ShspSocketSingleton to allow repl
    - Callbacks are merged (not replaced)
    - Parameters: `ShspSocketProfile profile`
 
-### 2. `packages/implementations/lib/shsp_base/shsp_socket_singleton.dart`
+### 2. `packages/shsp/lib/src/impl/shsp_base/shsp_socket_singleton.dart`
 
 **Added Methods:**
 

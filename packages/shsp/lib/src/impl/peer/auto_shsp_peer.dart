@@ -6,7 +6,7 @@ import '../../interfaces/i_shsp_socket.dart';
 import '../../types/peer_types.dart';
 
 import 'shsp_peer.dart';
-import 'shsp_socket_singleton.dart';
+import '../socket/shsp_socket_singleton.dart';
 
 /// A [ShspPeer] that automatically uses the global [ShspSocketSingleton] socket.
 ///
