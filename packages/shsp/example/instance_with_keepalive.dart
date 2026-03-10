@@ -1,11 +1,3 @@
-/// SHSP Instance with Keep-Alive Example
-///
-/// This example demonstrates:
-/// - Creating an instance with keep-alive support
-/// - Long-lived connections with handshake verification
-/// - Receiving messages
-/// - Proper cleanup
-
 import 'dart:io';
 import 'dart:typed_data';
 import 'package:shsp/shsp.dart';
@@ -36,7 +28,7 @@ void main() async {
 
   // Keep the instance alive for communication
   print('Keeping connection alive for 5 seconds...');
-  await Future.delayed(Duration(seconds: 5));
+  await Future.delayed(const Duration(seconds: 5));
 
   // Close the connection
   instance.close();
