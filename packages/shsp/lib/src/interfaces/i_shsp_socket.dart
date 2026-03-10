@@ -1,9 +1,5 @@
 import '../types/callback_types.dart';
-import '../types/instance_profile.dart';
-import '../types/internet_address_converter.dart';
 import '../types/peer_types.dart';
-import '../types/remote_info.dart';
-import '../types/socket_profile.dart';
 import 'i_shsp_instance.dart';
 
 /// Interface for SHSP Socket
