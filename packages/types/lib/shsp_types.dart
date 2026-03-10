@@ -8,3 +8,4 @@ export 'src/instance_profile.dart';
 export 'src/internet_address_converter.dart';
 export 'src/peer_types.dart';
 export 'src/remote_info.dart';
+export 'src/socket_profile.dart';
