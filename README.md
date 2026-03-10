@@ -29,7 +29,7 @@ tests (depends on all packages)
 ## Getting Started
 
 ### Prerequisites
-- Dart SDK 3.0.0 or higher
+- Dart SDK 3.5.0 or higher
 - For mobile: Flutter SDK
 
 ### Installation
@@ -100,12 +100,82 @@ Contains interface contracts:
 ### shsp_implementations
 Contains concrete implementations:
 - `ShspSocket`: UDP socket with callback management
-- `HandshakeProtocol`: Core protocol logic
+- `ShspPeer`: High-level peer abstraction
+- `ShspInstance`: Protocol instance with keep-alive support
+- `ShspSocketSingleton`: Global socket management with state transfer and reconnection support
+- `AutoShspPeer`: Auto-wiring peer that binds to `ShspSocketSingleton` with automatic reconnection
+- `AutoShspInstance`: Auto-wiring instance with the same pattern as `AutoShspPeer`
+- `GZipCodec`, `LZ4Codec`, `ZstdCodec`: Pluggable compression implementations
 - `CallbackMap`: Utility for managing callbacks
 - `AddressUtility`: Address formatting utilities
 
 ### shsp_tests
 Comprehensive test suite for all packages.
+
+## High-Level API (Auto Classes)
+
+For most use cases, prefer the high-level auto-wiring classes (`AutoShspPeer` and `AutoShspInstance`) which automatically bind to `ShspSocketSingleton` and handle reconnections seamlessly:
+
+### AutoShspPeer Example
+
+```dart
+// Create a peer that auto-wires to the global socket
+final peer = await AutoShspPeer.create(
+  remoteInfo: RemoteInfo('192.168.1.100', 8080),
+);
+
+// Register message callbacks - they persist across socket replacements
+peer.onMessage((message) {
+  print('Received: $message');
+});
+
+// Send messages normally
+await peer.sendData(Uint8List.fromList([1, 2, 3]));
+```
+
+### AutoShspInstance Example
+
+```dart
+// Create an instance with auto-wiring and keep-alive support
+final instance = await AutoShspInstance.create(
+  remoteInfo: RemoteInfo('192.168.1.100', 8080),
+  keepAliveSeconds: 30,  // Optional, configurable
+);
+
+// Callbacks persist across socket replacements
+instance.onData((data) {
+  print('Received data: $data');
+});
+
+// Send data
+await instance.sendData(Uint8List.fromList([1, 2, 3]));
+```
+
+### Global Socket Management
+
+Use `ShspSocketSingleton` to manage a global socket and switch between different remote targets:
+
+```dart
+// Initialize the singleton with a socket
+final socket = await ShspSocket.bind(InternetAddress.anyIPv4, 0);
+ShspSocketSingleton.instance = socket;
+
+// Auto classes automatically use the singleton
+// When you replace the socket, auto-wired peers/instances reconnect automatically
+ShspSocketSingleton.instance = await ShspSocket.bind(InternetAddress.anyIPv4, 0);
+```
+
+## Compression Codecs
+
+SHSP supports pluggable compression for UDP data messages, enabling efficient bandwidth usage. The framework includes three production-ready codecs:
+
+- **GZipCodec**: Best compression ratio, suitable for slow networks
+- **LZ4Codec**: Fast compression with reasonable ratios, ideal for low-latency applications
+- **ZstdCodec**: Balanced compression and speed, recommended for most use cases
+
+Data messages (0x00) are automatically compressed/decompressed. Protocol messages (handshake, keep-alive) remain uncompressed for minimal overhead.
+
+For detailed usage and benchmarking information, see [COMPRESSION_CODEC_USAGE.md](packages/implementations/COMPRESSION_CODEC_USAGE.md).
 
 ## Examples
 

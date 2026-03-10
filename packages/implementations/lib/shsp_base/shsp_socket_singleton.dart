@@ -1,4 +1,5 @@
 import 'dart:io';
+import 'package:callback_handler/callback_handler.dart';
 import 'package:shsp_interfaces/shsp_interfaces.dart';
 import 'package:shsp_types/shsp_types.dart';
 import 'shsp_socket.dart';
@@ -20,6 +21,7 @@ class ShspSocketSingleton {
   late InternetAddress _address;
   late int _port;
   late ICompressionCodec _compressionCodec;
+  final _socketChangedCallback = CallbackHandler<ShspSocket, void>();
 
   /// Private constructor
   ShspSocketSingleton._(
@@ -95,6 +97,9 @@ class ShspSocketSingleton {
       profile,
       _compressionCodec,
     );
+
+    // Notify listeners that socket has changed
+    _socketChangedCallback(_socket);
   }
 
   /// Gets the underlying ShspSocket instance
@@ -111,6 +116,21 @@ class ShspSocketSingleton {
 
   /// Checks if the socket is currently closed
   bool get isClosed => _socket.isClosed;
+
+  /// Gets the callback handler for socket change notifications.
+  ///
+  /// Register a listener to be notified whenever the socket is replaced.
+  /// The callback receives the new [ShspSocket] instance.
+  ///
+  /// Example:
+  /// ```dart
+  /// final singleton = await ShspSocketSingleton.getInstance();
+  /// singleton.socketChangedCallback.listen((newSocket) {
+  ///   print('Socket changed to: ${newSocket.localPort}');
+  /// });
+  /// ```
+  CallbackHandler<ShspSocket, void> get socketChangedCallback =>
+      _socketChangedCallback;
 
   /// Gets the current socket profile for external storage/management
   ShspSocketProfile getProfile() => _socket.extractProfile();
@@ -133,6 +153,103 @@ class ShspSocketSingleton {
       profile,
       _compressionCodec,
     );
+
+    // Notify listeners that socket has changed
+    _socketChangedCallback(_socket);
+  }
+
+  /// Replaces the internal socket with a new ShspSocket instance.
+  ///
+  /// This method transfers all registered peer callbacks from the old socket
+  /// to the new socket, ensuring no callbacks are lost during the transition.
+  /// The old socket is closed and replaced with the provided socket.
+  ///
+  /// Parameters:
+  ///   - [newSocket]: The new ShspSocket instance to use
+  ///
+  /// Throws:
+  ///   - [StateError] if singleton has not been initialized
+  ///
+  /// Example:
+  /// ```dart
+  /// final singleton = await ShspSocketSingleton.getInstance();
+  /// final newSocket = ShspSocket.fromRaw(rawSocket);
+  /// singleton.setSocket(newSocket);
+  /// ```
+  void setSocket(ShspSocket newSocket) {
+    if (_instance == null) {
+      throw StateError(
+        'ShspSocketSingleton not initialized. Call getInstance() first.',
+      );
+    }
+
+    // Extract profile from old socket
+    final profile = _socket.extractProfile();
+
+    // Close old socket
+    _socket.close();
+
+    // Apply profile to new socket
+    newSocket.applyProfile(profile);
+
+    // Replace socket
+    _socket = newSocket;
+
+    // Update address and port if available
+    _address = newSocket.localAddress ?? _address;
+    _port = newSocket.localPort ?? _port;
+
+    // Update compression codec from new socket
+    _compressionCodec = newSocket.compressionCodec;
+
+    // Notify listeners that socket has changed
+    _socketChangedCallback(_socket);
+  }
+
+  /// Replaces the internal socket with a RawDatagramSocket.
+  ///
+  /// This method wraps the provided RawDatagramSocket in a ShspSocket via
+  /// [ShspSocket.fromRaw], then transfers all registered peer callbacks from
+  /// the old socket to the new one.
+  ///
+  /// Parameters:
+  ///   - [rawSocket]: The RawDatagramSocket to wrap and use
+  ///
+  /// Throws:
+  ///   - [StateError] if singleton has not been initialized
+  ///
+  /// Example:
+  /// ```dart
+  /// final singleton = await ShspSocketSingleton.getInstance();
+  /// final rawSocket = await RawDatagramSocket.bind(address, port);
+  /// singleton.setSocketRaw(rawSocket);
+  /// ```
+  void setSocketRaw(RawDatagramSocket rawSocket) {
+    if (_instance == null) {
+      throw StateError(
+        'ShspSocketSingleton not initialized. Call getInstance() first.',
+      );
+    }
+
+    // Extract profile from old socket
+    final profile = _socket.extractProfile();
+
+    // Close old socket
+    _socket.close();
+
+    // Create new socket from raw and apply profile
+    final newSocket = ShspSocket.fromRaw(rawSocket, _compressionCodec);
+    newSocket.applyProfile(profile);
+
+    // Replace socket
+    _socket = newSocket;
+
+    // Update address and port if available
+    _address = newSocket.localAddress ?? _address;
+    _port = newSocket.localPort ?? _port;
+
+    // Notify listeners that socket has changed
+    _socketChangedCallback(_socket);
   }
 
   /// Destroys the singleton instance and closes the socket
