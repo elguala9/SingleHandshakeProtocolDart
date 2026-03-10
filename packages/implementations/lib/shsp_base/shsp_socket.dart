@@ -252,4 +252,59 @@ class ShspSocket extends RawShspSocket implements IShspSocket {
   /// Get the underlying RawDatagramSocket
   @override
   RawDatagramSocket get socket => super.socket;
+
+  /// Extracts all registered message callbacks for remote peers.
+  ///
+  /// Returns a [ShspSocketProfile] containing all message listener registrations.
+  /// This can be applied to a new socket via [withProfile].
+  ShspSocketProfile extractProfile() {
+    final Map<String, List<OnMessageListener>> listeners = {};
+
+    // Extract all message callbacks from the callback map
+    for (final key in _messageCallbacks.keys) {
+      final handler = _messageCallbacks.getHandler(key);
+      if (handler != null) {
+        final handlerListeners = <OnMessageListener>[];
+        for (var i = 0; i < handler.map.length; i++) {
+          handlerListeners.add(handler.map.getByIndex(i) as OnMessageListener);
+        }
+        if (handlerListeners.isNotEmpty) {
+          listeners[key] = handlerListeners;
+        }
+      }
+    }
+
+    return ShspSocketProfile(messageListeners: listeners);
+  }
+
+  /// Creates a new ShspSocket from an existing profile.
+  ///
+  /// This restores all message callbacks registered on the old socket
+  /// without needing to re-register them manually. Useful for reconnecting
+  /// over a new socket while maintaining peer message handlers.
+  static Future<ShspSocket> withProfile(
+    InternetAddress address,
+    int port,
+    ShspSocketProfile profile, [
+    ICompressionCodec? compressionCodec,
+  ]) async {
+    // Create a new socket
+    final newSocket = await bind(address, port, compressionCodec);
+
+    // Restore all message callbacks from profile
+    for (final entry in profile.messageListeners.entries) {
+      final key = entry.key;
+      final handlers = entry.value;
+
+      for (final listener in handlers) {
+        // Re-register the listener in the new socket
+        newSocket._messageCallbacks.add(
+          key,
+          (record) => listener(record),
+        );
+      }
+    }
+
+    return newSocket;
+  }
 }
