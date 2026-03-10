@@ -1,5 +1,5 @@
 import 'dart:io';
-import 'package:shsp_implementations/shsp_implementations.dart';
+import 'package:shsp/shsp.dart';
 
 /// Test to verify MessageCallbackMap handles both IPv4 and IPv6
 void main() {

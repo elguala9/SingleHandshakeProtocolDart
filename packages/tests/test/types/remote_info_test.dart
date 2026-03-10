@@ -1,6 +1,6 @@
 import 'dart:io';
 import 'package:test/test.dart';
-import 'package:shsp_types/shsp_types.dart';
+import 'package:shsp/shsp.dart';
 
 void main() {
   group('RemoteInfo', () {

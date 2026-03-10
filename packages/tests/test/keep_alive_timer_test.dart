@@ -1,5 +1,5 @@
 import 'package:test/test.dart';
-import 'package:shsp_implementations/utility/keep_alive_timer.dart';
+import 'package:shsp/src/impl/utility/keep_alive_timer.dart';
 import 'dart:async';
 
 void main() {

@@ -1,7 +1,7 @@
 import 'dart:io';
 import 'package:test/test.dart';
-import 'package:shsp_types/shsp_types.dart';
-import 'package:shsp_implementations/utility/address_utility.dart';
+import 'package:shsp/shsp.dart';
+import 'package:shsp/src/impl/utility/address_utility.dart';
 
 void main() {
   group('AddressUtility', () {

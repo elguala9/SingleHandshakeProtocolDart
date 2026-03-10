@@ -1,0 +1,14 @@
+name: example
+description: Examples for Single HandShake Protocol
+version: 1.0.0
+publish_to: none
+
+environment:
+  sdk: '>=3.5.0 <4.0.0'
+
+dependencies:
+  shsp:
+    path: ../packages/shsp
+
+dev_dependencies:
+  lints: ^6.0.0

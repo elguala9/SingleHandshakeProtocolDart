@@ -1,8 +1,8 @@
 import 'dart:io';
 import 'package:test/test.dart';
-import 'package:shsp_implementations/shsp_instance/shsp_instance.dart';
-import 'package:shsp_implementations/shsp_base/shsp_socket.dart';
-import 'package:shsp_types/shsp_types.dart';
+import 'package:shsp/src/impl/shsp_instance/shsp_instance.dart';
+import 'package:shsp/src/impl/shsp_base/shsp_socket.dart';
+import 'package:shsp/shsp.dart';
 
 void main() {
   group('ShspInstance callbacks', () {
