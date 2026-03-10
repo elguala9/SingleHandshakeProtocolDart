@@ -8,12 +8,8 @@ environment:
   sdk: '>=3.5.0 <4.0.0'
 
 dependencies:
-  shsp_types:
-    path: ../types
-  shsp_interfaces:
-    path: ../interfaces
-  shsp_implementations:
-    path: ../implementations
+  shsp:
+    path: ../shsp
 
 dev_dependencies:
   lints: ^6.0.0

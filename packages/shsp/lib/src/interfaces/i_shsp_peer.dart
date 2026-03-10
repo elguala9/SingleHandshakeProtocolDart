@@ -1,0 +1,23 @@
+import '../types/callback_types.dart';
+import '../types/instance_profile.dart';
+import '../types/internet_address_converter.dart';
+import '../types/peer_types.dart';
+import '../types/remote_info.dart';
+import '../types/socket_profile.dart';
+
+/// Interface for SHSP Peer
+abstract interface class IShspPeer {
+  /// Close the peer connection
+  void close();
+
+  /// Get a serialized representation of the peer
+  String serializedObject();
+
+  /// Send a message to this peer
+  void sendMessage(List<int> message);
+
+  MessageCallback get messageCallback;
+
+  /// Internal callback triggered when a message arrives for this peer
+  void onMessage(List<int> msg, PeerInfo info);
+}

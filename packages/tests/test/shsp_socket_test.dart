@@ -1,9 +1,9 @@
 import 'dart:io';
 import 'dart:async';
 import 'package:test/test.dart';
-import 'package:shsp_interfaces/shsp_interfaces.dart';
-import 'package:shsp_implementations/shsp_base/shsp_socket.dart';
-import 'package:shsp_types/shsp_types.dart';
+import 'package:shsp/shsp.dart';
+import 'package:shsp/src/impl/shsp_base/shsp_socket.dart';
+import 'package:shsp/shsp.dart';
 import 'helpers/testable_shsp_socket.dart';
 
 /// Factory function type for creating IShspSocket

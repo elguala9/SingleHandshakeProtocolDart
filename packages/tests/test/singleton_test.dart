@@ -1,5 +1,7 @@
 import 'package:test/test.dart';
-import 'package:shsp_implementations/shsp_implementations.dart';
+import 'package:shsp/src/impl/utility/message_callback_map_singleton.dart';
+import 'package:shsp/src/impl/utility/shsp_socket_info_singleton.dart';
+import 'package:shsp/src/impl/shsp_instance/shsp_instance_handler_singleton.dart';
 
 void main() {
   group('Singletons', () {

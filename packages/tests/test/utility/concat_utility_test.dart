@@ -1,7 +1,7 @@
 import 'dart:convert';
 import 'dart:typed_data';
 import 'package:test/test.dart';
-import 'package:shsp_implementations/utility/concat_utility.dart';
+import 'package:shsp/src/impl/utility/concat_utility.dart';
 
 void main() {
   group('ConcatUtility', () {
