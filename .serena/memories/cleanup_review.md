@@ -7,33 +7,33 @@ Tuttavia, ci sono alcuni punti da verificare.
 ## Metodi di Cleanup Trovati
 
 ### 1. ShspPeer.close() ✅
-**Ubicazione**: `packages/implementations/lib/shsp_base/shsp_peer.dart:75`
+**Ubicazione**: `packages/shsp/lib/src/impl/shsp_base/shsp_peer.dart:75`
 - ✅ Idempotente (controllato con `_closed`)
 - ✅ Rimuove il callback dal socket per prevenire memory leak
 - ✅ Non chiude il socket (giusto, è condiviso)
 - ❓ Non notifica lo stato chiuso agli ascoltatori
 
 ### 2. ShspSocket.close() ✅
-**Ubicazione**: `packages/implementations/lib/shsp_base/shsp_socket.dart:183`
+**Ubicazione**: `packages/shsp/lib/src/impl/shsp_base/shsp_socket.dart:183`
 - ✅ Cancella la subscription dello stream
 - ✅ Chiude il raw socket
 - ❓ Non pulisce i callback memorizzati
 - ❓ Non è idempotente (può causare errori se chiamato due volte)
 
 ### 3. ShspSocketSingleton.destroy() ✅
-**Ubicazione**: `packages/implementations/lib/shsp_base/shsp_socket_singleton.dart:46`
+**Ubicazione**: `packages/shsp/lib/src/impl/shsp_base/shsp_socket_singleton.dart:46`
 - ✅ Chiama close() sull'istanza
 - ✅ Azzera i riferimenti (_instance, _initializationCompleter)
 
 ### 4. ShspInstance.close() ✅
-**Ubicazione**: `packages/implementations/lib/shsp_instance/shsp_instance.dart:264`
+**Ubicazione**: `packages/shsp/lib/src/impl/shsp_instance/shsp_instance.dart:264`
 - ✅ Ferma il keep-alive timer
 - ✅ Invia il messaggio di chiusura (se aperto)
 - ✅ Chiama super.close()
 - ✅ Pulisce correttamente in caso di errore (try/catch)
 
 ### 5. ShspInstanceHandler.close() e closeAll() ✅
-**Ubicazione**: `packages/implementations/lib/shsp_instance/shsp_instance_handler.dart:42`
+**Ubicazione**: `packages/shsp/lib/src/impl/shsp_instance/shsp_instance_handler.dart:42`
 - ✅ close() rimuove l'istanza prima di chiuderla
 - ✅ closeAll() crea una copia per evitare ConcurrentModificationException
 - ✅ Gestisce gli errori durante la chiusura

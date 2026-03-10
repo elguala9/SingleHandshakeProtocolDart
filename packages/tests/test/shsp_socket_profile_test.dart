@@ -1,6 +1,6 @@
 import 'dart:io';
 import 'package:test/test.dart';
-import 'package:shsp/src/impl/shsp_base/shsp_socket.dart';
+import 'package:shsp/src/impl/socket/shsp_socket.dart';
 import 'package:shsp/src/impl/utility/message_callback_map.dart';
 import 'package:shsp/shsp.dart';
 

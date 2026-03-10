@@ -4,8 +4,8 @@
 Implemented a global singleton wrapper for ShspSocket that manages a persistent socket instance with automatic state transfer during reconnection scenarios.
 
 ## Location
-- **Main class**: `packages/implementations/lib/shsp_base/shsp_socket_singleton.dart`
-- **Exported from**: `packages/implementations/lib/shsp_implementations.dart`
+- **Main class**: `packages/shsp/lib/src/impl/shsp_base/shsp_socket_singleton.dart`
+- **Exported from**: `packages/shsp/lib/shsp.dart`
 
 ## Core Methods
 

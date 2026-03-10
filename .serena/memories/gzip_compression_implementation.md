@@ -9,7 +9,7 @@ Successfully implemented mandatory GZip compression at **ShspSocket level** (tra
 ## Changes Made
 
 ### File Modified
-`packages/implementations/lib/shsp_base/shsp_socket.dart`
+`packages/shsp/lib/src/impl/shsp_base/shsp_socket.dart`
 
 ### 1. Added gzip Support (Already in dart:io)
 - Used `gzip.encode()` and `gzip.decode()` from built-in `dart:io` package

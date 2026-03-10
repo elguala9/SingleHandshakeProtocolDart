@@ -1,5 +1,7 @@
+import 'dart:io';
 import '../types/callback_types.dart';
 import '../types/peer_types.dart';
+import 'i_compression_codec.dart';
 import 'i_shsp_instance.dart';
 
 /// Interface for SHSP Socket
@@ -40,6 +42,18 @@ abstract interface class IShspSocket {
   /// Send data to a remote address (as string) and port
   /// Returns the number of bytes written
   int sendTo(List<int> buffer, PeerInfo peer);
+
+  /// Get the local address the socket is bound to
+  InternetAddress? get localAddress;
+
+  /// Get the local port the socket is bound to
+  int? get localPort;
+
+  /// Get the underlying RawDatagramSocket (for IPv4-only sockets or adapter implementation)
+  RawDatagramSocket get socket;
+
+  /// Get the compression codec used by the socket
+  ICompressionCodec get compressionCodec;
 
   /// Close the socket
   void close();

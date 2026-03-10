@@ -1,24 +1,20 @@
 # SingleHandShakeProtocolDart Project
 
 ## Project Purpose
-A Dart project implementing the Single Hand Shake Protocol, organized as a multi-package monorepo.
+A Dart project implementing the Single Hand Shake Protocol as a unified package.
 
 ## Project Structure
-- `packages/implementations/` - Implementation package
-- `packages/interfaces/` - Interfaces package  
-- `packages/types/` - Types package
-- `install_all.bat` - Installation script for Windows
+- `packages/shsp/` - Unified implementation package (code, interfaces, types all together)
+- `packages/tests/` - Comprehensive test suite (399 tests)
+- Repository root: shared pubspec.yaml, README, docs
 
 ## License
 GNU Lesser General Public License v3 (LGPL3)
 - Copyright (c) 2026 Luca Gualandi
-- License files located in each package:
-  - `packages/implementations/LICENSE`
-  - `packages/interfaces/LICENSE`
-  - `packages/types/LICENSE`
+- License file: `LICENSE` (root and each package)
 
-## Key Findings
-- No license headers in source code files - only separate LICENSE files per package
-- No license field in pubspec.yaml files
+## Key Info
 - Technology: Dart programming language
-- Platform: Windows (evident from install_all.bat)
+- Test Coverage: 399 passing tests ✅
+- Current Status: All tests passing, handshake flakiness fixed with extended timeouts
+- Development: active feature development and bug fixes
