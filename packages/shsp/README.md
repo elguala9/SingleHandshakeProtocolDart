@@ -20,7 +20,7 @@ Add to your `pubspec.yaml`:
 
 ```yaml
 dependencies:
-  shsp: ^1.0.0
+  shsp: ^1.2.0
 ```
 
 Then run:
@@ -125,6 +125,68 @@ final socket = await ShspSocket.bind(InternetAddress.anyIPv6, 8080);
 final socket = await ShspSocket.bind(InternetAddress('192.168.1.100'), 8080);
 ```
 
+## Registry Management (v1.2.0+)
+
+Manage multiple socket and peer instances efficiently:
+
+```dart
+import 'package:shsp/shsp.dart';
+
+// Create a registry for managing multiple sockets
+final socketRegistry = <SocketType, IShspSocket>{};
+
+// Register IPv4 and IPv6 sockets
+final ipv4Socket = await ShspSocket.bind(InternetAddress.anyIPv4, 8080);
+final ipv6Socket = await ShspSocket.bind(InternetAddress.anyIPv6, 8080);
+
+socketRegistry[SocketType.ipv4] = ipv4Socket;
+socketRegistry[SocketType.ipv6] = ipv6Socket;
+
+// Access sockets by type
+final activeSocket = socketRegistry[SocketType.ipv4];
+
+// Clean up all sockets
+for (final socket in socketRegistry.values) {
+  socket.destroy();
+}
+```
+
+### Advanced: Registry Mixin Pattern
+
+```dart
+class MyPeerManager with Registry<String, IShspPeer> {
+  Future<void> createPeer(String id, RemoteInfo remoteInfo) async {
+    final peer = await AutoShspPeer.create(remoteInfo: remoteInfo);
+    register(id, peer);
+  }
+
+  Future<void> closePeer(String id) async {
+    final peer = unregister(id);
+    if (peer != null) {
+      await peer.close();
+    }
+  }
+
+  Future<void> broadcastData(Uint8List data) async {
+    for (final item in allItems) {
+      await item.value.sendData(data);
+    }
+  }
+
+  void cleanupAll() {
+    destroyAll(); // Calls destroy() on all peers
+  }
+}
+
+// Usage
+final manager = MyPeerManager();
+await manager.createPeer('peer1', RemoteInfo('192.168.1.100', 8080));
+await manager.createPeer('peer2', RemoteInfo('192.168.1.101', 8080));
+
+await manager.broadcastData(Uint8List.fromList([1, 2, 3]));
+manager.cleanupAll();
+```
+
 ## Architecture
 
 SHSP is organized into three main components:
@@ -155,6 +217,13 @@ Concrete implementations:
 - `ShspSocketSingleton`: Global socket management
 - Compression codecs: `GZipCodec`, `LZ4Codec`, `ZstdCodec`
 
+### Registry Utilities (v1.2.0+)
+Advanced instance management:
+- `Registry<Key, Value>`: Generic mixin for managing keyed instances
+- `Singleton`: Type-based instance registry
+- `IValueForRegistry`: Interface for registry-managed objects
+- `SocketType`: Enumeration for IPv4/IPv6 socket types
+
 ## Platform Support
 
 | Platform | Support | Notes |
@@ -174,8 +243,15 @@ Concrete implementations:
 
 ## Examples
 
-See the `example/` directory in the repository for complete examples:
-- [Socket example](https://github.com/lgualandi/SingleHandShakeProtocolDart/tree/main/example)
+Comprehensive examples are available in the `example/` directory:
+
+1. **Basic Peer** - Simple peer-to-peer communication
+2. **Instance with Keep-Alive** - Long-lived connections with heartbeat
+3. **Socket Singleton with Compression** - Global socket management with data compression
+4. **Using Interfaces** - Dependency injection and interface-based design
+5. **Registry Management** (v1.2.0+) - Advanced instance management with registry patterns
+
+[View all examples](https://github.com/lgualandi/SingleHandShakeProtocolDart/tree/main/packages/shsp/example)
 
 ## Testing
 

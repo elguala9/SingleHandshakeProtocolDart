@@ -1,4 +1,6 @@
 import 'dart:io';
+import 'package:shsp/src/interfaces/mixin/registry_mixin.dart';
+
 import '../types/callback_types.dart';
 import '../types/peer_types.dart';
 import '../types/socket_profile.dart';
@@ -6,7 +8,7 @@ import 'i_compression_codec.dart';
 import 'i_shsp_instance.dart';
 
 /// Interface for SHSP Socket
-abstract interface class IShspSocket {
+abstract interface class IShspSocket implements IValueForRegistry {
   /// Returns the socket state as a serialized string (type, endpoints, registered callbacks)
   String serializedObject();
 

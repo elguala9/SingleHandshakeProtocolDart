@@ -7,19 +7,32 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [1.2.0] - 2026-03-11
+
 ### Added
 
-- 11 new public interfaces for better extensibility and dependency injection:
-  - Factory interfaces: `IShspSocketFactory`, `IShspPeerFactory`, `IShspInstanceFactory`
-  - Utility interfaces: `IAddressUtility`, `ICallbackMap<T>`, `IKeepAliveTimer`, `IMessageCallbackMap`
-  - Socket interfaces: `IRawShspSocket`, `IDualShspSocket`
-  - Singleton interfaces: `IMessageCallbackMapSingleton`, `IShspSocketInfoSingleton`
-- All @override annotations for better code clarity
+- **Registry System**: New generic registry pattern with mixin-based API for managing multiple instances:
+  - `Registry<Key, Value>` mixin for key-value based instance management
+  - `Singleton` class for type-based instance management
+  - `IValueForRegistry` interface for registry-managed objects
+  - `RegistryMixin` trait for registering and managing sockets/peers
+- **Extended Interface Support**: Socket and peer interfaces now support registry integration:
+  - `IShspSocket` implements `IValueForRegistry` with `destroy()` method
+  - `IShspPeer` implements `IValueForRegistry` with proper cleanup
+- **Socket Type Enumeration**: New `SocketType` enum for IPv4/IPv6 socket management
+- **Registry Utilities**: Helper functions for socket registry initialization and management
+
+### Changed
+
+- **Registry Version Preservation**: Registry now preserves element version during updates instead of incrementing
+  - `register()` maintains the existing version when updating an element
+  - New elements are initialized with version 0
+  - This enables stable version tracking across updates
 
 ### Fixed
 
-- Resolved all dart analyze warnings (36 missing @override annotations)
-- API consistency for singleton destroy methods
+- Improved resource cleanup with `destroy()` methods throughout the API
+- Better type safety with registry-based instance management
 
 ## [1.0.0] - 2026-03-10
 
