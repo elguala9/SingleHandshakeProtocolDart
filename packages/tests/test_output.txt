@@ -1,0 +1,307 @@
+00:00 +0: loading test\auto_shsp_instance_test.dart
+00:00 +0 -1: loading test\auto_shsp_instance_test.dart [E]
+  Failed to load "test\auto_shsp_instance_test.dart":
+  ../shsp/lib/src/impl/socket/shsp_socket_singleton.dart:28:7: Error: Superclass has no constructor named 'BaseShspSocketSingleton._'.
+    ) : super._(socket, address, port, compressionCodec);
+        ^^^^^
+  ../shsp/lib/src/impl/socket/dual_shsp_socket_singleton.dart:30:7: Error: Superclass has no constructor named 'BaseShspSocketSingleton._'.
+    ) : super._(socket, address, port, compressionCodec);
+        ^^^^^
+00:00 +0 -2: loading test\auto_shsp_peer_test.dart [E]
+  Failed to load "test\auto_shsp_peer_test.dart":
+  ../shsp/lib/src/impl/socket/shsp_socket_singleton.dart:28:7: Error: Superclass has no constructor named 'BaseShspSocketSingleton._'.
+    ) : super._(socket, address, port, compressionCodec);
+        ^^^^^
+  ../shsp/lib/src/impl/socket/dual_shsp_socket_singleton.dart:30:7: Error: Superclass has no constructor named 'BaseShspSocketSingleton._'.
+    ) : super._(socket, address, port, compressionCodec);
+        ^^^^^
+00:00 +0 -3: loading test\compression_codec_test.dart [E]
+  Failed to load "test\compression_codec_test.dart":
+  ../shsp/lib/src/impl/socket/shsp_socket_singleton.dart:28:7: Error: Superclass has no constructor named 'BaseShspSocketSingleton._'.
+    ) : super._(socket, address, port, compressionCodec);
+        ^^^^^
+  ../shsp/lib/src/impl/socket/dual_shsp_socket_singleton.dart:30:7: Error: Superclass has no constructor named 'BaseShspSocketSingleton._'.
+    ) : super._(socket, address, port, compressionCodec);
+        ^^^^^
+00:00 +0 -4: loading test\handshake_initiator_signal_handler_test.dart [E]
+  Failed to load "test\handshake_initiator_signal_handler_test.dart":
+  ../shsp/lib/src/impl/socket/shsp_socket_singleton.dart:28:7: Error: Superclass has no constructor named 'BaseShspSocketSingleton._'.
+    ) : super._(socket, address, port, compressionCodec);
+        ^^^^^
+  ../shsp/lib/src/impl/socket/dual_shsp_socket_singleton.dart:30:7: Error: Superclass has no constructor named 'BaseShspSocketSingleton._'.
+    ) : super._(socket, address, port, compressionCodec);
+        ^^^^^
+00:00 +0 -5: loading test\handshake_ip_test.dart [E]
+  Failed to load "test\handshake_ip_test.dart":
+  ../shsp/lib/src/impl/socket/shsp_socket_singleton.dart:28:7: Error: Superclass has no constructor named 'BaseShspSocketSingleton._'.
+    ) : super._(socket, address, port, compressionCodec);
+        ^^^^^
+  ../shsp/lib/src/impl/socket/dual_shsp_socket_singleton.dart:30:7: Error: Superclass has no constructor named 'BaseShspSocketSingleton._'.
+    ) : super._(socket, address, port, compressionCodec);
+        ^^^^^
+00:00 +0 -6: loading test\shsp_handshake_handler_test.dart [E]
+  Failed to load "test\shsp_handshake_handler_test.dart":
+  ../shsp/lib/src/impl/socket/shsp_socket_singleton.dart:28:7: Error: Superclass has no constructor named 'BaseShspSocketSingleton._'.
+    ) : super._(socket, address, port, compressionCodec);
+        ^^^^^
+  ../shsp/lib/src/impl/socket/dual_shsp_socket_singleton.dart:30:7: Error: Superclass has no constructor named 'BaseShspSocketSingleton._'.
+    ) : super._(socket, address, port, compressionCodec);
+        ^^^^^
+00:00 +0 -7: loading test\shsp_instance_callbacks_test.dart [E]
+  Failed to load "test\shsp_instance_callbacks_test.dart":
+  ../shsp/lib/src/impl/socket/shsp_socket_singleton.dart:28:7: Error: Superclass has no constructor named 'BaseShspSocketSingleton._'.
+    ) : super._(socket, address, port, compressionCodec);
+        ^^^^^
+  ../shsp/lib/src/impl/socket/dual_shsp_socket_singleton.dart:30:7: Error: Superclass has no constructor named 'BaseShspSocketSingleton._'.
+    ) : super._(socket, address, port, compressionCodec);
+        ^^^^^
+00:00 +0 -8: loading test\shsp_instance_close_test.dart [E]
+  Failed to load "test\shsp_instance_close_test.dart":
+  ../shsp/lib/src/impl/socket/shsp_socket_singleton.dart:28:7: Error: Superclass has no constructor named 'BaseShspSocketSingleton._'.
+    ) : super._(socket, address, port, compressionCodec);
+        ^^^^^
+  ../shsp/lib/src/impl/socket/dual_shsp_socket_singleton.dart:30:7: Error: Superclass has no constructor named 'BaseShspSocketSingleton._'.
+    ) : super._(socket, address, port, compressionCodec);
+        ^^^^^
+00:00 +0 -8: test\handshake_ownership_test.dart: HandshakeOwnership constructor with non-null signedNonce should store the value
+00:00 +0 -9: loading test\shsp_instance_handler_test.dart [E]
+  Failed to load "test\shsp_instance_handler_test.dart":
+  ../shsp/lib/src/impl/socket/shsp_socket_singleton.dart:28:7: Error: Superclass has no constructor named 'BaseShspSocketSingleton._'.
+    ) : super._(socket, address, port, compressionCodec);
+        ^^^^^
+  ../shsp/lib/src/impl/socket/dual_shsp_socket_singleton.dart:30:7: Error: Superclass has no constructor named 'BaseShspSocketSingleton._'.
+    ) : super._(socket, address, port, compressionCodec);
+        ^^^^^
+00:00 +1 -9: test\handshake_ownership_test.dart: HandshakeOwnership constructor with null signedNonce should store null
+00:00 +2 -9: test\handshake_ownership_test.dart: HandshakeOwnership should implement IHandshakeOwnership interface
+00:00 +3 -9: test\handshake_ownership_test.dart: HandshakeOwnership sign() should return the same value as constructor parameter
+00:00 +4 -9: test\handshake_ownership_test.dart: HandshakeOwnership empty string should be handled correctly
+00:00 +5 -9: test\keep_alive_timer_test.dart: KeepAliveTimer Tests KeepAliveTimer implements Timer
+00:00 +6 -9: test\keep_alive_timer_test.dart: KeepAliveTimer Tests KeepAliveTimer implements Timer
+00:00 +7 -9: test\keep_alive_timer_test.dart: KeepAliveTimer Tests KeepAliveTimer implements Timer
+00:00 +8 -9: test\keep_alive_timer_test.dart: KeepAliveTimer Tests KeepAliveTimer implements Timer
+00:00 +9 -9: test\keep_alive_timer_test.dart: KeepAliveTimer Tests KeepAliveTimer implements Timer
+00:00 +10 -9: test\keep_alive_timer_test.dart: KeepAliveTimer Tests KeepAliveTimer implements Timer
+00:00 +11 -9: test\handshake_time_test.dart: HandshakeTime constructor should set all values correctly
+00:00 +11 -10: loading test\shsp_instance_handshake_open_test.dart [E]
+  Failed to load "test\shsp_instance_handshake_open_test.dart":
+  ../shsp/lib/src/impl/socket/shsp_socket_singleton.dart:28:7: Error: Superclass has no constructor named 'BaseShspSocketSingleton._'.
+    ) : super._(socket, address, port, compressionCodec);
+        ^^^^^
+  ../shsp/lib/src/impl/socket/dual_shsp_socket_singleton.dart:30:7: Error: Superclass has no constructor named 'BaseShspSocketSingleton._'.
+    ) : super._(socket, address, port, compressionCodec);
+        ^^^^^
+00:00 +12 -10: test\keep_alive_timer_test.dart: KeepAliveTimer Tests Timer callback is called after duration
+00:00 +13 -10: test\keep_alive_timer_test.dart: KeepAliveTimer Tests Timer callback is called after duration
+00:00 +14 -10: test\keep_alive_timer_test.dart: KeepAliveTimer Tests Timer callback is called after duration
+00:00 +15 -10: test\keep_alive_timer_test.dart: KeepAliveTimer Tests Timer callback is called after duration
+00:00 +16 -10: test\keep_alive_timer_test.dart: KeepAliveTimer Tests Timer callback is called after duration
+00:00 +17 -10: test\keep_alive_timer_test.dart: KeepAliveTimer Tests Timer callback is called after duration
+00:00 +18 -10: test\keep_alive_timer_test.dart: KeepAliveTimer Tests Timer callback is called after duration
+00:00 +19 -10: test\keep_alive_timer_test.dart: KeepAliveTimer Tests Timer callback is called after duration
+00:00 +20 -10: test\keep_alive_timer_test.dart: KeepAliveTimer Tests Timer callback is called after duration
+00:00 +20 -11: loading test\shsp_instance_profile_test.dart [E]
+  Failed to load "test\shsp_instance_profile_test.dart":
+  ../shsp/lib/src/impl/socket/shsp_socket_singleton.dart:28:7: Error: Superclass has no constructor named 'BaseShspSocketSingleton._'.
+    ) : super._(socket, address, port, compressionCodec);
+        ^^^^^
+  ../shsp/lib/src/impl/socket/dual_shsp_socket_singleton.dart:30:7: Error: Superclass has no constructor named 'BaseShspSocketSingleton._'.
+    ) : super._(socket, address, port, compressionCodec);
+        ^^^^^
+00:00 +20 -12: loading test\shsp_peer_test.dart [E]
+  Failed to load "test\shsp_peer_test.dart":
+  ../shsp/lib/src/impl/socket/shsp_socket_singleton.dart:28:7: Error: Superclass has no constructor named 'BaseShspSocketSingleton._'.
+    ) : super._(socket, address, port, compressionCodec);
+        ^^^^^
+  ../shsp/lib/src/impl/socket/dual_shsp_socket_singleton.dart:30:7: Error: Superclass has no constructor named 'BaseShspSocketSingleton._'.
+    ) : super._(socket, address, port, compressionCodec);
+        ^^^^^
+00:00 +21 -12: test\keep_alive_timer_test.dart: KeepAliveTimer Tests isActive returns true when running
+00:00 +22 -12: test\keep_alive_timer_test.dart: KeepAliveTimer Tests isActive returns false after cancel
+00:00 +22 -13: loading test\shsp_socket_comprehensive_test.dart [E]
+  Failed to load "test\shsp_socket_comprehensive_test.dart":
+  ../shsp/lib/src/impl/socket/shsp_socket_singleton.dart:28:7: Error: Superclass has no constructor named 'BaseShspSocketSingleton._'.
+    ) : super._(socket, address, port, compressionCodec);
+        ^^^^^
+  ../shsp/lib/src/impl/socket/dual_shsp_socket_singleton.dart:30:7: Error: Superclass has no constructor named 'BaseShspSocketSingleton._'.
+    ) : super._(socket, address, port, compressionCodec);
+        ^^^^^
+00:00 +22 -14: loading test\shsp_socket_peer_callback_integration_test.dart [E]
+  Failed to load "test\shsp_socket_peer_callback_integration_test.dart":
+  ../shsp/lib/src/impl/socket/shsp_socket_singleton.dart:28:7: Error: Superclass has no constructor named 'BaseShspSocketSingleton._'.
+    ) : super._(socket, address, port, compressionCodec);
+        ^^^^^
+  ../shsp/lib/src/impl/socket/dual_shsp_socket_singleton.dart:30:7: Error: Superclass has no constructor named 'BaseShspSocketSingleton._'.
+    ) : super._(socket, address, port, compressionCodec);
+        ^^^^^
+00:00 +23 -14: test\keep_alive_timer_test.dart: KeepAliveTimer Tests tick increments
+00:00 +24 -14: test\keep_alive_timer_test.dart: KeepAliveTimer Tests resetTick resets the countdown
+00:00 +25 -14: test\keep_alive_timer_test.dart: KeepAliveTimer Tests Multiple callbacks over time
+00:00 +25 -15: loading test\shsp_socket_profile_test.dart [E]
+  Failed to load "test\shsp_socket_profile_test.dart":
+  ../shsp/lib/src/impl/socket/shsp_socket_singleton.dart:28:7: Error: Superclass has no constructor named 'BaseShspSocketSingleton._'.
+    ) : super._(socket, address, port, compressionCodec);
+        ^^^^^
+  ../shsp/lib/src/impl/socket/dual_shsp_socket_singleton.dart:30:7: Error: Superclass has no constructor named 'BaseShspSocketSingleton._'.
+    ) : super._(socket, address, port, compressionCodec);
+        ^^^^^
+00:00 +26 -15: test\keep_alive_timer_test.dart: KeepAliveTimer Tests Multiple callbacks over time
+00:00 +27 -15: test\keep_alive_timer_test.dart: KeepAliveTimer Tests Multiple callbacks over time
+00:00 +28 -15: test\keep_alive_timer_test.dart: KeepAliveTimer Tests Multiple callbacks over time
+00:00 +29 -15: test\keep_alive_timer_test.dart: KeepAliveTimer Tests Multiple callbacks over time
+00:00 +30 -15: test\keep_alive_timer_test.dart: KeepAliveTimer Tests Multiple callbacks over time
+00:00 +31 -15: test\keep_alive_timer_test.dart: KeepAliveTimer Tests Multiple callbacks over time
+00:00 +32 -15: test\keep_alive_timer_test.dart: KeepAliveTimer Tests Multiple callbacks over time
+00:00 +33 -15: test\keep_alive_timer_test.dart: KeepAliveTimer Tests Multiple callbacks over time
+00:00 +34 -15: test\keep_alive_timer_test.dart: KeepAliveTimer Tests Multiple callbacks over time
+00:00 +35 -15: test\keep_alive_timer_test.dart: KeepAliveTimer Tests Multiple callbacks over time
+00:00 +36 -15: test\keep_alive_timer_test.dart: KeepAliveTimer Tests Multiple callbacks over time
+00:00 +37 -15: test\keep_alive_timer_test.dart: KeepAliveTimer Tests Multiple callbacks over time
+00:00 +38 -15: test\keep_alive_timer_test.dart: KeepAliveTimer Tests Multiple callbacks over time
+00:00 +38 -16: loading test\shsp_socket_profile_transfer_test.dart [E]
+  Failed to load "test\shsp_socket_profile_transfer_test.dart":
+  ../shsp/lib/src/impl/socket/shsp_socket_singleton.dart:28:7: Error: Superclass has no constructor named 'BaseShspSocketSingleton._'.
+    ) : super._(socket, address, port, compressionCodec);
+        ^^^^^
+  ../shsp/lib/src/impl/socket/dual_shsp_socket_singleton.dart:30:7: Error: Superclass has no constructor named 'BaseShspSocketSingleton._'.
+    ) : super._(socket, address, port, compressionCodec);
+        ^^^^^
+00:00 +38 -17: loading test\shsp_socket_singleton_edge_cases_test.dart [E]
+  Failed to load "test\shsp_socket_singleton_edge_cases_test.dart":
+  ../shsp/lib/src/impl/socket/shsp_socket_singleton.dart:28:7: Error: Superclass has no constructor named 'BaseShspSocketSingleton._'.
+    ) : super._(socket, address, port, compressionCodec);
+        ^^^^^
+  ../shsp/lib/src/impl/socket/dual_shsp_socket_singleton.dart:30:7: Error: Superclass has no constructor named 'BaseShspSocketSingleton._'.
+    ) : super._(socket, address, port, compressionCodec);
+        ^^^^^
+00:00 +38 -18: loading test\shsp_socket_singleton_functional_test.dart [E]
+  Failed to load "test\shsp_socket_singleton_functional_test.dart":
+  ../shsp/lib/src/impl/socket/shsp_socket_singleton.dart:28:7: Error: Superclass has no constructor named 'BaseShspSocketSingleton._'.
+    ) : super._(socket, address, port, compressionCodec);
+        ^^^^^
+  ../shsp/lib/src/impl/socket/dual_shsp_socket_singleton.dart:30:7: Error: Superclass has no constructor named 'BaseShspSocketSingleton._'.
+    ) : super._(socket, address, port, compressionCodec);
+        ^^^^^
+00:00 +38 -19: loading test\shsp_socket_singleton_test.dart [E]
+  Failed to load "test\shsp_socket_singleton_test.dart":
+  ../shsp/lib/src/impl/socket/shsp_socket_singleton.dart:28:7: Error: Superclass has no constructor named 'BaseShspSocketSingleton._'.
+    ) : super._(socket, address, port, compressionCodec);
+        ^^^^^
+  ../shsp/lib/src/impl/socket/dual_shsp_socket_singleton.dart:30:7: Error: Superclass has no constructor named 'BaseShspSocketSingleton._'.
+    ) : super._(socket, address, port, compressionCodec);
+        ^^^^^
+00:00 +38 -20: loading test\shsp_socket_stress_test.dart [E]
+  Failed to load "test\shsp_socket_stress_test.dart":
+  ../shsp/lib/src/impl/socket/shsp_socket_singleton.dart:28:7: Error: Superclass has no constructor named 'BaseShspSocketSingleton._'.
+    ) : super._(socket, address, port, compressionCodec);
+        ^^^^^
+  ../shsp/lib/src/impl/socket/dual_shsp_socket_singleton.dart:30:7: Error: Superclass has no constructor named 'BaseShspSocketSingleton._'.
+    ) : super._(socket, address, port, compressionCodec);
+        ^^^^^
+00:00 +38 -21: loading test\shsp_socket_test.dart [E]
+  Failed to load "test\shsp_socket_test.dart":
+  ../shsp/lib/src/impl/socket/shsp_socket_singleton.dart:28:7: Error: Superclass has no constructor named 'BaseShspSocketSingleton._'.
+    ) : super._(socket, address, port, compressionCodec);
+        ^^^^^
+  ../shsp/lib/src/impl/socket/dual_shsp_socket_singleton.dart:30:7: Error: Superclass has no constructor named 'BaseShspSocketSingleton._'.
+    ) : super._(socket, address, port, compressionCodec);
+        ^^^^^
+00:00 +38 -22: loading test\singleton_integration_test.dart [E]
+  Failed to load "test\singleton_integration_test.dart":
+  ../shsp/lib/src/impl/socket/shsp_socket_singleton.dart:28:7: Error: Superclass has no constructor named 'BaseShspSocketSingleton._'.
+    ) : super._(socket, address, port, compressionCodec);
+        ^^^^^
+  ../shsp/lib/src/impl/socket/dual_shsp_socket_singleton.dart:30:7: Error: Superclass has no constructor named 'BaseShspSocketSingleton._'.
+    ) : super._(socket, address, port, compressionCodec);
+        ^^^^^
+00:00 +39 -22: test\keep_alive_timer_test.dart: KeepAliveTimer Tests from() converts Timer to KeepAliveTimer
+00:00 +40 -22: test\keep_alive_timer_test.dart: KeepAliveTimer Tests cancel() stops the timer
+00:00 +40 -23: loading test\types\peer_types_test.dart [E]
+  Failed to load "test\types\peer_types_test.dart":
+  ../shsp/lib/src/impl/socket/shsp_socket_singleton.dart:28:7: Error: Superclass has no constructor named 'BaseShspSocketSingleton._'.
+    ) : super._(socket, address, port, compressionCodec);
+        ^^^^^
+  ../shsp/lib/src/impl/socket/dual_shsp_socket_singleton.dart:30:7: Error: Superclass has no constructor named 'BaseShspSocketSingleton._'.
+    ) : super._(socket, address, port, compressionCodec);
+        ^^^^^
+00:00 +40 -24: loading test\types\remote_info_test.dart [E]
+  Failed to load "test\types\remote_info_test.dart":
+  ../shsp/lib/src/impl/socket/shsp_socket_singleton.dart:28:7: Error: Superclass has no constructor named 'BaseShspSocketSingleton._'.
+    ) : super._(socket, address, port, compressionCodec);
+        ^^^^^
+  ../shsp/lib/src/impl/socket/dual_shsp_socket_singleton.dart:30:7: Error: Superclass has no constructor named 'BaseShspSocketSingleton._'.
+    ) : super._(socket, address, port, compressionCodec);
+        ^^^^^
+00:00 +40 -25: loading test\utility\address_utility_test.dart [E]
+  Failed to load "test\utility\address_utility_test.dart":
+  ../shsp/lib/src/impl/socket/shsp_socket_singleton.dart:28:7: Error: Superclass has no constructor named 'BaseShspSocketSingleton._'.
+    ) : super._(socket, address, port, compressionCodec);
+        ^^^^^
+  ../shsp/lib/src/impl/socket/dual_shsp_socket_singleton.dart:30:7: Error: Superclass has no constructor named 'BaseShspSocketSingleton._'.
+    ) : super._(socket, address, port, compressionCodec);
+        ^^^^^
+00:00 +40 -26: loading test\utility\message_callback_map_test.dart [E]
+  Failed to load "test\utility\message_callback_map_test.dart":
+  ../shsp/lib/src/impl/socket/shsp_socket_singleton.dart:28:7: Error: Superclass has no constructor named 'BaseShspSocketSingleton._'.
+    ) : super._(socket, address, port, compressionCodec);
+        ^^^^^
+  ../shsp/lib/src/impl/socket/dual_shsp_socket_singleton.dart:30:7: Error: Superclass has no constructor named 'BaseShspSocketSingleton._'.
+    ) : super._(socket, address, port, compressionCodec);
+        ^^^^^
+00:00 +40 -26: test\singleton_test.dart: Singletons MessageCallbackMapSingleton returns always the same instance
+Config file not found at: shsp_socket_config.json (using defaults)
+00:00 +41 -26: test\singleton_test.dart: Singletons MessageCallbackMapSingleton returns always the same instance
+00:00 +42 -26: test\keep_alive_timer_test.dart: KeepAliveTimer Tests resetTick() delays callback execution
+00:00 +42 -26: test\singleton_test.dart: Singletons ShspSocketInfoSingleton returns always the same instance with defaults
+Config file not found at: shsp_socket_config.json (using defaults)
+Config file not found at: shsp_socket_config.json (using defaults)
+00:00 +43 -26: test\keep_alive_timer_test.dart: KeepAliveTimer Tests resetTick() delays callback execution
+00:00 +44 -26: test\keep_alive_timer_test.dart: KeepAliveTimer Tests resetTick() delays callback execution
+00:01 +45 -26: test\keep_alive_timer_test.dart: KeepAliveTimer Tests resetTick() delays callback execution
+00:01 +46 -26: test\keep_alive_timer_test.dart: KeepAliveTimer Tests resetTick() delays callback execution
+00:01 +47 -26: test\keep_alive_timer_test.dart: KeepAliveTimer Tests resetTick() delays callback execution
+00:01 +48 -26: test\keep_alive_timer_test.dart: KeepAliveTimer Tests resetTick() delays callback execution
+00:01 +49 -26: test\keep_alive_timer_test.dart: KeepAliveTimer Tests resetTick() delays callback execution
+00:01 +50 -26: test\keep_alive_timer_test.dart: KeepAliveTimer Tests resetTick() delays callback execution
+00:01 +51 -26: test\keep_alive_timer_test.dart: KeepAliveTimer Tests resetTick() delays callback execution
+00:01 +52 -26: test\keep_alive_timer_test.dart: KeepAliveTimer Tests resetTick() delays callback execution
+00:01 +53 -26: test\keep_alive_timer_test.dart: KeepAliveTimer Tests resetTick() delays callback execution
+00:01 +54 -26: test\keep_alive_timer_test.dart: KeepAliveTimer Tests resetTick() delays callback execution
+00:01 +55 -26: test\keep_alive_timer_test.dart: KeepAliveTimer Tests resetTick() delays callback execution
+00:01 +56 -26: test\keep_alive_timer_test.dart: KeepAliveTimer Tests resetTick() delays callback execution
+00:01 +57 -26: test\keep_alive_timer_test.dart: KeepAliveTimer Tests resetTick() delays callback execution
+00:01 +58 -26: test\keep_alive_timer_test.dart: KeepAliveTimer Tests resetTick() delays callback execution
+00:01 +59 -26: test\keep_alive_timer_test.dart: KeepAliveTimer Tests resetTick() delays callback execution
+00:01 +60 -26: test\keep_alive_timer_test.dart: KeepAliveTimer Tests resetTick() delays callback execution
+00:01 +61 -26: test\keep_alive_timer_test.dart: KeepAliveTimer Tests resetTick() delays callback execution
+00:01 +62 -26: test\keep_alive_timer_test.dart: KeepAliveTimer Tests resetTick() delays callback execution
+00:01 +63 -26: test\keep_alive_timer_test.dart: KeepAliveTimer Tests resetTick() delays callback execution
+00:01 +64 -26: test\keep_alive_timer_test.dart: KeepAliveTimer Tests resetTick() delays callback execution
+00:01 +65 -26: test\keep_alive_timer_test.dart: KeepAliveTimer Tests resetTick() delays callback execution
+00:01 +66 -26: test\keep_alive_timer_test.dart: KeepAliveTimer Tests resetTick() delays callback execution
+00:01 +67 -26: test\keep_alive_timer_test.dart: KeepAliveTimer Tests resetTick() delays callback execution
+00:01 +68 -26: test\keep_alive_timer_test.dart: KeepAliveTimer Tests resetTick() delays callback execution
+00:01 +69 -26: test\keep_alive_timer_test.dart: KeepAliveTimer Tests resetTick() delays callback execution
+00:01 +70 -26: test\keep_alive_timer_test.dart: KeepAliveTimer Tests resetTick() delays callback execution
+00:01 +71 -26: test\keep_alive_timer_test.dart: KeepAliveTimer Tests resetTick() delays callback execution
+00:01 +72 -26: test\keep_alive_timer_test.dart: KeepAliveTimer Tests resetTick() delays callback execution
+00:01 +73 -26: test\keep_alive_timer_test.dart: KeepAliveTimer Tests resetTick() delays callback execution
+00:01 +74 -26: test\keep_alive_timer_test.dart: KeepAliveTimer Tests resetTick() delays callback execution
+00:01 +75 -26: test\keep_alive_timer_test.dart: KeepAliveTimer Tests resetTick() delays callback execution
+00:01 +76 -26: test\keep_alive_timer_test.dart: KeepAliveTimer Tests resetTick() delays callback execution
+00:01 +77 -26: test\keep_alive_timer_test.dart: KeepAliveTimer Tests resetTick() delays callback execution
+00:01 +78 -26: test\keep_alive_timer_test.dart: KeepAliveTimer Tests resetTick() delays callback execution
+00:01 +79 -26: test\keep_alive_timer_test.dart: KeepAliveTimer Tests resetTick() delays callback execution
+00:01 +80 -26: test\keep_alive_timer_test.dart: KeepAliveTimer Tests resetTick() delays callback execution
+00:01 +81 -26: test\keep_alive_timer_test.dart: KeepAliveTimer Tests resetTick() delays callback execution
+00:01 +82 -26: test\keep_alive_timer_test.dart: KeepAliveTimer Tests resetTick() delays callback execution
+00:01 +83 -26: test\keep_alive_timer_test.dart: KeepAliveTimer Tests resetTick() delays callback execution
+00:01 +84 -26: test\keep_alive_timer_test.dart: KeepAliveTimer Tests resetTick() delays callback execution
+00:01 +85 -26: test\keep_alive_timer_test.dart: KeepAliveTimer Tests resetTick() delays callback execution
+00:01 +86 -26: test\keep_alive_timer_test.dart: KeepAliveTimer Tests resetTick() delays callback execution
+00:01 +87 -26: test\keep_alive_timer_test.dart: KeepAliveTimer Tests resetTick() delays callback execution
+00:01 +88 -26: test\keep_alive_timer_test.dart: KeepAliveTimer Tests resetTick() delays callback execution
+00:01 +89 -26: test\keep_alive_timer_test.dart: KeepAliveTimer Tests resetTick() delays callback execution
+00:01 +90 -26: test\keep_alive_timer_test.dart: KeepAliveTimer Tests resetTick() delays callback execution
+00:01 +91 -26: test\keep_alive_timer_test.dart: KeepAliveTimer Tests resetTick() delays callback execution
+00:01 +92 -26: Some tests failed.

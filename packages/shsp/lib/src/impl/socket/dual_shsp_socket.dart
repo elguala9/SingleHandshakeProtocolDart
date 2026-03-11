@@ -136,6 +136,7 @@ class DualShspSocket implements IDualShspSocket {
   }
 
   /// Check if either socket is closed
+  @override
   bool get isClosed => _ipv4Socket.isClosed || (_ipv6Socket?.isClosed ?? false);
 
   /// Close both sockets
@@ -161,6 +162,7 @@ class DualShspSocket implements IDualShspSocket {
   /// Extract profiles from both sockets and merge them.
   ///
   /// The merged profile contains all message listeners from both IPv4 and IPv6 sockets.
+  @override
   ShspSocketProfile extractProfile() {
     final ipv4Profile = _ipv4Socket.extractProfile();
 
@@ -193,6 +195,7 @@ class DualShspSocket implements IDualShspSocket {
   /// Apply a profile (message callbacks) to both sockets.
   ///
   /// Callbacks are registered on both IPv4 and IPv6 sockets for redundancy.
+  @override
   void applyProfile(ShspSocketProfile profile) {
     _ipv4Socket.applyProfile(profile);
     if (_ipv6Socket != null) {

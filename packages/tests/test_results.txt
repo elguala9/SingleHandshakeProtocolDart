@@ -1,0 +1,544 @@
+00:00 +0: loading test\auto_shsp_instance_test.dart
+00:00 +0: test\auto_shsp_instance_test.dart: AutoShspInstance - Singleton behavior create() initializes singleton if not yet initialized
+00:00 +1: test\auto_shsp_instance_test.dart: AutoShspInstance - Singleton behavior create() reuses singleton socket if already initialized
+00:00 +2: test\auto_shsp_peer_test.dart: AutoShspPeer - IShspPeer Compliance IShspPeer onMessage should trigger only for messages from remotePeer
+00:00 +3: test\auto_shsp_peer_test.dart: AutoShspPeer - IShspPeer Compliance IShspPeer onMessage should trigger only for messages from remotePeer
+00:00 +4: test\auto_shsp_peer_test.dart: AutoShspPeer - IShspPeer Compliance IShspPeer onMessage should trigger only for messages from remotePeer
+00:00 +5: test\auto_shsp_peer_test.dart: AutoShspPeer - IShspPeer Compliance IShspPeer onMessage should trigger only for messages from remotePeer
+00:00 +6: test\auto_shsp_peer_test.dart: AutoShspPeer - IShspPeer Compliance IShspPeer onMessage should trigger only for messages from remotePeer
+00:00 +7: test\auto_shsp_peer_test.dart: AutoShspPeer - IShspPeer Compliance IShspPeer onMessage should trigger only for messages from remotePeer
+00:00 +8: test\auto_shsp_peer_test.dart: AutoShspPeer - IShspPeer Compliance IShspPeer onMessage should trigger only for messages from remotePeer
+00:00 +9: test\auto_shsp_peer_test.dart: AutoShspPeer - IShspPeer Compliance IShspPeer onMessage should trigger only for messages from remotePeer
+00:00 +10: test\auto_shsp_peer_test.dart: AutoShspPeer - IShspPeer Compliance IShspPeer onMessage should trigger only for messages from remotePeer
+00:00 +11: test\auto_shsp_peer_test.dart: AutoShspPeer - IShspPeer Compliance IShspPeer onMessage should trigger only for messages from remotePeer
+00:00 +11 -1: test\auto_shsp_peer_test.dart: AutoShspPeer - IShspPeer Compliance IShspPeer onMessage should trigger only for messages from remotePeer
+00:00 +12 -1: test\auto_shsp_peer_test.dart: AutoShspPeer - IShspPeer Compliance IShspPeer onMessage should trigger only for messages from remotePeer
+00:00 +12 -1: test\compression_codec_test.dart: Compression Codecs LZ4Codec should provide good compression for repetitive data
+LZ4 compression: 500 → 27 bytes (94.6%)
+00:00 +13 -1: test\auto_shsp_peer_test.dart: AutoShspPeer - IShspPeer Compliance IShspPeer onMessage should trigger only for messages from remotePeer
+00:00 +14 -1: test\auto_shsp_peer_test.dart: AutoShspPeer - IShspPeer Compliance IShspPeer onMessage should trigger only for messages from remotePeer
+00:00 +14 -1: test\compression_codec_test.dart: Compression Codecs LZ4Codec should handle large data
+LZ4 large data: 10000 → 383 bytes (96.2%)
+00:00 +15 -1: test\auto_shsp_peer_test.dart: AutoShspPeer - IShspPeer Compliance IShspPeer onMessage should trigger only for messages from remotePeer
+00:00 +15 -1: test\auto_shsp_instance_test.dart: AutoShspInstance - Singleton behavior socket reconnection triggers callback re-registration [E]
+  Expected: false
+    Actual: <true>
+  New socket should be open and functional
+  
+  package:matcher                          expect
+  test\auto_shsp_instance_test.dart 258:7  main.<fn>.<fn>
+  
+00:00 +16 -1: test\auto_shsp_peer_test.dart: AutoShspPeer - IShspPeer Compliance IShspPeer onMessage should trigger only for messages from remotePeer
+00:00 +17 -1: test\auto_shsp_peer_test.dart: AutoShspPeer - IShspPeer Compliance IShspPeer onMessage should trigger only for messages from remotePeer
+00:00 +17 -1: test\compression_codec_test.dart: Compression Codecs ZstdCodec should provide better compression than LZ4
+ZSTD compression: 500 → 27 bytes (94.6%)
+00:00 +18 -1: test\auto_shsp_peer_test.dart: AutoShspPeer - IShspPeer Compliance IShspPeer onMessage should trigger only for messages from remotePeer
+00:00 +19 -1: test\auto_shsp_peer_test.dart: AutoShspPeer - IShspPeer Compliance IShspPeer onMessage should trigger only for messages from remotePeer
+00:00 +19 -1: test\compression_codec_test.dart: Compression Codecs ZstdCodec should handle JSON-like data well
+ZSTD JSON-like: 108 → 60 bytes (44.4%)
+00:00 +20 -1: test\auto_shsp_peer_test.dart: AutoShspPeer - IShspPeer Compliance IShspPeer onMessage should trigger only for messages from remotePeer
+00:00 +20 -1: test\compression_codec_test.dart: Compression Codecs ZstdCodec should handle large data
+ZSTD large data: 10000 → 383 bytes (96.2%)
+00:00 +21 -1: test\auto_shsp_peer_test.dart: AutoShspPeer - IShspPeer Compliance IShspPeer onMessage should trigger only for messages from remotePeer
+00:00 +22 -1: test\auto_shsp_peer_test.dart: AutoShspPeer - IShspPeer Compliance IShspPeer onMessage should trigger only for messages from remotePeer
+00:00 +23 -1: test\auto_shsp_peer_test.dart: AutoShspPeer - IShspPeer Compliance IShspPeer onMessage should trigger only for messages from remotePeer
+00:00 +24 -1: test\auto_shsp_peer_test.dart: AutoShspPeer - IShspPeer Compliance IShspPeer onMessage should trigger only for messages from remotePeer
+00:00 +25 -1: test\auto_shsp_peer_test.dart: AutoShspPeer - IShspPeer Compliance IShspPeer onMessage should trigger only for messages from remotePeer
+00:00 +26 -1: test\auto_shsp_peer_test.dart: AutoShspPeer - IShspPeer Compliance IShspPeer onMessage should trigger only for messages from remotePeer
+00:00 +27 -1: test\auto_shsp_peer_test.dart: AutoShspPeer - IShspPeer Compliance IShspPeer onMessage should trigger only for messages from remotePeer
+00:00 +28 -1: test\auto_shsp_peer_test.dart: AutoShspPeer - IShspPeer Compliance IShspPeer onMessage should trigger only for messages from remotePeer
+00:00 +29 -1: test\auto_shsp_peer_test.dart: AutoShspPeer - IShspPeer Compliance IShspPeer onMessage should trigger only for messages from remotePeer
+00:00 +30 -1: test\auto_shsp_peer_test.dart: AutoShspPeer - IShspPeer Compliance IShspPeer onMessage should trigger only for messages from remotePeer
+00:00 +31 -1: test\auto_shsp_peer_test.dart: AutoShspPeer - IShspPeer Compliance IShspPeer onMessage should trigger only for messages from remotePeer
+00:00 +32 -1: test\auto_shsp_peer_test.dart: AutoShspPeer - IShspPeer Compliance IShspPeer onMessage should trigger only for messages from remotePeer
+00:00 +33 -1: test\auto_shsp_peer_test.dart: AutoShspPeer - IShspPeer Compliance IShspPeer onMessage should trigger only for messages from remotePeer
+00:00 +34 -1: test\auto_shsp_peer_test.dart: AutoShspPeer - IShspPeer Compliance IShspPeer onMessage should trigger only for messages from remotePeer
+00:00 +35 -1: test\auto_shsp_peer_test.dart: AutoShspPeer - IShspPeer Compliance IShspPeer onMessage should trigger only for messages from remotePeer
+00:00 +36 -1: test\auto_shsp_peer_test.dart: AutoShspPeer - IShspPeer Compliance IShspPeer onMessage should trigger only for messages from remotePeer
+00:00 +37 -1: test\auto_shsp_peer_test.dart: AutoShspPeer - IShspPeer Compliance IShspPeer onMessage should trigger only for messages from remotePeer
+00:00 +38 -1: test\auto_shsp_peer_test.dart: AutoShspPeer - IShspPeer Compliance IShspPeer onMessage should trigger only for messages from remotePeer
+00:00 +39 -1: test\auto_shsp_peer_test.dart: AutoShspPeer - IShspPeer Compliance IShspPeer onMessage should trigger only for messages from remotePeer
+00:00 +40 -1: test\auto_shsp_peer_test.dart: AutoShspPeer - IShspPeer Compliance IShspPeer onMessage should trigger only for messages from remotePeer
+00:00 +41 -1: test\auto_shsp_peer_test.dart: AutoShspPeer - IShspPeer Compliance IShspPeer onMessage should trigger only for messages from remotePeer
+00:00 +42 -1: test\auto_shsp_peer_test.dart: AutoShspPeer - IShspPeer Compliance IShspPeer onMessage should trigger only for messages from remotePeer
+00:00 +43 -1: test\auto_shsp_peer_test.dart: AutoShspPeer - IShspPeer Compliance IShspPeer onMessage should trigger only for messages from remotePeer
+00:00 +44 -1: test\auto_shsp_peer_test.dart: AutoShspPeer - IShspPeer Compliance IShspPeer onMessage should trigger only for messages from remotePeer
+00:00 +45 -1: test\auto_shsp_peer_test.dart: AutoShspPeer - IShspPeer Compliance IShspPeer onMessage should trigger only for messages from remotePeer
+00:00 +46 -1: test\auto_shsp_peer_test.dart: AutoShspPeer - IShspPeer Compliance IShspPeer onMessage should trigger only for messages from remotePeer
+00:00 +47 -1: test\auto_shsp_peer_test.dart: AutoShspPeer - IShspPeer Compliance IShspPeer onMessage should trigger only for messages from remotePeer
+00:00 +48 -1: test\auto_shsp_peer_test.dart: AutoShspPeer - IShspPeer Compliance IShspPeer onMessage should trigger only for messages from remotePeer
+00:00 +49 -1: test\auto_shsp_peer_test.dart: AutoShspPeer - IShspPeer Compliance IShspPeer onMessage should trigger only for messages from remotePeer
+00:00 +50 -1: test\auto_shsp_peer_test.dart: AutoShspPeer - IShspPeer Compliance IShspPeer onMessage should trigger only for messages from remotePeer
+00:00 +51 -1: test\auto_shsp_peer_test.dart: AutoShspPeer - IShspPeer Compliance IShspPeer onMessage should trigger only for messages from remotePeer
+00:00 +52 -1: test\auto_shsp_peer_test.dart: AutoShspPeer - IShspPeer Compliance IShspPeer onMessage should trigger only for messages from remotePeer
+00:00 +53 -1: test\auto_shsp_peer_test.dart: AutoShspPeer - IShspPeer Compliance IShspPeer onMessage should trigger only for messages from remotePeer
+00:00 +54 -1: test\auto_shsp_peer_test.dart: AutoShspPeer - IShspPeer Compliance IShspPeer onMessage should trigger only for messages from remotePeer
+00:00 +55 -1: test\auto_shsp_peer_test.dart: AutoShspPeer - IShspPeer Compliance IShspPeer onMessage should trigger only for messages from remotePeer
+00:00 +56 -1: test\keep_alive_timer_test.dart: KeepAliveTimer Tests Timer callback is called after duration
+00:00 +57 -1: test\shsp_handshake_handler_test.dart: ShspHandshakeHandler handshakeInstance opens connection
+00:00 +58 -1: test\shsp_handshake_handler_test.dart: ShspHandshakeHandler handshakeInstance opens connection
+00:01 +59 -1: test\shsp_handshake_handler_test.dart: ShspHandshakeHandler handshakeInstance opens connection
+00:01 +60 -1: test\shsp_handshake_handler_test.dart: ShspHandshakeHandler handshakeInstance opens connection
+00:01 +61 -1: test\shsp_handshake_handler_test.dart: ShspHandshakeHandler handshakeInstance opens connection
+00:01 +62 -1: test\shsp_handshake_handler_test.dart: ShspHandshakeHandler handshakeInstance opens connection
+00:01 +63 -1: test\shsp_instance_callbacks_test.dart: ShspInstance callbacks onHandshake callback is called when handshake is received
+00:01 +64 -1: test\shsp_instance_callbacks_test.dart: ShspInstance callbacks onHandshake callback is called when handshake is received
+00:01 +65 -1: test\shsp_instance_callbacks_test.dart: ShspInstance callbacks onHandshake callback is called when handshake is received
+00:01 +66 -1: test\shsp_instance_callbacks_test.dart: ShspInstance callbacks onHandshake callback is called when handshake is received
+00:01 +67 -1: test\shsp_instance_callbacks_test.dart: ShspInstance callbacks onHandshake callback is called when handshake is received
+00:01 +68 -1: test\shsp_instance_callbacks_test.dart: ShspInstance callbacks onHandshake callback is called when handshake is received
+00:01 +69 -1: test\shsp_instance_callbacks_test.dart: ShspInstance callbacks onHandshake callback is called when handshake is received
+00:01 +70 -1: test\shsp_instance_callbacks_test.dart: ShspInstance callbacks onHandshake callback is called when handshake is received
+00:01 +71 -1: test\shsp_instance_callbacks_test.dart: ShspInstance callbacks onHandshake callback is called when handshake is received
+00:01 +72 -1: test\shsp_instance_callbacks_test.dart: ShspInstance callbacks onHandshake callback is called when handshake is received
+00:01 +73 -1: test\shsp_instance_callbacks_test.dart: ShspInstance callbacks onHandshake callback is called when handshake is received
+00:01 +74 -1: test\shsp_instance_callbacks_test.dart: ShspInstance callbacks onHandshake callback is called when handshake is received
+00:01 +75 -1: test\shsp_instance_callbacks_test.dart: ShspInstance callbacks onHandshake callback is called when handshake is received
+00:01 +76 -1: test\shsp_instance_callbacks_test.dart: ShspInstance callbacks onHandshake callback is called when handshake is received
+00:01 +77 -1: test\shsp_instance_callbacks_test.dart: ShspInstance callbacks onHandshake callback is called when handshake is received
+00:01 +78 -1: test\shsp_instance_callbacks_test.dart: ShspInstance callbacks onHandshake callback is called when handshake is received
+00:01 +79 -1: test\shsp_instance_callbacks_test.dart: ShspInstance callbacks onHandshake callback is called when handshake is received
+00:01 +80 -1: test\shsp_instance_callbacks_test.dart: ShspInstance callbacks onHandshake callback is called when handshake is received
+00:01 +81 -1: test\shsp_instance_callbacks_test.dart: ShspInstance callbacks onHandshake callback is called when handshake is received
+00:01 +82 -1: test\shsp_instance_callbacks_test.dart: ShspInstance callbacks onHandshake callback is called when handshake is received
+00:01 +83 -1: test\shsp_instance_callbacks_test.dart: ShspInstance callbacks onHandshake callback is called when handshake is received
+00:01 +84 -1: test\shsp_instance_callbacks_test.dart: ShspInstance callbacks onHandshake callback is called when handshake is received
+00:01 +85 -1: test\shsp_instance_close_test.dart: ShspInstance handshake and open flag Closing flag is true after closing message and cannot send message
+00:01 +86 -1: test\shsp_instance_close_test.dart: ShspInstance handshake and open flag Closing flag is true after closing message and cannot send message
+00:01 +87 -1: test\shsp_instance_close_test.dart: ShspInstance handshake and open flag Closing flag is true after closing message and cannot send message
+00:01 +88 -1: test\shsp_instance_close_test.dart: ShspInstance handshake and open flag Closing flag is true after closing message and cannot send message
+00:01 +89 -1: test\shsp_instance_close_test.dart: ShspInstance handshake and open flag Closing flag is true after closing message and cannot send message
+00:01 +90 -1: test\shsp_instance_close_test.dart: ShspInstance handshake and open flag Closing flag is true after closing message and cannot send message
+00:01 +91 -1: test\shsp_instance_close_test.dart: ShspInstance handshake and open flag Closing flag is true after closing message and cannot send message
+00:01 +92 -1: test\shsp_instance_close_test.dart: ShspInstance handshake and open flag Closing flag is true after closing message and cannot send message
+00:01 +93 -1: test\shsp_instance_close_test.dart: ShspInstance handshake and open flag Closing flag is true after closing message and cannot send message
+00:01 +94 -1: test\shsp_instance_close_test.dart: ShspInstance handshake and open flag Closing flag is true after closing message and cannot send message
+00:01 +95 -1: test\shsp_instance_close_test.dart: ShspInstance handshake and open flag Closing flag is true after closing message and cannot send message
+00:01 +96 -1: test\shsp_instance_close_test.dart: ShspInstance handshake and open flag Closing flag is true after closing message and cannot send message
+00:01 +97 -1: test\shsp_instance_close_test.dart: ShspInstance handshake and open flag Closing flag is true after closing message and cannot send message
+00:01 +98 -1: test\shsp_instance_close_test.dart: ShspInstance handshake and open flag Closing flag is true after closing message and cannot send message
+00:01 +98 -1: test\shsp_socket_peer_callback_integration_test.dart: SHSPSocket + SHSPPeer callback integration Secondary peers send messages to both principals, both receive correctly
+principalPeer1 callback: from port=55963
+00:01 +99 -1: test\shsp_instance_close_test.dart: ShspInstance handshake and open flag Closing flag is true after closing message and cannot send message
+00:01 +99 -1: test\shsp_socket_peer_callback_integration_test.dart: SHSPSocket + SHSPPeer callback integration Secondary peers send messages to both principals, both receive correctly
+principalPeer2 callback: from port=55964
+principalPeer3 callback: from port=55965
+principalPeer4 callback: from port=55966
+00:01 +100 -1: test\shsp_instance_close_test.dart: ShspInstance handshake and open flag Closing flag is true after closing message and cannot send message
+00:01 +101 -1: test\shsp_instance_close_test.dart: ShspInstance handshake and open flag Closing flag is true after closing message and cannot send message
+00:01 +101 -1: test\shsp_socket_peer_callback_integration_test.dart: SHSPSocket + SHSPPeer callback integration Secondary peers send messages to both principals, both receive correctly
+principalPeer1 callback: from port=55963
+principalPeer2 callback: from port=55964
+00:01 +102 -1: test\shsp_instance_close_test.dart: ShspInstance handshake and open flag Closing flag is true after closing message and cannot send message
+00:01 +103 -1: test\shsp_instance_close_test.dart: ShspInstance handshake and open flag Closing flag is true after closing message and cannot send message
+00:01 +104 -1: test\shsp_instance_close_test.dart: ShspInstance handshake and open flag Closing flag is true after closing message and cannot send message
+00:01 +105 -1: test\shsp_instance_close_test.dart: ShspInstance handshake and open flag Closing flag is true after closing message and cannot send message
+00:01 +106 -1: test\shsp_instance_close_test.dart: ShspInstance handshake and open flag Closing flag is true after closing message and cannot send message
+00:01 +107 -1: test\shsp_instance_close_test.dart: ShspInstance handshake and open flag Closing flag is true after closing message and cannot send message
+00:01 +108 -1: test\shsp_instance_close_test.dart: ShspInstance handshake and open flag Closing flag is true after closing message and cannot send message
+00:01 +109 -1: test\shsp_instance_close_test.dart: ShspInstance handshake and open flag Closing flag is true after closing message and cannot send message
+00:01 +110 -1: test\shsp_instance_close_test.dart: ShspInstance handshake and open flag Closing flag is true after closing message and cannot send message
+00:01 +111 -1: test\shsp_instance_close_test.dart: ShspInstance handshake and open flag Closing flag is true after closing message and cannot send message
+00:01 +112 -1: test\shsp_instance_close_test.dart: ShspInstance handshake and open flag Closing flag is true after closing message and cannot send message
+00:01 +113 -1: test\shsp_instance_close_test.dart: ShspInstance handshake and open flag Closing flag is true after closing message and cannot send message
+00:01 +114 -1: test\shsp_instance_close_test.dart: ShspInstance handshake and open flag Closing flag is true after closing message and cannot send message
+00:01 +115 -1: test\shsp_instance_close_test.dart: ShspInstance handshake and open flag Closing flag is true after closing message and cannot send message
+00:01 +116 -1: test\shsp_instance_close_test.dart: ShspInstance handshake and open flag Closing flag is true after closing message and cannot send message
+00:01 +117 -1: test\shsp_instance_close_test.dart: ShspInstance handshake and open flag Closing flag is true after closing message and cannot send message
+00:01 +118 -1: test\shsp_instance_close_test.dart: ShspInstance handshake and open flag Closing flag is true after closing message and cannot send message
+00:01 +119 -1: test\shsp_instance_close_test.dart: ShspInstance handshake and open flag Closing flag is true after closing message and cannot send message
+00:01 +120 -1: test\shsp_instance_close_test.dart: ShspInstance handshake and open flag Closing flag is true after closing message and cannot send message
+00:01 +121 -1: test\shsp_instance_close_test.dart: ShspInstance handshake and open flag Closing flag is true after closing message and cannot send message
+00:01 +122 -1: test\shsp_instance_close_test.dart: ShspInstance handshake and open flag Closing flag is true after closing message and cannot send message
+00:01 +123 -1: test\shsp_instance_close_test.dart: ShspInstance handshake and open flag Closing flag is true after closing message and cannot send message
+00:01 +124 -1: test\shsp_instance_close_test.dart: ShspInstance handshake and open flag Closing flag is true after closing message and cannot send message
+00:01 +125 -1: test\shsp_instance_close_test.dart: ShspInstance handshake and open flag Closing flag is true after closing message and cannot send message
+00:01 +126 -1: test\shsp_instance_close_test.dart: ShspInstance handshake and open flag Closing flag is true after closing message and cannot send message
+00:01 +127 -1: test\shsp_instance_close_test.dart: ShspInstance handshake and open flag Closing flag is true after closing message and cannot send message
+00:01 +128 -1: test\shsp_instance_close_test.dart: ShspInstance handshake and open flag Closing flag is true after closing message and cannot send message
+00:02 +129 -1: test\shsp_instance_close_test.dart: ShspInstance handshake and open flag Closing flag is true after closing message and cannot send message
+00:02 +130 -1: test\shsp_instance_close_test.dart: ShspInstance handshake and open flag Closing flag is true after closing message and cannot send message
+00:02 +131 -1: test\shsp_instance_close_test.dart: ShspInstance handshake and open flag Closing flag is true after closing message and cannot send message
+00:02 +132 -1: test\shsp_instance_close_test.dart: ShspInstance handshake and open flag Closing flag is true after closing message and cannot send message
+00:02 +133 -1: test\shsp_instance_close_test.dart: ShspInstance handshake and open flag Closing flag is true after closing message and cannot send message
+00:02 +134 -1: test\shsp_instance_close_test.dart: ShspInstance handshake and open flag Closing flag is true after closing message and cannot send message
+00:02 +135 -1: test\shsp_instance_close_test.dart: ShspInstance handshake and open flag Closing flag is true after closing message and cannot send message
+00:02 +136 -1: test\shsp_instance_close_test.dart: ShspInstance handshake and open flag Closing flag is true after closing message and cannot send message
+00:02 +137 -1: test\shsp_instance_close_test.dart: ShspInstance handshake and open flag Closing flag is true after closing message and cannot send message
+00:02 +138 -1: test\shsp_instance_close_test.dart: ShspInstance handshake and open flag Closing flag is true after closing message and cannot send message
+00:02 +139 -1: test\shsp_instance_close_test.dart: ShspInstance handshake and open flag Closing flag is true after closing message and cannot send message
+00:02 +140 -1: test\shsp_instance_close_test.dart: ShspInstance handshake and open flag Closing flag is true after closing message and cannot send message
+00:02 +141 -1: test\shsp_instance_close_test.dart: ShspInstance handshake and open flag Closing flag is true after closing message and cannot send message
+00:02 +142 -1: test\shsp_instance_close_test.dart: ShspInstance handshake and open flag Closing flag is true after closing message and cannot send message
+00:02 +143 -1: test\shsp_instance_close_test.dart: ShspInstance handshake and open flag Closing flag is true after closing message and cannot send message
+00:02 +144 -1: test\shsp_instance_close_test.dart: ShspInstance handshake and open flag Closing flag is true after closing message and cannot send message
+00:02 +145 -1: test\shsp_instance_close_test.dart: ShspInstance handshake and open flag Closing flag is true after closing message and cannot send message
+00:02 +146 -1: test\shsp_instance_close_test.dart: ShspInstance handshake and open flag Closing flag is true after closing message and cannot send message
+00:02 +147 -1: test\shsp_instance_close_test.dart: ShspInstance handshake and open flag Closing flag is true after closing message and cannot send message
+00:02 +148 -1: test\shsp_instance_close_test.dart: ShspInstance handshake and open flag Closing flag is true after closing message and cannot send message
+00:02 +149 -1: test\shsp_instance_close_test.dart: ShspInstance handshake and open flag Closing flag is true after closing message and cannot send message
+00:02 +150 -1: test\shsp_instance_close_test.dart: ShspInstance handshake and open flag Closing flag is true after closing message and cannot send message
+00:02 +151 -1: test\shsp_instance_close_test.dart: ShspInstance handshake and open flag Closing flag is true after closing message and cannot send message
+00:02 +152 -1: test\shsp_instance_close_test.dart: ShspInstance handshake and open flag Closing flag is true after closing message and cannot send message
+00:02 +153 -1: test\shsp_instance_close_test.dart: ShspInstance handshake and open flag Closing flag is true after closing message and cannot send message
+00:02 +154 -1: test\shsp_instance_close_test.dart: ShspInstance handshake and open flag Closing flag is true after closing message and cannot send message
+00:02 +155 -1: test\shsp_instance_close_test.dart: ShspInstance handshake and open flag Closing flag is true after closing message and cannot send message
+00:02 +156 -1: test\shsp_instance_close_test.dart: ShspInstance handshake and open flag Closing flag is true after closing message and cannot send message
+00:02 +157 -1: test\shsp_instance_close_test.dart: ShspInstance handshake and open flag Closing flag is true after closing message and cannot send message
+00:02 +158 -1: test\shsp_instance_close_test.dart: ShspInstance handshake and open flag Closing flag is true after closing message and cannot send message
+00:02 +159 -1: test\shsp_instance_close_test.dart: ShspInstance handshake and open flag Closing flag is true after closing message and cannot send message
+00:02 +160 -1: test\shsp_instance_close_test.dart: ShspInstance handshake and open flag Closing flag is true after closing message and cannot send message
+00:02 +160 -1: test\shsp_socket_comprehensive_test.dart: ShspSocket Comprehensive Tests GZip Compression Tests data messages (0x00) are compressed and decompressed correctly
+Compression: 501 bytes → 27 bytes (94.6% reduction)
+00:02 +161 -1: test\shsp_instance_close_test.dart: ShspInstance handshake and open flag Closing flag is true after closing message and cannot send message
+00:02 +162 -1: test\shsp_instance_close_test.dart: ShspInstance handshake and open flag Closing flag is true after closing message and cannot send message
+00:02 +163 -1: test\shsp_instance_close_test.dart: ShspInstance handshake and open flag Closing flag is true after closing message and cannot send message
+00:02 +164 -1: test\shsp_instance_close_test.dart: ShspInstance handshake and open flag Closing flag is true after closing message and cannot send message
+00:02 +165 -1: test\shsp_instance_close_test.dart: ShspInstance handshake and open flag Closing flag is true after closing message and cannot send message
+00:02 +166 -1: test\shsp_instance_close_test.dart: ShspInstance handshake and open flag Closing flag is true after closing message and cannot send message
+00:02 +167 -1: test\shsp_instance_close_test.dart: ShspInstance handshake and open flag Closing flag is true after closing message and cannot send message
+00:02 +168 -1: test\shsp_instance_close_test.dart: ShspInstance handshake and open flag Closing flag is true after closing message and cannot send message
+00:02 +169 -1: test\shsp_instance_close_test.dart: ShspInstance handshake and open flag Closing flag is true after closing message and cannot send message
+00:02 +170 -1: test\shsp_instance_close_test.dart: ShspInstance handshake and open flag Closing flag is true after closing message and cannot send message
+00:02 +171 -1: test\shsp_instance_close_test.dart: ShspInstance handshake and open flag Closing flag is true after closing message and cannot send message
+00:02 +172 -1: test\shsp_instance_close_test.dart: ShspInstance handshake and open flag Closing flag is true after closing message and cannot send message
+00:02 +173 -1: test\shsp_instance_close_test.dart: ShspInstance handshake and open flag Closing flag is true after closing message and cannot send message
+00:02 +174 -1: test\shsp_instance_close_test.dart: ShspInstance handshake and open flag Closing flag is true after closing message and cannot send message
+00:02 +174 -2: test\shsp_instance_close_test.dart: ShspInstance handshake and open flag Closing flag is true after closing message and cannot send message
+00:02 +175 -2: test\shsp_instance_close_test.dart: ShspInstance handshake and open flag Closing flag is true after closing message and cannot send message
+00:02 +175 -2: test\shsp_socket_singleton_functional_test.dart: ShspSocketSingleton handshake e funzionalità può inviare e ricevere messaggi handshake
+Config file not found at: shsp_socket_config.json (using defaults)
+00:02 +175 -2: test\shsp_socket_singleton_edge_cases_test.dart: ShspSocketSingleton Edge Cases and Stress Tests multiple reconnect calls work correctly [E]
+  Expected: false
+    Actual: <true>
+  Socket should be open after reconnect 0
+  
+  package:matcher                                       expect
+  test\shsp_socket_singleton_edge_cases_test.dart 55:9  main.<fn>.<fn>
+  
+00:02 +176 -2: test\shsp_instance_handler_test.dart: ShspInstanceHandler initiateShsp adds and returns instance
+00:02 +177 -2: test\shsp_instance_handler_test.dart: ShspInstanceHandler initiateShsp adds and returns instance
+00:02 +177 -3: test\shsp_instance_handler_test.dart: ShspInstanceHandler initiateShsp adds and returns instance
+00:02 +177 -3: test\shsp_socket_singleton_functional_test.dart: ShspSocketSingleton handshake e funzionalità può inviare e ricevere messaggi dati
+Config file not found at: shsp_socket_config.json (using defaults)
+00:02 +178 -3: test\shsp_instance_handler_test.dart: ShspInstanceHandler initiateShsp adds and returns instance
+00:02 +178 -3: test\shsp_socket_singleton_edge_cases_test.dart: ShspSocketSingleton Edge Cases and Stress Tests callbacks survive multiple socket replacements [E]
+  Expected: <5>
+    Actual: <0>
+  All callbacks should survive multiple reconnections
+  
+  package:matcher                                       expect
+  test\shsp_socket_singleton_edge_cases_test.dart 87:7  main.<fn>.<fn>
+  
+00:02 +178 -4: test\shsp_instance_handler_test.dart: ShspInstanceHandler initiateShsp adds and returns instance
+00:02 +178 -4: test\shsp_socket_singleton_edge_cases_test.dart: ShspSocketSingleton Edge Cases and Stress Tests setSocket with same socket type works correctly [E]
+  Expected: <1>
+    Actual: <0>
+  Callback count should be preserved
+  
+  package:matcher                                        expect
+  test\shsp_socket_singleton_edge_cases_test.dart 109:7  main.<fn>.<fn>
+  
+00:02 +179 -4: test\shsp_instance_handler_test.dart: ShspInstanceHandler initiateShsp adds and returns instance
+00:02 +180 -4: test\shsp_instance_handler_test.dart: ShspInstanceHandler initiateShsp adds and returns instance
+00:02 +181 -4: test\shsp_instance_handler_test.dart: ShspInstanceHandler initiateShsp adds and returns instance
+00:02 +182 -4: test\shsp_instance_handler_test.dart: ShspInstanceHandler initiateShsp adds and returns instance
+00:02 +183 -4: test\shsp_instance_handler_test.dart: ShspInstanceHandler initiateShsp adds and returns instance
+00:02 +184 -4: test\shsp_instance_handler_test.dart: ShspInstanceHandler initiateShsp adds and returns instance
+00:02 +185 -4: test\shsp_instance_handler_test.dart: ShspInstanceHandler initiateShsp adds and returns instance
+00:02 +186 -4: test\shsp_instance_handler_test.dart: ShspInstanceHandler initiateShsp adds and returns instance
+00:02 +187 -4: test\shsp_instance_handler_test.dart: ShspInstanceHandler initiateShsp adds and returns instance
+00:02 +188 -4: test\shsp_instance_handler_test.dart: ShspInstanceHandler initiateShsp adds and returns instance
+00:02 +189 -4: test\shsp_instance_handler_test.dart: ShspInstanceHandler initiateShsp adds and returns instance
+00:02 +189 -5: test\shsp_instance_handler_test.dart: ShspInstanceHandler initiateShsp adds and returns instance
+00:02 +190 -5: test\shsp_instance_handler_test.dart: ShspInstanceHandler initiateShsp adds and returns instance
+00:02 +191 -5: test\shsp_instance_handler_test.dart: ShspInstanceHandler initiateShsp adds and returns instance
+00:02 +191 -5: test\shsp_socket_singleton_edge_cases_test.dart: ShspSocketSingleton Edge Cases and Stress Tests restoreProfile restores profile to socket [E]
+  Expected: <1>
+    Actual: <0>
+  Restore should preserve the profile listeners
+  
+  package:matcher                                        expect
+  test\shsp_socket_singleton_edge_cases_test.dart 257:7  main.<fn>.<fn>
+  
+00:02 +192 -5: test\shsp_instance_handler_test.dart: ShspInstanceHandler initiateShsp adds and returns instance
+00:02 +193 -5: test\shsp_instance_handler_test.dart: ShspInstanceHandler initiateShsp adds and returns instance
+00:02 +194 -5: test\shsp_instance_handler_test.dart: ShspInstanceHandler initiateShsp adds and returns instance
+00:02 +195 -5: test\shsp_instance_handler_test.dart: ShspInstanceHandler initiateShsp adds and returns instance
+00:02 +196 -5: test\shsp_instance_handler_test.dart: ShspInstanceHandler initiateShsp adds and returns instance
+00:02 +196 -6: test\shsp_instance_handler_test.dart: ShspInstanceHandler initiateShsp adds and returns instance
+00:02 +196 -6: test\shsp_socket_singleton_test.dart: ShspSocketSingleton reconnect preserves message callbacks [E]
+  Expected: false
+    Actual: <true>
+  Socket should not be closed after reconnect
+  
+  package:matcher                            expect
+  test\shsp_socket_singleton_test.dart 76:7  main.<fn>.<fn>
+  
+00:02 +197 -6: test\shsp_instance_handler_test.dart: ShspInstanceHandler initiateShsp adds and returns instance
+00:02 +198 -6: test\shsp_instance_handler_test.dart: ShspInstanceHandler initiateShsp adds and returns instance
+00:02 +199 -6: test\shsp_instance_handler_test.dart: ShspInstanceHandler initiateShsp adds and returns instance
+00:02 +200 -6: test\shsp_instance_handler_test.dart: ShspInstanceHandler initiateShsp adds and returns instance
+00:02 +201 -6: test\shsp_instance_handler_test.dart: ShspInstanceHandler initiateShsp adds and returns instance
+00:02 +202 -6: test\shsp_instance_handler_test.dart: ShspInstanceHandler initiateShsp adds and returns instance
+00:02 +202 -7: test\shsp_instance_handler_test.dart: ShspInstanceHandler initiateShsp adds and returns instance
+00:02 +202 -7: test\shsp_socket_singleton_test.dart: ShspSocketSingleton restoreProfile allows external profile restoration [E]
+  Expected: true
+    Actual: <false>
+  Restored profile should preserve callbacks
+  
+  package:matcher                             expect
+  test\shsp_socket_singleton_test.dart 145:7  main.<fn>.<fn>
+  
+00:02 +203 -7: test\shsp_instance_handler_test.dart: ShspInstanceHandler initiateShsp adds and returns instance
+00:02 +204 -7: test\shsp_instance_handler_test.dart: ShspInstanceHandler initiateShsp adds and returns instance
+00:02 +205 -7: test\shsp_instance_handler_test.dart: ShspInstanceHandler initiateShsp adds and returns instance
+00:02 +205 -8: test\shsp_instance_handler_test.dart: ShspInstanceHandler initiateShsp adds and returns instance
+00:02 +205 -8: test\shsp_socket_singleton_test.dart: ShspSocketSingleton setSocket replaces socket and preserves callbacks [E]
+  Expected: true
+    Actual: <false>
+  Callbacks should be preserved after setSocket
+  
+  package:matcher                             expect
+  test\shsp_socket_singleton_test.dart 198:7  main.<fn>.<fn>
+  
+00:02 +205 -9: test\shsp_instance_handler_test.dart: ShspInstanceHandler initiateShsp adds and returns instance
+00:02 +205 -9: test\shsp_socket_singleton_test.dart: ShspSocketSingleton setSocketRaw wraps RawDatagramSocket and preserves callbacks [E]
+  Expected: true
+    Actual: <false>
+  Callbacks should be preserved after setSocketRaw
+  
+  package:matcher                             expect
+  test\shsp_socket_singleton_test.dart 236:7  main.<fn>.<fn>
+  
+00:02 +206 -9: test\shsp_instance_handler_test.dart: ShspInstanceHandler initiateShsp adds and returns instance
+00:02 +207 -9: test\shsp_instance_handler_test.dart: ShspInstanceHandler initiateShsp adds and returns instance
+00:03 +208 -9: test\shsp_instance_handler_test.dart: ShspInstanceHandler initiateShsp adds and returns instance
+00:03 +209 -9: test\shsp_instance_handler_test.dart: ShspInstanceHandler initiateShsp adds and returns instance
+00:03 +210 -9: test\shsp_instance_handler_test.dart: ShspInstanceHandler initiateShsp adds and returns instance
+00:03 +210 -9: test\shsp_socket_test.dart: IShspSocket interface should send and receive messages between two sockets
+DEBUG: peerInfo = 127.0.0.1:56264
+DEBUG: socket1 port = 56264, socket2 port = 56265
+DEBUG: Invio messaggio da socket1 a socket2
+DEBUG: Ricevuto messaggio: [10, 20, 30] da InternetAddress('127.0.0.1', IPv4):56264
+DEBUG: Chiusura socket2
+00:03 +211 -9: test\shsp_instance_handler_test.dart: ShspInstanceHandler initiateShsp adds and returns instance
+00:03 +212 -9: test\shsp_instance_handler_test.dart: ShspInstanceHandler initiateShsp adds and returns instance
+00:03 +213 -9: test\shsp_instance_handler_test.dart: ShspInstanceHandler initiateShsp adds and returns instance
+00:03 +214 -9: test\shsp_instance_handler_test.dart: ShspInstanceHandler initiateShsp adds and returns instance
+00:03 +215 -9: test\shsp_instance_handler_test.dart: ShspInstanceHandler initiateShsp adds and returns instance
+00:03 +216 -9: test\shsp_instance_handler_test.dart: ShspInstanceHandler initiateShsp adds and returns instance
+00:03 +217 -9: test\shsp_instance_handler_test.dart: ShspInstanceHandler initiateShsp adds and returns instance
+00:03 +218 -9: test\shsp_instance_handler_test.dart: ShspInstanceHandler initiateShsp adds and returns instance
+00:03 +219 -9: test\shsp_instance_handler_test.dart: ShspInstanceHandler initiateShsp adds and returns instance
+00:03 +220 -9: test\shsp_instance_handler_test.dart: ShspInstanceHandler initiateShsp adds and returns instance
+00:03 +221 -9: test\shsp_instance_handler_test.dart: ShspInstanceHandler initiateShsp adds and returns instance
+00:03 +222 -9: test\shsp_instance_handler_test.dart: ShspInstanceHandler initiateShsp adds and returns instance
+00:03 +223 -9: test\shsp_instance_handler_test.dart: ShspInstanceHandler initiateShsp adds and returns instance
+00:03 +224 -9: test\shsp_instance_handler_test.dart: ShspInstanceHandler initiateShsp adds and returns instance
+00:03 +225 -9: test\shsp_instance_handler_test.dart: ShspInstanceHandler initiateShsp adds and returns instance
+00:03 +226 -9: test\shsp_instance_handler_test.dart: ShspInstanceHandler initiateShsp adds and returns instance
+00:03 +226 -9: test\singleton_test.dart: Singletons MessageCallbackMapSingleton returns always the same instance
+Config file not found at: shsp_socket_config.json (using defaults)
+00:03 +227 -9: test\shsp_instance_handler_test.dart: ShspInstanceHandler initiateShsp adds and returns instance
+00:03 +227 -9: test\singleton_test.dart: Singletons ShspSocketInfoSingleton returns always the same instance with defaults
+Config file not found at: shsp_socket_config.json (using defaults)
+Config file not found at: shsp_socket_config.json (using defaults)
+00:03 +228 -9: test\shsp_instance_handler_test.dart: ShspInstanceHandler initiateShsp adds and returns instance
+00:03 +229 -9: test\shsp_instance_handler_test.dart: ShspInstanceHandler initiateShsp adds and returns instance
+00:03 +230 -9: test\shsp_instance_handler_test.dart: ShspInstanceHandler initiateShsp adds and returns instance
+00:03 +231 -9: test\shsp_instance_handler_test.dart: ShspInstanceHandler initiateShsp adds and returns instance
+00:03 +232 -9: test\shsp_instance_handler_test.dart: ShspInstanceHandler initiateShsp adds and returns instance
+00:03 +233 -9: test\shsp_instance_handler_test.dart: ShspInstanceHandler initiateShsp adds and returns instance
+00:03 +234 -9: test\shsp_instance_handler_test.dart: ShspInstanceHandler initiateShsp adds and returns instance
+00:03 +235 -9: test\shsp_instance_handler_test.dart: ShspInstanceHandler initiateShsp adds and returns instance
+00:03 +236 -9: test\shsp_instance_handler_test.dart: ShspInstanceHandler initiateShsp adds and returns instance
+00:03 +237 -9: test\shsp_instance_handler_test.dart: ShspInstanceHandler initiateShsp adds and returns instance
+00:03 +238 -9: test\shsp_instance_handler_test.dart: ShspInstanceHandler initiateShsp adds and returns instance
+00:03 +239 -9: test\shsp_instance_handler_test.dart: ShspInstanceHandler initiateShsp adds and returns instance
+00:03 +240 -9: test\shsp_instance_handler_test.dart: ShspInstanceHandler initiateShsp adds and returns instance
+00:03 +241 -9: test\shsp_instance_handler_test.dart: ShspInstanceHandler initiateShsp adds and returns instance
+00:03 +242 -9: test\shsp_instance_handler_test.dart: ShspInstanceHandler initiateShsp adds and returns instance
+00:03 +243 -9: test\shsp_instance_handler_test.dart: ShspInstanceHandler initiateShsp adds and returns instance
+00:03 +243 -10: test\shsp_instance_handler_test.dart: ShspInstanceHandler initiateShsp adds and returns instance
+00:03 +244 -10: test\shsp_instance_handler_test.dart: ShspInstanceHandler initiateShsp adds and returns instance
+00:03 +245 -10: test\shsp_instance_handler_test.dart: ShspInstanceHandler initiateShsp adds and returns instance
+00:03 +246 -10: test\shsp_instance_handler_test.dart: ShspInstanceHandler initiateShsp adds and returns instance
+00:03 +247 -10: test\shsp_instance_handler_test.dart: ShspInstanceHandler initiateShsp adds and returns instance
+00:03 +248 -10: test\shsp_instance_handler_test.dart: ShspInstanceHandler initiateShsp adds and returns instance
+00:03 +249 -10: test\shsp_instance_handler_test.dart: ShspInstanceHandler initiateShsp adds and returns instance
+00:03 +250 -10: test\shsp_instance_handler_test.dart: ShspInstanceHandler initiateShsp adds and returns instance
+00:03 +251 -10: test\shsp_instance_handler_test.dart: ShspInstanceHandler initiateShsp adds and returns instance
+00:03 +252 -10: test\shsp_instance_handler_test.dart: ShspInstanceHandler initiateShsp adds and returns instance
+00:03 +253 -10: test\shsp_instance_handler_test.dart: ShspInstanceHandler initiateShsp adds and returns instance
+00:03 +254 -10: test\shsp_instance_handler_test.dart: ShspInstanceHandler initiateShsp adds and returns instance
+00:03 +255 -10: test\shsp_instance_handler_test.dart: ShspInstanceHandler initiateShsp adds and returns instance
+00:03 +256 -10: test\shsp_instance_handler_test.dart: ShspInstanceHandler initiateShsp adds and returns instance
+00:03 +257 -10: test\shsp_instance_handler_test.dart: ShspInstanceHandler initiateShsp adds and returns instance
+00:03 +258 -10: test\shsp_instance_handler_test.dart: ShspInstanceHandler initiateShsp adds and returns instance
+00:03 +259 -10: test\shsp_instance_handler_test.dart: ShspInstanceHandler initiateShsp adds and returns instance
+00:03 +260 -10: test\shsp_instance_handler_test.dart: ShspInstanceHandler initiateShsp adds and returns instance
+00:03 +261 -10: test\shsp_instance_handler_test.dart: ShspInstanceHandler initiateShsp adds and returns instance
+00:03 +262 -10: test\shsp_instance_handler_test.dart: ShspInstanceHandler initiateShsp adds and returns instance
+00:03 +262 -10: test\singleton_integration_test.dart: ShspSocketSingleton Integration Tests socket replacement via reconnect notifies all AutoShspPeer instances [E]
+  Expected: false
+    Actual: <true>
+  Singleton should have a new open socket
+  
+  package:matcher                            expect
+  test\singleton_integration_test.dart 96:7  main.<fn>.<fn>
+  
+00:03 +263 -10: test\shsp_instance_handler_test.dart: ShspInstanceHandler initiateShsp adds and returns instance
+00:03 +264 -10: test\shsp_instance_handler_test.dart: ShspInstanceHandler initiateShsp adds and returns instance
+00:03 +265 -10: test\shsp_instance_handler_test.dart: ShspInstanceHandler initiateShsp adds and returns instance
+00:03 +265 -11: test\shsp_instance_handler_test.dart: ShspInstanceHandler initiateShsp adds and returns instance
+00:03 +266 -11: test\shsp_instance_handler_test.dart: ShspInstanceHandler initiateShsp adds and returns instance
+00:03 +267 -11: test\shsp_instance_handler_test.dart: ShspInstanceHandler initiateShsp adds and returns instance
+00:03 +267 -11: test\singleton_integration_test.dart: ShspSocketSingleton Integration Tests socket replacement via setSocket preserves callbacks for all peers [E]
+  Expected: true
+    Actual: <false>
+  New socket should have callbacks restored
+  
+  package:matcher                             expect
+  test\singleton_integration_test.dart 130:7  main.<fn>.<fn>
+  
+00:03 +268 -11: test\shsp_instance_handler_test.dart: ShspInstanceHandler initiateShsp adds and returns instance
+00:03 +269 -11: test\shsp_instance_handler_test.dart: ShspInstanceHandler initiateShsp adds and returns instance
+00:03 +270 -11: test\shsp_instance_handler_test.dart: ShspInstanceHandler initiateShsp adds and returns instance
+00:03 +271 -11: test\shsp_instance_handler_test.dart: ShspInstanceHandler initiateShsp adds and returns instance
+00:03 +272 -11: test\shsp_instance_handler_test.dart: ShspInstanceHandler initiateShsp adds and returns instance
+00:03 +272 -12: test\shsp_instance_handler_test.dart: ShspInstanceHandler initiateShsp adds and returns instance
+00:03 +272 -12: test\singleton_integration_test.dart: ShspSocketSingleton Integration Tests singleton socket changed callback chain works correctly [E]
+  Expected: <2>
+    Actual: <0>
+  Listener count should be preserved
+  
+  package:matcher                             expect
+  test\singleton_integration_test.dart 193:7  main.<fn>.<fn>
+  
+00:03 +273 -12: test\shsp_instance_handler_test.dart: ShspInstanceHandler initiateShsp adds and returns instance
+00:03 +274 -12: test\shsp_instance_handler_test.dart: ShspInstanceHandler initiateShsp adds and returns instance
+00:03 +275 -12: test\shsp_instance_handler_test.dart: ShspInstanceHandler initiateShsp adds and returns instance
+00:03 +276 -12: test\shsp_instance_handler_test.dart: ShspInstanceHandler initiateShsp adds and returns instance
+00:03 +277 -12: test\shsp_instance_handler_test.dart: ShspInstanceHandler initiateShsp adds and returns instance
+00:03 +278 -12: test\shsp_instance_handler_test.dart: ShspInstanceHandler initiateShsp adds and returns instance
+00:03 +279 -12: test\shsp_instance_handler_test.dart: ShspInstanceHandler initiateShsp adds and returns instance
+00:03 +280 -12: test\shsp_instance_handler_test.dart: ShspInstanceHandler initiateShsp adds and returns instance
+00:03 +281 -12: test\shsp_instance_handler_test.dart: ShspInstanceHandler initiateShsp adds and returns instance
+00:03 +282 -12: test\shsp_instance_handler_test.dart: ShspInstanceHandler initiateShsp adds and returns instance
+00:03 +283 -12: test\shsp_instance_handler_test.dart: ShspInstanceHandler initiateShsp adds and returns instance
+00:03 +284 -12: test\shsp_instance_handler_test.dart: ShspInstanceHandler initiateShsp adds and returns instance
+00:03 +284 -13: test\shsp_instance_handler_test.dart: ShspInstanceHandler initiateShsp adds and returns instance
+00:03 +285 -13: test\shsp_instance_handler_test.dart: ShspInstanceHandler initiateShsp adds and returns instance
+00:03 +285 -13: test\singleton_integration_test.dart: ShspSocketSingleton Integration Tests profile restoration preserves message routing [E]
+  Expected: <2>
+    Actual: <0>
+  Message routing should be preserved after restoration
+  
+  package:matcher                             expect
+  test\singleton_integration_test.dart 347:7  main.<fn>.<fn>
+  
+00:03 +286 -13: test\shsp_instance_handler_test.dart: ShspInstanceHandler initiateShsp adds and returns instance
+00:03 +287 -13: test\shsp_instance_handler_test.dart: ShspInstanceHandler initiateShsp adds and returns instance
+00:03 +288 -13: test\shsp_instance_handler_test.dart: ShspInstanceHandler initiateShsp adds and returns instance
+00:03 +289 -13: test\shsp_instance_handler_test.dart: ShspInstanceHandler initiateShsp adds and returns instance
+00:03 +290 -13: test\shsp_instance_handler_test.dart: ShspInstanceHandler initiateShsp adds and returns instance
+00:03 +291 -13: test\shsp_instance_handler_test.dart: ShspInstanceHandler initiateShsp adds and returns instance
+00:03 +292 -13: test\shsp_instance_handler_test.dart: ShspInstanceHandler initiateShsp adds and returns instance
+00:03 +293 -13: test\shsp_instance_handler_test.dart: ShspInstanceHandler initiateShsp adds and returns instance
+00:03 +294 -13: test\shsp_instance_handler_test.dart: ShspInstanceHandler initiateShsp adds and returns instance
+00:03 +295 -13: test\shsp_instance_handler_test.dart: ShspInstanceHandler initiateShsp adds and returns instance
+00:03 +296 -13: test\shsp_instance_handler_test.dart: ShspInstanceHandler initiateShsp adds and returns instance
+00:03 +297 -13: test\shsp_instance_handler_test.dart: ShspInstanceHandler initiateShsp adds and returns instance
+00:03 +298 -13: test\shsp_instance_handler_test.dart: ShspInstanceHandler initiateShsp adds and returns instance
+00:03 +299 -13: test\shsp_instance_handler_test.dart: ShspInstanceHandler initiateShsp adds and returns instance
+00:03 +300 -13: test\shsp_instance_handler_test.dart: ShspInstanceHandler initiateShsp adds and returns instance
+00:03 +301 -13: test\shsp_instance_handler_test.dart: ShspInstanceHandler initiateShsp adds and returns instance
+00:03 +302 -13: test\shsp_instance_handler_test.dart: ShspInstanceHandler initiateShsp adds and returns instance
+00:03 +303 -13: test\shsp_instance_handler_test.dart: ShspInstanceHandler initiateShsp adds and returns instance
+00:03 +304 -13: test\shsp_instance_handler_test.dart: ShspInstanceHandler initiateShsp adds and returns instance
+00:03 +305 -13: test\shsp_instance_handler_test.dart: ShspInstanceHandler initiateShsp adds and returns instance
+00:03 +306 -13: test\shsp_instance_handler_test.dart: ShspInstanceHandler initiateShsp adds and returns instance
+00:03 +307 -13: test\shsp_instance_handler_test.dart: ShspInstanceHandler initiateShsp adds and returns instance
+00:03 +308 -13: test\shsp_instance_handler_test.dart: ShspInstanceHandler initiateShsp adds and returns instance
+00:03 +309 -13: test\shsp_instance_handler_test.dart: ShspInstanceHandler initiateShsp adds and returns instance
+00:03 +310 -13: test\shsp_instance_handler_test.dart: ShspInstanceHandler initiateShsp adds and returns instance
+00:03 +311 -13: test\shsp_instance_handler_test.dart: ShspInstanceHandler initiateShsp adds and returns instance
+00:03 +312 -13: test\shsp_instance_handler_test.dart: ShspInstanceHandler initiateShsp adds and returns instance
+00:03 +313 -13: test\shsp_instance_handler_test.dart: ShspInstanceHandler initiateShsp adds and returns instance
+00:03 +314 -13: test\shsp_instance_handler_test.dart: ShspInstanceHandler initiateShsp adds and returns instance
+00:03 +315 -13: test\shsp_instance_handler_test.dart: ShspInstanceHandler initiateShsp adds and returns instance
+00:03 +316 -13: test\shsp_instance_handler_test.dart: ShspInstanceHandler initiateShsp adds and returns instance
+00:03 +317 -13: test\shsp_instance_handler_test.dart: ShspInstanceHandler initiateShsp adds and returns instance
+00:03 +318 -13: test\shsp_instance_handler_test.dart: ShspInstanceHandler initiateShsp adds and returns instance
+00:03 +319 -13: test\shsp_instance_handler_test.dart: ShspInstanceHandler initiateShsp adds and returns instance
+00:03 +320 -13: test\shsp_instance_handler_test.dart: ShspInstanceHandler initiateShsp adds and returns instance
+00:03 +321 -13: test\shsp_instance_handler_test.dart: ShspInstanceHandler initiateShsp adds and returns instance
+00:03 +322 -13: test\shsp_instance_handler_test.dart: ShspInstanceHandler initiateShsp adds and returns instance
+00:03 +323 -13: test\shsp_instance_handler_test.dart: ShspInstanceHandler initiateShsp adds and returns instance
+00:03 +324 -13: test\shsp_instance_handler_test.dart: ShspInstanceHandler initiateShsp adds and returns instance
+00:03 +325 -13: test\shsp_instance_handler_test.dart: ShspInstanceHandler initiateShsp adds and returns instance
+00:03 +326 -13: test\shsp_instance_handler_test.dart: ShspInstanceHandler initiateShsp adds and returns instance
+00:03 +327 -13: test\shsp_instance_handler_test.dart: ShspInstanceHandler initiateShsp adds and returns instance
+00:03 +328 -13: test\shsp_instance_handler_test.dart: ShspInstanceHandler initiateShsp adds and returns instance
+00:03 +329 -13: test\shsp_instance_handler_test.dart: ShspInstanceHandler initiateShsp adds and returns instance
+00:03 +330 -13: test\shsp_instance_handler_test.dart: ShspInstanceHandler initiateShsp adds and returns instance
+00:03 +331 -13: test\shsp_instance_handler_test.dart: ShspInstanceHandler initiateShsp adds and returns instance
+00:03 +332 -13: test\shsp_instance_handler_test.dart: ShspInstanceHandler initiateShsp adds and returns instance
+00:03 +333 -13: test\shsp_instance_handler_test.dart: ShspInstanceHandler initiateShsp adds and returns instance
+00:03 +334 -13: test\shsp_instance_handler_test.dart: ShspInstanceHandler initiateShsp adds and returns instance
+00:03 +335 -13: test\shsp_instance_handler_test.dart: ShspInstanceHandler initiateShsp adds and returns instance
+00:03 +336 -13: test\shsp_instance_handler_test.dart: ShspInstanceHandler initiateShsp adds and returns instance
+00:03 +337 -13: test\shsp_instance_handler_test.dart: ShspInstanceHandler initiateShsp adds and returns instance
+00:03 +338 -13: test\shsp_instance_handler_test.dart: ShspInstanceHandler initiateShsp adds and returns instance
+00:03 +339 -13: test\shsp_instance_handler_test.dart: ShspInstanceHandler initiateShsp adds and returns instance
+00:03 +340 -13: test\shsp_instance_handler_test.dart: ShspInstanceHandler initiateShsp adds and returns instance
+00:03 +341 -13: test\shsp_instance_handler_test.dart: ShspInstanceHandler initiateShsp adds and returns instance
+00:03 +342 -13: test\shsp_instance_handler_test.dart: ShspInstanceHandler initiateShsp adds and returns instance
+00:03 +343 -13: test\shsp_instance_handler_test.dart: ShspInstanceHandler initiateShsp adds and returns instance
+00:03 +344 -13: test\shsp_instance_handler_test.dart: ShspInstanceHandler initiateShsp adds and returns instance
+00:03 +345 -13: test\shsp_instance_handler_test.dart: ShspInstanceHandler initiateShsp adds and returns instance
+00:03 +346 -13: test\shsp_instance_handler_test.dart: ShspInstanceHandler initiateShsp adds and returns instance
+00:03 +347 -13: test\shsp_instance_handler_test.dart: ShspInstanceHandler initiateShsp adds and returns instance
+00:03 +348 -13: test\shsp_instance_handler_test.dart: ShspInstanceHandler initiateShsp adds and returns instance
+00:03 +349 -13: test\shsp_instance_handler_test.dart: ShspInstanceHandler initiateShsp adds and returns instance
+00:03 +350 -13: test\shsp_instance_handler_test.dart: ShspInstanceHandler initiateShsp adds and returns instance
+00:03 +351 -13: test\shsp_instance_handler_test.dart: ShspInstanceHandler initiateShsp adds and returns instance
+00:03 +352 -13: test\shsp_instance_handler_test.dart: ShspInstanceHandler initiateShsp adds and returns instance
+00:03 +353 -13: test\shsp_instance_handler_test.dart: ShspInstanceHandler initiateShsp adds and returns instance
+00:03 +354 -13: test\shsp_instance_handler_test.dart: ShspInstanceHandler initiateShsp adds and returns instance
+00:03 +355 -13: test\shsp_instance_handler_test.dart: ShspInstanceHandler initiateShsp adds and returns instance
+00:03 +356 -13: test\shsp_instance_handler_test.dart: ShspInstanceHandler initiateShsp adds and returns instance
+00:03 +357 -13: test\shsp_instance_handler_test.dart: ShspInstanceHandler initiateShsp adds and returns instance
+00:03 +358 -13: test\shsp_instance_handler_test.dart: ShspInstanceHandler initiateShsp adds and returns instance
+00:03 +359 -13: test\shsp_instance_handler_test.dart: ShspInstanceHandler initiateShsp adds and returns instance
+00:03 +360 -13: test\shsp_instance_handler_test.dart: ShspInstanceHandler initiateShsp adds and returns instance
+00:03 +361 -13: test\shsp_instance_handler_test.dart: ShspInstanceHandler initiateShsp adds and returns instance
+00:03 +362 -13: test\shsp_instance_handler_test.dart: ShspInstanceHandler initiateShsp adds and returns instance
+00:03 +363 -13: test\shsp_instance_handler_test.dart: ShspInstanceHandler initiateShsp adds and returns instance
+00:03 +364 -13: test\shsp_instance_handler_test.dart: ShspInstanceHandler initiateShsp adds and returns instance
+00:03 +365 -13: test\shsp_instance_handler_test.dart: ShspInstanceHandler initiateShsp adds and returns instance
+00:03 +366 -13: test\shsp_instance_handler_test.dart: ShspInstanceHandler initiateShsp adds and returns instance
+00:03 +367 -13: test\shsp_instance_handler_test.dart: ShspInstanceHandler initiateShsp adds and returns instance
+00:03 +368 -13: test\shsp_instance_handler_test.dart: ShspInstanceHandler initiateShsp adds and returns instance
+00:03 +369 -13: test\shsp_instance_handler_test.dart: ShspInstanceHandler initiateShsp adds and returns instance
+00:03 +370 -13: test\shsp_instance_handler_test.dart: ShspInstanceHandler initiateShsp adds and returns instance
+00:03 +371 -13: test\shsp_instance_handler_test.dart: ShspInstanceHandler initiateShsp adds and returns instance
+00:03 +372 -13: test\shsp_instance_handler_test.dart: ShspInstanceHandler initiateShsp adds and returns instance
+00:04 +373 -13: test\shsp_instance_handler_test.dart: ShspInstanceHandler initiateShsp adds and returns instance
+00:04 +374 -13: test\shsp_instance_handler_test.dart: ShspInstanceHandler initiateShsp adds and returns instance
+00:05 +375 -13: test\shsp_instance_handler_test.dart: ShspInstanceHandler initiateShsp adds and returns instance
+00:05 +376 -13: test\shsp_instance_handler_test.dart: ShspInstanceHandler initiateShsp adds and returns instance
+00:06 +377 -13: test\shsp_instance_handler_test.dart: ShspInstanceHandler initiateShsp adds and returns instance
+00:06 +378 -13: test\shsp_instance_handshake_open_test.dart: ShspInstance handshake and open flag Closing flag is true after closing message
+00:06 +379 -13: test\shsp_instance_callbacks_test.dart: ShspInstance callbacks callbacks are called in the correct sequence
+00:06 +380 -13: test\shsp_instance_callbacks_test.dart: ShspInstance callbacks callbacks are called in the correct sequence
+00:08 +381 -13: test\shsp_instance_handler_test.dart: ShspInstanceHandler open/closing flags change on state transitions
+00:11 +382 -13: test\shsp_instance_handler_test.dart: ShspInstanceHandler getShspSafe throws if not found
+00:11 +383 -13: test\shsp_instance_handler_test.dart: ShspInstanceHandler getShsp returns null if not found
+00:11 +384 -13: test\shsp_instance_handler_test.dart: ShspInstanceHandler close removes and closes instance
+00:16 +385 -13: test\shsp_instance_handler_test.dart: ShspInstanceHandler closeAll removes and closes all instances
+00:27 +386 -13: Some tests failed.
+
+Consider enabling the flag chain-stack-traces to receive more detailed exceptions.
+For example, 'dart test --chain-stack-traces'.
