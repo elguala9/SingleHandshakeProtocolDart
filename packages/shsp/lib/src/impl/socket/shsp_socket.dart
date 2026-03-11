@@ -292,12 +292,14 @@ class ShspSocket extends RawShspSocket implements IShspSocket {
   RawDatagramSocket get socket => super.socket;
 
   /// Check if the socket is closed
+  @override
   bool get isClosed => _closed;
 
   /// Extracts all registered message callbacks for remote peers.
   ///
   /// Returns a [ShspSocketProfile] containing all message listener registrations.
   /// This can be applied to a new socket via [withProfile].
+  @override
   ShspSocketProfile extractProfile() {
     final Map<String, List<OnMessageListener>> listeners = {};
 
@@ -364,6 +366,7 @@ class ShspSocket extends RawShspSocket implements IShspSocket {
   /// final newSocket = ShspSocket.fromRaw(rawSocket);
   /// newSocket.applyProfile(profile);
   /// ```
+  @override
   void applyProfile(ShspSocketProfile profile) {
     for (final entry in profile.messageListeners.entries) {
       final key = entry.key;
