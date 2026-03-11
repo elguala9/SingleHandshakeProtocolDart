@@ -1,0 +1,446 @@
+00:00 +0: loading test\auto_shsp_instance_test.dart
+00:00 +0: test\auto_shsp_instance_test.dart: AutoShspInstance - Singleton behavior create() initializes singleton if not yet initialized
+00:00 +1: test\auto_shsp_peer_test.dart: AutoShspPeer - IShspPeer Compliance IShspPeer onMessage should trigger only for messages from remotePeer
+00:00 +2: test\auto_shsp_peer_test.dart: AutoShspPeer - IShspPeer Compliance IShspPeer onMessage should trigger only for messages from remotePeer
+00:00 +3: test\auto_shsp_peer_test.dart: AutoShspPeer - IShspPeer Compliance IShspPeer onMessage should trigger only for messages from remotePeer
+00:00 +4: test\auto_shsp_peer_test.dart: AutoShspPeer - IShspPeer Compliance IShspPeer onMessage should trigger only for messages from remotePeer
+00:00 +5: test\auto_shsp_peer_test.dart: AutoShspPeer - IShspPeer Compliance IShspPeer onMessage should trigger only for messages from remotePeer
+00:00 +6: test\auto_shsp_peer_test.dart: AutoShspPeer - IShspPeer Compliance IShspPeer onMessage should trigger only for messages from remotePeer
+00:00 +7: test\auto_shsp_peer_test.dart: AutoShspPeer - IShspPeer Compliance IShspPeer onMessage should trigger only for messages from remotePeer
+00:00 +8: test\auto_shsp_peer_test.dart: AutoShspPeer - IShspPeer Compliance IShspPeer onMessage should trigger only for messages from remotePeer
+00:00 +9: test\auto_shsp_peer_test.dart: AutoShspPeer - IShspPeer Compliance IShspPeer onMessage should trigger only for messages from remotePeer
+00:00 +10: test\auto_shsp_peer_test.dart: AutoShspPeer - IShspPeer Compliance IShspPeer onMessage should trigger only for messages from remotePeer
+00:00 +11: test\auto_shsp_peer_test.dart: AutoShspPeer - IShspPeer Compliance IShspPeer onMessage should trigger only for messages from remotePeer
+00:00 +12: test\auto_shsp_peer_test.dart: AutoShspPeer - IShspPeer Compliance IShspPeer onMessage should trigger only for messages from remotePeer
+00:00 +13: test\auto_shsp_peer_test.dart: AutoShspPeer - IShspPeer Compliance IShspPeer onMessage should trigger only for messages from remotePeer
+00:00 +13: test\compression_codec_test.dart: Compression Codecs LZ4Codec should provide good compression for repetitive data
+LZ4 compression: 500 → 27 bytes (94.6%)
+00:00 +14: test\auto_shsp_peer_test.dart: AutoShspPeer - IShspPeer Compliance IShspPeer onMessage should trigger only for messages from remotePeer
+00:00 +15: test\auto_shsp_peer_test.dart: AutoShspPeer - IShspPeer Compliance IShspPeer onMessage should trigger only for messages from remotePeer
+00:00 +15: test\compression_codec_test.dart: Compression Codecs LZ4Codec should handle large data
+LZ4 large data: 10000 → 383 bytes (96.2%)
+00:00 +16: test\auto_shsp_peer_test.dart: AutoShspPeer - IShspPeer Compliance IShspPeer onMessage should trigger only for messages from remotePeer
+00:00 +17: test\auto_shsp_peer_test.dart: AutoShspPeer - IShspPeer Compliance IShspPeer onMessage should trigger only for messages from remotePeer
+00:00 +17: test\compression_codec_test.dart: Compression Codecs ZstdCodec should provide better compression than LZ4
+ZSTD compression: 500 → 27 bytes (94.6%)
+00:00 +18: test\auto_shsp_peer_test.dart: AutoShspPeer - IShspPeer Compliance IShspPeer onMessage should trigger only for messages from remotePeer
+00:00 +18: test\compression_codec_test.dart: Compression Codecs ZstdCodec should handle JSON-like data well
+ZSTD JSON-like: 108 → 60 bytes (44.4%)
+00:00 +19: test\auto_shsp_peer_test.dart: AutoShspPeer - IShspPeer Compliance IShspPeer onMessage should trigger only for messages from remotePeer
+00:00 +19: test\compression_codec_test.dart: Compression Codecs ZstdCodec should handle large data
+ZSTD large data: 10000 → 383 bytes (96.2%)
+00:00 +20: test\auto_shsp_peer_test.dart: AutoShspPeer - IShspPeer Compliance IShspPeer onMessage should trigger only for messages from remotePeer
+00:00 +21: test\auto_shsp_peer_test.dart: AutoShspPeer - IShspPeer Compliance IShspPeer onMessage should trigger only for messages from remotePeer
+00:00 +22: test\auto_shsp_peer_test.dart: AutoShspPeer - IShspPeer Compliance IShspPeer onMessage should trigger only for messages from remotePeer
+00:00 +23: test\auto_shsp_peer_test.dart: AutoShspPeer - IShspPeer Compliance IShspPeer onMessage should trigger only for messages from remotePeer
+00:00 +24: test\auto_shsp_peer_test.dart: AutoShspPeer - IShspPeer Compliance IShspPeer onMessage should trigger only for messages from remotePeer
+00:00 +25: test\auto_shsp_peer_test.dart: AutoShspPeer - IShspPeer Compliance IShspPeer onMessage should trigger only for messages from remotePeer
+00:00 +26: test\auto_shsp_peer_test.dart: AutoShspPeer - IShspPeer Compliance IShspPeer onMessage should trigger only for messages from remotePeer
+00:00 +27: test\auto_shsp_peer_test.dart: AutoShspPeer - IShspPeer Compliance IShspPeer onMessage should trigger only for messages from remotePeer
+00:00 +28: test\auto_shsp_peer_test.dart: AutoShspPeer - IShspPeer Compliance IShspPeer onMessage should trigger only for messages from remotePeer
+00:00 +29: test\auto_shsp_peer_test.dart: AutoShspPeer - IShspPeer Compliance IShspPeer onMessage should trigger only for messages from remotePeer
+00:00 +30: test\auto_shsp_peer_test.dart: AutoShspPeer - IShspPeer Compliance IShspPeer onMessage should trigger only for messages from remotePeer
+00:00 +31: test\auto_shsp_peer_test.dart: AutoShspPeer - IShspPeer Compliance IShspPeer onMessage should trigger only for messages from remotePeer
+00:00 +32: test\auto_shsp_peer_test.dart: AutoShspPeer - IShspPeer Compliance IShspPeer onMessage should trigger only for messages from remotePeer
+00:00 +33: test\auto_shsp_peer_test.dart: AutoShspPeer - IShspPeer Compliance IShspPeer onMessage should trigger only for messages from remotePeer
+00:00 +34: test\auto_shsp_peer_test.dart: AutoShspPeer - IShspPeer Compliance IShspPeer onMessage should trigger only for messages from remotePeer
+00:00 +35: test\auto_shsp_peer_test.dart: AutoShspPeer - IShspPeer Compliance IShspPeer onMessage should trigger only for messages from remotePeer
+00:00 +36: test\auto_shsp_peer_test.dart: AutoShspPeer - IShspPeer Compliance IShspPeer onMessage should trigger only for messages from remotePeer
+00:00 +37: test\auto_shsp_peer_test.dart: AutoShspPeer - IShspPeer Compliance IShspPeer onMessage should trigger only for messages from remotePeer
+00:00 +38: test\auto_shsp_peer_test.dart: AutoShspPeer - IShspPeer Compliance IShspPeer onMessage should trigger only for messages from remotePeer
+00:00 +39: test\auto_shsp_peer_test.dart: AutoShspPeer - IShspPeer Compliance IShspPeer onMessage should trigger only for messages from remotePeer
+00:00 +40: test\auto_shsp_peer_test.dart: AutoShspPeer - IShspPeer Compliance IShspPeer onMessage should trigger only for messages from remotePeer
+00:00 +41: test\auto_shsp_peer_test.dart: AutoShspPeer - IShspPeer Compliance IShspPeer onMessage should trigger only for messages from remotePeer
+00:00 +42: test\auto_shsp_peer_test.dart: AutoShspPeer - IShspPeer Compliance IShspPeer onMessage should trigger only for messages from remotePeer
+00:00 +43: test\auto_shsp_peer_test.dart: AutoShspPeer - IShspPeer Compliance IShspPeer onMessage should trigger only for messages from remotePeer
+00:00 +44: test\auto_shsp_peer_test.dart: AutoShspPeer - IShspPeer Compliance IShspPeer onMessage should trigger only for messages from remotePeer
+00:00 +45: test\auto_shsp_peer_test.dart: AutoShspPeer - IShspPeer Compliance IShspPeer onMessage should trigger only for messages from remotePeer
+00:00 +46: test\auto_shsp_peer_test.dart: AutoShspPeer - IShspPeer Compliance IShspPeer onMessage should trigger only for messages from remotePeer
+00:00 +47: test\auto_shsp_peer_test.dart: AutoShspPeer - IShspPeer Compliance IShspPeer onMessage should trigger only for messages from remotePeer
+00:00 +48: test\auto_shsp_peer_test.dart: AutoShspPeer - IShspPeer Compliance IShspPeer onMessage should trigger only for messages from remotePeer
+00:00 +49: test\auto_shsp_peer_test.dart: AutoShspPeer - IShspPeer Compliance IShspPeer onMessage should trigger only for messages from remotePeer
+00:00 +50: test\auto_shsp_peer_test.dart: AutoShspPeer - IShspPeer Compliance IShspPeer onMessage should trigger only for messages from remotePeer
+00:00 +51: test\auto_shsp_peer_test.dart: AutoShspPeer - IShspPeer Compliance IShspPeer onMessage should trigger only for messages from remotePeer
+00:00 +52: test\auto_shsp_peer_test.dart: AutoShspPeer - IShspPeer Compliance IShspPeer onMessage should trigger only for messages from remotePeer
+00:00 +53: test\auto_shsp_peer_test.dart: AutoShspPeer - IShspPeer Compliance IShspPeer onMessage should trigger only for messages from remotePeer
+00:00 +54: test\auto_shsp_peer_test.dart: AutoShspPeer - IShspPeer Compliance IShspPeer onMessage should trigger only for messages from remotePeer
+00:00 +55: test\auto_shsp_peer_test.dart: AutoShspPeer - IShspPeer Compliance IShspPeer onMessage should trigger only for messages from remotePeer
+00:00 +56: test\auto_shsp_peer_test.dart: AutoShspPeer - IShspPeer Compliance IShspPeer onMessage should trigger only for messages from remotePeer
+00:00 +57: test\keep_alive_timer_test.dart: KeepAliveTimer Tests Timer callback is called after duration
+00:00 +58: test\shsp_handshake_handler_test.dart: ShspHandshakeHandler handshakeInstance opens connection
+00:00 +59: test\shsp_handshake_handler_test.dart: ShspHandshakeHandler handshakeInstance opens connection
+00:00 +60: test\shsp_handshake_handler_test.dart: ShspHandshakeHandler handshakeInstance opens connection
+00:00 +61: test\shsp_handshake_handler_test.dart: ShspHandshakeHandler handshakeInstance opens connection
+00:00 +62: test\shsp_handshake_handler_test.dart: ShspHandshakeHandler handshakeInstance opens connection
+00:00 +63: test\shsp_handshake_handler_test.dart: ShspHandshakeHandler handshakeInstance opens connection
+00:00 +64: test\shsp_handshake_handler_test.dart: ShspHandshakeHandler handshakeInstance opens connection
+00:00 +65: test\shsp_handshake_handler_test.dart: ShspHandshakeHandler handshakeInstance opens connection
+00:00 +66: test\shsp_handshake_handler_test.dart: ShspHandshakeHandler handshakeInstance opens connection
+00:00 +67: test\shsp_handshake_handler_test.dart: ShspHandshakeHandler handshakeInstance opens connection
+00:00 +68: test\shsp_handshake_handler_test.dart: ShspHandshakeHandler handshakeInstance opens connection
+00:00 +69: test\shsp_handshake_handler_test.dart: ShspHandshakeHandler handshakeInstance opens connection
+00:00 +70: test\shsp_handshake_handler_test.dart: ShspHandshakeHandler handshakeInstance opens connection
+00:00 +71: test\shsp_handshake_handler_test.dart: ShspHandshakeHandler handshakeInstance opens connection
+00:00 +72: test\shsp_handshake_handler_test.dart: ShspHandshakeHandler handshakeInstance opens connection
+00:00 +73: test\shsp_handshake_handler_test.dart: ShspHandshakeHandler handshakeInstance opens connection
+00:00 +74: test\shsp_handshake_handler_test.dart: ShspHandshakeHandler handshakeInstance opens connection
+00:00 +75: test\shsp_handshake_handler_test.dart: ShspHandshakeHandler handshakeInstance opens connection
+00:00 +76: test\shsp_handshake_handler_test.dart: ShspHandshakeHandler handshakeInstance opens connection
+00:00 +77: test\shsp_handshake_handler_test.dart: ShspHandshakeHandler handshakeInstance opens connection
+00:00 +78: test\shsp_handshake_handler_test.dart: ShspHandshakeHandler handshakeInstance opens connection
+00:01 +79: test\shsp_handshake_handler_test.dart: ShspHandshakeHandler handshakeInstance opens connection
+00:01 +80: test\shsp_handshake_handler_test.dart: ShspHandshakeHandler handshakeInstance opens connection
+00:01 +81: test\shsp_handshake_handler_test.dart: ShspHandshakeHandler handshakeInstance opens connection
+00:01 +82: test\shsp_handshake_handler_test.dart: ShspHandshakeHandler handshakeInstance opens connection
+00:01 +83: test\shsp_handshake_handler_test.dart: ShspHandshakeHandler handshakeInstance opens connection
+00:01 +84: test\shsp_handshake_handler_test.dart: ShspHandshakeHandler handshakeInstance opens connection
+00:01 +85: test\shsp_handshake_handler_test.dart: ShspHandshakeHandler handshakeInstance opens connection
+00:01 +86: test\shsp_handshake_handler_test.dart: ShspHandshakeHandler handshakeInstance opens connection
+00:01 +87: test\shsp_handshake_handler_test.dart: ShspHandshakeHandler handshakeInstance opens connection
+00:01 +88: test\shsp_handshake_handler_test.dart: ShspHandshakeHandler handshakeInstance opens connection
+00:01 +89: test\shsp_handshake_handler_test.dart: ShspHandshakeHandler handshakeInstance opens connection
+00:01 +90: test\shsp_handshake_handler_test.dart: ShspHandshakeHandler handshakeInstance opens connection
+00:01 +91: test\shsp_handshake_handler_test.dart: ShspHandshakeHandler handshakeInstance opens connection
+00:01 +92: test\shsp_handshake_handler_test.dart: ShspHandshakeHandler handshakeInstance opens connection
+00:01 +93: test\shsp_handshake_handler_test.dart: ShspHandshakeHandler handshakeInstance opens connection
+00:01 +94: test\shsp_handshake_handler_test.dart: ShspHandshakeHandler handshakeInstance opens connection
+00:01 +95: test\shsp_handshake_handler_test.dart: ShspHandshakeHandler handshakeInstance opens connection
+00:01 +96: test\shsp_handshake_handler_test.dart: ShspHandshakeHandler handshakeInstance opens connection
+00:01 +97: test\shsp_handshake_handler_test.dart: ShspHandshakeHandler handshakeInstance opens connection
+00:01 +98: test\shsp_handshake_handler_test.dart: ShspHandshakeHandler handshakeInstance opens connection
+00:01 +99: test\shsp_handshake_handler_test.dart: ShspHandshakeHandler handshakeInstance opens connection
+00:01 +100: test\shsp_handshake_handler_test.dart: ShspHandshakeHandler handshakeInstance opens connection
+00:01 +101: test\shsp_handshake_handler_test.dart: ShspHandshakeHandler handshakeInstance opens connection
+00:01 +102: test\shsp_handshake_handler_test.dart: ShspHandshakeHandler handshakeInstance opens connection
+00:01 +103: test\shsp_handshake_handler_test.dart: ShspHandshakeHandler handshakeInstance opens connection
+00:01 +104: test\shsp_handshake_handler_test.dart: ShspHandshakeHandler handshakeInstance opens connection
+00:01 +105: test\shsp_handshake_handler_test.dart: ShspHandshakeHandler handshakeInstance opens connection
+00:01 +106: test\shsp_handshake_handler_test.dart: ShspHandshakeHandler handshakeInstance opens connection
+00:01 +107: test\shsp_handshake_handler_test.dart: ShspHandshakeHandler handshakeInstance opens connection
+00:01 +108: test\shsp_handshake_handler_test.dart: ShspHandshakeHandler handshakeInstance opens connection
+00:01 +109: test\shsp_handshake_handler_test.dart: ShspHandshakeHandler handshakeInstance opens connection
+00:01 +110: test\shsp_handshake_handler_test.dart: ShspHandshakeHandler handshakeInstance opens connection
+00:01 +111: test\shsp_handshake_handler_test.dart: ShspHandshakeHandler handshakeInstance opens connection
+00:01 +112: test\shsp_handshake_handler_test.dart: ShspHandshakeHandler handshakeInstance opens connection
+00:01 +113: test\shsp_handshake_handler_test.dart: ShspHandshakeHandler handshakeInstance opens connection
+00:01 +114: test\shsp_handshake_handler_test.dart: ShspHandshakeHandler handshakeInstance opens connection
+00:01 +115: test\shsp_handshake_handler_test.dart: ShspHandshakeHandler handshakeInstance opens connection
+00:01 +116: test\shsp_handshake_handler_test.dart: ShspHandshakeHandler handshakeInstance opens connection
+00:01 +116: test\shsp_socket_peer_callback_integration_test.dart: SHSPSocket + SHSPPeer callback integration Secondary peers send messages to both principals, both receive correctly
+principalPeer1 callback: from port=57569
+principalPeer2 callback: from port=57570
+principalPeer3 callback: from port=57571
+principalPeer4 callback: from port=57572
+00:01 +117: test\shsp_handshake_handler_test.dart: ShspHandshakeHandler handshakeInstance opens connection
+00:01 +117: test\shsp_socket_peer_callback_integration_test.dart: SHSPSocket + SHSPPeer callback integration Secondary peers send messages to both principals, both receive correctly
+principalPeer1 callback: from port=57569
+principalPeer2 callback: from port=57570
+00:01 +118: test\shsp_handshake_handler_test.dart: ShspHandshakeHandler handshakeInstance opens connection
+00:01 +119: test\shsp_handshake_handler_test.dart: ShspHandshakeHandler handshakeInstance opens connection
+00:01 +120: test\shsp_handshake_handler_test.dart: ShspHandshakeHandler handshakeInstance opens connection
+00:01 +121: test\shsp_handshake_handler_test.dart: ShspHandshakeHandler handshakeInstance opens connection
+00:01 +122: test\shsp_handshake_handler_test.dart: ShspHandshakeHandler handshakeInstance opens connection
+00:01 +123: test\shsp_handshake_handler_test.dart: ShspHandshakeHandler handshakeInstance opens connection
+00:01 +124: test\shsp_handshake_handler_test.dart: ShspHandshakeHandler handshakeInstance opens connection
+00:01 +125: test\shsp_handshake_handler_test.dart: ShspHandshakeHandler handshakeInstance opens connection
+00:01 +126: test\shsp_handshake_handler_test.dart: ShspHandshakeHandler handshakeInstance opens connection
+00:01 +127: test\shsp_handshake_handler_test.dart: ShspHandshakeHandler handshakeInstance opens connection
+00:01 +128: test\shsp_handshake_handler_test.dart: ShspHandshakeHandler handshakeInstance opens connection
+00:01 +129: test\shsp_handshake_handler_test.dart: ShspHandshakeHandler handshakeInstance opens connection
+00:01 +130: test\shsp_handshake_handler_test.dart: ShspHandshakeHandler handshakeInstance opens connection
+00:01 +131: test\shsp_handshake_handler_test.dart: ShspHandshakeHandler handshakeInstance opens connection
+00:01 +132: test\shsp_handshake_handler_test.dart: ShspHandshakeHandler handshakeInstance opens connection
+00:01 +133: test\shsp_handshake_handler_test.dart: ShspHandshakeHandler handshakeInstance opens connection
+00:01 +134: test\shsp_handshake_handler_test.dart: ShspHandshakeHandler handshakeInstance opens connection
+00:01 +135: test\shsp_handshake_handler_test.dart: ShspHandshakeHandler handshakeInstance opens connection
+00:01 +136: test\shsp_handshake_handler_test.dart: ShspHandshakeHandler handshakeInstance opens connection
+00:01 +137: test\shsp_handshake_handler_test.dart: ShspHandshakeHandler handshakeInstance opens connection
+00:01 +138: test\shsp_handshake_handler_test.dart: ShspHandshakeHandler handshakeInstance opens connection
+00:01 +139: test\shsp_handshake_handler_test.dart: ShspHandshakeHandler handshakeInstance opens connection
+00:01 +140: test\shsp_handshake_handler_test.dart: ShspHandshakeHandler handshakeInstance opens connection
+00:01 +141: test\shsp_handshake_handler_test.dart: ShspHandshakeHandler handshakeInstance opens connection
+00:01 +142: test\shsp_handshake_handler_test.dart: ShspHandshakeHandler handshakeInstance opens connection
+00:01 +143: test\shsp_handshake_handler_test.dart: ShspHandshakeHandler handshakeInstance opens connection
+00:01 +144: test\shsp_handshake_handler_test.dart: ShspHandshakeHandler handshakeInstance opens connection
+00:01 +144: test\shsp_socket_comprehensive_test.dart: ShspSocket Comprehensive Tests GZip Compression Tests data messages (0x00) are compressed and decompressed correctly
+Compression: 501 bytes → 27 bytes (94.6% reduction)
+00:01 +145: test\shsp_handshake_handler_test.dart: ShspHandshakeHandler handshakeInstance opens connection
+00:01 +146: test\shsp_handshake_handler_test.dart: ShspHandshakeHandler handshakeInstance opens connection
+00:01 +147: test\shsp_handshake_handler_test.dart: ShspHandshakeHandler handshakeInstance opens connection
+00:01 +148: test\shsp_handshake_handler_test.dart: ShspHandshakeHandler handshakeInstance opens connection
+00:01 +149: test\shsp_handshake_handler_test.dart: ShspHandshakeHandler handshakeInstance opens connection
+00:01 +150: test\shsp_handshake_handler_test.dart: ShspHandshakeHandler handshakeInstance opens connection
+00:01 +151: test\shsp_handshake_handler_test.dart: ShspHandshakeHandler handshakeInstance opens connection
+00:01 +152: test\shsp_handshake_handler_test.dart: ShspHandshakeHandler handshakeInstance opens connection
+00:01 +153: test\shsp_handshake_handler_test.dart: ShspHandshakeHandler handshakeInstance opens connection
+00:01 +154: test\shsp_handshake_handler_test.dart: ShspHandshakeHandler handshakeInstance opens connection
+00:01 +155: test\shsp_handshake_handler_test.dart: ShspHandshakeHandler handshakeInstance opens connection
+00:01 +156: test\shsp_handshake_handler_test.dart: ShspHandshakeHandler handshakeInstance opens connection
+00:01 +157: test\shsp_handshake_handler_test.dart: ShspHandshakeHandler handshakeInstance opens connection
+00:01 +158: test\shsp_handshake_handler_test.dart: ShspHandshakeHandler handshakeInstance opens connection
+00:01 +159: test\shsp_handshake_handler_test.dart: ShspHandshakeHandler handshakeInstance opens connection
+00:01 +160: test\shsp_handshake_handler_test.dart: ShspHandshakeHandler handshakeInstance opens connection
+00:01 +161: test\shsp_handshake_handler_test.dart: ShspHandshakeHandler handshakeInstance opens connection
+00:01 +162: test\shsp_handshake_handler_test.dart: ShspHandshakeHandler handshakeInstance opens connection
+00:01 +163: test\shsp_handshake_handler_test.dart: ShspHandshakeHandler handshakeInstance opens connection
+00:01 +164: test\shsp_handshake_handler_test.dart: ShspHandshakeHandler handshakeInstance opens connection
+00:01 +165: test\shsp_handshake_handler_test.dart: ShspHandshakeHandler handshakeInstance opens connection
+00:01 +166: test\shsp_handshake_handler_test.dart: ShspHandshakeHandler handshakeInstance opens connection
+00:01 +167: test\shsp_handshake_handler_test.dart: ShspHandshakeHandler handshakeInstance opens connection
+00:01 +168: test\shsp_handshake_handler_test.dart: ShspHandshakeHandler handshakeInstance opens connection
+00:01 +169: test\shsp_handshake_handler_test.dart: ShspHandshakeHandler handshakeInstance opens connection
+00:01 +170: test\shsp_handshake_handler_test.dart: ShspHandshakeHandler handshakeInstance opens connection
+00:02 +171: test\shsp_handshake_handler_test.dart: ShspHandshakeHandler handshakeInstance opens connection
+00:02 +172: test\shsp_handshake_handler_test.dart: ShspHandshakeHandler handshakeInstance opens connection
+00:02 +173: test\shsp_handshake_handler_test.dart: ShspHandshakeHandler handshakeInstance opens connection
+00:02 +174: test\shsp_handshake_handler_test.dart: ShspHandshakeHandler handshakeInstance opens connection
+00:02 +175: test\shsp_handshake_handler_test.dart: ShspHandshakeHandler handshakeInstance opens connection
+00:02 +176: test\shsp_handshake_handler_test.dart: ShspHandshakeHandler handshakeInstance opens connection
+00:02 +177: test\shsp_handshake_handler_test.dart: ShspHandshakeHandler handshakeInstance opens connection
+00:02 +178: test\shsp_handshake_handler_test.dart: ShspHandshakeHandler handshakeInstance opens connection
+00:02 +179: test\shsp_handshake_handler_test.dart: ShspHandshakeHandler handshakeInstance opens connection
+00:02 +180: test\shsp_handshake_handler_test.dart: ShspHandshakeHandler handshakeInstance opens connection
+00:02 +181: test\shsp_handshake_handler_test.dart: ShspHandshakeHandler handshakeInstance opens connection
+00:02 +182: test\shsp_handshake_handler_test.dart: ShspHandshakeHandler handshakeInstance opens connection
+00:02 +183: test\shsp_handshake_handler_test.dart: ShspHandshakeHandler handshakeInstance opens connection
+00:02 +184: test\shsp_handshake_handler_test.dart: ShspHandshakeHandler handshakeInstance opens connection
+00:02 +185: test\shsp_handshake_handler_test.dart: ShspHandshakeHandler handshakeInstance opens connection
+00:02 +185: test\shsp_socket_singleton_functional_test.dart: ShspSocketSingleton handshake e funzionalità può inviare e ricevere messaggi handshake
+Config file not found at: shsp_socket_config.json (using defaults)
+00:02 +186: test\shsp_handshake_handler_test.dart: ShspHandshakeHandler handshakeInstance opens connection
+00:02 +186: test\shsp_socket_singleton_functional_test.dart: ShspSocketSingleton handshake e funzionalità può inviare e ricevere messaggi dati
+Config file not found at: shsp_socket_config.json (using defaults)
+00:02 +187: test\shsp_handshake_handler_test.dart: ShspHandshakeHandler handshakeInstance opens connection
+00:02 +188: test\shsp_handshake_handler_test.dart: ShspHandshakeHandler handshakeInstance opens connection
+00:02 +189: test\shsp_handshake_handler_test.dart: ShspHandshakeHandler handshakeInstance opens connection
+00:02 +190: test\shsp_handshake_handler_test.dart: ShspHandshakeHandler handshakeInstance opens connection
+00:02 +191: test\shsp_handshake_handler_test.dart: ShspHandshakeHandler handshakeInstance opens connection
+00:02 +192: test\shsp_handshake_handler_test.dart: ShspHandshakeHandler handshakeInstance opens connection
+00:02 +193: test\shsp_handshake_handler_test.dart: ShspHandshakeHandler handshakeInstance opens connection
+00:02 +194: test\shsp_handshake_handler_test.dart: ShspHandshakeHandler handshakeInstance opens connection
+00:02 +195: test\shsp_handshake_handler_test.dart: ShspHandshakeHandler handshakeInstance opens connection
+00:02 +196: test\shsp_handshake_handler_test.dart: ShspHandshakeHandler handshakeInstance opens connection
+00:02 +197: test\shsp_handshake_handler_test.dart: ShspHandshakeHandler handshakeInstance opens connection
+00:02 +198: test\shsp_handshake_handler_test.dart: ShspHandshakeHandler handshakeInstance opens connection
+00:02 +199: test\shsp_handshake_handler_test.dart: ShspHandshakeHandler handshakeInstance opens connection
+00:02 +200: test\shsp_handshake_handler_test.dart: ShspHandshakeHandler handshakeInstance opens connection
+00:02 +201: test\shsp_handshake_handler_test.dart: ShspHandshakeHandler handshakeInstance opens connection
+00:02 +202: test\shsp_handshake_handler_test.dart: ShspHandshakeHandler handshakeInstance opens connection
+00:02 +203: test\shsp_handshake_handler_test.dart: ShspHandshakeHandler handshakeInstance opens connection
+00:02 +204: test\shsp_handshake_handler_test.dart: ShspHandshakeHandler handshakeInstance opens connection
+00:02 +205: test\shsp_handshake_handler_test.dart: ShspHandshakeHandler handshakeInstance opens connection
+00:02 +206: test\shsp_handshake_handler_test.dart: ShspHandshakeHandler handshakeInstance opens connection
+00:02 +207: test\shsp_handshake_handler_test.dart: ShspHandshakeHandler handshakeInstance opens connection
+00:02 +208: test\shsp_handshake_handler_test.dart: ShspHandshakeHandler handshakeInstance opens connection
+00:02 +209: test\shsp_handshake_handler_test.dart: ShspHandshakeHandler handshakeInstance opens connection
+00:02 +210: test\shsp_handshake_handler_test.dart: ShspHandshakeHandler handshakeInstance opens connection
+00:02 +211: test\shsp_handshake_handler_test.dart: ShspHandshakeHandler handshakeInstance opens connection
+00:02 +212: test\shsp_handshake_handler_test.dart: ShspHandshakeHandler handshakeInstance opens connection
+00:02 +213: test\shsp_handshake_handler_test.dart: ShspHandshakeHandler handshakeInstance opens connection
+00:02 +214: test\shsp_handshake_handler_test.dart: ShspHandshakeHandler handshakeInstance opens connection
+00:02 +214: test\shsp_socket_test.dart: IShspSocket interface should send and receive messages between two sockets
+DEBUG: peerInfo = 127.0.0.1:57753
+DEBUG: socket1 port = 57753, socket2 port = 57754
+DEBUG: Invio messaggio da socket1 a socket2
+DEBUG: Ricevuto messaggio: [10, 20, 30] da InternetAddress('127.0.0.1', IPv4):57753
+DEBUG: Chiusura socket2
+00:02 +215: test\shsp_handshake_handler_test.dart: ShspHandshakeHandler handshakeInstance opens connection
+00:02 +216: test\shsp_handshake_handler_test.dart: ShspHandshakeHandler handshakeInstance opens connection
+00:02 +217: test\shsp_handshake_handler_test.dart: ShspHandshakeHandler handshakeInstance opens connection
+00:02 +218: test\shsp_handshake_handler_test.dart: ShspHandshakeHandler handshakeInstance opens connection
+00:02 +219: test\shsp_handshake_handler_test.dart: ShspHandshakeHandler handshakeInstance opens connection
+00:02 +220: test\shsp_handshake_handler_test.dart: ShspHandshakeHandler handshakeInstance opens connection
+00:02 +221: test\shsp_handshake_handler_test.dart: ShspHandshakeHandler handshakeInstance opens connection
+00:02 +221: test\singleton_test.dart: Singletons MessageCallbackMapSingleton returns always the same instance
+Config file not found at: shsp_socket_config.json (using defaults)
+00:02 +222: test\shsp_handshake_handler_test.dart: ShspHandshakeHandler handshakeInstance opens connection
+00:02 +222: test\singleton_test.dart: Singletons ShspSocketInfoSingleton returns always the same instance with defaults
+Config file not found at: shsp_socket_config.json (using defaults)
+Config file not found at: shsp_socket_config.json (using defaults)
+00:02 +223: test\shsp_handshake_handler_test.dart: ShspHandshakeHandler handshakeInstance opens connection
+00:02 +224: test\shsp_handshake_handler_test.dart: ShspHandshakeHandler handshakeInstance opens connection
+00:02 +225: test\shsp_handshake_handler_test.dart: ShspHandshakeHandler handshakeInstance opens connection
+00:02 +226: test\shsp_handshake_handler_test.dart: ShspHandshakeHandler handshakeInstance opens connection
+00:02 +227: test\shsp_handshake_handler_test.dart: ShspHandshakeHandler handshakeInstance opens connection
+00:02 +228: test\shsp_handshake_handler_test.dart: ShspHandshakeHandler handshakeInstance opens connection
+00:02 +229: test\shsp_handshake_handler_test.dart: ShspHandshakeHandler handshakeInstance opens connection
+00:02 +230: test\shsp_handshake_handler_test.dart: ShspHandshakeHandler handshakeInstance opens connection
+00:02 +231: test\shsp_handshake_handler_test.dart: ShspHandshakeHandler handshakeInstance opens connection
+00:02 +232: test\shsp_handshake_handler_test.dart: ShspHandshakeHandler handshakeInstance opens connection
+00:02 +233: test\shsp_handshake_handler_test.dart: ShspHandshakeHandler handshakeInstance opens connection
+00:02 +234: test\shsp_handshake_handler_test.dart: ShspHandshakeHandler handshakeInstance opens connection
+00:02 +235: test\shsp_handshake_handler_test.dart: ShspHandshakeHandler handshakeInstance opens connection
+00:02 +236: test\shsp_handshake_handler_test.dart: ShspHandshakeHandler handshakeInstance opens connection
+00:02 +237: test\shsp_handshake_handler_test.dart: ShspHandshakeHandler handshakeInstance opens connection
+00:02 +238: test\shsp_handshake_handler_test.dart: ShspHandshakeHandler handshakeInstance opens connection
+00:02 +239: test\shsp_handshake_handler_test.dart: ShspHandshakeHandler handshakeInstance opens connection
+00:02 +240: test\shsp_handshake_handler_test.dart: ShspHandshakeHandler handshakeInstance opens connection
+00:02 +241: test\shsp_handshake_handler_test.dart: ShspHandshakeHandler handshakeInstance opens connection
+00:02 +242: test\shsp_handshake_handler_test.dart: ShspHandshakeHandler handshakeInstance opens connection
+00:02 +243: test\shsp_handshake_handler_test.dart: ShspHandshakeHandler handshakeInstance opens connection
+00:02 +244: test\shsp_handshake_handler_test.dart: ShspHandshakeHandler handshakeInstance opens connection
+00:02 +245: test\shsp_handshake_handler_test.dart: ShspHandshakeHandler handshakeInstance opens connection
+00:02 +246: test\shsp_handshake_handler_test.dart: ShspHandshakeHandler handshakeInstance opens connection
+00:02 +247: test\shsp_handshake_handler_test.dart: ShspHandshakeHandler handshakeInstance opens connection
+00:02 +248: test\shsp_handshake_handler_test.dart: ShspHandshakeHandler handshakeInstance opens connection
+00:02 +249: test\shsp_handshake_handler_test.dart: ShspHandshakeHandler handshakeInstance opens connection
+00:02 +250: test\shsp_handshake_handler_test.dart: ShspHandshakeHandler handshakeInstance opens connection
+00:02 +251: test\shsp_handshake_handler_test.dart: ShspHandshakeHandler handshakeInstance opens connection
+00:02 +252: test\shsp_handshake_handler_test.dart: ShspHandshakeHandler handshakeInstance opens connection
+00:02 +253: test\shsp_handshake_handler_test.dart: ShspHandshakeHandler handshakeInstance opens connection
+00:02 +254: test\shsp_handshake_handler_test.dart: ShspHandshakeHandler handshakeInstance opens connection
+00:02 +255: test\shsp_handshake_handler_test.dart: ShspHandshakeHandler handshakeInstance opens connection
+00:02 +256: test\shsp_handshake_handler_test.dart: ShspHandshakeHandler handshakeInstance opens connection
+00:02 +257: test\shsp_handshake_handler_test.dart: ShspHandshakeHandler handshakeInstance opens connection
+00:02 +258: test\shsp_handshake_handler_test.dart: ShspHandshakeHandler handshakeInstance opens connection
+00:02 +259: test\shsp_handshake_handler_test.dart: ShspHandshakeHandler handshakeInstance opens connection
+00:02 +260: test\shsp_handshake_handler_test.dart: ShspHandshakeHandler handshakeInstance opens connection
+00:02 +261: test\shsp_handshake_handler_test.dart: ShspHandshakeHandler handshakeInstance opens connection
+00:02 +262: test\shsp_handshake_handler_test.dart: ShspHandshakeHandler handshakeInstance opens connection
+00:02 +263: test\shsp_handshake_handler_test.dart: ShspHandshakeHandler handshakeInstance opens connection
+00:02 +264: test\shsp_handshake_handler_test.dart: ShspHandshakeHandler handshakeInstance opens connection
+00:02 +265: test\shsp_handshake_handler_test.dart: ShspHandshakeHandler handshakeInstance opens connection
+00:02 +266: test\shsp_handshake_handler_test.dart: ShspHandshakeHandler handshakeInstance opens connection
+00:02 +267: test\shsp_handshake_handler_test.dart: ShspHandshakeHandler handshakeInstance opens connection
+00:02 +268: test\shsp_handshake_handler_test.dart: ShspHandshakeHandler handshakeInstance opens connection
+00:02 +269: test\shsp_handshake_handler_test.dart: ShspHandshakeHandler handshakeInstance opens connection
+00:02 +270: test\shsp_handshake_handler_test.dart: ShspHandshakeHandler handshakeInstance opens connection
+00:02 +271: test\shsp_handshake_handler_test.dart: ShspHandshakeHandler handshakeInstance opens connection
+00:02 +272: test\shsp_handshake_handler_test.dart: ShspHandshakeHandler handshakeInstance opens connection
+00:02 +273: test\shsp_handshake_handler_test.dart: ShspHandshakeHandler handshakeInstance opens connection
+00:02 +274: test\shsp_handshake_handler_test.dart: ShspHandshakeHandler handshakeInstance opens connection
+00:02 +275: test\shsp_handshake_handler_test.dart: ShspHandshakeHandler handshakeInstance opens connection
+00:02 +276: test\shsp_handshake_handler_test.dart: ShspHandshakeHandler handshakeInstance opens connection
+00:02 +277: test\shsp_handshake_handler_test.dart: ShspHandshakeHandler handshakeInstance opens connection
+00:02 +278: test\shsp_handshake_handler_test.dart: ShspHandshakeHandler handshakeInstance opens connection
+00:02 +279: test\shsp_handshake_handler_test.dart: ShspHandshakeHandler handshakeInstance opens connection
+00:02 +280: test\shsp_handshake_handler_test.dart: ShspHandshakeHandler handshakeInstance opens connection
+00:02 +281: test\shsp_handshake_handler_test.dart: ShspHandshakeHandler handshakeInstance opens connection
+00:02 +282: test\shsp_handshake_handler_test.dart: ShspHandshakeHandler handshakeInstance opens connection
+00:02 +283: test\shsp_handshake_handler_test.dart: ShspHandshakeHandler handshakeInstance opens connection
+00:02 +284: test\shsp_handshake_handler_test.dart: ShspHandshakeHandler handshakeInstance opens connection
+00:02 +285: test\shsp_handshake_handler_test.dart: ShspHandshakeHandler handshakeInstance opens connection
+00:02 +286: test\shsp_handshake_handler_test.dart: ShspHandshakeHandler handshakeInstance opens connection
+00:02 +287: test\shsp_handshake_handler_test.dart: ShspHandshakeHandler handshakeInstance opens connection
+00:02 +288: test\shsp_handshake_handler_test.dart: ShspHandshakeHandler handshakeInstance opens connection
+00:02 +289: test\shsp_handshake_handler_test.dart: ShspHandshakeHandler handshakeInstance opens connection
+00:02 +290: test\shsp_handshake_handler_test.dart: ShspHandshakeHandler handshakeInstance opens connection
+00:02 +291: test\shsp_handshake_handler_test.dart: ShspHandshakeHandler handshakeInstance opens connection
+00:02 +292: test\shsp_handshake_handler_test.dart: ShspHandshakeHandler handshakeInstance opens connection
+00:02 +293: test\shsp_handshake_handler_test.dart: ShspHandshakeHandler handshakeInstance opens connection
+00:02 +294: test\shsp_handshake_handler_test.dart: ShspHandshakeHandler handshakeInstance opens connection
+00:02 +295: test\shsp_handshake_handler_test.dart: ShspHandshakeHandler handshakeInstance opens connection
+00:02 +296: test\shsp_handshake_handler_test.dart: ShspHandshakeHandler handshakeInstance opens connection
+00:02 +297: test\shsp_handshake_handler_test.dart: ShspHandshakeHandler handshakeInstance opens connection
+00:02 +298: test\shsp_handshake_handler_test.dart: ShspHandshakeHandler handshakeInstance opens connection
+00:02 +299: test\shsp_handshake_handler_test.dart: ShspHandshakeHandler handshakeInstance opens connection
+00:02 +300: test\shsp_handshake_handler_test.dart: ShspHandshakeHandler handshakeInstance opens connection
+00:02 +301: test\shsp_handshake_handler_test.dart: ShspHandshakeHandler handshakeInstance opens connection
+00:02 +302: test\shsp_handshake_handler_test.dart: ShspHandshakeHandler handshakeInstance opens connection
+00:02 +303: test\shsp_handshake_handler_test.dart: ShspHandshakeHandler handshakeInstance opens connection
+00:02 +304: test\shsp_handshake_handler_test.dart: ShspHandshakeHandler handshakeInstance opens connection
+00:02 +305: test\shsp_handshake_handler_test.dart: ShspHandshakeHandler handshakeInstance opens connection
+00:02 +306: test\shsp_handshake_handler_test.dart: ShspHandshakeHandler handshakeInstance opens connection
+00:02 +307: test\shsp_handshake_handler_test.dart: ShspHandshakeHandler handshakeInstance opens connection
+00:02 +308: test\shsp_handshake_handler_test.dart: ShspHandshakeHandler handshakeInstance opens connection
+00:02 +309: test\shsp_handshake_handler_test.dart: ShspHandshakeHandler handshakeInstance opens connection
+00:02 +310: test\shsp_handshake_handler_test.dart: ShspHandshakeHandler handshakeInstance opens connection
+00:02 +311: test\shsp_handshake_handler_test.dart: ShspHandshakeHandler handshakeInstance opens connection
+00:02 +312: test\shsp_handshake_handler_test.dart: ShspHandshakeHandler handshakeInstance opens connection
+00:02 +313: test\shsp_handshake_handler_test.dart: ShspHandshakeHandler handshakeInstance opens connection
+00:02 +314: test\shsp_handshake_handler_test.dart: ShspHandshakeHandler handshakeInstance opens connection
+00:02 +315: test\shsp_handshake_handler_test.dart: ShspHandshakeHandler handshakeInstance opens connection
+00:02 +316: test\shsp_handshake_handler_test.dart: ShspHandshakeHandler handshakeInstance opens connection
+00:02 +317: test\shsp_handshake_handler_test.dart: ShspHandshakeHandler handshakeInstance opens connection
+00:02 +318: test\shsp_handshake_handler_test.dart: ShspHandshakeHandler handshakeInstance opens connection
+00:02 +319: test\shsp_handshake_handler_test.dart: ShspHandshakeHandler handshakeInstance opens connection
+00:02 +320: test\shsp_handshake_handler_test.dart: ShspHandshakeHandler handshakeInstance opens connection
+00:02 +321: test\shsp_handshake_handler_test.dart: ShspHandshakeHandler handshakeInstance opens connection
+00:02 +322: test\shsp_handshake_handler_test.dart: ShspHandshakeHandler handshakeInstance opens connection
+00:02 +323: test\shsp_handshake_handler_test.dart: ShspHandshakeHandler handshakeInstance opens connection
+00:02 +324: test\shsp_handshake_handler_test.dart: ShspHandshakeHandler handshakeInstance opens connection
+00:03 +325: test\shsp_handshake_handler_test.dart: ShspHandshakeHandler handshakeInstance opens connection
+00:03 +326: test\shsp_handshake_handler_test.dart: ShspHandshakeHandler handshakeInstance opens connection
+00:03 +327: test\shsp_handshake_handler_test.dart: ShspHandshakeHandler handshakeInstance opens connection
+00:03 +328: test\shsp_handshake_handler_test.dart: ShspHandshakeHandler handshakeInstance opens connection
+00:03 +329: test\shsp_handshake_handler_test.dart: ShspHandshakeHandler handshakeInstance opens connection
+00:03 +330: test\shsp_handshake_handler_test.dart: ShspHandshakeHandler handshakeInstance opens connection
+00:03 +331: test\shsp_handshake_handler_test.dart: ShspHandshakeHandler handshakeInstance opens connection
+00:03 +332: test\shsp_handshake_handler_test.dart: ShspHandshakeHandler handshakeInstance opens connection
+00:03 +333: test\shsp_handshake_handler_test.dart: ShspHandshakeHandler handshakeInstance opens connection
+00:03 +334: test\shsp_handshake_handler_test.dart: ShspHandshakeHandler handshakeInstance opens connection
+00:03 +335: test\shsp_handshake_handler_test.dart: ShspHandshakeHandler handshakeInstance opens connection
+00:03 +336: test\shsp_handshake_handler_test.dart: ShspHandshakeHandler handshakeInstance opens connection
+00:03 +337: test\shsp_handshake_handler_test.dart: ShspHandshakeHandler handshakeInstance opens connection
+00:03 +338: test\shsp_handshake_handler_test.dart: ShspHandshakeHandler handshakeInstance opens connection
+00:03 +339: test\shsp_handshake_handler_test.dart: ShspHandshakeHandler handshakeInstance opens connection
+00:03 +340: test\shsp_handshake_handler_test.dart: ShspHandshakeHandler handshakeInstance opens connection
+00:03 +341: test\shsp_handshake_handler_test.dart: ShspHandshakeHandler handshakeInstance opens connection
+00:03 +342: test\shsp_handshake_handler_test.dart: ShspHandshakeHandler handshakeInstance opens connection
+00:03 +343: test\shsp_handshake_handler_test.dart: ShspHandshakeHandler handshakeInstance opens connection
+00:03 +344: test\shsp_handshake_handler_test.dart: ShspHandshakeHandler handshakeInstance opens connection
+00:03 +345: test\shsp_handshake_handler_test.dart: ShspHandshakeHandler handshakeInstance opens connection
+00:03 +346: test\shsp_handshake_handler_test.dart: ShspHandshakeHandler handshakeInstance opens connection
+00:03 +347: test\shsp_handshake_handler_test.dart: ShspHandshakeHandler handshakeInstance opens connection
+00:03 +348: test\shsp_handshake_handler_test.dart: ShspHandshakeHandler handshakeInstance opens connection
+00:03 +349: test\shsp_handshake_handler_test.dart: ShspHandshakeHandler handshakeInstance opens connection
+00:03 +350: test\shsp_handshake_handler_test.dart: ShspHandshakeHandler handshakeInstance opens connection
+00:03 +351: test\shsp_handshake_handler_test.dart: ShspHandshakeHandler handshakeInstance opens connection
+00:03 +352: test\shsp_handshake_handler_test.dart: ShspHandshakeHandler handshakeInstance opens connection
+00:03 +353: test\shsp_handshake_handler_test.dart: ShspHandshakeHandler handshakeInstance opens connection
+00:03 +354: test\shsp_handshake_handler_test.dart: ShspHandshakeHandler handshakeInstance opens connection
+00:03 +355: test\shsp_handshake_handler_test.dart: ShspHandshakeHandler handshakeInstance opens connection
+00:03 +356: test\shsp_handshake_handler_test.dart: ShspHandshakeHandler handshakeInstance opens connection
+00:03 +357: test\shsp_handshake_handler_test.dart: ShspHandshakeHandler handshakeInstance opens connection
+00:03 +358: test\shsp_handshake_handler_test.dart: ShspHandshakeHandler handshakeInstance opens connection
+00:03 +359: test\shsp_handshake_handler_test.dart: ShspHandshakeHandler handshakeInstance opens connection
+00:03 +360: test\shsp_handshake_handler_test.dart: ShspHandshakeHandler handshakeInstance opens connection
+00:03 +361: test\shsp_handshake_handler_test.dart: ShspHandshakeHandler handshakeInstance opens connection
+00:03 +362: test\shsp_handshake_handler_test.dart: ShspHandshakeHandler handshakeInstance opens connection
+00:03 +363: test\shsp_handshake_handler_test.dart: ShspHandshakeHandler handshakeInstance opens connection
+00:03 +364: test\shsp_handshake_handler_test.dart: ShspHandshakeHandler handshakeInstance opens connection
+00:03 +365: test\shsp_handshake_handler_test.dart: ShspHandshakeHandler handshakeInstance opens connection
+00:03 +366: test\shsp_handshake_handler_test.dart: ShspHandshakeHandler handshakeInstance opens connection
+00:03 +367: test\shsp_handshake_handler_test.dart: ShspHandshakeHandler handshakeInstance opens connection
+00:03 +368: test\shsp_handshake_handler_test.dart: ShspHandshakeHandler handshakeInstance opens connection
+00:03 +369: test\shsp_handshake_handler_test.dart: ShspHandshakeHandler handshakeInstance opens connection
+00:03 +370: test\shsp_handshake_handler_test.dart: ShspHandshakeHandler handshakeInstance opens connection
+00:03 +371: test\shsp_handshake_handler_test.dart: ShspHandshakeHandler handshakeInstance opens connection
+00:03 +372: test\shsp_handshake_handler_test.dart: ShspHandshakeHandler handshakeInstance opens connection
+00:03 +373: test\shsp_handshake_handler_test.dart: ShspHandshakeHandler handshakeInstance opens connection
+00:03 +374: test\shsp_handshake_handler_test.dart: ShspHandshakeHandler handshakeInstance opens connection
+00:03 +375: test\shsp_handshake_handler_test.dart: ShspHandshakeHandler handshakeInstance opens connection
+00:03 +376: test\shsp_handshake_handler_test.dart: ShspHandshakeHandler handshakeInstance opens connection
+00:03 +377: test\shsp_handshake_handler_test.dart: ShspHandshakeHandler handshakeInstance opens connection
+00:03 +378: test\shsp_handshake_handler_test.dart: ShspHandshakeHandler handshakeInstance opens connection
+00:03 +379: test\shsp_handshake_handler_test.dart: ShspHandshakeHandler handshakeInstance opens connection
+00:03 +380: test\shsp_handshake_handler_test.dart: ShspHandshakeHandler handshakeInstance opens connection
+00:03 +381: test\shsp_handshake_handler_test.dart: ShspHandshakeHandler handshakeInstance opens connection
+00:03 +382: test\shsp_handshake_handler_test.dart: ShspHandshakeHandler handshakeInstance opens connection
+00:03 +383: test\shsp_handshake_handler_test.dart: ShspHandshakeHandler handshakeInstance opens connection
+00:04 +384: test\shsp_handshake_handler_test.dart: ShspHandshakeHandler handshakeInstance opens connection
+00:04 +385: test\shsp_handshake_handler_test.dart: ShspHandshakeHandler handshakeInstance opens connection
+00:05 +386: test\shsp_handshake_handler_test.dart: ShspHandshakeHandler handshakeInstance opens connection
+00:05 +387: test\shsp_handshake_handler_test.dart: ShspHandshakeHandler handshakeInstance opens connection
+00:05 +388: test\shsp_handshake_handler_test.dart: ShspHandshakeHandler handshakeInstance opens connection
+00:06 +389: test\shsp_handshake_handler_test.dart: ShspHandshakeHandler handshakeInstance opens connection
+00:06 +390: test\shsp_handshake_handler_test.dart: ShspHandshakeHandler handshakeInstance opens connection
+00:07 +391: test\shsp_handshake_handler_test.dart: ShspHandshakeHandler handshakeInstance opens connection
+00:11 +392: test\shsp_handshake_handler_test.dart: ShspHandshakeHandler handshakeInstance opens connection
+00:11 +393: test\shsp_handshake_handler_test.dart: ShspHandshakeHandler handshakeInstance opens connection
+00:11 +394: test\shsp_handshake_handler_test.dart: ShspHandshakeHandler handshakeInstance opens connection
+00:12 +394 -1: test\shsp_instance_handler_test.dart: ShspInstanceHandler close removes and closes instance
+00:12 +394 -1: test\shsp_handshake_handler_test.dart: ShspHandshakeHandler handshakeInstance opens connection [E]
+  Expected: true
+    Actual: <false>
+  
+  package:matcher                             expect
+  test\shsp_handshake_handler_test.dart 53:7  main.<fn>.<fn>
+  
+00:12 +395 -1: test\shsp_instance_handler_test.dart: ShspInstanceHandler close removes and closes instance
+00:14 +396 -1: test\shsp_instance_handler_test.dart: ShspInstanceHandler close removes and closes instance
+00:16 +397 -1: test\shsp_instance_handler_test.dart: ShspInstanceHandler closeAll removes and closes all instances
+00:26 +398 -1: Some tests failed.
+
+Consider enabling the flag chain-stack-traces to receive more detailed exceptions.
+For example, 'dart test --chain-stack-traces'.

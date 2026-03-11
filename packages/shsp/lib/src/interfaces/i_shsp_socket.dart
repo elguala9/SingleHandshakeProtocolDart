@@ -1,6 +1,7 @@
 import 'dart:io';
 import '../types/callback_types.dart';
 import '../types/peer_types.dart';
+import '../types/socket_profile.dart';
 import 'i_compression_codec.dart';
 import 'i_shsp_instance.dart';
 
@@ -54,6 +55,15 @@ abstract interface class IShspSocket {
 
   /// Get the compression codec used by the socket
   ICompressionCodec get compressionCodec;
+
+  /// Check if the socket is closed
+  bool get isClosed;
+
+  /// Extract the current socket's message callback profile
+  ShspSocketProfile extractProfile();
+
+  /// Apply a profile (message callbacks) to the socket
+  void applyProfile(ShspSocketProfile profile);
 
   /// Close the socket
   void close();
