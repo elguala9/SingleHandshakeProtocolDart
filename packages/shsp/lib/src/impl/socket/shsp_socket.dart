@@ -10,12 +10,13 @@ import '../../interfaces/exceptions/shsp_exceptions.dart';
 import '../../interfaces/i_compression_codec.dart';
 import '../../interfaces/i_shsp_instance.dart';
 import '../../interfaces/i_shsp_socket.dart';
+import '../../interfaces/mixin/registry_mixin.dart';
 import '../utility/message_callback_map.dart';
 import '../utility/raw_shsp_socket.dart';
 import 'compression/gzip_codec.dart';
 
 /// SHSP Socket implementation wrapping RawDatagramSocket
-class ShspSocket extends RawShspSocket implements IShspSocket {
+class ShspSocket extends RawShspSocket implements IShspSocket, IValueForRegistry {
   final MessageCallbackMap _messageCallbacks;
   final ICompressionCodec _compressionCodec;
   StreamSubscription<RawSocketEvent>? _socketSubscription;
@@ -271,6 +272,11 @@ class ShspSocket extends RawShspSocket implements IShspSocket {
 
     // Close the underlying socket
     socket.close();
+  }
+
+  @override
+  void destroy() {
+    close();
   }
 
   // ...existing code...

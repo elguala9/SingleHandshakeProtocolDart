@@ -1,7 +1,9 @@
+import 'package:shsp/src/interfaces/mixin/registry_mixin.dart';
+
 import '../types/peer_types.dart';
 
 /// Interface for SHSP Peer
-abstract interface class IShspPeer {
+abstract interface class IShspPeer implements IValueForRegistry {
   /// Close the peer connection
   void close();
 

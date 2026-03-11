@@ -2,11 +2,12 @@
 import '../../interfaces/exceptions/shsp_exceptions.dart';
 import '../../interfaces/i_shsp_peer.dart';
 import '../../interfaces/i_shsp_socket.dart';
+import '../../interfaces/mixin/registry_mixin.dart';
 import '../../types/callback_types.dart';
 import '../../types/peer_types.dart';
 
 /// SHSP Peer implementation
-class ShspPeer implements IShspPeer {
+class ShspPeer implements IShspPeer, IValueForRegistry {
   /// Maximum UDP message size (65507 = 65535 - 8 bytes UDP header - 20 bytes IP header)
   static const int maxMessageSize = 65507;
 
@@ -89,6 +90,11 @@ class ShspPeer implements IShspPeer {
 
     // Remove the message callback to prevent memory leaks
     socket.removeMessageCallback(remotePeer, _socketCallback);
+  }
+
+  @override
+  void destroy() {
+    close();
   }
 
   @override

@@ -218,4 +218,9 @@ class DualShspSocket implements IDualShspSocket {
   /// Get the compression codec (from IPv4 socket)
   @override
   ICompressionCodec get compressionCodec => _ipv4Socket.compressionCodec;
+  
+  @override
+  void destroy() {
+    close();
+  }
 }
