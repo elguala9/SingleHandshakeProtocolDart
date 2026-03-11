@@ -64,6 +64,22 @@ Demonstrates dependency injection and interface-based design for better testabil
 dart example/using_interfaces.dart
 ```
 
+### 5. Registry Management (`registry_management.dart`) - v1.2.0+
+
+Advanced example showcasing the new registry system for managing multiple instances.
+
+**Demonstrates:**
+- Socket registry for managing multiple sockets (IPv4/IPv6)
+- Peer manager using the Registry mixin pattern
+- Instance manager with lifecycle support
+- Broadcast patterns for multiple destinations
+- Proper resource cleanup and lifecycle management
+
+**Run:**
+```bash
+dart example/registry_management.dart
+```
+
 ## Common Patterns
 
 ### Creating a Peer
@@ -121,6 +137,7 @@ dart example/basic_peer.dart
 dart example/instance_with_keepalive.dart
 dart example/singleton_with_compression.dart
 dart example/using_interfaces.dart
+dart example/registry_management.dart
 ```
 
 Note: Some examples require a remote SHSP server running on the specified address/port to fully demonstrate functionality. For isolated testing, see the test suite in `packages/tests/`.
