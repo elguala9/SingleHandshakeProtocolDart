@@ -1,7 +1,5 @@
 import 'dart:io';
 import 'package:test/test.dart';
-import 'package:shsp/src/impl/socket/dual_shsp_socket.dart';
-import 'package:shsp/src/impl/socket/dual_shsp_socket_singleton.dart';
 import 'package:shsp/shsp.dart';
 
 void main() {
@@ -122,7 +120,7 @@ void main() {
 
     test('getInstance after destroy creates new instance', () async {
       var singleton = await DualShspSocketSingleton.getInstance();
-      final firstPort = singleton.localPort;
+      singleton.localPort;
 
       DualShspSocketSingleton.destroy();
 
@@ -145,7 +143,7 @@ void main() {
 
     test('setSocket replaces internal socket', () async {
       final singleton = await DualShspSocketSingleton.getInstance();
-      final originalPort = singleton.localPort;
+      singleton.localPort;
 
       // Create new socket
       final newSocket = await ShspSocket.bind(
@@ -181,7 +179,7 @@ void main() {
     test('socketChangedCallback fires on reconnect', () async {
       final singleton = await DualShspSocketSingleton.getInstance();
       var callbackFired = false;
-      var callbackSocket;
+      IShspSocket? callbackSocket;
 
       singleton.socketChangedCallback.register((socket) {
         callbackFired = true;

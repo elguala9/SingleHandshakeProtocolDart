@@ -2,6 +2,7 @@ import 'dart:async';
 import 'dart:io';
 // ...existing code...
 import 'package:meta/meta.dart';
+import 'package:singleton_manager/singleton_manager.dart';
 import '../../types/callback_types.dart';
 import '../../types/peer_types.dart';
 import '../../types/remote_info.dart';
@@ -10,7 +11,6 @@ import '../../interfaces/exceptions/shsp_exceptions.dart';
 import '../../interfaces/i_compression_codec.dart';
 import '../../interfaces/i_shsp_instance.dart';
 import '../../interfaces/i_shsp_socket.dart';
-import '../../interfaces/mixin/registry_mixin.dart';
 import '../utility/message_callback_map.dart';
 import '../utility/raw_shsp_socket.dart';
 import 'compression/gzip_codec.dart';
@@ -87,6 +87,39 @@ class ShspSocket extends RawShspSocket implements IShspSocket, IValueForRegistry
     }
     // Not a data message, return as-is
     return msg;
+  }
+
+  /// Create and bind a new SHSP socket with default settings for IPv4 or IPv6.
+  ///
+  /// This factory method:
+  /// - Automatically selects the appropriate default address based on protocol version
+  /// - Binds the socket to port 0 for automatic port assignment
+  /// - Initializes the message callback map
+  /// - Sets up all event listeners (read, close, error, etc.)
+  ///
+  /// Parameters:
+  ///   - [ipv6]: If true, binds to InternetAddress.anyIPv6; if false, binds to InternetAddress.anyIPv4
+  ///   - [port]: The local port number to listen on (0-65535, default: 0 for auto-assign)
+  ///   - [compressionCodec]: Optional compression codec (default: GZipCodec)
+  ///
+  /// Returns: A Future that resolves to a new ShspSocket instance
+  ///
+  /// Throws:
+  ///   - [ShspValidationException] if port is invalid
+  ///   - [ShspNetworkException] if binding fails
+  ///
+  /// Example:
+  /// ```dart
+  /// final socketIPv4 = await ShspSocket.bindDefault(ipv6: false);
+  /// final socketIPv6 = await ShspSocket.bindDefault(ipv6: true);
+  /// ```
+  static Future<ShspSocket> bindDefault({
+    bool ipv6 = false,
+    int port = 0,
+    ICompressionCodec? compressionCodec,
+  }) async {
+    final address = ipv6 ? InternetAddress.anyIPv6 : InternetAddress.anyIPv4;
+    return bind(address, port, compressionCodec);
   }
 
   /// Create and bind a new SHSP socket to a specific address and port

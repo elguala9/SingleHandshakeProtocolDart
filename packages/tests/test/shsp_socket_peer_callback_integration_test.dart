@@ -1,8 +1,6 @@
 import 'dart:io';
 import 'dart:async';
 import 'package:test/test.dart';
-import 'package:shsp/src/impl/peer/shsp_peer.dart';
-import 'package:shsp/src/impl/socket/shsp_socket.dart';
 import 'package:shsp/shsp.dart';
 
 void main() {

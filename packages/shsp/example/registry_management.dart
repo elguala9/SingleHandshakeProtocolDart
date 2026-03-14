@@ -6,122 +6,132 @@ import 'package:shsp/shsp.dart';
 ///
 /// This example shows how to:
 /// - Manage multiple socket instances using registry patterns
-/// - Use the Registry mixin for custom instance management
-/// - Implement peer managers with registry support
+/// - Use the built-in RegistrySingletonShspSocket for socket management
+/// - Create and manage peers with custom tracking
 /// - Handle lifecycle and cleanup properly
 
-// Example 1: Simple Socket Registry
+// Example 1: Socket Registry with Singleton (recommended approach)
 Future<void> simpleSocketRegistry() async {
-  print('\n=== Example 1: Socket Registry ===');
-
-  // Create a registry for managing multiple sockets
-  final socketRegistry = <SocketType, IShspSocket>{};
+  print('\n=== Example 1: Socket Registry with Singleton ===');
 
   try {
-    // Bind IPv4 socket
-    final ipv4Socket = await ShspSocket.bind(InternetAddress.anyIPv4, 8080);
-    socketRegistry[SocketType.ipv4] = ipv4Socket;
-    print('IPv4 socket registered: ${ipv4Socket.localAddress}:${ipv4Socket.localPort}');
+    // Initialize registry with automatic IPv6 fallback using the singleton
+    final registry = RegistrySingletonShspSocket.instance;
+    final initResult = await registry.initialize(
+      InputRegistrySingletonShspSocket(
+        ipv4Port: 8080,
+        ipv6Port: 8081,
+      ),
+    );
 
-    // Bind IPv6 socket
-    final ipv6Socket = await ShspSocket.bind(InternetAddress.anyIPv6, 8081);
-    socketRegistry[SocketType.ipv6] = ipv6Socket;
-    print('IPv6 socket registered: ${ipv6Socket.localAddress}:${ipv6Socket.localPort}');
+    print('IPv4 socket initialized on port 8080');
+    print('IPv6 available: ${initResult == ReturnTypeInitialization.ipv4and6}');
 
-    // Access sockets by type
-    final activeIpv4 = socketRegistry[SocketType.ipv4];
-    print('Active IPv4 socket: ${activeIpv4?.localPort}');
+    // Get IPv4 socket from registry
+    try {
+      final ipv4Socket = registry.getInstance(SocketType.ipv4);
+      print('Active IPv4 socket: ${ipv4Socket.localAddress}:${ipv4Socket.localPort}');
+    } catch (_) {
+      print('IPv4 socket not found in registry');
+    }
 
-    // Check if socket type exists
-    if (socketRegistry.containsKey(SocketType.ipv4)) {
-      print('IPv4 socket exists in registry');
+    // Check if IPv6 socket exists
+    final ipv6SocketExists = registry.contains(SocketType.ipv6);
+    print('IPv6 socket in registry: $ipv6SocketExists');
+
+    // Try to access IPv6 socket if available
+    if (ipv6SocketExists) {
+      try {
+        final ipv6Socket = registry.getInstance(SocketType.ipv6);
+        print('Active IPv6 socket: ${ipv6Socket.localAddress}:${ipv6Socket.localPort}');
+      } catch (_) {
+        print('IPv6 socket not accessible');
+      }
     }
   } finally {
-    // Clean up all sockets
-    for (final socket in socketRegistry.values) {
-      socket.destroy();
-    }
-    print('All sockets destroyed');
+    // Clean up registry
+    // Note: The registry doesn't have a destroyAll method in the current API
+    // Resources are cleaned up when the application terminates
+    print('Socket registry cleanup handled');
   }
 }
 
-// Example 2: Peer Manager with Registry Mixin
-class PeerManager with Registry<String, IShspPeer> {
+// Example 2: Simple Peer Manager using manual tracking
+class SimplePeerManager {
+  final _peers = <String, IShspPeer>{};
+
   /// Create and register a new peer
   Future<void> createPeer(String id, PeerInfo remoteInfo) async {
-    if (contains(id)) {
+    if (_peers.containsKey(id)) {
       print('Peer $id already exists');
       return;
     }
 
     final peer = await AutoShspPeer.create(remotePeer: remoteInfo);
-    register(id, peer);
+    _peers[id] = peer;
     print('Peer $id registered: ${remoteInfo.address.address}:${remoteInfo.port}');
   }
 
   /// Close and unregister a specific peer
   Future<void> closePeer(String id) async {
-    final peer = unregister(id);
+    final peer = _peers.remove(id);
     if (peer != null) {
-      await peer.close();
+      peer.close();
       print('Peer $id closed and unregistered');
     }
   }
 
   /// Send data to a specific peer
-  Future<void> sendToPeer(String id, Uint8List data) async {
-    final peer = getByKey(id);
+  void sendToPeer(String id, Uint8List data) {
+    final peer = _peers[id];
     if (peer != null) {
-      await peer.sendData(data);
+      peer.sendMessage(data.toList());
       print('Sent ${data.length} bytes to peer $id');
     }
   }
 
   /// Broadcast data to all registered peers
-  Future<void> broadcastData(Uint8List data) async {
-    print('Broadcasting ${data.length} bytes to ${registrySize} peers');
-    for (final peer in allValues) {
-      await peer.sendData(data);
+  void broadcastData(Uint8List data) {
+    print('Broadcasting ${data.length} bytes to ${_peers.length} peers');
+    for (final peer in _peers.values) {
+      peer.sendMessage(data.toList());
     }
   }
 
   /// Get the number of registered peers
-  int getPeerCount() => registrySize;
+  int getPeerCount() => _peers.length;
 
   /// Clean up all peers
   Future<void> cleanupAll() async {
-    final peersCopy = allValues;
-    for (final peer in peersCopy) {
-      await peer.close();
+    for (final peer in _peers.values) {
+      peer.close();
     }
-    clearRegistry();
+    _peers.clear();
     print('All peers cleaned up');
   }
 
   /// Register callbacks for a peer
   void setupPeerCallbacks(String id) {
-    final peer = getByKey(id);
+    final peer = _peers[id];
     if (peer != null) {
-      peer.onMessage((message) {
-        print('Peer $id received message from ${message.remotePeer.address}:${message.remotePeer.port}');
-      });
-
-      peer.onClose(() {
-        print('Peer $id closed');
+      peer.messageCallback.register((peerInfo) {
+        print('Peer $id received message from ${peerInfo.address}:${peerInfo.port}');
       });
     }
   }
 }
 
-// Example 3: Instance Manager with Registry
-class InstanceManager with Registry<String, IShspInstance> {
+// Example 3: Simple Instance Manager using manual tracking
+class SimpleInstanceManager {
+  final _instances = <String, IShspInstance>{};
+
   /// Create and register an instance
   Future<void> createInstance(
     String id,
     PeerInfo remoteInfo, {
     int keepAliveSeconds = 30,
   }) async {
-    if (contains(id)) {
+    if (_instances.containsKey(id)) {
       print('Instance $id already exists');
       return;
     }
@@ -130,29 +140,28 @@ class InstanceManager with Registry<String, IShspInstance> {
       remotePeer: remoteInfo,
       keepAliveSeconds: keepAliveSeconds,
     );
-    register(id, instance);
+    _instances[id] = instance;
     print('Instance $id registered with keep-alive: ${keepAliveSeconds}s');
   }
 
   /// Close and unregister an instance
   Future<void> closeInstance(String id) async {
-    final instance = unregister(id);
+    final instance = _instances.remove(id);
     if (instance != null) {
-      await instance.close();
+      instance.close();
       print('Instance $id closed and unregistered');
     }
   }
 
   /// Get instance count
-  int getInstanceCount() => registrySize;
+  int getInstanceCount() => _instances.length;
 
   /// Clean up all instances
   Future<void> cleanupAll() async {
-    final instancesCopy = allValues;
-    for (final instance in instancesCopy) {
-      await instance.close();
+    for (final instance in _instances.values) {
+      instance.close();
     }
-    clearRegistry();
+    _instances.clear();
     print('All instances cleaned up');
   }
 }
@@ -166,9 +175,9 @@ Future<void> main() async {
     // Example 1: Simple socket registry
     await simpleSocketRegistry();
 
-    // Example 2: Peer Manager with Registry Mixin
-    print('\n=== Example 2: Peer Manager ===');
-    final peerManager = PeerManager();
+    // Example 2: Simple Peer Manager
+    print('\n=== Example 2: Simple Peer Manager ===');
+    final peerManager = SimplePeerManager();
 
     final peer1Info = PeerInfo(
       address: InternetAddress('127.0.0.1'),
@@ -190,10 +199,10 @@ Future<void> main() async {
 
     // Send data
     final data = Uint8List.fromList([1, 2, 3, 4, 5]);
-    await peerManager.sendToPeer('server-a', data);
+    peerManager.sendToPeer('server-a', data);
 
     // Broadcast data
-    await peerManager.broadcastData(data);
+    peerManager.broadcastData(data);
 
     print('Active peers: ${peerManager.getPeerCount()}');
 
@@ -201,9 +210,9 @@ Future<void> main() async {
     await peerManager.closePeer('server-a');
     await peerManager.cleanupAll();
 
-    // Example 3: Instance Manager
-    print('\n=== Example 3: Instance Manager ===');
-    final instanceManager = InstanceManager();
+    // Example 3: Simple Instance Manager
+    print('\n=== Example 3: Simple Instance Manager ===');
+    final instanceManager = SimpleInstanceManager();
 
     final instanceInfo = PeerInfo(
       address: InternetAddress('127.0.0.1'),

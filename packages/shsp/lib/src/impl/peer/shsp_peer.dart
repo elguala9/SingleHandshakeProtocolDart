@@ -2,7 +2,7 @@
 import '../../interfaces/exceptions/shsp_exceptions.dart';
 import '../../interfaces/i_shsp_peer.dart';
 import '../../interfaces/i_shsp_socket.dart';
-import '../../interfaces/mixin/registry_mixin.dart';
+import 'package:singleton_manager/singleton_manager.dart';
 import '../../types/callback_types.dart';
 import '../../types/peer_types.dart';
 

@@ -1,9 +1,5 @@
 import 'dart:io';
 import 'package:test/test.dart';
-import 'package:shsp/src/impl/socket/shsp_socket.dart';
-import 'package:shsp/src/impl/socket/dual_shsp_socket.dart';
-import 'package:shsp/src/impl/socket/shsp_socket_singleton.dart';
-import 'package:shsp/src/impl/socket/dual_shsp_socket_singleton.dart';
 import 'package:shsp/shsp.dart';
 
 void main() {
@@ -25,7 +21,7 @@ void main() {
 
       test('reconnect creates new IPv4 socket', () async {
         final singleton = await ShspSocketSingleton.getInstance();
-        final originalSocket = singleton.socket;
+        singleton.socket;
 
         await singleton.reconnect();
 

@@ -1,7 +1,5 @@
 import 'dart:io';
 import 'package:test/test.dart';
-import 'package:shsp/src/impl/socket/shsp_socket.dart';
-import 'package:shsp/src/impl/socket/compression/compression_codecs.dart';
 import 'package:shsp/shsp.dart';
 
 void main() {

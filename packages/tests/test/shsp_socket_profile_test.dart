@@ -1,14 +1,11 @@
 import 'dart:io';
 import 'package:test/test.dart';
-import 'package:shsp/src/impl/socket/shsp_socket.dart';
-import 'package:shsp/src/impl/utility/message_callback_map.dart';
 import 'package:shsp/shsp.dart';
 
 void main() {
   group('ShspSocket profile extraction and restoration', () {
     late ShspSocket socketA;
     late ShspSocket socketB;
-    late PeerInfo peerA;
     late PeerInfo peerB;
 
     setUp(() async {
@@ -18,10 +15,8 @@ void main() {
       socketA = await ShspSocket.bind(address, 0);
       socketB = await ShspSocket.bind(address, 0);
 
-      final portA = socketA.localPort!;
       final portB = socketB.localPort!;
 
-      peerA = PeerInfo(address: address, port: portA);
       peerB = PeerInfo(address: address, port: portB);
     });
 
@@ -31,11 +26,9 @@ void main() {
     });
 
     test('extractProfile captures message callbacks', () {
-      int messageCount = 0;
-
       // Register a callback for a specific peer
       socketA.setMessageCallback(peerB, (record) {
-        messageCount++;
+        // Callback registered but not used in this test
       });
 
       // Extract profile

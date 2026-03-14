@@ -1,4 +1,4 @@
-import '../../interfaces/mixin/registry_mixin.dart';
+import 'package:singleton_manager/singleton_manager.dart';
 
 /// Generic registry manager for managing objects that implement IValueForRegistry
 ///
