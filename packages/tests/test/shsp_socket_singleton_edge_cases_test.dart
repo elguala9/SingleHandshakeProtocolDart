@@ -1,8 +1,6 @@
 import 'dart:io';
 import 'package:test/test.dart';
 import 'package:shsp/shsp.dart';
-import 'package:shsp/src/impl/socket/shsp_socket.dart';
-import 'package:shsp/src/impl/socket/shsp_socket_singleton.dart';
 
 void main() {
   group('ShspSocketSingleton Edge Cases and Stress Tests', () {
@@ -48,7 +46,7 @@ void main() {
 
     test('multiple reconnect calls work correctly', () async {
       final singleton = await ShspSocketSingleton.getInstance();
-      final initialPort = singleton.localPort;
+      singleton.localPort;
 
       for (int i = 0; i < 3; i++) {
         await singleton.reconnect();
@@ -292,7 +290,7 @@ void main() {
       expect(ShspSocketSingleton.getCurrent(), isNull,
           reason: 'Should be null before initialization');
 
-      final instance1 = await ShspSocketSingleton.getInstance();
+      await ShspSocketSingleton.getInstance();
       expect(ShspSocketSingleton.getCurrent(), isNotNull,
           reason: 'Should be non-null after initialization');
 
@@ -300,7 +298,7 @@ void main() {
       expect(ShspSocketSingleton.getCurrent(), isNull,
           reason: 'Should be null after destroy');
 
-      final instance2 = await ShspSocketSingleton.getInstance();
+      await ShspSocketSingleton.getInstance();
       expect(ShspSocketSingleton.getCurrent(), isNotNull,
           reason: 'Should be non-null after re-initialization');
     });

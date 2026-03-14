@@ -21,4 +21,9 @@ abstract interface class IAddressUtility {
   /// Returns the first non-loopback IPv4 address found
   /// Throws ShspNetworkException if no suitable address is found
   Future<String> getLocalIp();
+
+  /// Check if IPv6 sockets can be created on this system
+  /// Returns true if IPv6 is available and functional, false otherwise
+  /// This performs a lightweight check by attempting to bind to an IPv6 socket
+  Future<bool> canCreateIPv6Socket();
 }

@@ -1,7 +1,4 @@
 import 'package:test/test.dart';
-import 'package:shsp/src/impl/instance/shsp_handshake_handler.dart';
-import 'package:shsp/src/impl/instance/shsp_instance.dart';
-import 'package:shsp/src/impl/socket/shsp_socket.dart';
 import 'package:shsp/shsp.dart';
 import 'dart:io';
 

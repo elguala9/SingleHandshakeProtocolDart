@@ -1,10 +1,7 @@
 import 'dart:io';
 import 'package:test/test.dart';
 import 'package:shsp/shsp.dart';
-import 'package:shsp/shsp.dart';
 
-import 'package:shsp/src/impl/peer/shsp_peer.dart';
-import 'package:shsp/src/impl/socket/shsp_socket.dart';
 
 typedef IShspPeerFactory = IShspPeer Function(
     {required PeerInfo remotePeer, required IShspSocket socket});

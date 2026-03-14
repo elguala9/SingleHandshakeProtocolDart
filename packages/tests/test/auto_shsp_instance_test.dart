@@ -1,11 +1,7 @@
 import 'dart:io';
 import 'package:test/test.dart';
 import 'package:shsp/shsp.dart';
-import 'package:shsp/shsp.dart';
 
-import 'package:shsp/src/impl/instance/auto_shsp_instance.dart';
-import 'package:shsp/src/impl/socket/shsp_socket.dart';
-import 'package:shsp/src/impl/socket/shsp_socket_singleton.dart';
 
 void main() {
   group('AutoShspInstance - Singleton behavior', () {
@@ -142,7 +138,7 @@ void main() {
         port: 9000,
       );
 
-      final instance = await AutoShspInstance.create(
+      await AutoShspInstance.create(
         remotePeer: remotePeer,
         address: address,
         port: 0, // ephemeral
@@ -162,7 +158,7 @@ void main() {
       final remotePeer1 = PeerInfo(address: address1, port: 8000);
 
       // Create first instance with specific address
-      final instance1 = await AutoShspInstance.create(
+      await AutoShspInstance.create(
         remotePeer: remotePeer1,
         address: address1,
         port: 0,
@@ -172,7 +168,7 @@ void main() {
 
       // Create second instance (parameters should be ignored)
       final remotePeer2 = PeerInfo(address: address1, port: 8001);
-      final instance2 = await AutoShspInstance.create(
+      await AutoShspInstance.create(
         remotePeer: remotePeer2,
         address: InternetAddress.anyIPv4, // Different address, should be ignored
         port: 9999, // Different port, should be ignored
@@ -239,8 +235,7 @@ void main() {
 
       final singleton = ShspSocketSingleton.getCurrent()!;
       final originalSocket = instance.socket;
-      final originalPort = (originalSocket as ShspSocket).localPort!;
-
+      
       // Reconnect the socket
       await singleton.reconnect();
 

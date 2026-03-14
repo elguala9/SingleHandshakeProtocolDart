@@ -1,5 +1,5 @@
 import 'dart:io';
-import 'package:shsp/src/interfaces/mixin/registry_mixin.dart';
+import 'package:singleton_manager/singleton_manager.dart';
 
 import '../types/callback_types.dart';
 import '../types/peer_types.dart';

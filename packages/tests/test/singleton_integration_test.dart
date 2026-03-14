@@ -1,11 +1,6 @@
 import 'dart:io';
 import 'package:test/test.dart';
 import 'package:shsp/shsp.dart';
-import 'package:shsp/shsp.dart';
-import 'package:shsp/src/impl/socket/shsp_socket.dart';
-import 'package:shsp/src/impl/socket/shsp_socket_singleton.dart';
-import 'package:shsp/src/impl/peer/auto_shsp_peer.dart';
-import 'package:shsp/src/impl/instance/auto_shsp_instance.dart';
 
 void main() {
   group('ShspSocketSingleton Integration Tests', () {
@@ -223,10 +218,10 @@ void main() {
       final address = InternetAddress.loopbackIPv4;
 
       // Create multiple instances
-      final peer1 = await AutoShspPeer.create(
+      await AutoShspPeer.create(
         remotePeer: PeerInfo(address: address, port: 9992),
       );
-      final peer2 = await AutoShspPeer.create(
+      await AutoShspPeer.create(
         remotePeer: PeerInfo(address: address, port: 9991),
       );
 
@@ -251,7 +246,7 @@ void main() {
       final instance1 =
           await AutoShspInstance.create(remotePeer: remotePeer);
       final singleton1 = ShspSocketSingleton.getCurrent()!;
-      final port1 = singleton1.localPort;
+      singleton1.localPort;
 
       // Destroy
       ShspSocketSingleton.destroy();
@@ -260,7 +255,7 @@ void main() {
       final instance2 =
           await AutoShspInstance.create(remotePeer: remotePeer);
       final singleton2 = ShspSocketSingleton.getCurrent()!;
-      final port2 = singleton2.localPort;
+      singleton2.localPort;
 
       // Verify new instance exists
       expect(singleton2, isNotNull);

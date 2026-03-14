@@ -93,4 +93,17 @@ class AddressUtility {
         ip.startsWith('192.168.') ||
         RegExp(r'^172\.(1[6-9]|2\d|3[0-1])\.').hasMatch(ip);
   }
+
+  /// Check if IPv6 sockets can be created on this system
+  /// Returns true if IPv6 is available and functional, false otherwise
+  /// This performs a lightweight check by attempting to bind to an IPv6 socket
+  static Future<bool> canCreateIPv6Socket() async {
+    try {
+      final socket = await RawDatagramSocket.bind(InternetAddress.anyIPv6, 0);
+      socket.close();
+      return true;
+    } catch (_) {
+      return false;
+    }
+  }
 }

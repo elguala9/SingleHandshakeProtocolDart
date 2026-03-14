@@ -1,4 +1,3 @@
-import 'package:shsp/src/impl/socket/shsp_socket.dart';
 import 'package:shsp/shsp.dart';
 
 /// Extension to expose protected onMessage method for testing purposes

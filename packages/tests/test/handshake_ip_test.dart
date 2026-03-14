@@ -1,8 +1,6 @@
 import 'dart:io';
 import 'package:test/test.dart';
-import 'package:shsp/src/interfaces/connection/i_shsp_handshake.dart';
 import 'package:shsp/shsp.dart';
-import 'package:shsp/src/impl/connection/handshake_ip.dart';
 
 void main() {
   group('HandshakeIP', () {

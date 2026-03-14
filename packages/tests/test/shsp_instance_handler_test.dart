@@ -1,9 +1,5 @@
 import 'package:test/test.dart';
-import 'package:shsp/src/impl/instance/shsp_instance_handler.dart';
-import 'package:shsp/src/impl/instance/shsp_instance.dart';
 import 'package:shsp/shsp.dart';
-import 'package:shsp/shsp.dart';
-import 'package:shsp/src/impl/socket/shsp_socket.dart';
 import 'dart:io';
 
 void main() {

@@ -1,11 +1,6 @@
 import 'dart:io';
-import '../../interfaces/i_compression_codec.dart';
-import '../../interfaces/i_shsp_instance.dart';
-import '../../interfaces/socket/i_dual_shsp_socket.dart';
-import '../../types/callback_types.dart';
-import '../../types/peer_types.dart';
-import '../../types/socket_profile.dart';
-import 'shsp_socket.dart';
+import 'package:shsp/shsp.dart';
+
 
 /// Routing adapter that manages both IPv4 and IPv6 sockets as a single unified interface.
 ///
@@ -17,8 +12,8 @@ import 'shsp_socket.dart';
 /// address family. Message callbacks are registered on both sockets so that either
 /// can receive and deliver messages to the appropriate handler.
 class DualShspSocket implements IDualShspSocket {
-  final ShspSocket _ipv4Socket;
-  final ShspSocket? _ipv6Socket;
+  final IShspSocket _ipv4Socket;
+  final IShspSocket? _ipv6Socket;
 
   late CallbackOn _onClose;
   late CallbackOnError _onError;
@@ -55,13 +50,64 @@ class DualShspSocket implements IDualShspSocket {
     }
   }
 
+  /// Factory method to create a DualShspSocket without parameters.
+  ///
+  /// Automatically creates both IPv4 and IPv6 sockets with default settings:
+  /// - IPv4 socket bound to InternetAddress.anyIPv4 on a dynamic port (0)
+  /// - IPv6 socket bound to InternetAddress.anyIPv6 on a dynamic port (0), if available
+  ///
+  /// Returns: A Future that resolves to a new DualShspSocket instance
+  ///
+  /// Example:
+  /// ```dart
+  /// final dualSocket = await DualShspSocket.create();
+  /// ```
+  static Future<DualShspSocket> create() async {
+    final ipv4Socket = await ShspSocket.bind(InternetAddress.anyIPv4, 0);
+
+    ShspSocket? ipv6Socket;
+    try {
+      ipv6Socket = await ShspSocket.bind(InternetAddress.anyIPv6, 0);
+    } catch (e) {
+      // IPv6 not available on this system, continue with IPv4 only
+      ipv6Socket = null;
+    }
+
+    return DualShspSocket(ipv4Socket, ipv6Socket);
+  }
+
+  /// Factory method to create a DualShspSocket from two existing ShspSocket instances.
+  ///
+  /// Wraps the provided IPv4 and IPv6 sockets without creating new ones.
+  /// Useful when you already have configured sockets and want to manage them
+  /// as a single unified dual-stack interface.
+  ///
+  /// Parameters:
+  ///   - [ipv4Socket]: The IPv4 ShspSocket instance (required)
+  ///   - [ipv6Socket]: The IPv6 ShspSocket instance (optional)
+  ///
+  /// Returns: A new DualShspSocket instance
+  ///
+  /// Example:
+  /// ```dart
+  /// final ipv4 = await ShspSocket.bind(InternetAddress.anyIPv4, 8000);
+  /// final ipv6 = await ShspSocket.bind(InternetAddress.anyIPv6, 8000);
+  /// final dualSocket = DualShspSocket.fromSockets(ipv4, ipv6);
+  /// ```
+  static DualShspSocket fromSockets(
+    IShspSocket ipv4Socket, [
+    IShspSocket? ipv6Socket,
+  ]) {
+    return DualShspSocket(ipv4Socket, ipv6Socket);
+  }
+
   /// Exposes the IPv4 socket for direct access if needed
   @override
-  ShspSocket get ipv4Socket => _ipv4Socket;
+  IShspSocket get ipv4Socket => _ipv4Socket;
 
   /// Exposes the IPv6 socket for direct access if available
   @override
-  ShspSocket? get ipv6Socket => _ipv6Socket;
+  IShspSocket? get ipv6Socket => _ipv6Socket;
 
   /// Get the underlying RawDatagramSocket from the IPv4 socket (for backward compatibility)
   @override

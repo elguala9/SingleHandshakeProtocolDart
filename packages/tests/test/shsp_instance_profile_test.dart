@@ -1,7 +1,5 @@
 import 'dart:io';
 import 'package:test/test.dart';
-import 'package:shsp/src/impl/instance/shsp_instance.dart';
-import 'package:shsp/src/impl/socket/shsp_socket.dart';
 import 'package:shsp/shsp.dart';
 
 void main() {
@@ -11,7 +9,6 @@ void main() {
     late ShspSocket socketC;
     late PeerInfo peerInfoA;
     late PeerInfo peerInfoB;
-    late PeerInfo peerInfoC;
     late ShspInstance instanceA;
     late ShspInstance instanceB;
 
@@ -25,11 +22,9 @@ void main() {
 
       final portA = socketA.localPort!;
       final portB = socketB.localPort!;
-      final portC = socketC.localPort!;
 
       peerInfoA = PeerInfo(address: address, port: portA);
       peerInfoB = PeerInfo(address: address, port: portB);
-      peerInfoC = PeerInfo(address: address, port: portC);
 
       instanceA = ShspInstance(remotePeer: peerInfoB, socket: socketA);
       instanceB = ShspInstance(remotePeer: peerInfoA, socket: socketB);
@@ -79,14 +74,11 @@ void main() {
 
     test('withProfile restores callbacks to a new instance', () async {
       bool handshakeCalled = false;
-      bool messageCalled = false;
-      PeerInfo? messageFromPeer;
 
       // Register callbacks on original instance
       instanceA.onHandshake.register((_) => handshakeCalled = true);
       instanceA.messageCallback.register((peer) {
-        messageCalled = true;
-        messageFromPeer = peer;
+        // Callback registered but not used in this test
       });
 
       // Extract profile
@@ -149,7 +141,7 @@ void main() {
 
     test('extracted listeners can be unregistered on new instance', () async {
       int callCount = 0;
-      final listener = (_) => callCount++;
+      void listener(_) => callCount++;
 
       // Register callback
       instanceA.onHandshake.register(listener);
@@ -196,7 +188,6 @@ void main() {
 
     test('profile can be reused for multiple instances', () {
       int handshakeCall1 = 0;
-      int handshakeCall2 = 0;
 
       // Register callback
       instanceA.onHandshake.register((_) => handshakeCall1++);
