@@ -2,8 +2,6 @@ import 'dart:async';
 import 'dart:io';
 import 'package:test/test.dart';
 import 'package:shsp/shsp.dart';
-import 'package:shsp/src/impl/socket/shsp_socket.dart';
-import 'package:shsp/shsp.dart';
 import 'helpers/testable_shsp_socket.dart';
 
 /// Comprehensive test suite for ShspSocket

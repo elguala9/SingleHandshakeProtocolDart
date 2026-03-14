@@ -1,7 +1,5 @@
 import 'dart:io';
 import 'package:test/test.dart';
-import 'package:shsp/src/impl/socket/shsp_socket.dart';
-import 'package:shsp/src/impl/socket/shsp_socket_singleton.dart';
 import 'package:shsp/shsp.dart';
 
 void main() {
@@ -65,12 +63,12 @@ void main() {
       expect(profile.messageListeners.isNotEmpty, isTrue,
           reason: 'Profile should contain registered callback');
 
-      final oldPort = singleton.localPort;
+      singleton.localPort;
 
       // Reconnect
       await singleton.reconnect();
 
-      final newPort = singleton.localPort;
+      singleton.localPort;
 
       // Verify new socket was created
       expect(singleton.isClosed, isFalse,
@@ -98,12 +96,12 @@ void main() {
 
     test('getInstance after destroy creates new instance', () async {
       var singleton = await ShspSocketSingleton.getInstance();
-      final port1 = singleton.localPort;
+      singleton.localPort;
 
       ShspSocketSingleton.destroy();
 
       singleton = await ShspSocketSingleton.getInstance();
-      final port2 = singleton.localPort;
+      singleton.localPort;
 
       expect(singleton, isNotNull, reason: 'Should create new instance');
       expect(singleton.isClosed, isFalse,
@@ -241,7 +239,7 @@ void main() {
       ShspSocketSingleton.destroy();
       final rawSocket =
           await RawDatagramSocket.bind(InternetAddress.loopbackIPv4, 0);
-      final newSocket = ShspSocket.fromRaw(rawSocket);
+      ShspSocket.fromRaw(rawSocket);
 
       // Try to call setSocket without initialization - should throw
       expect(

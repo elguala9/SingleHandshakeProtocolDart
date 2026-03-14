@@ -1,8 +1,6 @@
 import 'dart:io';
 import 'package:test/test.dart';
 import 'package:shsp/shsp.dart';
-import 'package:shsp/shsp.dart';
-import 'package:shsp/src/impl/socket/shsp_socket.dart';
 
 void main() {
   group('ShspSocket Profile Transfer', () {

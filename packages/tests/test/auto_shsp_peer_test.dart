@@ -1,11 +1,7 @@
 import 'dart:io';
 import 'package:test/test.dart';
 import 'package:shsp/shsp.dart';
-import 'package:shsp/shsp.dart';
 
-import 'package:shsp/src/impl/peer/auto_shsp_peer.dart';
-import 'package:shsp/src/impl/socket/shsp_socket.dart';
-import 'package:shsp/src/impl/socket/shsp_socket_singleton.dart';
 
 import 'shsp_peer_test.dart';
 
@@ -153,7 +149,7 @@ void main() {
         port: 9000,
       );
 
-      final peer = await AutoShspPeer.create(
+      await AutoShspPeer.create(
         remotePeer: remotePeer,
         address: address,
         port: 0, // ephemeral
@@ -173,7 +169,7 @@ void main() {
       final remotePeer1 = PeerInfo(address: address1, port: 8000);
 
       // Create first peer with specific address
-      final peer1 = await AutoShspPeer.create(
+      await AutoShspPeer.create(
         remotePeer: remotePeer1,
         address: address1,
         port: 0,
@@ -183,7 +179,7 @@ void main() {
 
       // Create second peer (parameters should be ignored)
       final remotePeer2 = PeerInfo(address: address1, port: 8001);
-      final peer2 = await AutoShspPeer.create(
+      await AutoShspPeer.create(
         remotePeer: remotePeer2,
         address: InternetAddress.anyIPv4, // Different address, should be ignored
         port: 9999, // Different port, should be ignored

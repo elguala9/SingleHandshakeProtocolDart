@@ -48,3 +48,5 @@ export 'src/types/internet_address_converter.dart';
 export 'src/types/peer_types.dart';
 export 'src/types/remote_info.dart';
 export 'src/types/socket_profile.dart';
+export 'src/impl/registry/registry_utility.dart';
+export 'src/impl/registry/registry_shsp.dart';

@@ -1,0 +1,14 @@
+{
+  "file_hashes": {
+    ".claude/hooks/vexp-guard.sh": "1c4253ea6a0cc7ef65e952a67146b91a7d8b0a42f027e279d1a9f6c579e14614"
+  },
+  "indexed_at_commit": "a3e8f024978f88cde017cc033bc421e42842ece5",
+  "indexed_at_timestamp": "2026-03-14T21:58:06.308263600+00:00",
+  "schema_version": 3,
+  "stats": {
+    "total_edges": 0,
+    "total_files": 1,
+    "total_nodes": 0
+  },
+  "vexp_version": "1.2.28"
+}
