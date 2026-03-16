@@ -114,7 +114,7 @@ void main() {
       final dualSocket = SingletonDIAccess.get<IDualShspSocket>();
 
       expect(
-        () => dualSocket.setListeningCallback(() {}),
+        () => dualSocket.onListening.register((_) {}),
         returnsNormally,
         reason: 'Should accept listening callback',
       );
@@ -126,7 +126,7 @@ void main() {
       final dualSocket = SingletonDIAccess.get<IDualShspSocket>();
 
       expect(
-        () => dualSocket.setErrorCallback((_) {}),
+        () => dualSocket.onError.register((_) {}),
         returnsNormally,
         reason: 'Should accept error callback',
       );
@@ -138,7 +138,7 @@ void main() {
       final dualSocket = SingletonDIAccess.get<IDualShspSocket>();
 
       expect(
-        () => dualSocket.setCloseCallback(() {}),
+        () => dualSocket.onClose.register((_) {}),
         returnsNormally,
         reason: 'Should accept close callback',
       );
@@ -284,7 +284,6 @@ void main() {
       // First initialization
       await initializePointShsp();
       final socket1 = SingletonDIAccess.get<IDualShspSocket>();
-      final port1 = socket1.localPort;
 
       // Clean up
       socket1.close();
