@@ -4,6 +4,22 @@ This directory contains practical examples of using the Single HandShake Protoco
 
 ## Examples
 
+### 0. Initialize Point (`initialize_point.dart`) - v1.2.1+
+
+The recommended starting point for most applications. Sets up the global socket singleton with IPv4/IPv6 support in one call.
+
+**Demonstrates:**
+- Using `initializePointShsp()` for easy setup
+- Accessing the global dual socket singleton
+- Setting up socket lifecycle callbacks
+- Extracting socket profiles
+- Proper resource cleanup with DualShspSocketSingleton
+
+**Run:**
+```bash
+dart example/initialize_point.dart
+```
+
 ### 1. Basic Peer (`basic_peer.dart`)
 
 The simplest example - create a peer, send data, and receive messages.
@@ -133,6 +149,11 @@ All examples can be tested by running:
 
 ```bash
 dart pub get
+
+# Start with the initialization point (recommended first)
+dart example/initialize_point.dart
+
+# Then try other examples
 dart example/basic_peer.dart
 dart example/instance_with_keepalive.dart
 dart example/singleton_with_compression.dart
