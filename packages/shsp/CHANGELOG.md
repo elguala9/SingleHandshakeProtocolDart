@@ -7,6 +7,16 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Fixed
+
+- **Analyzer Issues**: Resolved all Dart analyzer warnings and errors
+  - Removed unused local variables
+  - Added missing test dependencies (`singleton_manager`)
+  - Updated deprecated callback setters to use new `CallbackHandler.register()` pattern
+    - `setListeningCallback()` → `onListening.register((_) {})`
+    - `setCloseCallback()` → `onClose.register((_) {})`
+    - `setErrorCallback()` → `onError.register((_) {})`
+
 ## [1.2.1] - 2026-03-14
 
 ### Added
