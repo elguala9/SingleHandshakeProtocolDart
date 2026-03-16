@@ -7,6 +7,24 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [1.2.1] - 2026-03-14
+
+### Added
+
+- **Initialize Point Function**: New `initializePointShsp()` function for convenient singleton setup
+  - Automatically initializes IPv4 and IPv6 sockets
+  - Handles IPv6 availability detection
+  - Sets up dual socket and registry singleton
+- **Socket Wrapper**: New `ShspSocketWrapper` class for transparent socket replacement
+  - Implements proxy pattern to allow underlying socket swapping
+  - Maintains stable references while supporting socket migration
+  - Enables graceful socket reconnection and state transfer
+
+### Changed
+
+- Improved singleton initialization pattern with dedicated entry point
+- Registry initialization now integrated into centralized initialization flow
+
 ## [1.2.0] - 2026-03-11
 
 ### Added
