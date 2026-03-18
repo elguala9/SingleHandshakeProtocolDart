@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import '../../../shsp.dart';
 import 'package:singleton_manager/singleton_manager.dart';
 
@@ -15,11 +17,38 @@ enum ReturnTypeInitialization {
   ipv4only;
 }
 
-/// Registry for managing SHSP sockets (IPv4 and IPv6)
+class InputRegistryShspSocket {
+  InputRegistryShspSocket({
+    this.ipv4Address,
+    this.ipv4Port = 0,
+    this.ipv6Address,
+    this.ipv6Port = 0,
+  });
+
+  InternetAddress? ipv4Address;
+  int ipv4Port = 0;
+  InternetAddress? ipv6Address;
+  int ipv6Port = 0;
+}
+
+/// Registry for managing SHSP sockets (IPv4 and IPv6).
 ///
-/// Provides socket initialization with IPv6 fallback support.
+/// Can be used as a plain instance or extended for singleton use.
+///
+/// Usage:
+/// ```dart
+/// final registry = RegistryShspSocket();
+/// await registry.bind(InputRegistryShspSocket(ipv4Port: 8080));
+/// final ipv4 = registry.getByKey(SocketType.ipv4);
+/// ```
 class RegistryShspSocket with Registry<SocketType, IShspSocket> {
   RegistryShspSocket();
+
+  factory RegistryShspSocket.initializeDI(){
+    final instance = RegistryShspSocket();
+    instance.initializeDI();
+    return instance;
+  }
 
   /// Register sockets from an [IDualShspSocket].
   ///
@@ -34,9 +63,37 @@ class RegistryShspSocket with Registry<SocketType, IShspSocket> {
     return ReturnTypeInitialization.ipv4only;
   }
 
+
+
   /// Initialize using a DI-provided [IDualShspSocket].
   ReturnTypeInitialization initializeDI() =>
       initialize(SingletonDIAccess.get<IDualShspSocket>());
+
+  /// Bind new sockets from addresses/ports and register them.
+  ///
+  /// IPv6 binding is attempted but fails gracefully if not available.
+  Future<ReturnTypeInitialization> bind(InputRegistryShspSocket input) async {
+    final ipv4Socket = await ShspSocket.bind(
+      input.ipv4Address ?? InternetAddress.anyIPv4,
+      input.ipv4Port,
+    );
+
+    IShspSocket? ipv6Socket;
+    try {
+      ipv6Socket = await ShspSocket.bind(
+        input.ipv6Address ?? InternetAddress.anyIPv6,
+        input.ipv6Port,
+      );
+    } catch (e) {
+      print('Warning: IPv6 socket binding failed - IPv6 may not be available: $e');
+    }
+
+    final dualSocket = DualShspSocket.fromSockets(
+      ShspSocketWrapper(ipv4Socket),
+      ipv6Socket != null ? ShspSocketWrapper(ipv6Socket) : null,
+    );
+    return initialize(dualSocket);
+  }
 
   void _registerSocket(SocketType type, IShspSocket socket) {
     try {
@@ -46,3 +103,6 @@ class RegistryShspSocket with Registry<SocketType, IShspSocket> {
     }
   }
 }
+
+/// Backward-compatibility alias.
+typedef InputRegistrySingletonShspSocket = InputRegistryShspSocket;

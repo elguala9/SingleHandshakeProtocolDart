@@ -118,7 +118,7 @@ class AutoShspInstance extends ShspInstance {
   /// separatamente.
   @override
   void close() {
-    if (_socketChangedListener != null && _singleton != null) {
+    if (_socketChangedListener != null) {
       _singleton!.socketChangedCallback.unregister(_socketChangedListener!);
       _socketChangedListener = null;
       _singleton = null;
