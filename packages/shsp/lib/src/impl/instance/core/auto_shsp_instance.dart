@@ -46,11 +46,13 @@ class AutoShspInstance extends ShspInstance {
     ShspSocketSingleton? singleton,
   }) {
     if (singleton != null) {
-      // Register to be notified when the singleton socket changes
-      singleton.socketChangedCallback.register((newSocket) {
+      _singleton = singleton;
+      // Save reference so we can deregister in close()
+      _socketChangedListener = (newSocket) {
         // Re-register this instance's callback with the new socket
         newSocket.setMessageCallback(remotePeer, socketCallbackFunction);
-      });
+      };
+      singleton.socketChangedCallback.register(_socketChangedListener!);
     }
   }
 
@@ -69,6 +71,9 @@ class AutoShspInstance extends ShspInstance {
         socket: socket,
         keepAliveSeconds: keepAliveSeconds,
       );
+
+  ShspSocketSingleton? _singleton;
+  void Function(IShspSocket)? _socketChangedListener;
 
   /// Crea un [AutoShspInstance] per comunicare con [remotePeer].
   ///
@@ -113,6 +118,11 @@ class AutoShspInstance extends ShspInstance {
   /// separatamente.
   @override
   void close() {
+    if (_socketChangedListener != null && _singleton != null) {
+      _singleton!.socketChangedCallback.unregister(_socketChangedListener!);
+      _socketChangedListener = null;
+      _singleton = null;
+    }
     super.close();
   }
 }

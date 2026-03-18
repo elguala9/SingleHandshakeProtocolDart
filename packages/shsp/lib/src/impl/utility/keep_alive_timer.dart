@@ -24,12 +24,16 @@ class KeepAliveTimer implements IKeepAliveTimer {
       callback(timer);
     }
 
+    instance._duration = duration;
+
     if (Zone.current == Zone.root) {
+      instance._boundCallback = wrappedCallback;
       instance._internalTimer =
           Zone.current.createPeriodicTimer(duration, wrappedCallback);
     } else {
       final boundCallback =
           Zone.current.bindUnaryCallbackGuarded<Timer>(wrappedCallback);
+      instance._boundCallback = boundCallback;
       instance._internalTimer =
           Zone.current.createPeriodicTimer(duration, boundCallback);
     }
@@ -41,6 +45,8 @@ class KeepAliveTimer implements IKeepAliveTimer {
   late Timer _internalTimer;
   bool _isRunning = false;
   int _tickCount = 0;
+  Duration? _duration;
+  void Function(Timer)? _boundCallback;
 
   @override
   void cancel() {
@@ -62,5 +68,10 @@ class KeepAliveTimer implements IKeepAliveTimer {
   /// Reset the tick countdown, restarts the keep-alive timer
   /// The next keep-alive message will be sent after the full interval
   @override
-  void resetTick() {}
+  void resetTick() {
+    if (_duration == null || _boundCallback == null) return;
+    _internalTimer.cancel();
+    _internalTimer =
+        Zone.current.createPeriodicTimer(_duration!, _boundCallback!);
+  }
 }

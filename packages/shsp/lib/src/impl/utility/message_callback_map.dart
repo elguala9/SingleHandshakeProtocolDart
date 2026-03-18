@@ -93,9 +93,10 @@ class MessageCallbackMap implements IMessageCallbackMap {
     _handlers.clear();
   }
 
-  /// Remove the callback for a specific key
-  void removeCallback(String key,
-      MessageCallbackFunction callback) {
+  /// Remove all callbacks for a specific key.
+  /// Note: the [_] parameter is intentionally unused — the entire handler
+  /// for the key is removed regardless of which callback is passed.
+  void removeCallback(String key, MessageCallbackFunction _) {
     _handlers.remove(key);
   }
 
