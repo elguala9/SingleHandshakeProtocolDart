@@ -1,3 +1,5 @@
+import 'dart:developer';
+
 import 'package:meta/meta.dart';
 import '../../utility/keep_alive_timer.dart';
 
@@ -39,7 +41,7 @@ mixin ShspInstanceKeepAliveMixin {
         } catch (e, stackTrace) {
           // Log error but don't crash the timer
           // In production, use a proper logger
-          print('Error in keep-alive callback: $e\n$stackTrace');
+          log('Error in keep-alive callback: $e\n$stackTrace', name: 'ShspInstance');
           // Optionally close the connection on repeated errors
         }
       },
@@ -53,7 +55,7 @@ mixin ShspInstanceKeepAliveMixin {
         keepAliveTimerValue!.cancel();
       } catch (e) {
         // Log error but continue cleanup
-        print('Error canceling keep-alive timer: $e');
+        log('Error canceling keep-alive timer: $e', name: 'ShspInstance');
       } finally {
         keepAliveTimerValue = null;
       }

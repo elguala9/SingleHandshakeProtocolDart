@@ -1,5 +1,4 @@
 import 'package:meta/meta.dart';
-import 'package:singleton_manager/singleton_manager.dart';
 import '../../../../shsp.dart';
 
 

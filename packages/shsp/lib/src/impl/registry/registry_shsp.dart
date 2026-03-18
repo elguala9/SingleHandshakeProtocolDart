@@ -1,8 +1,6 @@
 import 'dart:io';
 
 import '../../../shsp.dart';
-import 'package:singleton_manager/singleton_manager.dart';
-import 'registry_shsp_socket.dart';
 
 export 'registry_shsp_socket.dart';
 

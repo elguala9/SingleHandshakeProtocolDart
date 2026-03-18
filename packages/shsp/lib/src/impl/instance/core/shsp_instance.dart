@@ -188,11 +188,14 @@ class ShspInstance extends ShspPeer
   void close() {
     // Stop keep-alive timer to prevent resource leak
     stopKeepAlive();
-    // only if already not send the close i send it
-    if(open) sendClosed();
-
-    // Call parent close() to remove callbacks
-    super.close();
+    try {
+      if (open) sendClosed();
+    } catch (_) {
+      // Ignore send errors during close (e.g. socket already closed)
+    } finally {
+      // Always call parent close() to remove callbacks
+      super.close();
+    }
   }
 
   /// Extracts all registered listeners and configuration from this instance.
