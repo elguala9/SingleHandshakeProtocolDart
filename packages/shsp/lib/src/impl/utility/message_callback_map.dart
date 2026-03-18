@@ -56,10 +56,8 @@ class MessageCallbackMap implements IMessageCallbackMap {
     _handlers.remove(key);
   }
 
-  /// Remove athe designed key
-  void removeKey(String key) {
-    _handlers.remove(key);
-  }
+  /// Remove the designed key
+  void removeKey(String key) => remove(key);
 
   /// Remove all callbacks using InternetAddress and port
   @override
