@@ -17,7 +17,7 @@ Future<void> simpleSocketRegistry() async {
   try {
     // Initialize registry with automatic IPv6 fallback using the singleton
     final registry = RegistrySingletonShspSocket.instance;
-    final initResult = await registry.initialize(
+    final initResult = await registry.bind(
       InputRegistrySingletonShspSocket(
         ipv4Port: 8080,
         ipv6Port: 8081,

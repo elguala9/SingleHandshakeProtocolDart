@@ -1,11 +1,11 @@
 import 'dart:io';
 
 import 'package:meta/meta.dart';
-import '../../interfaces/i_compression_codec.dart';
-import '../../interfaces/i_shsp_socket.dart';
-import '../../types/peer_types.dart';
+import '../../../interfaces/i_compression_codec.dart';
+import '../../../interfaces/i_shsp_socket.dart';
+import '../../../types/peer_types.dart';
 
-import '../socket/shsp_socket_singleton.dart';
+import '../../socket/core/shsp_socket_singleton.dart';
 import 'shsp_instance.dart';
 
 /// An [ShspInstance] that automatically uses the global [ShspSocketSingleton] socket.
@@ -54,6 +54,22 @@ class AutoShspInstance extends ShspInstance {
     }
   }
 
+  /// Factory solo per i test — consente di iniettare un socket esplicito.
+  ///
+  /// Usare questo constructor nelle suite di test di compliance (es. testIShspInstance)
+  /// dove i test creano socket dedicati. Non usare in produzione.
+  @visibleForTesting
+  factory AutoShspInstance.withSocket({
+    required PeerInfo remotePeer,
+    required IShspSocket socket,
+    int keepAliveSeconds = 30,
+  }) =>
+      AutoShspInstance._(
+        remotePeer: remotePeer,
+        socket: socket,
+        keepAliveSeconds: keepAliveSeconds,
+      );
+
   /// Crea un [AutoShspInstance] per comunicare con [remotePeer].
   ///
   /// Chiama internamente [ShspSocketSingleton.getInstance] per ottenere (o
@@ -99,20 +115,4 @@ class AutoShspInstance extends ShspInstance {
   void close() {
     super.close();
   }
-
-  /// Factory solo per i test — consente di iniettare un socket esplicito.
-  ///
-  /// Usare questo constructor nelle suite di test di compliance (es. testIShspInstance)
-  /// dove i test creano socket dedicati. Non usare in produzione.
-  @visibleForTesting
-  factory AutoShspInstance.withSocket({
-    required PeerInfo remotePeer,
-    required IShspSocket socket,
-    int keepAliveSeconds = 30,
-  }) =>
-      AutoShspInstance._(
-        remotePeer: remotePeer,
-        socket: socket,
-        keepAliveSeconds: keepAliveSeconds,
-      );
 }

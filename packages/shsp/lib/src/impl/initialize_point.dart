@@ -1,6 +1,8 @@
-import 'package:shsp/shsp.dart';
-import 'package:shsp/src/impl/socket/shsp_socket_wrapper.dart';
+import '../../shsp.dart';
 import 'package:singleton_manager/singleton_manager.dart';
+
+import '../generated/dual_shsp_socket_wrapper_di.dart';
+
 
 Future<void> initializePointShsp() async{
   final ipv4Socket = await ShspSocket.bindDefault();
@@ -12,8 +14,11 @@ Future<void> initializePointShsp() async{
     ipv6SocketWrapper = ShspSocketWrapper(ipv6Socket);
   }
   final dualSocket = DualShspSocket.fromSockets(ipv4SocketWrapper, ipv6SocketWrapper);
-  await SingletonDIAccess.addInstanceAs<IDualShspSocket, DualShspSocket>(dualSocket);
+  SingletonDIAccess.addInstanceAs<IDualShspSocket, DualShspSocket>(dualSocket);
+
+  final dualSingleton = DualShspSocketWrapperDI.initializeDI();
+  SingletonDIAccess.addInstance(dualSingleton);
 
   final reg = RegistrySingletonShspSocket.initializeDI();
-  await SingletonDIAccess.addInstance<RegistrySingletonShspSocket>(reg);
+  SingletonDIAccess.addInstance(reg);
 }

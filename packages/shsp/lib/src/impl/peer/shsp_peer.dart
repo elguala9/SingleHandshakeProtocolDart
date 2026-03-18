@@ -8,15 +8,6 @@ import '../../types/peer_types.dart';
 
 /// SHSP Peer implementation
 class ShspPeer implements IShspPeer, IValueForRegistry {
-  /// Maximum UDP message size (65507 = 65535 - 8 bytes UDP header - 20 bytes IP header)
-  static const int maxMessageSize = 65507;
-
-  final PeerInfo remotePeer;
-  final IShspSocket socket;
-  late final MessageCallback _messageCallback;
-  late MessageCallbackFunction _socketCallback;
-  bool _closed = false;
-
   ShspPeer(
       {required this.remotePeer,
       required this.socket,
@@ -67,14 +58,19 @@ class ShspPeer implements IShspPeer, IValueForRegistry {
   factory ShspPeer.create({
     required PeerInfo remotePeer,
     required IShspSocket socket,
-  }) {
-    return ShspPeer(
-      remotePeer: remotePeer,
-      socket: socket,
-    );
-  }
+  }) => ShspPeer(
+    remotePeer: remotePeer,
+    socket: socket,
+  );
 
+  /// Maximum UDP message size (65507 = 65535 - 8 bytes UDP header - 20 bytes IP header)
+  static const int maxMessageSize = 65507;
 
+  final PeerInfo remotePeer;
+  final IShspSocket socket;
+  late final MessageCallback _messageCallback;
+  late MessageCallbackFunction _socketCallback;
+  bool _closed = false;
 
   /// Gets the socket callback function for re-registration with a new socket.
   ///
@@ -98,9 +94,8 @@ class ShspPeer implements IShspPeer, IValueForRegistry {
   }
 
   @override
-  String serializedObject() {
-    return 'ShspPeer{remotePeer: ${remotePeer.address.address}:${remotePeer.port}}';
-  }
+  String serializedObject() =>
+      'ShspPeer{remotePeer: ${remotePeer.address.address}:${remotePeer.port}}';
 
   @override
   void sendMessage(List<int> message) {
@@ -132,7 +127,7 @@ class ShspPeer implements IShspPeer, IValueForRegistry {
     }
 
     // Note: sendTo is synchronous in Dart (UDP is non-blocking)
-    int bytes = socket.sendTo(message, remotePeer);
+    final bytes = socket.sendTo(message, remotePeer);
     if (bytes == 0) {
       throw ShspNetworkException(
         'Failed to send message - socket buffer may be full',
@@ -142,13 +137,11 @@ class ShspPeer implements IShspPeer, IValueForRegistry {
     }
   }
 
-
-
   @override
   void onMessage(List<int> msg, PeerInfo info) {
     _messageCallback.call(info);
   }
-  
+
   @override
   MessageCallback get messageCallback => _messageCallback;
 }

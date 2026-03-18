@@ -17,9 +17,7 @@ class CallbackMap<T> implements ICallbackMap<T> {
 
   /// Get a callback by key
   @override
-  Callback<T>? get(String key) {
-    return _map[key];
-  }
+  Callback<T>? get(String key) => _map[key];
 
   /// Update an existing callback (only if key exists)
   @override
@@ -32,9 +30,7 @@ class CallbackMap<T> implements ICallbackMap<T> {
   /// Remove a callback by key
   /// Returns true if the key existed and was removed
   @override
-  bool remove(String key) {
-    return _map.remove(key) != null;
-  }
+  bool remove(String key) => _map.remove(key) != null;
 
   /// Clear all callbacks
   @override
@@ -44,9 +40,7 @@ class CallbackMap<T> implements ICallbackMap<T> {
 
   /// Check if a key exists
   @override
-  bool has(String key) {
-    return _map.containsKey(key);
-  }
+  bool has(String key) => _map.containsKey(key);
 
   /// Get all keys
   @override
@@ -63,7 +57,7 @@ class CallbackMap<T> implements ICallbackMap<T> {
   /// Serialize to JSON (only keys, as callbacks cannot be serialized)
   @override
   String serializedObject() {
-    final keysMap = {for (var key in _map.keys) key: true};
+    final keysMap = {for (final key in _map.keys) key: true};
     return jsonEncode(keysMap);
   }
 

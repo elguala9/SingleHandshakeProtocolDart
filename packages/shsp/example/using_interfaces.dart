@@ -4,13 +4,13 @@ import 'package:shsp/shsp.dart';
 
 /// Example service that depends on SHSP abstractions
 class MessageService {
-  final IShspSocket socket;
-  final IMessageCallbackMap callbacks;
-
   MessageService({
     required this.socket,
     required this.callbacks,
   });
+
+  final IShspSocket socket;
+  final IMessageCallbackMap callbacks;
 
   /// Register a callback for a remote peer
   void registerPeerCallback(
@@ -33,9 +33,7 @@ class MessageService {
   }
 
   /// Get number of registered callbacks
-  int getCallbackCount() {
-    return callbacks.length;
-  }
+  int getCallbackCount() => callbacks.length;
 }
 
 void main() async {

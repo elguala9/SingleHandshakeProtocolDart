@@ -1,11 +1,11 @@
 import 'dart:io';
 import 'package:meta/meta.dart';
-import '../../interfaces/i_compression_codec.dart';
-import '../../interfaces/i_shsp_socket.dart';
-import 'base_shsp_socket_singleton.dart';
-import 'compression/gzip_codec.dart';
+import '../../../interfaces/i_compression_codec.dart';
+import '../../../interfaces/i_shsp_socket.dart';
+import '../core/base_shsp_socket_singleton.dart';
+import '../compression/gzip_codec.dart';
 import 'dual_shsp_socket.dart';
-import 'shsp_socket.dart';
+import '../core/shsp_socket.dart';
 
 /// Singleton wrapper for dual-stack IPv4+IPv6 sockets.
 ///
@@ -19,9 +19,6 @@ import 'shsp_socket.dart';
 /// This is the dual-stack version that supports both IPv4 and IPv6 simultaneously.
 /// Useful for applications that need to handle both address families.
 class DualShspSocketSingleton extends BaseShspSocketSingleton<DualShspSocket> {
-  static DualShspSocketSingleton? _instance;
-  late DualShspSocket _currentSocket;
-
   /// Private constructor
   DualShspSocketSingleton._(
     DualShspSocket socket,
@@ -31,6 +28,9 @@ class DualShspSocketSingleton extends BaseShspSocketSingleton<DualShspSocket> {
   ) : super(socket, address, port, compressionCodec) {
     _currentSocket = socket;
   }
+
+  static DualShspSocketSingleton? _instance;
+  late DualShspSocket _currentSocket;
 
   /// Gets or creates the singleton instance.
   ///
@@ -119,10 +119,9 @@ class DualShspSocketSingleton extends BaseShspSocketSingleton<DualShspSocket> {
 
   @override
   @protected
-  DualShspSocket wrapRawSocket(ShspSocket shspSocket, ICompressionCodec codec) {
-    // Wrap single socket in DualShspSocket (IPv6 remains null)
-    return DualShspSocket(shspSocket, null);
-  }
+  DualShspSocket wrapRawSocket(ShspSocket shspSocket, ICompressionCodec codec) =>
+      // Wrap single socket in DualShspSocket (IPv6 remains null)
+      DualShspSocket(shspSocket, null);
 
   @override
   @protected

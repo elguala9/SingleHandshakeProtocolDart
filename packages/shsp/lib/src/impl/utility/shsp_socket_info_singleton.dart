@@ -3,16 +3,6 @@ import 'dart:io';
 import '../../interfaces/utility/i_shsp_socket_info_singleton.dart';
 
 class ShspSocketInfoSingleton implements IShspSocketInfoSingleton {
-  static ShspSocketInfoSingleton? _instance;
-
-  @override
-  final String address;
-  @override
-  final int port;
-
-  /// Private constructor with address and port
-  ShspSocketInfoSingleton._(this.address, this.port);
-
   /// Factory constructor that returns or creates the singleton instance
   ///
   /// Parameters:
@@ -39,6 +29,16 @@ class ShspSocketInfoSingleton implements IShspSocketInfoSingleton {
     _instance = ShspSocketInfoSingleton._(address, port);
     return _instance!;
   }
+
+  /// Private constructor with address and port
+  ShspSocketInfoSingleton._(this.address, this.port);
+
+  static ShspSocketInfoSingleton? _instance;
+
+  @override
+  final String address;
+  @override
+  final int port;
 
   /// Loads config from file, returns null if file doesn't exist or parsing fails
   static Map<String, dynamic>? _loadConfig(String path) {

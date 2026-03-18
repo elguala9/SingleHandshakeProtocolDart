@@ -9,13 +9,6 @@ typedef OnPeerListener = CallbackWithReturn<PeerInfo, void>;
 /// This profile can be extracted from an existing ShspInstance and applied to a new
 /// instance to avoid re-registering callbacks when reconnecting over a new socket.
 class ShspInstanceProfile {
-  final int keepAliveSeconds;
-  final List<OnVoidListener> onHandshakeListeners;
-  final List<OnVoidListener> onOpenListeners;
-  final List<OnVoidListener> onClosingListeners;
-  final List<OnVoidListener> onCloseListeners;
-  final List<OnPeerListener> onMessageListeners;
-
   const ShspInstanceProfile({
     this.keepAliveSeconds = 30,
     this.onHandshakeListeners = const [],
@@ -24,4 +17,11 @@ class ShspInstanceProfile {
     this.onCloseListeners = const [],
     this.onMessageListeners = const [],
   });
+
+  final int keepAliveSeconds;
+  final List<OnVoidListener> onHandshakeListeners;
+  final List<OnVoidListener> onOpenListeners;
+  final List<OnVoidListener> onClosingListeners;
+  final List<OnVoidListener> onCloseListeners;
+  final List<OnPeerListener> onMessageListeners;
 }
