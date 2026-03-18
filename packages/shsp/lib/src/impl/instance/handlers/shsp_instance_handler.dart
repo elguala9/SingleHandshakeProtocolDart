@@ -1,10 +1,10 @@
 import 'dart:async';
 
 import './shsp_handshake_handler.dart';
-import '../../interfaces/exceptions/shsp_exceptions.dart';
-import '../../interfaces/i_shsp_instance.dart';
-import '../../interfaces/i_shsp_instance_handler.dart';
-import '../../types/peer_types.dart';
+import '../../../interfaces/exceptions/shsp_exceptions.dart';
+import '../../../interfaces/i_shsp_instance.dart';
+import '../../../interfaces/i_shsp_instance_handler.dart';
+import '../../../types/peer_types.dart';
 
 class ShspInstanceHandler implements IShspInstanceHandler {
   final Map<PeerInfo, IShspInstance> _instances = {};

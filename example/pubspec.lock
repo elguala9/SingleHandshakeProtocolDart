@@ -207,15 +207,15 @@ packages:
       path: "../packages/shsp"
       relative: true
     source: path
-    version: "1.2.0"
+    version: "1.2.1"
   singleton_manager:
     dependency: transitive
     description:
       name: singleton_manager
-      sha256: f219f1b3a7e48c76559fe51c5935dd81b23f7e19290be0007907bff5b02dc539
+      sha256: "754973425b51ecdb157bb677c8f8aca658d086265494fd25b43a3d02b3c30bd3"
       url: "https://pub.dev"
     source: hosted
-    version: "0.3.4"
+    version: "0.4.0"
   source_span:
     dependency: transitive
     description:

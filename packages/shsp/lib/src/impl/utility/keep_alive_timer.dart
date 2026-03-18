@@ -3,12 +3,6 @@ import '../../interfaces/utility/i_keep_alive_timer.dart';
 
 /// Custom timer for managing keep-alive messages with intelligent activity tracking
 class KeepAliveTimer implements IKeepAliveTimer {
-  late Timer _internalTimer;
-  bool _isRunning = false;
-  // ignore: unused_field
-  DateTime? _lastActivity;
-  int _tickCount = 0;
-
   KeepAliveTimer._empty();
 
   factory KeepAliveTimer.from(Timer timer) {
@@ -16,17 +10,6 @@ class KeepAliveTimer implements IKeepAliveTimer {
     instance._internalTimer = timer;
     instance._isRunning = timer.isActive;
     return instance;
-  }
-
-  @override
-  void cancel() {
-    stop();
-  }
-
-  @override
-  void stop() {
-    _internalTimer.cancel();
-    _isRunning = false;
   }
 
   factory KeepAliveTimer.periodic(
@@ -45,7 +28,7 @@ class KeepAliveTimer implements IKeepAliveTimer {
       instance._internalTimer =
           Zone.current.createPeriodicTimer(duration, wrappedCallback);
     } else {
-      var boundCallback =
+      final boundCallback =
           Zone.current.bindUnaryCallbackGuarded<Timer>(wrappedCallback);
       instance._internalTimer =
           Zone.current.createPeriodicTimer(duration, boundCallback);
@@ -55,19 +38,29 @@ class KeepAliveTimer implements IKeepAliveTimer {
     return instance;
   }
 
+  late Timer _internalTimer;
+  bool _isRunning = false;
+  int _tickCount = 0;
+
+  @override
+  void cancel() {
+    stop();
+  }
+
+  @override
+  void stop() {
+    _internalTimer.cancel();
+    _isRunning = false;
+  }
+
   @override
   bool get isActive => _isRunning;
 
   @override
-  int get tick {
-    // Return the actual number of times the timer callback has been invoked
-    return _tickCount;
-  }
+  int get tick => _tickCount;
 
   /// Reset the tick countdown, restarts the keep-alive timer
   /// The next keep-alive message will be sent after the full interval
   @override
-  void resetTick() {
-    _lastActivity = DateTime.now();
-  }
+  void resetTick() {}
 }

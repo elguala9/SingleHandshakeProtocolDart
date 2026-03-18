@@ -1,6 +1,7 @@
 import 'dart:io';
 import 'dart:typed_data';
 import 'package:shsp/shsp.dart';
+import 'package:singleton_manager/singleton_manager.dart';
 
 /// Example demonstrating the initializePointShsp() function
 ///
@@ -61,7 +62,7 @@ Future<void> main() async {
     } else {
       print('  IPv6 Socket: Not available on this system');
     }
-    print();
+    print('');
 
     // Step 5: Create a peer using the initialized socket
     print('Creating peers using the initialized socket...');
@@ -71,8 +72,8 @@ Future<void> main() async {
     );
 
     // Register a message callback for this peer
-    dualSocket.setMessageCallback(peer1, (data) {
-      print('→ Received ${data.length} bytes from ${peer1.address}:${peer1.port}');
+    dualSocket.setMessageCallback(peer1, (record) {
+      print('→ Received ${record.msg.length} bytes from ${record.rinfo.address}:${record.rinfo.port}');
     });
 
     print('✓ Peer callback registered\n');
@@ -87,9 +88,9 @@ Future<void> main() async {
     print('Extracting socket profile...');
     final profile = dualSocket.extractProfile();
     print('Socket Profile:');
-    print('  Message Listeners: ${profile.listeners.length}');
-    print('  Has Listening Callbacks: ${profile.listeners.isNotEmpty}');
-    print();
+    print('  Message Listeners: ${profile.messageListeners.length}');
+    print('  Has Message Callbacks: ${profile.messageListeners.isNotEmpty}');
+    print('');
 
     // Step 8: Simulate some operations
     print('Running socket operations...');

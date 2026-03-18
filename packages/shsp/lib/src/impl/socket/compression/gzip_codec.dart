@@ -15,12 +15,8 @@ class GZipCodec implements ICompressionCodec {
   String get name => 'GZip';
 
   @override
-  List<int> encode(List<int> data) {
-    return gzip.encode(data);
-  }
+  List<int> encode(List<int> data) => gzip.encode(data);
 
   @override
-  List<int> decode(List<int> data) {
-    return gzip.decode(data);
-  }
+  List<int> decode(List<int> data) => gzip.decode(data);
 }

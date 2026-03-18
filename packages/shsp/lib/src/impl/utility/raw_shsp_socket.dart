@@ -6,10 +6,10 @@ import '../../interfaces/utility/i_raw_shsp_socket.dart';
 
 /// Hoping that in a future RawDatagramSocket (or similar) will become a real class (AS NOW THERE IS NOT OTHER OPTION BECAUSE RawDatagramSocket IS AN ABSTRACT CLASS)
 class RawShspSocket implements IRawShspSocket {
+  RawShspSocket(this.socket);
+
   @protected
   final RawDatagramSocket socket;
-
-  RawShspSocket(this.socket);
 
   // Forwarding for RawDatagramSocket
   @override

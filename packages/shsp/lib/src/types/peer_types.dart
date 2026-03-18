@@ -5,26 +5,22 @@ import 'internet_address_converter.dart';
 
 @JsonSerializable()
 class PeerInfo {
+  PeerInfo({required this.address, required this.port});
+
+  factory PeerInfo.fromJson(Map<String, dynamic> json) => PeerInfo(
+    address:
+        const InternetAddressConverter().fromJson(json['address'] as String),
+    port: (json['port'] as num).toInt(),
+  );
+
   @InternetAddressConverter()
   final InternetAddress address;
   final int port;
 
-  PeerInfo({required this.address, required this.port});
-
-  factory PeerInfo.fromJson(Map<String, dynamic> json) {
-    return PeerInfo(
-      address:
-          const InternetAddressConverter().fromJson(json['address'] as String),
-      port: (json['port'] as num).toInt(),
-    );
-  }
-
-  Map<String, dynamic> toJson() {
-    return <String, dynamic>{
-      'address': const InternetAddressConverter().toJson(address),
-      'port': port,
-    };
-  }
+  Map<String, dynamic> toJson() => <String, dynamic>{
+    'address': const InternetAddressConverter().toJson(address),
+    'port': port,
+  };
 
   @override
   bool operator ==(Object other) =>
@@ -40,17 +36,6 @@ class PeerInfo {
 
 @JsonSerializable()
 class HandshakeSignal {
-  final PeerInfo? publicIPv6;
-  final PeerInfo? publicIPv4;
-  final PeerInfo? localIPv4;
-  final PeerInfo? localIPv6;
-  final String? publicKey;
-  final DateTime? expirationPublicKey;
-  final DateTime referenceTimestamp;
-  final int maxHandshakeDurationSeconds;
-  final int intervalBetweenHandshakesSeconds;
-  final DateTime endHandshakeAvailability;
-
   HandshakeSignal({
     this.publicIPv6,
     this.publicIPv4,
@@ -119,44 +104,49 @@ class HandshakeSignal {
     }
   }
 
-  Map<String, dynamic> toJson() {
-    return <String, dynamic>{
-      'publicIPv6': publicIPv6?.toJson(),
-      'publicIPv4': publicIPv4?.toJson(),
-      'localIPv4': localIPv4?.toJson(),
-      'localIPv6': localIPv6?.toJson(),
-      'publicKey': publicKey,
-      'expirationPublicKey': expirationPublicKey?.toIso8601String(),
-      'referenceTimestamp': referenceTimestamp.toIso8601String(),
-      'maxHandshakeDurationSeconds': maxHandshakeDurationSeconds,
-      'intervalBetweenHandshakesSeconds': intervalBetweenHandshakesSeconds,
-      'endHandshakeAvailability': endHandshakeAvailability.toIso8601String(),
-    };
-  }
+  final PeerInfo? publicIPv6;
+  final PeerInfo? publicIPv4;
+  final PeerInfo? localIPv4;
+  final PeerInfo? localIPv6;
+  final String? publicKey;
+  final DateTime? expirationPublicKey;
+  final DateTime referenceTimestamp;
+  final int maxHandshakeDurationSeconds;
+  final int intervalBetweenHandshakesSeconds;
+  final DateTime endHandshakeAvailability;
+
+  Map<String, dynamic> toJson() => <String, dynamic>{
+    'publicIPv6': publicIPv6?.toJson(),
+    'publicIPv4': publicIPv4?.toJson(),
+    'localIPv4': localIPv4?.toJson(),
+    'localIPv6': localIPv6?.toJson(),
+    'publicKey': publicKey,
+    'expirationPublicKey': expirationPublicKey?.toIso8601String(),
+    'referenceTimestamp': referenceTimestamp.toIso8601String(),
+    'maxHandshakeDurationSeconds': maxHandshakeDurationSeconds,
+    'intervalBetweenHandshakesSeconds': intervalBetweenHandshakesSeconds,
+    'endHandshakeAvailability': endHandshakeAvailability.toIso8601String(),
+  };
 }
 
 @JsonSerializable()
 class SecuritySignal {
+  SecuritySignal({this.publicKey, this.expirationPublicKey});
+
+  factory SecuritySignal.fromJson(Map<String, dynamic> json) => SecuritySignal(
+    publicKey: json['publicKey'] as String?,
+    expirationPublicKey: json['expirationPublicKey'] == null
+        ? null
+        : DateTime.parse(json['expirationPublicKey'] as String),
+  );
+
   final String? publicKey;
   final DateTime? expirationPublicKey;
 
-  SecuritySignal({this.publicKey, this.expirationPublicKey});
-
-  factory SecuritySignal.fromJson(Map<String, dynamic> json) {
-    return SecuritySignal(
-      publicKey: json['publicKey'] as String?,
-      expirationPublicKey: json['expirationPublicKey'] == null
-          ? null
-          : DateTime.parse(json['expirationPublicKey'] as String),
-    );
-  }
-
-  Map<String, dynamic> toJson() {
-    return <String, dynamic>{
-      'publicKey': publicKey,
-      'expirationPublicKey': expirationPublicKey?.toIso8601String(),
-    };
-  }
+  Map<String, dynamic> toJson() => <String, dynamic>{
+    'publicKey': publicKey,
+    'expirationPublicKey': expirationPublicKey?.toIso8601String(),
+  };
 }
 
 typedef MessageCallback = CallbackHandler<PeerInfo, void>;

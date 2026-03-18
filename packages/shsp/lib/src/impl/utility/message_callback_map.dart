@@ -26,17 +26,11 @@ class MessageCallbackMap implements IMessageCallbackMap {
   /// Get a callback invoker for a specific remote endpoint
   /// Returns a function that invokes the registered callback for this key
   @override
-  MessageCallbackFunction? get(String key) {
-    return _handlers[key]?.call;
-  }
+  MessageCallbackFunction? get(String key) => _handlers[key]?.call;
 
   /// Get a callback invoker for a specific remote endpoint
   /// Returns a function that invokes the registered callback for this key
-  CallbackOnMessage? getHandler(String key) {
-    final handler = _handlers[key];
-    if (handler == null) return null;
-    return handler;
-  }
+  CallbackOnMessage? getHandler(String key) => _handlers[key];
 
   /// Add a callback using InternetAddress and port
   @override
@@ -76,9 +70,7 @@ class MessageCallbackMap implements IMessageCallbackMap {
 
   /// Check if a key has registered callbacks
   @override
-  bool containsKey(String key) {
-    return _handlers.containsKey(key);
-  }
+  bool containsKey(String key) => _handlers.containsKey(key);
 
   /// Check if an address:port combination has registered callbacks
   @override

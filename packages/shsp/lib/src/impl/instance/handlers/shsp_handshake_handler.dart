@@ -1,11 +1,11 @@
-import '../../interfaces/i_shsp_instance.dart';
+import '../../../interfaces/i_shsp_instance.dart';
 
 class ShspHandshakeHandlerOptions {
-  final int timeoutMs;
-  final int intervalOfSendingHandshakeMs;
-
   const ShspHandshakeHandlerOptions(
       {this.timeoutMs = 5000, this.intervalOfSendingHandshakeMs = 500});
+
+  final int timeoutMs;
+  final int intervalOfSendingHandshakeMs;
 }
 
 /// Automatic handshake and connection open/close handling
