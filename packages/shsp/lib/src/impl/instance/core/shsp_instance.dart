@@ -186,14 +186,12 @@ class ShspInstance extends ShspPeer
   /// Override close() to ensure keep-alive timer is stopped
   @override
   void close() {
-    // Stop keep-alive timer to prevent resource leak
-    stopKeepAlive();
     try {
       if (open) sendClosed();
     } catch (_) {
       // Ignore send errors during close (e.g. socket already closed)
     } finally {
-      // Always call parent close() to remove callbacks
+      stopKeepAlive();
       super.close();
     }
   }

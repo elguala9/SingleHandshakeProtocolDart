@@ -25,6 +25,7 @@ class KeepAliveTimer implements IKeepAliveTimer {
     }
 
     instance._duration = duration;
+    instance._zone = Zone.current;
 
     if (Zone.current == Zone.root) {
       instance._boundCallback = wrappedCallback;
@@ -47,6 +48,7 @@ class KeepAliveTimer implements IKeepAliveTimer {
   int _tickCount = 0;
   Duration? _duration;
   void Function(Timer)? _boundCallback;
+  Zone _zone = Zone.root;
 
   @override
   void cancel() {
@@ -69,9 +71,8 @@ class KeepAliveTimer implements IKeepAliveTimer {
   /// The next keep-alive message will be sent after the full interval
   @override
   void resetTick() {
-    if (_duration == null || _boundCallback == null) return;
+    if (!_isRunning || _duration == null || _boundCallback == null) return;
     _internalTimer.cancel();
-    _internalTimer =
-        Zone.current.createPeriodicTimer(_duration!, _boundCallback!);
+    _internalTimer = _zone.createPeriodicTimer(_duration!, _boundCallback!);
   }
 }
