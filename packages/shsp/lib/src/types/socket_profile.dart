@@ -9,10 +9,10 @@ typedef OnMessageListener = CallbackWithReturn<MessageRecord, void>;
 /// and can be applied to a new socket instance to avoid re-registering callbacks
 /// when the socket changes (e.g., UDP reconnection with new local port).
 class ShspSocketProfile {
-  /// Map of peer keys (formatted as "address:port") to their message listeners
-  final Map<String, List<OnMessageListener>> messageListeners;
-
   const ShspSocketProfile({
     this.messageListeners = const {},
   });
+
+  /// Map of peer keys (formatted as "address:port") to their message listeners
+  final Map<String, List<OnMessageListener>> messageListeners;
 }

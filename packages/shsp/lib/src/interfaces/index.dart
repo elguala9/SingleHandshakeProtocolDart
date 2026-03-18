@@ -13,6 +13,7 @@ export 'i_shsp_instance_handler.dart';
 export 'i_shsp_peer.dart';
 export 'i_shsp_socket.dart';
 export 'socket/i_dual_shsp_socket.dart';
+export 'socket/i_simple_dual_socket_singleton.dart';
 export 'utility/i_address_utility.dart';
 export 'utility/i_callback_map.dart';
 export 'utility/i_keep_alive_timer.dart';

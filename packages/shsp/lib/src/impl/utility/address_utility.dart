@@ -8,15 +8,13 @@ import '../../interfaces/exceptions/shsp_exceptions.dart';
 class AddressUtility {
   /// Format a RemoteInfo object into a string key
   /// Format: "address:port"
-  static String formatAddress(RemoteInfo rinfo) {
-    return '${rinfo.address.address}:${rinfo.port}';
-  }
+  static String formatAddress(RemoteInfo rinfo) =>
+      '${rinfo.address.address}:${rinfo.port}';
 
   /// Format a PeerInfo object into a string key
   /// Format: "address:port"
-  static String formatAddressParts(PeerInfo peerInfo) {
-    return '${peerInfo.address.address}:${peerInfo.port}';
-  }
+  static String formatAddressParts(PeerInfo peerInfo) =>
+      '${peerInfo.address.address}:${peerInfo.port}';
 
   /// Parse a formatted address string back to components
   /// Returns a Map with 'address' and 'port' keys
@@ -88,11 +86,10 @@ class AddressUtility {
 
   /// Check if an IP address is in private range
   /// Private ranges: 10.x.x.x, 192.168.x.x, 172.16-31.x.x
-  static bool _isPrivateIp(String ip) {
-    return ip.startsWith('10.') ||
-        ip.startsWith('192.168.') ||
-        RegExp(r'^172\.(1[6-9]|2\d|3[0-1])\.').hasMatch(ip);
-  }
+  static bool _isPrivateIp(String ip) =>
+      ip.startsWith('10.') ||
+      ip.startsWith('192.168.') ||
+      RegExp(r'^172\.(1[6-9]|2\d|3[0-1])\.').hasMatch(ip);
 
   /// Check if IPv6 sockets can be created on this system
   /// Returns true if IPv6 is available and functional, false otherwise

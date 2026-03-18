@@ -1,9 +1,9 @@
 import 'dart:io';
 import 'package:meta/meta.dart';
-import '../../interfaces/i_compression_codec.dart';
-import '../../interfaces/i_shsp_socket.dart';
+import '../../../interfaces/i_compression_codec.dart';
+import '../../../interfaces/i_shsp_socket.dart';
 import 'base_shsp_socket_singleton.dart';
-import 'compression/gzip_codec.dart';
+import '../compression/gzip_codec.dart';
 import 'shsp_socket.dart';
 
 /// Singleton wrapper for a single ShspSocket (IPv4 only).
@@ -17,9 +17,6 @@ import 'shsp_socket.dart';
 /// Unlike [DualShspSocketSingleton], this manages only IPv4 sockets.
 /// Useful for applications that need a simple, single-stack UDP socket.
 class ShspSocketSingleton extends BaseShspSocketSingleton<ShspSocket> {
-  static ShspSocketSingleton? _instance;
-  late ShspSocket _currentSocket;
-
   /// Private constructor
   ShspSocketSingleton._(
     ShspSocket socket,
@@ -29,6 +26,9 @@ class ShspSocketSingleton extends BaseShspSocketSingleton<ShspSocket> {
   ) : super(socket, address, port, compressionCodec) {
     _currentSocket = socket;
   }
+
+  static ShspSocketSingleton? _instance;
+  late ShspSocket _currentSocket;
 
   /// Gets or creates the singleton instance.
   ///
@@ -73,16 +73,14 @@ class ShspSocketSingleton extends BaseShspSocketSingleton<ShspSocket> {
     InternetAddress address,
     int port,
     ICompressionCodec codec,
-  ) async {
-    return ShspSocket.bind(address, port, codec);
-  }
+  ) =>
+      ShspSocket.bind(address, port, codec);
 
   @override
   @protected
-  ShspSocket wrapRawSocket(ShspSocket shspSocket, ICompressionCodec codec) {
-    // No wrapping needed - return the socket directly
-    return shspSocket;
-  }
+  ShspSocket wrapRawSocket(ShspSocket shspSocket, ICompressionCodec codec) =>
+      // No wrapping needed - return the socket directly
+      shspSocket;
 
   @override
   @protected

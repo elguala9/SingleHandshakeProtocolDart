@@ -1,7 +1,6 @@
 import 'dart:io';
 import 'package:test/test.dart';
 import 'package:shsp/shsp.dart';
-import 'package:shsp/src/impl/initialize_point.dart';
 import 'package:singleton_manager/singleton_manager.dart';
 
 void main() {

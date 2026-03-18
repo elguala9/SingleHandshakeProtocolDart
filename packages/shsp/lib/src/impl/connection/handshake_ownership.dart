@@ -6,9 +6,9 @@ typedef InputHandshakeOwnership = ({
 });
 
 class HandshakeOwnership implements IHandshakeOwnership {
-  final String? signedNonce;
-
   HandshakeOwnership(this.signedNonce);
+
+  final String? signedNonce;
 
   @override
   String? sign() => signedNonce;

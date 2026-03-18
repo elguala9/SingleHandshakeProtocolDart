@@ -1,9 +1,9 @@
 import 'dart:io';
 import 'package:callback_handler/callback_handler.dart';
 import 'package:meta/meta.dart';
-import '../../interfaces/i_compression_codec.dart';
-import '../../interfaces/i_shsp_socket.dart';
-import '../../types/socket_profile.dart';
+import '../../../interfaces/i_compression_codec.dart';
+import '../../../interfaces/i_shsp_socket.dart';
+import '../../../types/socket_profile.dart';
 import 'shsp_socket.dart';
 
 /// Abstract base class for SHSP socket singletons.
@@ -13,12 +13,6 @@ import 'shsp_socket.dart';
 ///
 /// Type parameter [T] specifies the concrete socket type (e.g., ShspSocket or DualShspSocket).
 abstract class BaseShspSocketSingleton<T extends IShspSocket> {
-  final T _socket;
-  final InternetAddress _address;
-  final int _port;
-  final ICompressionCodec _compressionCodec;
-  final _socketChangedCallback = CallbackHandler<IShspSocket, void>();
-
   /// Protected constructor for subclasses
   @protected
   BaseShspSocketSingleton(
@@ -27,6 +21,12 @@ abstract class BaseShspSocketSingleton<T extends IShspSocket> {
     this._port,
     this._compressionCodec,
   );
+
+  final T _socket;
+  final InternetAddress _address;
+  final int _port;
+  final ICompressionCodec _compressionCodec;
+  final _socketChangedCallback = CallbackHandler<IShspSocket, void>();
 
   /// Protected getter for the current socket (Dart library-scoped privacy)
   @protected

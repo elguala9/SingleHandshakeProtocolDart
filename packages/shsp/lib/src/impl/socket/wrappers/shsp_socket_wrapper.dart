@@ -1,18 +1,17 @@
 import 'dart:io';
-import 'package:shsp/shsp.dart';
+import '../../../../shsp.dart';
 import 'package:singleton_manager/singleton_manager.dart';
 
 /// SHSP SocketWrapper: agisce come un proxy per permettere il cambio del socket
 /// sottostante senza dover aggiornare i riferimenti in ogni ShspPeer.
 class ShspSocketWrapper implements IShspSocket, IValueForRegistry {
-  
-  // Rimosso 'final' per permettere il cambio del riferimento del socket
-  ShspSocket _socket;
-
   ShspSocketWrapper(this._socket);
 
-  // Metodo per aggiornare il socket interno
-  void updateInternalSocket(ShspSocket newSocket) => _socket = newSocket;
+  // Rimosso 'final' per permettere il cambio del riferimento del socket
+  IShspSocket _socket;
+
+  // Setter per aggiornare il socket interno
+  set internalSocket(ShspSocket newSocket) => _socket = newSocket;
 
   @override
   void applyProfile(ShspSocketProfile profile) => _socket.applyProfile(profile);

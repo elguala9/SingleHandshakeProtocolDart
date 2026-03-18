@@ -15,11 +15,10 @@ class RegistryManager<Key, Value extends IValueForRegistry> with Registry<Key, V
 /// This provides a single global instance of RegistryManager for managing
 /// objects that implement IValueForRegistry throughout the application.
 class RegistrySingleton<Key, Value extends IValueForRegistry> extends RegistryManager<Key, Value> {
-  static final RegistrySingleton _instance = RegistrySingleton._internal();
-
-  static RegistrySingleton get instance => _instance;
   /// Private constructor
   RegistrySingleton._internal() : super();
 
-}
+  static final RegistrySingleton<dynamic, IValueForRegistry> _instance = RegistrySingleton._internal();
 
+  static RegistrySingleton<dynamic, IValueForRegistry> get instance => _instance;
+}

@@ -6,7 +6,7 @@ import '../../interfaces/i_shsp_socket.dart';
 import '../../types/peer_types.dart';
 
 import 'shsp_peer.dart';
-import '../socket/shsp_socket_singleton.dart';
+import '../socket/core/shsp_socket_singleton.dart';
 
 /// A [ShspPeer] that automatically uses the global [ShspSocketSingleton] socket.
 ///
@@ -45,6 +45,22 @@ class AutoShspPeer extends ShspPeer {
       });
     }
   }
+
+  /// Factory solo per i test — consente di iniettare un socket esplicito.
+  ///
+  /// Usare questo constructor nelle suite di test di compliance (es. testIShspPeer)
+  /// dove i test creano socket dedicati. Non usare in produzione.
+  @visibleForTesting
+  factory AutoShspPeer.withSocket({
+    required PeerInfo remotePeer,
+    required IShspSocket socket,
+    MessageCallback? messageCallback,
+  }) =>
+      AutoShspPeer._(
+        remotePeer: remotePeer,
+        socket: socket,
+        messageCallback: messageCallback,
+      );
 
   /// Crea un [AutoShspPeer] per comunicare con [remotePeer].
   ///
@@ -91,20 +107,4 @@ class AutoShspPeer extends ShspPeer {
   void close() {
     super.close();
   }
-
-  /// Factory solo per i test — consente di iniettare un socket esplicito.
-  ///
-  /// Usare questo constructor nelle suite di test di compliance (es. testIShspPeer)
-  /// dove i test creano socket dedicati. Non usare in produzione.
-  @visibleForTesting
-  factory AutoShspPeer.withSocket({
-    required PeerInfo remotePeer,
-    required IShspSocket socket,
-    MessageCallback? messageCallback,
-  }) =>
-      AutoShspPeer._(
-        remotePeer: remotePeer,
-        socket: socket,
-        messageCallback: messageCallback,
-      );
 }

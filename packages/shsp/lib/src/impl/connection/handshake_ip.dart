@@ -2,7 +2,7 @@ import 'dart:io';
 import '../../types/peer_types.dart';
 import 'package:stun/stun.dart';
 import '../../interfaces/connection/i_shsp_handshake.dart';
-import '../socket/dual_shsp_socket.dart';
+import '../socket/dual/dual_shsp_socket.dart';
 
 typedef InputHandshakeIP = ({
   PeerInfo? publicIPv4,
@@ -12,20 +12,24 @@ typedef InputHandshakeIP = ({
 });
 
 class HandshakeIP implements IHandshakeIP {
-  PeerInfo? publicIPv4;
-  PeerInfo? publicIPv6;
-  PeerInfo? localIPv4;
-  PeerInfo? localIPv6;
-
   HandshakeIP(InputHandshakeIP input)
       : publicIPv4 = input.publicIPv4,
         publicIPv6 = input.publicIPv6,
         localIPv4 = input.localIPv4,
         localIPv6 = input.localIPv6;
 
-  HandshakeIP._iPv6(this.publicIPv6, this.localIPv6);
+  HandshakeIP._iPv6(this.publicIPv6, this.localIPv6)
+      : publicIPv4 = null,
+        localIPv4 = null;
 
-  HandshakeIP._iPv4(this.publicIPv4, this.localIPv4);
+  HandshakeIP._iPv4(this.publicIPv4, this.localIPv4)
+      : publicIPv6 = null,
+        localIPv6 = null;
+
+  PeerInfo? publicIPv4;
+  PeerInfo? publicIPv6;
+  PeerInfo? localIPv4;
+  PeerInfo? localIPv6;
 
   static Future<HandshakeIP> createAsync(RawDatagramSocket socket) async {
     // Configure STUN handler
