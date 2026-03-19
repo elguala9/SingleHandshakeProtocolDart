@@ -7,6 +7,13 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [1.2.3] - 2026-03-19
+
+### Fixed
+
+- **Missing Index Export**: Added `i_shsp_socket_base.dart` to `src/interfaces/index.dart`
+  - The interface was accessible via the root `shsp.dart` but missing from the sub-index barrel
+
 ## [1.2.2] - 2026-03-19
 
 ### Fixed
