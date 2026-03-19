@@ -65,12 +65,11 @@ class AutoShspInstance extends ShspInstance {
     required PeerInfo remotePeer,
     required IShspSocket socket,
     int keepAliveSeconds = 30,
-  }) =>
-      AutoShspInstance._(
-        remotePeer: remotePeer,
-        socket: socket,
-        keepAliveSeconds: keepAliveSeconds,
-      );
+  }) => AutoShspInstance._(
+    remotePeer: remotePeer,
+    socket: socket,
+    keepAliveSeconds: keepAliveSeconds,
+  );
 
   ShspSocketSingleton? _singleton;
   void Function(IShspSocket)? _socketChangedListener;

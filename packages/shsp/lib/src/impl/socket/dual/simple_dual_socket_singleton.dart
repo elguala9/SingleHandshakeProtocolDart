@@ -1,7 +1,6 @@
 import 'package:meta/meta.dart';
 import '../../../../shsp.dart';
 
-
 /// Simple singleton for managing a global DualShspSocket instance
 ///
 /// This is a minimal, straightforward singleton implementation for
@@ -44,6 +43,4 @@ class SimpleDualSocketSingleton implements ISimpleDualSocketSingleton {
     dualSocket?.close();
     dualSocket = null;
   }
-
-
 }

@@ -41,14 +41,12 @@ class ShspInstance extends ShspPeer
   );
 
   /// Factory: creates a new SHSP instance from an existing ShspPeer.
-  factory ShspInstance.fromPeer(
-    ShspPeer peer, {
-    int keepAliveSeconds = 30,
-  }) => ShspInstance(
-    remotePeer: peer.remotePeer,
-    socket: peer.socket,
-    keepAliveSeconds: keepAliveSeconds,
-  );
+  factory ShspInstance.fromPeer(ShspPeer peer, {int keepAliveSeconds = 30}) =>
+      ShspInstance(
+        remotePeer: peer.remotePeer,
+        socket: peer.socket,
+        keepAliveSeconds: keepAliveSeconds,
+      );
 
   /// Factory: creates a new SHSP instance from an existing profile.
   ///
@@ -103,7 +101,8 @@ class ShspInstance extends ShspPeer
   @override
   KeepAliveTimer? get keepAliveTimerValue => _keepAliveTimerValue;
   @override
-  set keepAliveTimerValue(KeepAliveTimer? value) => _keepAliveTimerValue = value;
+  set keepAliveTimerValue(KeepAliveTimer? value) =>
+      _keepAliveTimerValue = value;
 
   @override
   void onMessage(List<int> msg, PeerInfo info) {

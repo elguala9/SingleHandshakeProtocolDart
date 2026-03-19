@@ -13,10 +13,16 @@ void main() {
       test('provides IPv4-only socket', () async {
         final singleton = await ShspSocketSingleton.getInstance();
 
-        expect(singleton.socket, isA<ShspSocket>(),
-            reason: 'Should provide ShspSocket for IPv4-only');
-        expect(singleton.socket, isNot(isA<DualShspSocket>()),
-            reason: 'Should not be wrapped in DualShspSocket');
+        expect(
+          singleton.socket,
+          isA<ShspSocket>(),
+          reason: 'Should provide ShspSocket for IPv4-only',
+        );
+        expect(
+          singleton.socket,
+          isNot(isA<DualShspSocket>()),
+          reason: 'Should not be wrapped in DualShspSocket',
+        );
       });
 
       test('reconnect creates new IPv4 socket', () async {
@@ -28,19 +34,28 @@ void main() {
         final newSocket = singleton.socket;
         expect(newSocket, isNotNull);
         // Note: We can't do identity check as it's a different object
-        expect(singleton.isClosed, isFalse,
-            reason: 'Socket should be open after reconnect');
+        expect(
+          singleton.isClosed,
+          isFalse,
+          reason: 'Socket should be open after reconnect',
+        );
       });
 
       test('setSocket with ShspSocket stores it directly', () async {
         final singleton = await ShspSocketSingleton.getInstance();
 
         final newShspSocket = await ShspSocket.bind(
-            InternetAddress.loopbackIPv4, 0, GZipCodec());
+          InternetAddress.loopbackIPv4,
+          0,
+          GZipCodec(),
+        );
         singleton.setSocket(newShspSocket);
 
-        expect(singleton.socket, isA<ShspSocket>(),
-            reason: 'Should be ShspSocket, not wrapped');
+        expect(
+          singleton.socket,
+          isA<ShspSocket>(),
+          reason: 'Should be ShspSocket, not wrapped',
+        );
       });
     });
 
@@ -48,8 +63,11 @@ void main() {
       test('provides dual-stack socket', () async {
         final singleton = await DualShspSocketSingleton.getInstance();
 
-        expect(singleton.socket, isA<DualShspSocket>(),
-            reason: 'Should provide DualShspSocket for dual-stack');
+        expect(
+          singleton.socket,
+          isA<DualShspSocket>(),
+          reason: 'Should provide DualShspSocket for dual-stack',
+        );
       });
 
       test('reconnect creates new dual socket', () async {
@@ -57,21 +75,33 @@ void main() {
 
         await singleton.reconnect();
 
-        expect(singleton.socket, isA<DualShspSocket>(),
-            reason: 'Reconnected socket should be DualShspSocket');
-        expect(singleton.isClosed, isFalse,
-            reason: 'Socket should be open after reconnect');
+        expect(
+          singleton.socket,
+          isA<DualShspSocket>(),
+          reason: 'Reconnected socket should be DualShspSocket',
+        );
+        expect(
+          singleton.isClosed,
+          isFalse,
+          reason: 'Socket should be open after reconnect',
+        );
       });
 
       test('setSocket wraps ShspSocket in DualShspSocket', () async {
         final singleton = await DualShspSocketSingleton.getInstance();
 
         final newShspSocket = await ShspSocket.bind(
-            InternetAddress.loopbackIPv4, 0, GZipCodec());
+          InternetAddress.loopbackIPv4,
+          0,
+          GZipCodec(),
+        );
         singleton.setSocket(newShspSocket);
 
-        expect(singleton.socket, isA<DualShspSocket>(),
-            reason: 'Should be wrapped in DualShspSocket');
+        expect(
+          singleton.socket,
+          isA<DualShspSocket>(),
+          reason: 'Should be wrapped in DualShspSocket',
+        );
       });
     });
 
@@ -147,12 +177,18 @@ void main() {
 
         // Replace socket
         final newSocket = await ShspSocket.bind(
-            InternetAddress.loopbackIPv4, 0, GZipCodec());
+          InternetAddress.loopbackIPv4,
+          0,
+          GZipCodec(),
+        );
         singleton.setSocket(newSocket);
 
         // Verify callbacks preserved
         final profile2 = singleton.getProfile();
-        expect(profile2.messageListeners.length, equals(profile1.messageListeners.length));
+        expect(
+          profile2.messageListeners.length,
+          equals(profile1.messageListeners.length),
+        );
       });
 
       test('setSocket preserves callbacks for dual-stack', () async {
@@ -166,12 +202,18 @@ void main() {
 
         // Replace socket
         final newSocket = await ShspSocket.bind(
-            InternetAddress.loopbackIPv4, 0, GZipCodec());
+          InternetAddress.loopbackIPv4,
+          0,
+          GZipCodec(),
+        );
         singleton.setSocket(newSocket);
 
         // Verify callbacks preserved
         final profile2 = singleton.getProfile();
-        expect(profile2.messageListeners.length, equals(profile1.messageListeners.length));
+        expect(
+          profile2.messageListeners.length,
+          equals(profile1.messageListeners.length),
+        );
       });
 
       test('setSocketRaw preserves callbacks for IPv4-only', () async {
@@ -184,13 +226,18 @@ void main() {
         final profile1 = singleton.getProfile();
 
         // Replace with raw socket
-        final rawSocket =
-            await RawDatagramSocket.bind(InternetAddress.loopbackIPv4, 0);
+        final rawSocket = await RawDatagramSocket.bind(
+          InternetAddress.loopbackIPv4,
+          0,
+        );
         singleton.setSocketRaw(rawSocket);
 
         // Verify callbacks preserved
         final profile2 = singleton.getProfile();
-        expect(profile2.messageListeners.length, equals(profile1.messageListeners.length));
+        expect(
+          profile2.messageListeners.length,
+          equals(profile1.messageListeners.length),
+        );
       });
 
       test('setSocketRaw preserves callbacks for dual-stack', () async {
@@ -203,13 +250,18 @@ void main() {
         final profile1 = singleton.getProfile();
 
         // Replace with raw socket
-        final rawSocket =
-            await RawDatagramSocket.bind(InternetAddress.loopbackIPv4, 0);
+        final rawSocket = await RawDatagramSocket.bind(
+          InternetAddress.loopbackIPv4,
+          0,
+        );
         singleton.setSocketRaw(rawSocket);
 
         // Verify callbacks preserved
         final profile2 = singleton.getProfile();
-        expect(profile2.messageListeners.length, equals(profile1.messageListeners.length));
+        expect(
+          profile2.messageListeners.length,
+          equals(profile1.messageListeners.length),
+        );
       });
     });
 
@@ -234,14 +286,18 @@ void main() {
 
       test('localAddress getter works for IPv4-only', () async {
         final address = InternetAddress.loopbackIPv4;
-        final singleton = await ShspSocketSingleton.getInstance(address: address);
+        final singleton = await ShspSocketSingleton.getInstance(
+          address: address,
+        );
 
         expect(singleton.localAddress, equals(address));
       });
 
       test('localAddress getter works for dual-stack', () async {
         final address = InternetAddress.loopbackIPv4;
-        final singleton = await DualShspSocketSingleton.getInstance(address: address);
+        final singleton = await DualShspSocketSingleton.getInstance(
+          address: address,
+        );
 
         expect(singleton.localAddress, equals(address));
       });
@@ -262,16 +318,18 @@ void main() {
 
       test('compressionCodec getter works for IPv4-only', () async {
         final codec = GZipCodec();
-        final singleton =
-            await ShspSocketSingleton.getInstance(compressionCodec: codec);
+        final singleton = await ShspSocketSingleton.getInstance(
+          compressionCodec: codec,
+        );
 
         expect(singleton.compressionCodec, same(codec));
       });
 
       test('compressionCodec getter works for dual-stack', () async {
         final codec = GZipCodec();
-        final singleton =
-            await DualShspSocketSingleton.getInstance(compressionCodec: codec);
+        final singleton = await DualShspSocketSingleton.getInstance(
+          compressionCodec: codec,
+        );
 
         expect(singleton.compressionCodec, same(codec));
       });
@@ -313,7 +371,10 @@ void main() {
         });
 
         final newSocket = await ShspSocket.bind(
-            InternetAddress.loopbackIPv4, 0, GZipCodec());
+          InternetAddress.loopbackIPv4,
+          0,
+          GZipCodec(),
+        );
         singleton.setSocket(newSocket);
 
         expect(called, isTrue);
@@ -328,41 +389,48 @@ void main() {
         });
 
         final newSocket = await ShspSocket.bind(
-            InternetAddress.loopbackIPv4, 0, GZipCodec());
+          InternetAddress.loopbackIPv4,
+          0,
+          GZipCodec(),
+        );
         singleton.setSocket(newSocket);
 
         expect(called, isTrue);
       });
 
-      test('socketChangedCallback fires for IPv4-only restoreProfile',
-          () async {
-        final singleton = await ShspSocketSingleton.getInstance();
-        final profile = singleton.getProfile();
-        var called = false;
+      test(
+        'socketChangedCallback fires for IPv4-only restoreProfile',
+        () async {
+          final singleton = await ShspSocketSingleton.getInstance();
+          final profile = singleton.getProfile();
+          var called = false;
 
-        singleton.socketChangedCallback.register((_) {
-          called = true;
-        });
+          singleton.socketChangedCallback.register((_) {
+            called = true;
+          });
 
-        await singleton.restoreProfile(profile);
+          await singleton.restoreProfile(profile);
 
-        expect(called, isTrue);
-      });
+          expect(called, isTrue);
+        },
+      );
 
-      test('socketChangedCallback fires for dual-stack restoreProfile',
-          () async {
-        final singleton = await DualShspSocketSingleton.getInstance();
-        final profile = singleton.getProfile();
-        var called = false;
+      test(
+        'socketChangedCallback fires for dual-stack restoreProfile',
+        () async {
+          final singleton = await DualShspSocketSingleton.getInstance();
+          final profile = singleton.getProfile();
+          var called = false;
 
-        singleton.socketChangedCallback.register((_) {
-          called = true;
-        });
+          singleton.socketChangedCallback.register((_) {
+            called = true;
+          });
 
-        await singleton.restoreProfile(profile);
+          await singleton.restoreProfile(profile);
 
-        expect(called, isTrue);
-      });
+          expect(called, isTrue);
+        },
+      );
     });
 
     group('Singleton Lifecycle', () {

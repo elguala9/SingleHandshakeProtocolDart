@@ -1,7 +1,6 @@
 import 'dart:io';
 import 'package:meta/meta.dart';
 import '../../../interfaces/i_compression_codec.dart';
-import '../../../interfaces/i_shsp_socket.dart';
 import 'base_shsp_socket_singleton.dart';
 import '../compression/gzip_codec.dart';
 import 'shsp_socket.dart';
@@ -65,7 +64,7 @@ class ShspSocketSingleton extends BaseShspSocketSingleton<ShspSocket> {
   }
 
   @override
-  IShspSocket get socket => _currentSocket;
+  ShspSocket get socket => _currentSocket;
 
   @override
   @protected
@@ -73,8 +72,7 @@ class ShspSocketSingleton extends BaseShspSocketSingleton<ShspSocket> {
     InternetAddress address,
     int port,
     ICompressionCodec codec,
-  ) =>
-      ShspSocket.bind(address, port, codec);
+  ) => ShspSocket.bind(address, port, codec);
 
   @override
   @protected

@@ -36,15 +36,21 @@ void main() {
     test('handshakeInstance opens connection', () async {
       // Avvia handshake su entrambi
       final futureA = ShspHandshakeHandler.handshakeInstance(
-          instanceA,
-          const ShspHandshakeHandlerOptions(
-              timeoutMs: 10000, intervalOfSendingHandshakeMs: 50),
-          null);
+        instanceA,
+        const ShspHandshakeHandlerOptions(
+          timeoutMs: 10000,
+          intervalOfSendingHandshakeMs: 50,
+        ),
+        null,
+      );
       final futureB = ShspHandshakeHandler.handshakeInstance(
-          instanceB,
-          const ShspHandshakeHandlerOptions(
-              timeoutMs: 10000, intervalOfSendingHandshakeMs: 50),
-          null);
+        instanceB,
+        const ShspHandshakeHandlerOptions(
+          timeoutMs: 10000,
+          intervalOfSendingHandshakeMs: 50,
+        ),
+        null,
+      );
       final resultA = await futureA;
       final resultB = await futureB;
       expect(resultA.open, isTrue);
@@ -57,13 +63,17 @@ void main() {
       final futureA = ShspHandshakeHandler.handshakeInstance(
         instanceA,
         const ShspHandshakeHandlerOptions(
-            timeoutMs: 10000, intervalOfSendingHandshakeMs: 50),
+          timeoutMs: 10000,
+          intervalOfSendingHandshakeMs: 50,
+        ),
         (_) => calledA = true,
       );
       final futureB = ShspHandshakeHandler.handshakeInstance(
         instanceB,
         const ShspHandshakeHandlerOptions(
-            timeoutMs: 10000, intervalOfSendingHandshakeMs: 50),
+          timeoutMs: 10000,
+          intervalOfSendingHandshakeMs: 50,
+        ),
         (_) => calledB = true,
       );
       await futureA;
@@ -75,10 +85,13 @@ void main() {
     test('handshakeInstance timeout se non risponde', () async {
       // Solo uno fa handshake, l'altro no
       final futureA = ShspHandshakeHandler.handshakeInstance(
-          instanceA,
-          const ShspHandshakeHandlerOptions(
-              timeoutMs: 1000, intervalOfSendingHandshakeMs: 200),
-          null);
+        instanceA,
+        const ShspHandshakeHandlerOptions(
+          timeoutMs: 1000,
+          intervalOfSendingHandshakeMs: 200,
+        ),
+        null,
+      );
       final resultA = await futureA;
       expect(resultA.open, isFalse);
     });

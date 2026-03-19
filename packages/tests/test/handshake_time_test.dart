@@ -93,10 +93,11 @@ void main() {
       ));
 
       expect(
-          handshake
-              .getEndHandshakeTime()
-              .isAfter(handshake.getStartHandshakeTime()),
-          isTrue);
+        handshake.getEndHandshakeTime().isAfter(
+          handshake.getStartHandshakeTime(),
+        ),
+        isTrue,
+      );
     });
 
     test('should handle same start and end times', () {
@@ -109,8 +110,10 @@ void main() {
         endHandshakeTime: sameTime,
       ));
 
-      expect(handshake.getStartHandshakeTime(),
-          equals(handshake.getEndHandshakeTime()));
+      expect(
+        handshake.getStartHandshakeTime(),
+        equals(handshake.getEndHandshakeTime()),
+      );
     });
 
     test('time difference calculation should be consistent', () {
@@ -124,9 +127,9 @@ void main() {
         endHandshakeTime: endTime,
       ));
 
-      final timeDiff = handshake
-          .getEndHandshakeTime()
-          .difference(handshake.getStartHandshakeTime());
+      final timeDiff = handshake.getEndHandshakeTime().difference(
+        handshake.getStartHandshakeTime(),
+      );
       expect(timeDiff.inHours, equals(1));
       expect(timeDiff.inMinutes, equals(60));
     });

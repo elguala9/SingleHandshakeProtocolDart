@@ -17,7 +17,9 @@ void main() async {
   );
 
   print('✓ Instance created');
-  print('  Local: ${instance.socket.localAddress}:${instance.socket.localPort}');
+  print(
+    '  Local: ${instance.socket.localAddress}:${instance.socket.localPort}',
+  );
   print('  Remote: ${remotePeer.address.address}:${remotePeer.port}');
   print('  Keep-alive: 30 seconds');
 

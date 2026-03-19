@@ -64,10 +64,8 @@ class DualShspSocket
   /// final ipv6 = await ShspSocket.bind(InternetAddress.anyIPv6, 8000);
   /// final dualSocket = DualShspSocket.fromSockets(ipv4, ipv6);
   /// ```
-  DualShspSocket.fromSockets(
-    IShspSocket ipv4Socket, [
-    IShspSocket? ipv6Socket,
-  ]) : this(ipv4Socket, ipv6Socket);
+  DualShspSocket.fromSockets(IShspSocket ipv4Socket, [IShspSocket? ipv6Socket])
+    : this(ipv4Socket, ipv6Socket);
 
   late IShspSocket ipv4SocketImpl;
   late IShspSocket? ipv6SocketImpl;
@@ -169,7 +167,8 @@ class DualShspSocket
 
   /// Check if either socket is closed
   @override
-  bool get isClosed => ipv4SocketImpl.isClosed || (ipv6SocketImpl?.isClosed ?? false);
+  bool get isClosed =>
+      ipv4SocketImpl.isClosed || (ipv6SocketImpl?.isClosed ?? false);
 
   /// Close both sockets
   @override
@@ -199,8 +198,7 @@ class DualShspSocket
 
   /// Get the local port (returns IPv4 port, with IPv6 as fallback if IPv4 not available)
   @override
-  int? get localPort =>
-      ipv4SocketImpl.localPort ?? ipv6SocketImpl?.localPort;
+  int? get localPort => ipv4SocketImpl.localPort ?? ipv6SocketImpl?.localPort;
 
   /// Get the compression codec (from IPv4 socket)
   @override

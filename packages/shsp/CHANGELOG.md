@@ -21,7 +21,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Added
 
-- **Initialize Point Function**: New `initializePointShsp()` function for convenient singleton setup
+- **Initialize Point Function**: New `initializePointDualShsp()` function for convenient singleton setup
   - Automatically initializes IPv4 and IPv6 sockets
   - Handles IPv6 availability detection
   - Sets up dual socket and registry singleton

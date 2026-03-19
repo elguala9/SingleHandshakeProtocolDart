@@ -12,9 +12,14 @@ class ShspInstanceHandler implements IShspInstanceHandler {
 
   @override
   Future<IShspInstance> initiateShsp(
-      PeerInfo remotePeer, IShspInstance instance, Opts opts) async {
+    PeerInfo remotePeer,
+    IShspInstance instance,
+    Opts opts,
+  ) async {
     instance = await ShspHandshakeHandler.handshakeInstance(
-        instance, const ShspHandshakeHandlerOptions());
+      instance,
+      const ShspHandshakeHandlerOptions(),
+    );
     _instances[remotePeer] = instance;
     opts.instanceCallback?.call(instance);
     return instance;

@@ -18,10 +18,7 @@ Future<void> simpleSocketRegistry() async {
     // Initialize registry with automatic IPv6 fallback using the singleton
     final registry = RegistrySingletonShspSocket.instance;
     final initResult = await registry.bind(
-      InputRegistrySingletonShspSocket(
-        ipv4Port: 8080,
-        ipv6Port: 8081,
-      ),
+      InputRegistrySingletonShspSocket(ipv4Port: 8080, ipv6Port: 8081),
     );
 
     print('IPv4 socket initialized on port 8080');
@@ -30,7 +27,9 @@ Future<void> simpleSocketRegistry() async {
     // Get IPv4 socket from registry
     try {
       final ipv4Socket = registry.getInstance(SocketType.ipv4);
-      print('Active IPv4 socket: ${ipv4Socket.localAddress}:${ipv4Socket.localPort}');
+      print(
+        'Active IPv4 socket: ${ipv4Socket.localAddress}:${ipv4Socket.localPort}',
+      );
     } catch (_) {
       print('IPv4 socket not found in registry');
     }
@@ -43,7 +42,9 @@ Future<void> simpleSocketRegistry() async {
     if (ipv6SocketExists) {
       try {
         final ipv6Socket = registry.getInstance(SocketType.ipv6);
-        print('Active IPv6 socket: ${ipv6Socket.localAddress}:${ipv6Socket.localPort}');
+        print(
+          'Active IPv6 socket: ${ipv6Socket.localAddress}:${ipv6Socket.localPort}',
+        );
       } catch (_) {
         print('IPv6 socket not accessible');
       }
@@ -69,7 +70,9 @@ class SimplePeerManager {
 
     final peer = await AutoShspPeer.create(remotePeer: remoteInfo);
     _peers[id] = peer;
-    print('Peer $id registered: ${remoteInfo.address.address}:${remoteInfo.port}');
+    print(
+      'Peer $id registered: ${remoteInfo.address.address}:${remoteInfo.port}',
+    );
   }
 
   /// Close and unregister a specific peer
@@ -115,7 +118,9 @@ class SimplePeerManager {
     final peer = _peers[id];
     if (peer != null) {
       peer.messageCallback.register((peerInfo) {
-        print('Peer $id received message from ${peerInfo.address}:${peerInfo.port}');
+        print(
+          'Peer $id received message from ${peerInfo.address}:${peerInfo.port}',
+        );
       });
     }
   }

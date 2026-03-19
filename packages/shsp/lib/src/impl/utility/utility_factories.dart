@@ -14,7 +14,8 @@ class KeepAliveTimerFactory {
       return KeepAliveTimer.periodic(input.duration!, input.callback!);
     }
     throw ArgumentError(
-        'KeepAliveTimerInput must include either existingTimer or (duration and callback)');
+      'KeepAliveTimerInput must include either existingTimer or (duration and callback)',
+    );
   }
 }
 

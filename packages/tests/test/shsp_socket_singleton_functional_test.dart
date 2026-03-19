@@ -18,8 +18,10 @@ void main() {
       final singletonAddr = InternetAddress.loopbackIPv4;
 
       // Create receiving socket
-      final rawOther =
-          await RawDatagramSocket.bind(InternetAddress.loopbackIPv4, 0);
+      final rawOther = await RawDatagramSocket.bind(
+        InternetAddress.loopbackIPv4,
+        0,
+      );
       final callbacksOther = MessageCallbackMap();
       final other = ShspSocket.internal(rawOther, callbacksOther);
       final otherPort = rawOther.port;
@@ -36,12 +38,17 @@ void main() {
       );
 
       // Send handshake from singleton to other socket
-      singleton.socket.sendTo([0x01], PeerInfo(address: InternetAddress.loopbackIPv4, port: otherPort));
+      singleton.socket.sendTo([
+        0x01,
+      ], PeerInfo(address: InternetAddress.loopbackIPv4, port: otherPort));
 
       // Wait for message with timeout
-      await completer.future.timeout(const Duration(seconds: 2), onTimeout: () {
-        throw Exception('Timeout waiting for handshake message');
-      });
+      await completer.future.timeout(
+        const Duration(seconds: 2),
+        onTimeout: () {
+          throw Exception('Timeout waiting for handshake message');
+        },
+      );
 
       other.close();
     });
@@ -53,8 +60,10 @@ void main() {
       final singletonAddr = InternetAddress.loopbackIPv4;
 
       // Create receiving socket
-      final rawOther =
-          await RawDatagramSocket.bind(InternetAddress.loopbackIPv4, 0);
+      final rawOther = await RawDatagramSocket.bind(
+        InternetAddress.loopbackIPv4,
+        0,
+      );
       final callbacksOther = MessageCallbackMap();
       final other = ShspSocket.internal(rawOther, callbacksOther);
       final otherPort = rawOther.port;
@@ -74,12 +83,18 @@ void main() {
       );
 
       // Send data message from singleton to other socket
-      singleton.socket.sendTo([0x00, 42], PeerInfo(address: InternetAddress.loopbackIPv4, port: otherPort));
+      singleton.socket.sendTo([
+        0x00,
+        42,
+      ], PeerInfo(address: InternetAddress.loopbackIPv4, port: otherPort));
 
       // Wait for message with timeout
-      await completer.future.timeout(const Duration(seconds: 2), onTimeout: () {
-        throw Exception('Timeout waiting for data message');
-      });
+      await completer.future.timeout(
+        const Duration(seconds: 2),
+        onTimeout: () {
+          throw Exception('Timeout waiting for data message');
+        },
+      );
 
       other.close();
     });

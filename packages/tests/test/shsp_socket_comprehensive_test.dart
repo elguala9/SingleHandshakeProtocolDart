@@ -69,12 +69,14 @@ void main() {
         socket.close();
       });
 
-      test('socket property should return underlying RawDatagramSocket',
-          () async {
-        final socket = await ShspSocket.bind(address, 0);
-        expect(socket.socket, isA<RawDatagramSocket>());
-        socket.close();
-      });
+      test(
+        'socket property should return underlying RawDatagramSocket',
+        () async {
+          final socket = await ShspSocket.bind(address, 0);
+          expect(socket.socket, isA<RawDatagramSocket>());
+          socket.close();
+        },
+      );
     });
 
     group('Message Callbacks', () {
@@ -99,14 +101,13 @@ void main() {
         List<int>? receivedMsg;
         RemoteInfo? receivedRinfo;
 
-        socket.setMessageCallback(
-          PeerInfo(address: address, port: port),
-          (record) {
-            called = true;
-            receivedMsg = record.msg;
-            receivedRinfo = record.rinfo;
-          },
-        );
+        socket.setMessageCallback(PeerInfo(address: address, port: port), (
+          record,
+        ) {
+          called = true;
+          receivedMsg = record.msg;
+          receivedRinfo = record.rinfo;
+        });
 
         socket.testOnMessage(testMsg, rinfo);
 
@@ -116,27 +117,35 @@ void main() {
         expect(receivedRinfo?.port, equals(port));
       });
 
-      test('should replace callback when setting same key multiple times',
-          () async {
-        final testMsg = [4, 5, 6];
-        final rinfo = RemoteInfo(address: address, port: port);
-        int callCount = 0;
+      test(
+        'should replace callback when setting same key multiple times',
+        () async {
+          final testMsg = [4, 5, 6];
+          final rinfo = RemoteInfo(address: address, port: port);
+          int callCount = 0;
 
-        socket.setMessageCallback(PeerInfo(address: address, port: port), (record) {
-          callCount++;
-        });
-        socket.setMessageCallback(PeerInfo(address: address, port: port), (record) {
-          callCount++;
-        });
-        socket.setMessageCallback(PeerInfo(address: address, port: port), (record) {
-          callCount++;
-        });
+          socket.setMessageCallback(PeerInfo(address: address, port: port), (
+            record,
+          ) {
+            callCount++;
+          });
+          socket.setMessageCallback(PeerInfo(address: address, port: port), (
+            record,
+          ) {
+            callCount++;
+          });
+          socket.setMessageCallback(PeerInfo(address: address, port: port), (
+            record,
+          ) {
+            callCount++;
+          });
 
-        socket.testOnMessage(testMsg, rinfo);
+          socket.testOnMessage(testMsg, rinfo);
 
-        // Last callback should be the only one invoked
-        expect(callCount, equals(1));
-      });
+          // Last callback should be the only one invoked
+          expect(callCount, equals(1));
+        },
+      );
 
       test('should handle callbacks with different sender addresses', () async {
         final addr1 = InternetAddress.loopbackIPv4;
@@ -147,10 +156,14 @@ void main() {
         bool called1 = false;
         bool called2 = false;
 
-        socket.setMessageCallback(PeerInfo(address: addr1, port: port1), (record) {
+        socket.setMessageCallback(PeerInfo(address: addr1, port: port1), (
+          record,
+        ) {
           called1 = true;
         });
-        socket.setMessageCallback(PeerInfo(address: addr2, port: port2), (record) {
+        socket.setMessageCallback(PeerInfo(address: addr2, port: port2), (
+          record,
+        ) {
           called2 = true;
         });
 
@@ -169,7 +182,9 @@ void main() {
         final rinfo = RemoteInfo(address: address, port: port);
         bool called = false;
 
-        socket.setMessageCallback(PeerInfo(address: address, port: port), (record) {
+        socket.setMessageCallback(PeerInfo(address: address, port: port), (
+          record,
+        ) {
           called = true;
           expect(record.msg.isEmpty, isTrue);
         });
@@ -183,7 +198,9 @@ void main() {
         final rinfo = RemoteInfo(address: address, port: port);
         bool called = false;
 
-        socket.setMessageCallback(PeerInfo(address: address, port: port), (record) {
+        socket.setMessageCallback(PeerInfo(address: address, port: port), (
+          record,
+        ) {
           called = true;
           expect(record.msg.length, equals(65507));
         });
@@ -211,27 +228,32 @@ void main() {
         expect(called, isFalse);
       });
 
-      test('removeMessageCallback should return false for non-existent callback',
-          () async {
-        final key = PeerInfo(address: address, port: port);
+      test(
+        'removeMessageCallback should return false for non-existent callback',
+        () async {
+          final key = PeerInfo(address: address, port: port);
 
-        bool removed = socket.removeMessageCallback(key, (record) {
-          // Dummy callback
-        });
+          bool removed = socket.removeMessageCallback(key, (record) {
+            // Dummy callback
+          });
 
-        expect(removed, isFalse);
-      });
+          expect(removed, isFalse);
+        },
+      );
 
-      test('removeMessageCallback should return false for non-existent key',
-          () async {
-        bool removed = socket.removeMessageCallback(
+      test(
+        'removeMessageCallback should return false for non-existent key',
+        () async {
+          bool removed = socket.removeMessageCallback(
             PeerInfo(address: InternetAddress('192.0.2.255'), port: 99999),
             (record) {
-          // Dummy callback
-        });
+              // Dummy callback
+            },
+          );
 
-        expect(removed, isFalse);
-      });
+          expect(removed, isFalse);
+        },
+      );
 
       test('should not call removed callback', () async {
         final testMsg = [10, 11];
@@ -291,8 +313,7 @@ void main() {
         expect(callCounts, equals([1, 2, 3]));
       });
 
-      test('close callback should be directly callable via getter',
-          () async {
+      test('close callback should be directly callable via getter', () async {
         bool called = false;
         final onCloseCallback = socket.onClose;
         onCloseCallback.register((_) {
@@ -358,8 +379,7 @@ void main() {
         expect(called, isTrue);
       });
 
-      test('error callback should be directly callable via getter',
-          () async {
+      test('error callback should be directly callable via getter', () async {
         bool called = false;
         final onErrorCallback = socket.onError;
         onErrorCallback.register((err) {
@@ -405,17 +425,19 @@ void main() {
         expect(callCounts, equals([1, 2]));
       });
 
-      test('listening callback should be directly callable via getter',
-          () async {
-        bool called = false;
-        final onListeningCallback = socket.onListening;
-        onListeningCallback.register((_) {
-          called = true;
-        });
+      test(
+        'listening callback should be directly callable via getter',
+        () async {
+          bool called = false;
+          final onListeningCallback = socket.onListening;
+          onListeningCallback.register((_) {
+            called = true;
+          });
 
-        onListeningCallback.call(null);
-        expect(called, isTrue);
-      });
+          onListeningCallback.call(null);
+          expect(called, isTrue);
+        },
+      );
     });
 
     group('SendTo Method', () {
@@ -449,21 +471,29 @@ void main() {
 
         socket1.sendTo(testMsg, PeerInfo(address: address, port: socket2Port));
 
-        await completer.future
-            .timeout(const Duration(seconds: 2), onTimeout: () {
-          fail('Message not received within timeout');
-        });
+        await completer.future.timeout(
+          const Duration(seconds: 2),
+          onTimeout: () {
+            fail('Message not received within timeout');
+          },
+        );
       });
 
       test('sendTo should return bytes sent', () async {
         final testMsg = [1, 2, 3];
-        final bytesSent = socket1.sendTo(testMsg, PeerInfo(address: address, port: socket2.localPort!));
+        final bytesSent = socket1.sendTo(
+          testMsg,
+          PeerInfo(address: address, port: socket2.localPort!),
+        );
         expect(bytesSent, equals(3));
       });
 
       test('should send empty message', () async {
         final testMsg = <int>[];
-        final bytesSent = socket1.sendTo(testMsg, PeerInfo(address: address, port: socket2.localPort!));
+        final bytesSent = socket1.sendTo(
+          testMsg,
+          PeerInfo(address: address, port: socket2.localPort!),
+        );
         expect(bytesSent, equals(0));
       });
 
@@ -481,13 +511,18 @@ void main() {
           },
         );
 
-        final bytesSent = socket1.sendTo(testMsg, PeerInfo(address: address, port: socket2Port));
+        final bytesSent = socket1.sendTo(
+          testMsg,
+          PeerInfo(address: address, port: socket2Port),
+        );
         expect(bytesSent, equals(1000));
 
-        await completer.future
-            .timeout(const Duration(seconds: 2), onTimeout: () {
-          fail('Large message not received');
-        });
+        await completer.future.timeout(
+          const Duration(seconds: 2),
+          onTimeout: () {
+            fail('Large message not received');
+          },
+        );
       });
 
       test('should send message with all byte values (0-255)', () async {
@@ -505,10 +540,12 @@ void main() {
 
         socket1.sendTo(testMsg, PeerInfo(address: address, port: socket2Port));
 
-        await completer.future
-            .timeout(const Duration(seconds: 2), onTimeout: () {
-          fail('Message with all byte values not received');
-        });
+        await completer.future.timeout(
+          const Duration(seconds: 2),
+          onTimeout: () {
+            fail('Message with all byte values not received');
+          },
+        );
       });
 
       test('should send multiple messages in sequence', () async {
@@ -536,10 +573,12 @@ void main() {
         await Future.delayed(const Duration(milliseconds: 50));
         socket1.sendTo(msg3, PeerInfo(address: address, port: socket2Port));
 
-        await completer.future
-            .timeout(const Duration(seconds: 2), onTimeout: () {
-          fail('Not all messages received');
-        });
+        await completer.future.timeout(
+          const Duration(seconds: 2),
+          onTimeout: () {
+            fail('Not all messages received');
+          },
+        );
 
         expect(receivedMessages, equals([msg1, msg2, msg3]));
       });
@@ -577,8 +616,7 @@ void main() {
     group('Resource Management', () {
       test('should create and close multiple sockets sequentially', () async {
         for (int i = 0; i < 5; i++) {
-          final socket =
-              await ShspSocket.bind(InternetAddress.loopbackIPv4, 0);
+          final socket = await ShspSocket.bind(InternetAddress.loopbackIPv4, 0);
           expect(socket.localPort, isNotNull);
           expect(socket.localPort, greaterThan(0));
           socket.close();
@@ -588,8 +626,7 @@ void main() {
       test('should create and close many sockets', () async {
         final sockets = <ShspSocket>[];
         for (int i = 0; i < 20; i++) {
-          final socket =
-              await ShspSocket.bind(InternetAddress.loopbackIPv4, 0);
+          final socket = await ShspSocket.bind(InternetAddress.loopbackIPv4, 0);
           sockets.add(socket);
         }
 
@@ -607,14 +644,20 @@ void main() {
         final address = InternetAddress.loopbackIPv4;
         int callCount = 0;
 
-        socket.setMessageCallback(PeerInfo(address: address, port: 1234), (record) {
+        socket.setMessageCallback(PeerInfo(address: address, port: 1234), (
+          record,
+        ) {
           callCount++;
         });
 
         socket.close();
 
         // After close, message callbacks should be cleared
-        socket.testOnMessage([1, 2, 3], RemoteInfo(address: address, port: 1234));
+        socket.testOnMessage([
+          1,
+          2,
+          3,
+        ], RemoteInfo(address: address, port: 1234));
         expect(callCount, equals(0));
       });
     });
@@ -622,15 +665,16 @@ void main() {
     group('Edge Cases and Error Conditions', () {
       test('should handle binding to high port number', () async {
         const highPort = 60000;
-        final socket =
-            await ShspSocket.bind(InternetAddress.loopbackIPv4, highPort);
+        final socket = await ShspSocket.bind(
+          InternetAddress.loopbackIPv4,
+          highPort,
+        );
         expect(socket.localPort, equals(highPort));
         socket.close();
       });
 
       test('port 0 should use ephemeral port assignment', () async {
-        final socket =
-            await ShspSocket.bind(InternetAddress.loopbackIPv4, 0);
+        final socket = await ShspSocket.bind(InternetAddress.loopbackIPv4, 0);
         expect(socket.localPort, isNotNull);
         expect(socket.localPort! > 0, isTrue);
         expect(socket.localPort! < 65536, isTrue);
@@ -655,74 +699,98 @@ void main() {
         socket.close();
       });
 
-      test('should not interfere with socket property access after creation',
-          () async {
-        final socket = await ShspSocket.bind(InternetAddress.loopbackIPv4, 0);
-        final underlyingSocket = socket.socket;
+      test(
+        'should not interfere with socket property access after creation',
+        () async {
+          final socket = await ShspSocket.bind(InternetAddress.loopbackIPv4, 0);
+          final underlyingSocket = socket.socket;
 
-        expect(underlyingSocket, isNotNull);
-        expect(underlyingSocket.isBroadcast, isA<bool>());
+          expect(underlyingSocket, isNotNull);
+          expect(underlyingSocket.isBroadcast, isA<bool>());
 
-        socket.close();
-      });
+          socket.close();
+        },
+      );
 
-      test('should handle calling setCloseCallback after initialization',
-          () async {
-        final socket = await ShspSocket.bind(InternetAddress.loopbackIPv4, 0);
-        bool called = false;
+      test(
+        'should handle calling setCloseCallback after initialization',
+        () async {
+          final socket = await ShspSocket.bind(InternetAddress.loopbackIPv4, 0);
+          bool called = false;
 
-        socket.setCloseCallback(() {
-          called = true;
-        });
+          socket.setCloseCallback(() {
+            called = true;
+          });
 
-        socket.onClose.call(null);
-        expect(called, isTrue);
+          socket.onClose.call(null);
+          expect(called, isTrue);
 
-        socket.close();
-      });
+          socket.close();
+        },
+      );
 
-      test('should handle calling setErrorCallback after initialization',
-          () async {
-        final socket = await ShspSocket.bind(InternetAddress.loopbackIPv4, 0);
-        bool called = false;
+      test(
+        'should handle calling setErrorCallback after initialization',
+        () async {
+          final socket = await ShspSocket.bind(InternetAddress.loopbackIPv4, 0);
+          bool called = false;
 
-        socket.setErrorCallback((err) {
-          called = true;
-        });
+          socket.setErrorCallback((err) {
+            called = true;
+          });
 
-        socket.onError.call(Exception('Test'));
-        expect(called, isTrue);
+          socket.onError.call(Exception('Test'));
+          expect(called, isTrue);
 
-        socket.close();
-      });
+          socket.close();
+        },
+      );
     });
 
     group('Concurrent Operations', () {
-      test('should handle concurrent callbacks from different sockets',
-          () async {
-        final socket1 = await ShspSocket.bind(InternetAddress.loopbackIPv4, 0);
-        final socket2 = await ShspSocket.bind(InternetAddress.loopbackIPv4, 0);
+      test(
+        'should handle concurrent callbacks from different sockets',
+        () async {
+          final socket1 = await ShspSocket.bind(
+            InternetAddress.loopbackIPv4,
+            0,
+          );
+          final socket2 = await ShspSocket.bind(
+            InternetAddress.loopbackIPv4,
+            0,
+          );
 
-        bool callback1Called = false;
-        bool callback2Called = false;
+          bool callback1Called = false;
+          bool callback2Called = false;
 
-        socket1.setMessageCallback(PeerInfo(address: InternetAddress('127.0.0.1'), port: 5000), (record) {
-          callback1Called = true;
-        });
+          socket1.setMessageCallback(
+            PeerInfo(address: InternetAddress('127.0.0.1'), port: 5000),
+            (record) {
+              callback1Called = true;
+            },
+          );
 
-        socket2.setMessageCallback(PeerInfo(address: InternetAddress('127.0.0.1'), port: 6000), (record) {
-          callback2Called = true;
-        });
+          socket2.setMessageCallback(
+            PeerInfo(address: InternetAddress('127.0.0.1'), port: 6000),
+            (record) {
+              callback2Called = true;
+            },
+          );
 
-        socket1.testOnMessage([1], RemoteInfo(address: InternetAddress.loopbackIPv4, port: 5000));
-        socket2.testOnMessage([2], RemoteInfo(address: InternetAddress.loopbackIPv4, port: 6000));
+          socket1.testOnMessage([
+            1,
+          ], RemoteInfo(address: InternetAddress.loopbackIPv4, port: 5000));
+          socket2.testOnMessage([
+            2,
+          ], RemoteInfo(address: InternetAddress.loopbackIPv4, port: 6000));
 
-        expect(callback1Called, isTrue);
-        expect(callback2Called, isTrue);
+          expect(callback1Called, isTrue);
+          expect(callback2Called, isTrue);
 
-        socket1.close();
-        socket2.close();
-      });
+          socket1.close();
+          socket2.close();
+        },
+      );
 
       test('should handle rapid message sending', () async {
         final socket1 = await ShspSocket.bind(InternetAddress.loopbackIPv4, 0);
@@ -731,7 +799,10 @@ void main() {
         int messageCount = 0;
 
         socket2.setMessageCallback(
-          PeerInfo(address: InternetAddress.loopbackIPv4, port: socket1.localPort!),
+          PeerInfo(
+            address: InternetAddress.loopbackIPv4,
+            port: socket1.localPort!,
+          ),
           (record) {
             messageCount++;
             if (messageCount == 5) {
@@ -742,15 +813,21 @@ void main() {
 
         for (int i = 0; i < 5; i++) {
           socket1.sendTo(
-              [i], PeerInfo(address: InternetAddress.loopbackIPv4, port: socket2.localPort!));
+            [i],
+            PeerInfo(
+              address: InternetAddress.loopbackIPv4,
+              port: socket2.localPort!,
+            ),
+          );
           await Future.delayed(const Duration(milliseconds: 10));
         }
 
-        await completer.future
-            .timeout(const Duration(seconds: 5), onTimeout: () {
-          fail(
-              'Not all rapid messages received (got $messageCount/5)');
-        });
+        await completer.future.timeout(
+          const Duration(seconds: 5),
+          onTimeout: () {
+            fail('Not all rapid messages received (got $messageCount/5)');
+          },
+        );
 
         expect(messageCount, equals(5));
 
@@ -801,36 +878,47 @@ void main() {
         socket2.close();
       });
 
-      test('data messages (0x00) are compressed and decompressed correctly', () async {
-        // Create a large repetitive message to ensure good compression
-        final originalMessage = List<int>.generate(500, (i) => 0x41); // 500 'A's
-        final dataMessage = [0x00, ...originalMessage]; // Add data prefix
-        final completer = Completer<void>();
+      test(
+        'data messages (0x00) are compressed and decompressed correctly',
+        () async {
+          // Create a large repetitive message to ensure good compression
+          final originalMessage = List<int>.generate(
+            500,
+            (i) => 0x41,
+          ); // 500 'A's
+          final dataMessage = [0x00, ...originalMessage]; // Add data prefix
+          final completer = Completer<void>();
 
-        socket2.setMessageCallback(
-          PeerInfo(address: address, port: socket1.localPort!),
-          (record) {
-            // Should receive the original uncompressed message with prefix
-            expect(record.msg.length, equals(501)); // 1 (prefix) + 500
-            expect(record.msg[0], equals(0x00)); // Data prefix
-            expect(record.msg.sublist(1), equals(originalMessage));
-            completer.complete();
-          },
-        );
+          socket2.setMessageCallback(
+            PeerInfo(address: address, port: socket1.localPort!),
+            (record) {
+              // Should receive the original uncompressed message with prefix
+              expect(record.msg.length, equals(501)); // 1 (prefix) + 500
+              expect(record.msg[0], equals(0x00)); // Data prefix
+              expect(record.msg.sublist(1), equals(originalMessage));
+              completer.complete();
+            },
+          );
 
-        final bytesSent = socket1.sendTo(
-          dataMessage,
-          PeerInfo(address: address, port: socket2.localPort!),
-        );
+          final bytesSent = socket1.sendTo(
+            dataMessage,
+            PeerInfo(address: address, port: socket2.localPort!),
+          );
 
-        // Bytes sent should be much less than 501 due to compression
-        expect(bytesSent, lessThan(501));
-        print('Compression: 501 bytes → $bytesSent bytes (${((1 - bytesSent / 501) * 100).toStringAsFixed(1)}% reduction)');
+          // Bytes sent should be much less than 501 due to compression
+          expect(bytesSent, lessThan(501));
+          print(
+            'Compression: 501 bytes → $bytesSent bytes (${((1 - bytesSent / 501) * 100).toStringAsFixed(1)}% reduction)',
+          );
 
-        await completer.future.timeout(const Duration(seconds: 2), onTimeout: () {
-          fail('Data message not received');
-        });
-      });
+          await completer.future.timeout(
+            const Duration(seconds: 2),
+            onTimeout: () {
+              fail('Data message not received');
+            },
+          );
+        },
+      );
 
       test('protocol messages (0x01-0x04) are NOT compressed', () async {
         final protocolMessages = [
@@ -857,13 +945,21 @@ void main() {
 
         // Send all protocol messages
         for (final msg in protocolMessages) {
-          socket1.sendTo(msg, PeerInfo(address: address, port: socket2.localPort!));
-          await Future.delayed(const Duration(milliseconds: 50)); // Small delay between sends
+          socket1.sendTo(
+            msg,
+            PeerInfo(address: address, port: socket2.localPort!),
+          );
+          await Future.delayed(
+            const Duration(milliseconds: 50),
+          ); // Small delay between sends
         }
 
-        await completer.future.timeout(const Duration(seconds: 2), onTimeout: () {
-          fail('Protocol messages not received (received: $receivedCount/4)');
-        });
+        await completer.future.timeout(
+          const Duration(seconds: 2),
+          onTimeout: () {
+            fail('Protocol messages not received (received: $receivedCount/4)');
+          },
+        );
       });
     });
   });

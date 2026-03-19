@@ -78,21 +78,25 @@ class RawShspSocket implements IRawShspSocket {
   // Stream interface
   @override
   StreamSubscription<RawSocketEvent> listen(
-          void Function(RawSocketEvent event)? onData,
-          {Function? onError,
-          void Function()? onDone,
-          bool? cancelOnError}) =>
-      socket.listen(onData,
-          onError: onError, onDone: onDone, cancelOnError: cancelOnError);
+    void Function(RawSocketEvent event)? onData, {
+    Function? onError,
+    void Function()? onDone,
+    bool? cancelOnError,
+  }) => socket.listen(
+    onData,
+    onError: onError,
+    onDone: onDone,
+    cancelOnError: cancelOnError,
+  );
 
   @override
   bool get isBroadcast => socket.isBroadcast;
 
   @override
-  Stream<RawSocketEvent> asBroadcastStream(
-          {void Function(StreamSubscription<RawSocketEvent>)? onListen,
-          void Function(StreamSubscription<RawSocketEvent>)? onCancel}) =>
-      socket.asBroadcastStream(onListen: onListen, onCancel: onCancel);
+  Stream<RawSocketEvent> asBroadcastStream({
+    void Function(StreamSubscription<RawSocketEvent>)? onListen,
+    void Function(StreamSubscription<RawSocketEvent>)? onCancel,
+  }) => socket.asBroadcastStream(onListen: onListen, onCancel: onCancel);
 
   @override
   Stream<RawSocketEvent> where(bool Function(RawSocketEvent) test) =>
@@ -114,19 +118,20 @@ class RawShspSocket implements IRawShspSocket {
       socket.expand(convert);
 
   @override
-  Stream<RawSocketEvent> handleError(Function onError,
-          {bool Function(dynamic)? test}) =>
-      socket.handleError(onError, test: test);
+  Stream<RawSocketEvent> handleError(
+    Function onError, {
+    bool Function(dynamic)? test,
+  }) => socket.handleError(onError, test: test);
 
   @override
   Stream<S> transform<S>(
-          StreamTransformer<RawSocketEvent, S> streamTransformer) =>
-      socket.transform(streamTransformer);
+    StreamTransformer<RawSocketEvent, S> streamTransformer,
+  ) => socket.transform(streamTransformer);
 
   @override
   Future<RawSocketEvent> reduce(
-          RawSocketEvent Function(RawSocketEvent, RawSocketEvent) combine) =>
-      socket.reduce(combine);
+    RawSocketEvent Function(RawSocketEvent, RawSocketEvent) combine,
+  ) => socket.reduce(combine);
 
   @override
   Future<T> fold<T>(T initialValue, T Function(T, RawSocketEvent) combine) =>
@@ -171,9 +176,9 @@ class RawShspSocket implements IRawShspSocket {
       socket.skipWhile(test);
 
   @override
-  Stream<RawSocketEvent> distinct(
-          [bool Function(RawSocketEvent, RawSocketEvent)? equals]) =>
-      socket.distinct(equals);
+  Stream<RawSocketEvent> distinct([
+    bool Function(RawSocketEvent, RawSocketEvent)? equals,
+  ]) => socket.distinct(equals);
 
   @override
   Future<RawSocketEvent> get first => socket.first;
@@ -185,27 +190,31 @@ class RawShspSocket implements IRawShspSocket {
   Future<RawSocketEvent> get single => socket.single;
 
   @override
-  Future<RawSocketEvent> firstWhere(bool Function(RawSocketEvent) test,
-          {RawSocketEvent Function()? orElse}) =>
-      socket.firstWhere(test, orElse: orElse);
+  Future<RawSocketEvent> firstWhere(
+    bool Function(RawSocketEvent) test, {
+    RawSocketEvent Function()? orElse,
+  }) => socket.firstWhere(test, orElse: orElse);
 
   @override
-  Future<RawSocketEvent> lastWhere(bool Function(RawSocketEvent) test,
-          {RawSocketEvent Function()? orElse}) =>
-      socket.lastWhere(test, orElse: orElse);
+  Future<RawSocketEvent> lastWhere(
+    bool Function(RawSocketEvent) test, {
+    RawSocketEvent Function()? orElse,
+  }) => socket.lastWhere(test, orElse: orElse);
 
   @override
-  Future<RawSocketEvent> singleWhere(bool Function(RawSocketEvent) test,
-          {RawSocketEvent Function()? orElse}) =>
-      socket.singleWhere(test, orElse: orElse);
+  Future<RawSocketEvent> singleWhere(
+    bool Function(RawSocketEvent) test, {
+    RawSocketEvent Function()? orElse,
+  }) => socket.singleWhere(test, orElse: orElse);
 
   @override
   Future<RawSocketEvent> elementAt(int index) => socket.elementAt(index);
 
   @override
-  Stream<RawSocketEvent> timeout(Duration timeLimit,
-          {void Function(EventSink<RawSocketEvent>)? onTimeout}) =>
-      socket.timeout(timeLimit, onTimeout: onTimeout);
+  Stream<RawSocketEvent> timeout(
+    Duration timeLimit, {
+    void Function(EventSink<RawSocketEvent>)? onTimeout,
+  }) => socket.timeout(timeLimit, onTimeout: onTimeout);
 
   @override
   Future<bool> contains(Object? needle) => socket.contains(needle);

@@ -55,14 +55,14 @@ dependencies:
 
 ### Quick Start
 
-The easiest way to get started is with `initializePointShsp()`:
+The easiest way to get started is with `initializePointDualShsp()`:
 
 ```dart
 import 'package:shsp/shsp.dart';
 
 void main() async {
   // Initialize singleton with IPv4/IPv6 support
-  await initializePointShsp();
+  await initializePointDualShsp();
 
   // Use the global socket singleton
   final socket = SingletonDIAccess.get<IDualShspSocket>();
@@ -111,20 +111,20 @@ The `shsp` package contains everything you need:
 - `DualShspSocketSingleton`: Manages dual-stack socket lifecycle
 
 **Initialization:**
-- `initializePointShsp()`: Convenient entry point for singleton setup
+- `initializePointDualShsp()`: Convenient entry point for singleton setup
 
 ## High-Level API
 
 ### Initialize Singleton (Recommended Starting Point)
 
-For most applications, start with `initializePointShsp()` to set up the global socket singleton:
+For most applications, start with `initializePointDualShsp()` to set up the global socket singleton:
 
 ```dart
 import 'package:shsp/shsp.dart';
 
 void main() async {
   // Initialize singleton with IPv4/IPv6 dual-stack support
-  await initializePointShsp();
+  await initializePointDualShsp();
 
   // Get the singleton socket
   final socket = SingletonDIAccess.get<IDualShspSocket>();

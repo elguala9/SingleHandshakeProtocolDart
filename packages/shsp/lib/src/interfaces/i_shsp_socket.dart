@@ -6,9 +6,11 @@ import '../types/peer_types.dart';
 import '../types/socket_profile.dart';
 import 'i_compression_codec.dart';
 import 'i_shsp_instance.dart';
+import 'i_shsp_socket_base.dart';
 
 /// Interface for SHSP Socket
-abstract interface class IShspSocket implements IValueForRegistry {
+abstract interface class IShspSocket
+    implements IShspSocketBase, IValueForRegistry {
   /// Returns the socket state as a serialized string (type, endpoints, registered callbacks)
   String serializedObject();
 
@@ -21,9 +23,10 @@ abstract interface class IShspSocket implements IValueForRegistry {
   /// Get the callback invoked when the socket encounters an error
   CallbackOnError get onError;
 
-
   /// Registers the callback invoked when the socket begins listening
-  @Deprecated('use the get to retrive the onListening and register directly there')
+  @Deprecated(
+    'use the get to retrive the onListening and register directly there',
+  )
   void setListeningCallback(void Function() cb);
 
   /// Registers the callback executed when the socket closes
@@ -33,7 +36,6 @@ abstract interface class IShspSocket implements IValueForRegistry {
   /// Registers the callback invoked when the socket encounters an error
   @Deprecated('use the get to retrive the onError and register directly there')
   void setErrorCallback(void Function(dynamic err) cb);
-
 
   /// Associates a callback with incoming messages from a specific remote endpoint
   void setMessageCallback(PeerInfo peer, MessageCallbackFunction cb);

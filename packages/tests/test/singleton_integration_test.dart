@@ -8,125 +8,154 @@ void main() {
       ShspSocketSingleton.destroy();
     });
 
-    test('multiple AutoShspPeer instances share singleton and communicate', () async {
-      final address = InternetAddress.loopbackIPv4;
+    test(
+      'multiple AutoShspPeer instances share singleton and communicate',
+      () async {
+        final address = InternetAddress.loopbackIPv4;
 
-      // Create two server sockets to receive messages
-      final serverA = await ShspSocket.bind(address, 0);
-      final serverB = await ShspSocket.bind(address, 0);
-      final portA = serverA.localPort!;
-      final portB = serverB.localPort!;
+        // Create two server sockets to receive messages
+        final serverA = await ShspSocket.bind(address, 0);
+        final serverB = await ShspSocket.bind(address, 0);
+        final portA = serverA.localPort!;
+        final portB = serverB.localPort!;
 
-      final remotePeerA = PeerInfo(address: address, port: portA);
-      final remotePeerB = PeerInfo(address: address, port: portB);
+        final remotePeerA = PeerInfo(address: address, port: portA);
+        final remotePeerB = PeerInfo(address: address, port: portB);
 
-      // Create two peers sharing the singleton socket
-      final peerA = await AutoShspPeer.create(remotePeer: remotePeerA);
-      final peerB = await AutoShspPeer.create(remotePeer: remotePeerB);
+        // Create two peers sharing the singleton socket
+        final peerA = await AutoShspPeer.create(remotePeer: remotePeerA);
+        final peerB = await AutoShspPeer.create(remotePeer: remotePeerB);
 
-      // Verify they share the same socket
-      expect(identical(peerA.socket, peerB.socket), isTrue,
-          reason: 'Peers should share the singleton socket');
+        // Verify they share the same socket
+        expect(
+          identical(peerA.socket, peerB.socket),
+          isTrue,
+          reason: 'Peers should share the singleton socket',
+        );
 
-      // Clean up
-      peerA.close();
-      peerB.close();
-      serverA.close();
-      serverB.close();
-    });
+        // Clean up
+        peerA.close();
+        peerB.close();
+        serverA.close();
+        serverB.close();
+      },
+    );
 
-    test('AutoShspInstance receives keep-alive messages from shared socket', () async {
-      final address = InternetAddress.loopbackIPv4;
-      final serverSocket = await ShspSocket.bind(address, 0);
-      final serverPort = serverSocket.localPort!;
+    test(
+      'AutoShspInstance receives keep-alive messages from shared socket',
+      () async {
+        final address = InternetAddress.loopbackIPv4;
+        final serverSocket = await ShspSocket.bind(address, 0);
+        final serverPort = serverSocket.localPort!;
 
-      final remotePeer = PeerInfo(address: address, port: serverPort);
+        final remotePeer = PeerInfo(address: address, port: serverPort);
 
-      // Create instance with short keep-alive interval
-      final instance = await AutoShspInstance.create(
-        remotePeer: remotePeer,
-        keepAliveSeconds: 1,
-      );
+        // Create instance with short keep-alive interval
+        final instance = await AutoShspInstance.create(
+          remotePeer: remotePeer,
+          keepAliveSeconds: 1,
+        );
 
-      expect(instance.keepAliveSeconds, equals(1),
-          reason: 'Instance should use specified keep-alive interval');
+        expect(
+          instance.keepAliveSeconds,
+          equals(1),
+          reason: 'Instance should use specified keep-alive interval',
+        );
 
-      // Verify singleton is initialized
-      final singleton = ShspSocketSingleton.getCurrent();
-      expect(singleton, isNotNull, reason: 'Singleton should be initialized');
-      expect(singleton!.isClosed, isFalse,
-          reason: 'Singleton socket should be open');
+        // Verify singleton is initialized
+        final singleton = ShspSocketSingleton.getCurrent();
+        expect(singleton, isNotNull, reason: 'Singleton should be initialized');
+        expect(
+          singleton!.isClosed,
+          isFalse,
+          reason: 'Singleton socket should be open',
+        );
 
-      // Wait briefly for keep-alive to establish
-      await Future.delayed(const Duration(milliseconds: 100));
+        // Wait briefly for keep-alive to establish
+        await Future.delayed(const Duration(milliseconds: 100));
 
-      instance.close();
-      serverSocket.close();
-    });
+        instance.close();
+        serverSocket.close();
+      },
+    );
 
-    test('socket replacement via reconnect notifies all AutoShspPeer instances',
-        () async {
-      final address = InternetAddress.loopbackIPv4;
-      final remotePeer =
-          PeerInfo(address: address, port: 9999);
+    test(
+      'socket replacement via reconnect notifies all AutoShspPeer instances',
+      () async {
+        final address = InternetAddress.loopbackIPv4;
+        final remotePeer = PeerInfo(address: address, port: 9999);
 
-      // Create first peer
-      final peer1 = await AutoShspPeer.create(remotePeer: remotePeer);
-      final singleton = ShspSocketSingleton.getCurrent()!;
-      final originalSocket = peer1.socket;
+        // Create first peer
+        final peer1 = await AutoShspPeer.create(remotePeer: remotePeer);
+        final singleton = ShspSocketSingleton.getCurrent()!;
+        final originalSocket = peer1.socket;
 
-      // Create second peer sharing the same socket
-      final peer2 = await AutoShspPeer.create(remotePeer: remotePeer);
-      expect(identical(peer1.socket, peer2.socket), isTrue);
+        // Create second peer sharing the same socket
+        final peer2 = await AutoShspPeer.create(remotePeer: remotePeer);
+        expect(identical(peer1.socket, peer2.socket), isTrue);
 
-      // Reconnect the socket
-      await singleton.reconnect();
+        // Reconnect the socket
+        await singleton.reconnect();
 
-      // New socket should be different
-      final newSocket = singleton.socket;
-      expect(identical(originalSocket, newSocket), isFalse,
-          reason: 'Socket should be replaced after reconnect');
+        // New socket should be different
+        final newSocket = singleton.socket;
+        expect(
+          identical(originalSocket, newSocket),
+          isFalse,
+          reason: 'Socket should be replaced after reconnect',
+        );
 
-      // Singleton's socket changed callback should have been triggered
-      expect(singleton.isClosed, isFalse,
-          reason: 'Singleton should have a new open socket');
+        // Singleton's socket changed callback should have been triggered
+        expect(
+          singleton.isClosed,
+          isFalse,
+          reason: 'Singleton should have a new open socket',
+        );
 
-      peer1.close();
-      peer2.close();
-    });
+        peer1.close();
+        peer2.close();
+      },
+    );
 
-    test('socket replacement via setSocket preserves callbacks for all peers',
-        () async {
-      final address = InternetAddress.loopbackIPv4;
-      final remotePeer =
-          PeerInfo(address: address, port: 9998);
+    test(
+      'socket replacement via setSocket preserves callbacks for all peers',
+      () async {
+        final address = InternetAddress.loopbackIPv4;
+        final remotePeer = PeerInfo(address: address, port: 9998);
 
-      // Create peer and get singleton
-      final peer = await AutoShspPeer.create(remotePeer: remotePeer);
-      final singleton = ShspSocketSingleton.getCurrent()!;
+        // Create peer and get singleton
+        final peer = await AutoShspPeer.create(remotePeer: remotePeer);
+        final singleton = ShspSocketSingleton.getCurrent()!;
 
-      // Register callback on the original socket
-      var callbackCount = 0;
-      peer.messageCallback.register((_) => callbackCount++);
+        // Register callback on the original socket
+        var callbackCount = 0;
+        peer.messageCallback.register((_) => callbackCount++);
 
-      // Get original socket profile
-      final originalProfile = singleton.getProfile();
-      expect(originalProfile.messageListeners.isNotEmpty, isTrue,
-          reason: 'Profile should have registered callback');
+        // Get original socket profile
+        final originalProfile = singleton.getProfile();
+        expect(
+          originalProfile.messageListeners.isNotEmpty,
+          isTrue,
+          reason: 'Profile should have registered callback',
+        );
 
-      // Create a new raw socket
-      final newRawSocket = await RawDatagramSocket.bind(address, 0);
+        // Create a new raw socket
+        final newRawSocket = await RawDatagramSocket.bind(address, 0);
 
-      // Set new socket (should preserve callbacks)
-      singleton.setSocketRaw(newRawSocket);
+        // Set new socket (should preserve callbacks)
+        singleton.setSocketRaw(newRawSocket);
 
-      // Verify new socket has callbacks restored
-      final newProfile = singleton.getProfile();
-      expect(newProfile.messageListeners.isNotEmpty, isTrue,
-          reason: 'New socket should have callbacks restored');
+        // Verify new socket has callbacks restored
+        final newProfile = singleton.getProfile();
+        expect(
+          newProfile.messageListeners.isNotEmpty,
+          isTrue,
+          reason: 'New socket should have callbacks restored',
+        );
 
-      peer.close();
-    });
+        peer.close();
+      },
+    );
 
     test('multiple instances coexist with socket reconnection', () async {
       final address = InternetAddress.loopbackIPv4;
@@ -135,10 +164,8 @@ void main() {
       final remotePeerB = PeerInfo(address: address, port: 9996);
 
       // Create two instances
-      final instanceA =
-          await AutoShspInstance.create(remotePeer: remotePeerA);
-      final instanceB =
-          await AutoShspInstance.create(remotePeer: remotePeerB);
+      final instanceA = await AutoShspInstance.create(remotePeer: remotePeerA);
+      final instanceB = await AutoShspInstance.create(remotePeer: remotePeerB);
 
       // Verify they share the socket
       expect(identical(instanceA.socket, instanceB.socket), isTrue);
@@ -161,10 +188,8 @@ void main() {
       final remotePeer2 = PeerInfo(address: address, port: 9994);
 
       // Create instances
-      final instance1 =
-          await AutoShspInstance.create(remotePeer: remotePeer1);
-      final instance2 =
-          await AutoShspInstance.create(remotePeer: remotePeer2);
+      final instance1 = await AutoShspInstance.create(remotePeer: remotePeer1);
+      final instance2 = await AutoShspInstance.create(remotePeer: remotePeer2);
 
       final singleton = ShspSocketSingleton.getCurrent()!;
 
@@ -180,13 +205,19 @@ void main() {
       await singleton.reconnect();
 
       // Verify callback was called
-      expect(socketChangedCount, equals(1),
-          reason: 'Socket changed callback should be called once');
+      expect(
+        socketChangedCount,
+        equals(1),
+        reason: 'Socket changed callback should be called once',
+      );
 
       // Verify profile is preserved
       final profileAfter = singleton.getProfile();
-      expect(profileAfter.messageListeners.length, equals(listenerCountBefore),
-          reason: 'Listener count should be preserved');
+      expect(
+        profileAfter.messageListeners.length,
+        equals(listenerCountBefore),
+        reason: 'Listener count should be preserved',
+      );
 
       instance1.close();
       instance2.close();
@@ -197,8 +228,7 @@ void main() {
       final remotePeer = PeerInfo(address: address, port: 9993);
 
       // Create instance (uses default compression codec)
-      final instance =
-          await AutoShspInstance.create(remotePeer: remotePeer);
+      final instance = await AutoShspInstance.create(remotePeer: remotePeer);
       final singleton = ShspSocketSingleton.getCurrent()!;
 
       final codecBefore = singleton.compressionCodec;
@@ -208,8 +238,11 @@ void main() {
       await singleton.reconnect();
 
       final codecAfter = singleton.compressionCodec;
-      expect(codecAfter, equals(codecBefore),
-          reason: 'Compression codec should be preserved');
+      expect(
+        codecAfter,
+        equals(codecBefore),
+        reason: 'Compression codec should be preserved',
+      );
 
       instance.close();
     });
@@ -232,10 +265,16 @@ void main() {
       ShspSocketSingleton.destroy();
 
       // Singleton should be closed
-      expect(singleton.isClosed, isTrue,
-          reason: 'Socket should be closed after destroy');
-      expect(ShspSocketSingleton.getCurrent(), isNull,
-          reason: 'Singleton should be cleared');
+      expect(
+        singleton.isClosed,
+        isTrue,
+        reason: 'Socket should be closed after destroy',
+      );
+      expect(
+        ShspSocketSingleton.getCurrent(),
+        isNull,
+        reason: 'Singleton should be cleared',
+      );
     });
 
     test('fresh singleton instance can be created after destroy', () async {
@@ -243,8 +282,7 @@ void main() {
       final remotePeer = PeerInfo(address: address, port: 9990);
 
       // Create first instance
-      final instance1 =
-          await AutoShspInstance.create(remotePeer: remotePeer);
+      final instance1 = await AutoShspInstance.create(remotePeer: remotePeer);
       final singleton1 = ShspSocketSingleton.getCurrent()!;
       singleton1.localPort;
 
@@ -252,8 +290,7 @@ void main() {
       ShspSocketSingleton.destroy();
 
       // Create new instance
-      final instance2 =
-          await AutoShspInstance.create(remotePeer: remotePeer);
+      final instance2 = await AutoShspInstance.create(remotePeer: remotePeer);
       final singleton2 = ShspSocketSingleton.getCurrent()!;
       singleton2.localPort;
 
@@ -297,8 +334,7 @@ void main() {
       final address = InternetAddress.loopbackIPv4;
       final remotePeer = PeerInfo(address: address, port: 9987);
 
-      final instance =
-          await AutoShspInstance.create(remotePeer: remotePeer);
+      final instance = await AutoShspInstance.create(remotePeer: remotePeer);
       final singleton = ShspSocketSingleton.getCurrent()!;
 
       // Verify socket exists
@@ -322,25 +358,29 @@ void main() {
       final remotePeerB = PeerInfo(address: address, port: 9985);
 
       // Create two instances
-      final instanceA =
-          await AutoShspInstance.create(remotePeer: remotePeerA);
-      final instanceB =
-          await AutoShspInstance.create(remotePeer: remotePeerB);
+      final instanceA = await AutoShspInstance.create(remotePeer: remotePeerA);
+      final instanceB = await AutoShspInstance.create(remotePeer: remotePeerB);
 
       final singleton = ShspSocketSingleton.getCurrent()!;
 
       // Get profile
       final profile = singleton.getProfile();
-      expect(profile.messageListeners.length, equals(2),
-          reason: 'Profile should have two message listeners');
+      expect(
+        profile.messageListeners.length,
+        equals(2),
+        reason: 'Profile should have two message listeners',
+      );
 
       // Simulate profile restoration (as done in reconnect)
       await singleton.restoreProfile(profile);
 
       // Verify routing is still correct
       final profileAfter = singleton.getProfile();
-      expect(profileAfter.messageListeners.length, equals(2),
-          reason: 'Message routing should be preserved after restoration');
+      expect(
+        profileAfter.messageListeners.length,
+        equals(2),
+        reason: 'Message routing should be preserved after restoration',
+      );
 
       instanceA.close();
       instanceB.close();

@@ -11,7 +11,8 @@ typedef InputHandshakeTime = ({
 typedef InputFactoryHandshakeTime = ({
   int? handshakeTimeframe,
   int? handshakeDuration,
-  int? whenLastHandshake, // seconds from the start handshake to when there will be the last handshake
+  int?
+  whenLastHandshake, // seconds from the start handshake to when there will be the last handshake
 });
 
 const InputFactoryHandshakeTime defaultHandshakeTimeInput = (
@@ -22,10 +23,10 @@ const InputFactoryHandshakeTime defaultHandshakeTimeInput = (
 
 class HandshakeTime implements IHandshakeTime {
   HandshakeTime(InputHandshakeTime input)
-      : handshakeTimeframe = input.handshakeTimeframe,
-        handshakeDuration = input.handshakeDuration,
-        startHandshakeTime = input.startHandshakeTime,
-        endHandshakeTime = input.endHandshakeTime;
+    : handshakeTimeframe = input.handshakeTimeframe,
+      handshakeDuration = input.handshakeDuration,
+      startHandshakeTime = input.startHandshakeTime,
+      endHandshakeTime = input.endHandshakeTime;
 
   final int handshakeTimeframe;
   final int handshakeDuration;
@@ -33,19 +34,26 @@ class HandshakeTime implements IHandshakeTime {
   final DateTime endHandshakeTime;
 
   static Future<HandshakeTime> createAsync(
-      InputFactoryHandshakeTime input) async {
+    InputFactoryHandshakeTime input,
+  ) async {
     final clock = NTPClock();
     await clock.refresh();
     final now = clock.now();
     return HandshakeTime((
-      handshakeTimeframe: input.handshakeTimeframe ??
+      handshakeTimeframe:
+          input.handshakeTimeframe ??
           defaultHandshakeTimeInput.handshakeTimeframe!,
-      handshakeDuration: input.handshakeDuration ??
+      handshakeDuration:
+          input.handshakeDuration ??
           defaultHandshakeTimeInput.handshakeDuration!,
       startHandshakeTime: now,
-      endHandshakeTime: now.add(Duration(
-          seconds: input.whenLastHandshake ??
-              defaultHandshakeTimeInput.whenLastHandshake!)),
+      endHandshakeTime: now.add(
+        Duration(
+          seconds:
+              input.whenLastHandshake ??
+              defaultHandshakeTimeInput.whenLastHandshake!,
+        ),
+      ),
     ));
   }
 

@@ -29,14 +29,19 @@ class KeepAliveTimer implements IKeepAliveTimer {
 
     if (Zone.current == Zone.root) {
       instance._boundCallback = wrappedCallback;
-      instance._internalTimer =
-          Zone.current.createPeriodicTimer(duration, wrappedCallback);
+      instance._internalTimer = Zone.current.createPeriodicTimer(
+        duration,
+        wrappedCallback,
+      );
     } else {
-      final boundCallback =
-          Zone.current.bindUnaryCallbackGuarded<Timer>(wrappedCallback);
+      final boundCallback = Zone.current.bindUnaryCallbackGuarded<Timer>(
+        wrappedCallback,
+      );
       instance._boundCallback = boundCallback;
-      instance._internalTimer =
-          Zone.current.createPeriodicTimer(duration, boundCallback);
+      instance._internalTimer = Zone.current.createPeriodicTimer(
+        duration,
+        boundCallback,
+      );
     }
 
     instance._isRunning = true;
