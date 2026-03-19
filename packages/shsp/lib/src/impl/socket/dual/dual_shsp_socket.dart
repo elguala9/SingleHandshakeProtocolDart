@@ -106,7 +106,6 @@ class DualShspSocket
   IShspSocket? get ipv6Socket => ipv6SocketImpl;
 
   /// Get the underlying RawDatagramSocket from the IPv4 socket (for backward compatibility)
-  @override
   RawDatagramSocket get socket => ipv4SocketImpl.socket;
 
   /// Getters for message mixin
