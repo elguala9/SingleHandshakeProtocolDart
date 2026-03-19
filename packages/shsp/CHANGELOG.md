@@ -7,6 +7,28 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [1.3.0] - 2026-03-19
+
+### Added
+
+- **`IShspSocket` implements `RawDatagramSocket`**: The socket interface now extends `RawDatagramSocket` directly,
+  making `IShspSocket` a full drop-in replacement for `RawDatagramSocket` in any Dart API
+  - `ShspSocketWrapper` provides complete delegation of all `RawDatagramSocket` members
+    (`address`, `port`, `send`, `receive`, `broadcastEnabled`, `multicastLoopback`, `multicastHops`,
+    `multicastInterface`, `readEventsEnabled`, `writeEventsEnabled`, `joinMulticast`, `leaveMulticast`, etc.)
+  - Added `_raw` computed getter in `ShspSocketWrapper` — automatically reflects the current underlying socket after any swap
+
+### Changed
+
+- **`IShspSocket`**: Added explicit `destroy()` method to the interface contract
+- **`IDualShspSocket`**: Removed redundant `socket` getter — `RawDatagramSocket` access is now inherited through `IShspSocket`
+- **`DualShspSocketWrapper`**: Removed `socket` override for the same reason
+- Removed redundant imports in `dual_shsp_socket.dart` and `initialize_point.dart`
+
+### Breaking Changes
+
+- Any class implementing `IShspSocket` must now also implement all `RawDatagramSocket` members
+
 ## [1.2.4] - 2026-03-19
 
 ### Fixed
