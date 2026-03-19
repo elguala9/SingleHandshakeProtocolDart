@@ -2,9 +2,11 @@ import 'dart:io';
 import 'package:test/test.dart';
 import 'package:shsp/shsp.dart';
 
-
-typedef IShspPeerFactory = IShspPeer Function(
-    {required PeerInfo remotePeer, required IShspSocket socket});
+typedef IShspPeerFactory =
+    IShspPeer Function({
+      required PeerInfo remotePeer,
+      required IShspSocket socket,
+    });
 
 void testIShspPeer(IShspPeerFactory peerFactory) {
   group('IShspPeer', () {
@@ -37,39 +39,41 @@ void testIShspPeer(IShspPeerFactory peerFactory) {
       socketB.close();
     });
 
-    test('onMessage should trigger only for messages from remotePeer',
-        () async {
-      final testMsg = [42, 99, 77];
-      final wrongMsg = [1, 2, 3];
-      bool received = false;
+    test(
+      'onMessage should trigger only for messages from remotePeer',
+      () async {
+        final testMsg = [42, 99, 77];
+        final wrongMsg = [1, 2, 3];
+        bool received = false;
 
-      peerA.messageCallback.register((info) {
-        received = true;
-        expect(info.address, equals(peerInfoB.address));
-        expect(info.port, equals(peerInfoB.port));
-      });
+        peerA.messageCallback.register((info) {
+          received = true;
+          expect(info.address, equals(peerInfoB.address));
+          expect(info.port, equals(peerInfoB.port));
+        });
 
-      // Invio da peerB a peerA (deve attivare la callback)
-      peerB.sendMessage(testMsg);
-      await Future.delayed(const Duration(milliseconds: 200));
-      expect(received, isTrue);
+        // Invio da peerB a peerA (deve attivare la callback)
+        peerB.sendMessage(testMsg);
+        await Future.delayed(const Duration(milliseconds: 200));
+        expect(received, isTrue);
 
-      // Invio da peerC a peerA (non deve attivare la callback)
-      final address = InternetAddress.loopbackIPv4;
-      final socketC = await ShspSocket.bind(address, 0);
-      final peerC = peerFactory(remotePeer: peerInfoA, socket: socketC);
-      received = false;
-      peerC.sendMessage([99, 88, 77]);
-      await Future.delayed(const Duration(milliseconds: 200));
-      expect(received, isFalse);
-      socketC.close();
+        // Invio da peerC a peerA (non deve attivare la callback)
+        final address = InternetAddress.loopbackIPv4;
+        final socketC = await ShspSocket.bind(address, 0);
+        final peerC = peerFactory(remotePeer: peerInfoA, socket: socketC);
+        received = false;
+        peerC.sendMessage([99, 88, 77]);
+        await Future.delayed(const Duration(milliseconds: 200));
+        expect(received, isFalse);
+        socketC.close();
 
-      // Reset e invio da socketA a peerA (non deve attivare la callback)
-      received = false;
-      socketA.sendTo(wrongMsg, peerInfoA);
-      await Future.delayed(const Duration(milliseconds: 200));
-      expect(received, isFalse);
-    });
+        // Reset e invio da socketA a peerA (non deve attivare la callback)
+        received = false;
+        socketA.sendTo(wrongMsg, peerInfoA);
+        await Future.delayed(const Duration(milliseconds: 200));
+        expect(received, isFalse);
+      },
+    );
 
     test('peer should ignore UDP packets from unknown peer', () async {
       final address = InternetAddress.loopbackIPv4;
@@ -129,6 +133,8 @@ void testIShspPeer(IShspPeerFactory peerFactory) {
 }
 
 void main() {
-  testIShspPeer(({required remotePeer, required socket}) =>
-      ShspPeer(remotePeer: remotePeer, socket: socket));
+  testIShspPeer(
+    ({required remotePeer, required socket}) =>
+        ShspPeer(remotePeer: remotePeer, socket: socket),
+  );
 }

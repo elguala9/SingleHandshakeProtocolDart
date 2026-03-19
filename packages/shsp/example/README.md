@@ -9,7 +9,7 @@ This directory contains practical examples of using the Single HandShake Protoco
 The recommended starting point for most applications. Sets up the global socket singleton with IPv4/IPv6 support in one call.
 
 **Demonstrates:**
-- Using `initializePointShsp()` for easy setup
+- Using `initializePointDualShsp()` for easy setup
 - Accessing the global dual socket singleton
 - Setting up socket lifecycle callbacks
 - Extracting socket profiles

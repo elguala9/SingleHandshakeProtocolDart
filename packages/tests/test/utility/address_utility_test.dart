@@ -77,14 +77,16 @@ void main() {
         expect(parsed['port'], equals(8080));
       });
 
-      test('should not parse IPv6 address with current simple implementation',
-          () {
-        // Current implementation splits on ':' so IPv6 doesn't work
-        final parsed = AddressUtility.parseAddress('2001:db8::1:443');
+      test(
+        'should not parse IPv6 address with current simple implementation',
+        () {
+          // Current implementation splits on ':' so IPv6 doesn't work
+          final parsed = AddressUtility.parseAddress('2001:db8::1:443');
 
-        // This will fail because IPv6 has multiple colons
-        expect(parsed, isNull);
-      });
+          // This will fail because IPv6 has multiple colons
+          expect(parsed, isNull);
+        },
+      );
 
       test('should return null for invalid format', () {
         expect(AddressUtility.parseAddress('invalid'), isNull);
@@ -139,13 +141,14 @@ void main() {
       });
 
       test(
-          'should not create RemoteInfo from IPv6 string with current implementation',
-          () {
-        // Current implementation can't handle IPv6 due to multiple colons
-        final rinfo = AddressUtility.fromString('2001:db8::1:443');
+        'should not create RemoteInfo from IPv6 string with current implementation',
+        () {
+          // Current implementation can't handle IPv6 due to multiple colons
+          final rinfo = AddressUtility.fromString('2001:db8::1:443');
 
-        expect(rinfo, isNull);
-      });
+          expect(rinfo, isNull);
+        },
+      );
 
       test('should return null for invalid address format', () {
         expect(AddressUtility.fromString('invalid:8080'), isNull);

@@ -26,7 +26,8 @@ class RegistrySingletonShspSocket extends RegistryShspSocket {
     initializeDI();
   }
 
-  static final RegistrySingletonShspSocket _instance = RegistrySingletonShspSocket._internal();
+  static final RegistrySingletonShspSocket _instance =
+      RegistrySingletonShspSocket._internal();
 
   static RegistrySingletonShspSocket get instance => _instance;
 }

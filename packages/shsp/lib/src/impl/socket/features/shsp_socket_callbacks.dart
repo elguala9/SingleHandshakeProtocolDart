@@ -2,7 +2,8 @@ import 'package:meta/meta.dart';
 import '../../../types/callback_types.dart';
 import '../../../types/peer_types.dart';
 import '../../../types/remote_info.dart';
-import '../../../interfaces/i_shsp_instance.dart' show CallbackOn, CallbackOnError;
+import '../../../interfaces/i_shsp_instance.dart'
+    show CallbackOn, CallbackOnError;
 import '../../utility/message_callback_map.dart';
 
 /// Mixin for managing socket callbacks (message, close, error, listening)

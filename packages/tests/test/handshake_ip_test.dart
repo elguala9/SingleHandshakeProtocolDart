@@ -5,14 +5,22 @@ import 'package:shsp/shsp.dart';
 void main() {
   group('HandshakeIP', () {
     test('constructor should set all IP values correctly', () {
-      final publicIPv4 =
-          PeerInfo(address: InternetAddress('203.0.113.1'), port: 8080);
-      final publicIPv6 =
-          PeerInfo(address: InternetAddress('2001:db8::1'), port: 8080);
-      final localIPv4 =
-          PeerInfo(address: InternetAddress('192.168.1.100'), port: 9090);
-      final localIPv6 =
-          PeerInfo(address: InternetAddress('fe80::1'), port: 9090);
+      final publicIPv4 = PeerInfo(
+        address: InternetAddress('203.0.113.1'),
+        port: 8080,
+      );
+      final publicIPv6 = PeerInfo(
+        address: InternetAddress('2001:db8::1'),
+        port: 8080,
+      );
+      final localIPv4 = PeerInfo(
+        address: InternetAddress('192.168.1.100'),
+        port: 9090,
+      );
+      final localIPv6 = PeerInfo(
+        address: InternetAddress('fe80::1'),
+        port: 9090,
+      );
 
       final handshake = HandshakeIP((
         publicIPv4: publicIPv4,
@@ -42,10 +50,14 @@ void main() {
     });
 
     test('constructor with mixed null and non-null values should work', () {
-      final publicIPv4 =
-          PeerInfo(address: InternetAddress('203.0.113.1'), port: 8080);
-      final localIPv4 =
-          PeerInfo(address: InternetAddress('192.168.1.100'), port: 9090);
+      final publicIPv4 = PeerInfo(
+        address: InternetAddress('203.0.113.1'),
+        port: 8080,
+      );
+      final localIPv4 = PeerInfo(
+        address: InternetAddress('192.168.1.100'),
+        port: 9090,
+      );
 
       final handshake = HandshakeIP((
         publicIPv4: publicIPv4,
@@ -100,10 +112,14 @@ void main() {
         localIPv6: null,
       ));
 
-      expect(handshake.getPublicIPv4()?.address.type,
-          equals(InternetAddressType.IPv4));
-      expect(handshake.getLocalIPv4()?.address.type,
-          equals(InternetAddressType.IPv4));
+      expect(
+        handshake.getPublicIPv4()?.address.type,
+        equals(InternetAddressType.IPv4),
+      );
+      expect(
+        handshake.getLocalIPv4()?.address.type,
+        equals(InternetAddressType.IPv4),
+      );
     });
 
     test('IPv6 addresses should be properly handled', () {
@@ -117,10 +133,14 @@ void main() {
         localIPv6: peerInfo,
       ));
 
-      expect(handshake.getPublicIPv6()?.address.type,
-          equals(InternetAddressType.IPv6));
-      expect(handshake.getLocalIPv6()?.address.type,
-          equals(InternetAddressType.IPv6));
+      expect(
+        handshake.getPublicIPv6()?.address.type,
+        equals(InternetAddressType.IPv6),
+      );
+      expect(
+        handshake.getLocalIPv6()?.address.type,
+        equals(InternetAddressType.IPv6),
+      );
     });
 
     // Note: createAsync test è commentato perché richiede dipendenze STUN che potrebbero non essere disponibili in test

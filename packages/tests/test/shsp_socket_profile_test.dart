@@ -35,13 +35,22 @@ void main() {
       final profile = socketA.extractProfile();
 
       // Verify profile contains the callback
-      expect(profile.messageListeners.isNotEmpty, isTrue,
-          reason: 'Profile should contain message callbacks');
+      expect(
+        profile.messageListeners.isNotEmpty,
+        isTrue,
+        reason: 'Profile should contain message callbacks',
+      );
 
       // The key format should match the peer's address:port
-      final expectedKey = MessageCallbackMap.formatKey(peerB.address, peerB.port);
-      expect(profile.messageListeners.containsKey(expectedKey), isTrue,
-          reason: 'Profile should contain callback for the registered peer');
+      final expectedKey = MessageCallbackMap.formatKey(
+        peerB.address,
+        peerB.port,
+      );
+      expect(
+        profile.messageListeners.containsKey(expectedKey),
+        isTrue,
+        reason: 'Profile should contain callback for the registered peer',
+      );
     });
 
     test('extractProfile with multiple peers', () {
@@ -54,8 +63,11 @@ void main() {
 
       final profile = socketA.extractProfile();
 
-      expect(profile.messageListeners.length, equals(2),
-          reason: 'Profile should contain callbacks for both peers');
+      expect(
+        profile.messageListeners.length,
+        equals(2),
+        reason: 'Profile should contain callbacks for both peers',
+      );
     });
 
     test('withProfile restores callbacks to new socket', () async {
@@ -74,15 +86,20 @@ void main() {
 
       try {
         // Verify the callback is registered in the profile
-        final key =
-            MessageCallbackMap.formatKey(peerB.address, peerB.port);
-        expect(profile.messageListeners.containsKey(key), isTrue,
-            reason: 'Profile should contain the callback');
+        final key = MessageCallbackMap.formatKey(peerB.address, peerB.port);
+        expect(
+          profile.messageListeners.containsKey(key),
+          isTrue,
+          reason: 'Profile should contain the callback',
+        );
 
         // Verify that extracting from the new socket still has callbacks
         final newProfile = socketC.extractProfile();
-        expect(newProfile.messageListeners.containsKey(key), isTrue,
-            reason: 'Restored socket should have callback registered');
+        expect(
+          newProfile.messageListeners.containsKey(key),
+          isTrue,
+          reason: 'Restored socket should have callback registered',
+        );
       } finally {
         socketC.close();
       }
@@ -92,8 +109,11 @@ void main() {
       // Don't register any callbacks
       final profile = socketA.extractProfile();
 
-      expect(profile.messageListeners.isEmpty, isTrue,
-          reason: 'Profile should be empty when no callbacks registered');
+      expect(
+        profile.messageListeners.isEmpty,
+        isTrue,
+        reason: 'Profile should be empty when no callbacks registered',
+      );
     });
 
     test('withProfile with compression codec', () async {
@@ -133,8 +153,11 @@ void main() {
       );
 
       try {
-        expect(socketC.extractProfile().messageListeners.isNotEmpty, isTrue,
-            reason: 'First socket should have callbacks');
+        expect(
+          socketC.extractProfile().messageListeners.isNotEmpty,
+          isTrue,
+          reason: 'First socket should have callbacks',
+        );
 
         socketC.close();
 
@@ -146,8 +169,11 @@ void main() {
         );
 
         try {
-          expect(socketD.extractProfile().messageListeners.isNotEmpty, isTrue,
-              reason: 'Second socket should have callbacks from same profile');
+          expect(
+            socketD.extractProfile().messageListeners.isNotEmpty,
+            isTrue,
+            reason: 'Second socket should have callbacks from same profile',
+          );
         } finally {
           socketD.close();
         }

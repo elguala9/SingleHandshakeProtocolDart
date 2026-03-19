@@ -100,14 +100,11 @@ void main() {
     test('cancel() stops the timer', () async {
       int beforeCancelCount = 0;
 
-      timer = KeepAliveTimer.periodic(
-        const Duration(milliseconds: 50),
-        (_) {
-          if (timer.isActive) {
-            beforeCancelCount++;
-          }
-        },
-      );
+      timer = KeepAliveTimer.periodic(const Duration(milliseconds: 50), (_) {
+        if (timer.isActive) {
+          beforeCancelCount++;
+        }
+      });
 
       await Future.delayed(const Duration(milliseconds: 120));
       timer.cancel();

@@ -60,10 +60,12 @@ class ShspSocketWrapper implements IShspSocket, IValueForRegistry {
   void setCloseCallback(void Function() cb) => _socket.setCloseCallback(cb);
 
   @override
-  void setErrorCallback(void Function(dynamic err) cb) => _socket.setErrorCallback(cb);
+  void setErrorCallback(void Function(dynamic err) cb) =>
+      _socket.setErrorCallback(cb);
 
   @override
-  void setListeningCallback(void Function() cb) => _socket.setListeningCallback(cb);
+  void setListeningCallback(void Function() cb) =>
+      _socket.setListeningCallback(cb);
 
   @override
   void setMessageCallback(PeerInfo peer, MessageCallbackFunction cb) =>

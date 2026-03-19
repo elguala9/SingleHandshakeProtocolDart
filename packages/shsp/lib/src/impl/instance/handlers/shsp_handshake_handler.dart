@@ -1,8 +1,10 @@
 import '../../../interfaces/i_shsp_instance.dart';
 
 class ShspHandshakeHandlerOptions {
-  const ShspHandshakeHandlerOptions(
-      {this.timeoutMs = 5000, this.intervalOfSendingHandshakeMs = 500});
+  const ShspHandshakeHandlerOptions({
+    this.timeoutMs = 5000,
+    this.intervalOfSendingHandshakeMs = 500,
+  });
 
   final int timeoutMs;
   final int intervalOfSendingHandshakeMs;
@@ -12,8 +14,10 @@ class ShspHandshakeHandlerOptions {
 class ShspHandshakeHandler {
   /// Perform handshake procedure and return when connection is open
   static Future<IShspInstance> handshakeInstance(
-      IShspInstance instance, ShspHandshakeHandlerOptions options,
-      [void Function(IShspInstance instance)? onOpen]) async {
+    IShspInstance instance,
+    ShspHandshakeHandlerOptions options, [
+    void Function(IShspInstance instance)? onOpen,
+  ]) async {
     final int maxMs = options.timeoutMs;
     int elapsed = 0;
     final int interval = options.intervalOfSendingHandshakeMs;

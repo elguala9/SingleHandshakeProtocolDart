@@ -30,9 +30,10 @@ void main() {
         final invoker = callbackMap.get('127.0.0.1:8080');
         expect(invoker, isNotNull);
 
-        invoker!(
-          (msg: [1, 2, 3], rinfo: RemoteInfo(address: InternetAddress('127.0.0.1'), port: 8080)),
-        );
+        invoker!((
+          msg: [1, 2, 3],
+          rinfo: RemoteInfo(address: InternetAddress('127.0.0.1'), port: 8080),
+        ));
         expect(callbackExecuted, isTrue);
       });
 
@@ -80,7 +81,10 @@ void main() {
         expect(callbackMap.containsAddress(address, port), isTrue);
         final invoker = callbackMap.getByAddress(address, port);
         expect(invoker, isNotNull);
-        invoker!((msg: [1, 2, 3], rinfo: RemoteInfo(address: address, port: port)));
+        invoker!((
+          msg: [1, 2, 3],
+          rinfo: RemoteInfo(address: address, port: port),
+        ));
         expect(callbackExecuted, isTrue);
       });
 
@@ -98,7 +102,10 @@ void main() {
         expect(callbackMap.containsAddress(address, port), isTrue);
         final invoker = callbackMap.getByAddress(address, port);
         expect(invoker, isNotNull);
-        invoker!((msg: [1, 2, 3], rinfo: RemoteInfo(address: address, port: port)));
+        invoker!((
+          msg: [1, 2, 3],
+          rinfo: RemoteInfo(address: address, port: port),
+        ));
         expect(callbackExecuted, isTrue);
       });
 
@@ -118,14 +125,24 @@ void main() {
         void testCallback(MessageRecord record) {}
 
         callbackMap.addByAddress(
-            InternetAddress.loopbackIPv4, 8080, testCallback);
+          InternetAddress.loopbackIPv4,
+          8080,
+          testCallback,
+        );
         callbackMap.addByAddress(
-            InternetAddress.loopbackIPv6, 8080, testCallback);
+          InternetAddress.loopbackIPv6,
+          8080,
+          testCallback,
+        );
 
-        expect(callbackMap.containsAddress(InternetAddress.loopbackIPv4, 8080),
-            isTrue);
-        expect(callbackMap.containsAddress(InternetAddress.loopbackIPv6, 8080),
-            isTrue);
+        expect(
+          callbackMap.containsAddress(InternetAddress.loopbackIPv4, 8080),
+          isTrue,
+        );
+        expect(
+          callbackMap.containsAddress(InternetAddress.loopbackIPv6, 8080),
+          isTrue,
+        );
         expect(callbackMap.length, equals(2));
       });
     });
@@ -162,10 +179,14 @@ void main() {
       });
 
       test('should format loopback addresses', () {
-        final ipv4Key =
-            MessageCallbackMap.formatKey(InternetAddress.loopbackIPv4, 3000);
-        final ipv6Key =
-            MessageCallbackMap.formatKey(InternetAddress.loopbackIPv6, 3000);
+        final ipv4Key = MessageCallbackMap.formatKey(
+          InternetAddress.loopbackIPv4,
+          3000,
+        );
+        final ipv6Key = MessageCallbackMap.formatKey(
+          InternetAddress.loopbackIPv6,
+          3000,
+        );
 
         expect(ipv4Key, equals('127.0.0.1:3000'));
         expect(ipv6Key, equals('[::1]:3000'));
@@ -313,12 +334,18 @@ void main() {
         callbackMap.add('peer1', callback1);
         callbackMap.add('peer2', callback2);
 
-        callbackMap.get('peer1')!(
-            (msg: [1], rinfo: RemoteInfo(address: InternetAddress('127.0.0.1'), port: 1)));
-        callbackMap.get('peer2')!(
-            (msg: [2], rinfo: RemoteInfo(address: InternetAddress('127.0.0.1'), port: 2)));
-        callbackMap.get('peer1')!(
-            (msg: [3], rinfo: RemoteInfo(address: InternetAddress('127.0.0.1'), port: 1)));
+        callbackMap.get('peer1')!((
+          msg: [1],
+          rinfo: RemoteInfo(address: InternetAddress('127.0.0.1'), port: 1),
+        ));
+        callbackMap.get('peer2')!((
+          msg: [2],
+          rinfo: RemoteInfo(address: InternetAddress('127.0.0.1'), port: 2),
+        ));
+        callbackMap.get('peer1')!((
+          msg: [3],
+          rinfo: RemoteInfo(address: InternetAddress('127.0.0.1'), port: 1),
+        ));
 
         expect(callback1Count, equals(2));
         expect(callback2Count, equals(1));
@@ -334,10 +361,14 @@ void main() {
         callbackMap.addByAddress(InternetAddress('2001:db8::1'), 80, callback2);
 
         expect(callbackMap.length, equals(2));
-        expect(callbackMap.containsAddress(InternetAddress('192.168.1.1'), 80),
-            isTrue);
-        expect(callbackMap.containsAddress(InternetAddress('2001:db8::1'), 80),
-            isTrue);
+        expect(
+          callbackMap.containsAddress(InternetAddress('192.168.1.1'), 80),
+          isTrue,
+        );
+        expect(
+          callbackMap.containsAddress(InternetAddress('2001:db8::1'), 80),
+          isTrue,
+        );
 
         final keys = callbackMap.keys.toList();
         expect(keys, contains('192.168.1.1:80'));
@@ -360,8 +391,14 @@ void main() {
         final invoker8080 = callbackMap.getByAddress(address, 8080)!;
         final invoker8081 = callbackMap.getByAddress(address, 8081)!;
 
-        invoker8080((msg: [1], rinfo: RemoteInfo(address: address, port: 8080)));
-        invoker8081((msg: [2], rinfo: RemoteInfo(address: address, port: 8081)));
+        invoker8080((
+          msg: [1],
+          rinfo: RemoteInfo(address: address, port: 8080),
+        ));
+        invoker8081((
+          msg: [2],
+          rinfo: RemoteInfo(address: address, port: 8081),
+        ));
 
         expect(callback1Count, equals(1));
         expect(callback2Count, equals(1));
@@ -390,7 +427,10 @@ void main() {
         callbackMap.add(key, callback2);
         invoker = callbackMap.get(key)!;
         invoker((msg: testMsg, rinfo: testRinfo));
-        expect(callback1Count, equals(1)); // callback1 should not be called again
+        expect(
+          callback1Count,
+          equals(1),
+        ); // callback1 should not be called again
         expect(callback2Count, equals(1)); // callback2 should be called
         expect(callbackMap.length, equals(1));
       });

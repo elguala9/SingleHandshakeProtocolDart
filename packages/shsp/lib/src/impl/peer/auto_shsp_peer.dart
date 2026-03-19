@@ -55,12 +55,11 @@ class AutoShspPeer extends ShspPeer {
     required PeerInfo remotePeer,
     required IShspSocket socket,
     MessageCallback? messageCallback,
-  }) =>
-      AutoShspPeer._(
-        remotePeer: remotePeer,
-        socket: socket,
-        messageCallback: messageCallback,
-      );
+  }) => AutoShspPeer._(
+    remotePeer: remotePeer,
+    socket: socket,
+    messageCallback: messageCallback,
+  );
 
   /// Crea un [AutoShspPeer] per comunicare con [remotePeer].
   ///

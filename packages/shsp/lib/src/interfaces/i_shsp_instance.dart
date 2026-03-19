@@ -2,9 +2,7 @@ import 'i_shsp_peer.dart';
 import 'package:callback_handler/callback_handler.dart';
 import '../types/instance_profile.dart';
 
-
-
-typedef CallbackOn =  CallbackHandler<void, void>;
+typedef CallbackOn = CallbackHandler<void, void>;
 typedef CallbackOnError = CallbackHandler<dynamic, void>;
 
 /// Interface for SHSP Instance
@@ -21,7 +19,7 @@ abstract interface class IShspInstance implements IShspPeer {
 
   /// Get the keep-alive interval in seconds
   int get keepAliveSeconds;
- 
+
   CallbackOn get onHandshake;
   CallbackOn get onOpen;
   CallbackOn get onClosing;

@@ -18,14 +18,15 @@ void main() {
     });
 
     test(
-        'ShspSocketInfoSingleton returns always the same instance with defaults',
-        () {
-      final a = ShspSocketInfoSingleton();
-      final b = ShspSocketInfoSingleton();
-      expect(a, same(b));
-      expect(a.address, equals('127.0.0.1'));
-      expect(a.port, equals(6969));
-    });
+      'ShspSocketInfoSingleton returns always the same instance with defaults',
+      () {
+        final a = ShspSocketInfoSingleton();
+        final b = ShspSocketInfoSingleton();
+        expect(a, same(b));
+        expect(a.address, equals('127.0.0.1'));
+        expect(a.port, equals(6969));
+      },
+    );
 
     test('ShspInstanceHandlerSingleton returns always the same instance', () {
       final a = ShspInstanceHandlerSingleton();

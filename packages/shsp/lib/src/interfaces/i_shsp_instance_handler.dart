@@ -6,7 +6,10 @@ typedef Opts = ({InstanceCallback? instanceCallback});
 
 abstract interface class IShspInstanceHandler {
   Future<IShspInstance> initiateShsp(
-      PeerInfo remotePeer, IShspInstance instance, Opts opts);
+    PeerInfo remotePeer,
+    IShspInstance instance,
+    Opts opts,
+  );
   Future<IShspInstance?> getShsp(PeerInfo remotePeer);
   Future<IShspInstance> getShspSafe(PeerInfo remotePeer);
   void close(PeerInfo remotePeer);

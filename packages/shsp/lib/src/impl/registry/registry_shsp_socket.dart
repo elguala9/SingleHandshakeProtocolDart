@@ -12,10 +12,7 @@ enum SocketType {
   final int value;
 }
 
-enum ReturnTypeInitialization {
-  ipv4and6,
-  ipv4only;
-}
+enum ReturnTypeInitialization { ipv4and6, ipv4only }
 
 class InputRegistryShspSocket {
   InputRegistryShspSocket({
@@ -44,7 +41,7 @@ class InputRegistryShspSocket {
 class RegistryShspSocket with Registry<SocketType, IShspSocket> {
   RegistryShspSocket();
 
-  factory RegistryShspSocket.initializeDI(){
+  factory RegistryShspSocket.initializeDI() {
     final instance = RegistryShspSocket();
     instance.initializeDI();
     return instance;
@@ -62,8 +59,6 @@ class RegistryShspSocket with Registry<SocketType, IShspSocket> {
     }
     return ReturnTypeInitialization.ipv4only;
   }
-
-
 
   /// Initialize using a DI-provided [IDualShspSocket].
   ReturnTypeInitialization initializeDI() =>
@@ -85,7 +80,9 @@ class RegistryShspSocket with Registry<SocketType, IShspSocket> {
         input.ipv6Port,
       );
     } catch (e) {
-      print('Warning: IPv6 socket binding failed - IPv6 may not be available: $e');
+      print(
+        'Warning: IPv6 socket binding failed - IPv6 may not be available: $e',
+      );
     }
 
     final dualSocket = DualShspSocket.fromSockets(

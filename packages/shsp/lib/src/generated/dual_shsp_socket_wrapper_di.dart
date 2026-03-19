@@ -7,8 +7,8 @@ import 'dart:io';
 import 'package:meta/meta.dart';
 import '../../shsp.dart';
 
-class DualShspSocketWrapperDI extends DualShspSocketWrapper implements ISingletonStandardDI {
-
+class DualShspSocketWrapperDI extends DualShspSocketWrapper
+    implements ISingletonStandardDI {
   DualShspSocketWrapperDI() : super();
 
   factory DualShspSocketWrapperDI.initializeDI() {

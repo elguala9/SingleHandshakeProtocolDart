@@ -12,8 +12,6 @@ class DualShspSocketWrapper implements IDualShspSocket, IValueForRegistry {
 
   DualShspSocketWrapper.createFromSocket(this.dualSocket);
 
-  
-
   @isInjected
   @protected
   late IDualShspSocket dualSocket;
@@ -30,7 +28,8 @@ class DualShspSocketWrapper implements IDualShspSocket, IValueForRegistry {
   RawDatagramSocket get socket => dualSocket.socket;
 
   @override
-  void applyProfile(ShspSocketProfile profile) => dualSocket.applyProfile(profile);
+  void applyProfile(ShspSocketProfile profile) =>
+      dualSocket.applyProfile(profile);
 
   @override
   void close() => dualSocket.close();
@@ -67,7 +66,8 @@ class DualShspSocketWrapper implements IDualShspSocket, IValueForRegistry {
       dualSocket.removeMessageCallback(peer, cb);
 
   @override
-  int sendTo(List<int> buffer, PeerInfo peer) => dualSocket.sendTo(buffer, peer);
+  int sendTo(List<int> buffer, PeerInfo peer) =>
+      dualSocket.sendTo(buffer, peer);
 
   @override
   String serializedObject() => dualSocket.serializedObject();
@@ -76,10 +76,12 @@ class DualShspSocketWrapper implements IDualShspSocket, IValueForRegistry {
   void setCloseCallback(void Function() cb) => dualSocket.setCloseCallback(cb);
 
   @override
-  void setErrorCallback(void Function(dynamic err) cb) => dualSocket.setErrorCallback(cb);
+  void setErrorCallback(void Function(dynamic err) cb) =>
+      dualSocket.setErrorCallback(cb);
 
   @override
-  void setListeningCallback(void Function() cb) => dualSocket.setListeningCallback(cb);
+  void setListeningCallback(void Function() cb) =>
+      dualSocket.setListeningCallback(cb);
 
   @override
   void setMessageCallback(PeerInfo peer, MessageCallbackFunction cb) =>

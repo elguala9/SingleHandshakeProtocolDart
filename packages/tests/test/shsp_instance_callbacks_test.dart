@@ -47,10 +47,17 @@ void main() {
       instanceB.sendHandshake();
       await Future.delayed(const Duration(milliseconds: 500));
 
-      expect(handshakeCalled, isTrue,
-          reason: 'onHandshake callback should be called when handshake is received');
-      expect(callCount, equals(1),
-          reason: 'onHandshake callback should be called once');
+      expect(
+        handshakeCalled,
+        isTrue,
+        reason:
+            'onHandshake callback should be called when handshake is received',
+      );
+      expect(
+        callCount,
+        equals(1),
+        reason: 'onHandshake callback should be called once',
+      );
     });
 
     test('onOpen callback is called when connection is opened', () async {
@@ -71,39 +78,55 @@ void main() {
       instanceB.sendHandshake();
       await Future.delayed(const Duration(milliseconds: 500));
 
-      expect(openCalled, isTrue,
-          reason: 'onOpen callback should be called when connection is opened');
-      expect(callCount, equals(1),
-          reason: 'onOpen callback should be called once when connection opens');
+      expect(
+        openCalled,
+        isTrue,
+        reason: 'onOpen callback should be called when connection is opened',
+      );
+      expect(
+        callCount,
+        equals(1),
+        reason: 'onOpen callback should be called once when connection opens',
+      );
     });
 
-    test('onClosing callback is called when closing signal is received', () async {
-      bool closingCalled = false;
-      int callCount = 0;
+    test(
+      'onClosing callback is called when closing signal is received',
+      () async {
+        bool closingCalled = false;
+        int callCount = 0;
 
-      // First establish connection (synchronized pattern)
-      instanceA.sendHandshake();
-      instanceB.sendHandshake();
-      await Future.delayed(const Duration(milliseconds: 500));
-      instanceA.sendHandshake();
-      instanceB.sendHandshake();
-      await Future.delayed(const Duration(milliseconds: 500));
+        // First establish connection (synchronized pattern)
+        instanceA.sendHandshake();
+        instanceB.sendHandshake();
+        await Future.delayed(const Duration(milliseconds: 500));
+        instanceA.sendHandshake();
+        instanceB.sendHandshake();
+        await Future.delayed(const Duration(milliseconds: 500));
 
-      // Register callback listener
-      instanceA.onClosing.register((_) {
-        closingCalled = true;
-        callCount++;
-      });
+        // Register callback listener
+        instanceA.onClosing.register((_) {
+          closingCalled = true;
+          callCount++;
+        });
 
-      // Send closing signal
-      instanceB.sendClosing();
-      await Future.delayed(const Duration(milliseconds: 500));
+        // Send closing signal
+        instanceB.sendClosing();
+        await Future.delayed(const Duration(milliseconds: 500));
 
-      expect(closingCalled, isTrue,
-          reason: 'onClosing callback should be called when closing signal is received');
-      expect(callCount, equals(1),
-          reason: 'onClosing callback should be called once');
-    });
+        expect(
+          closingCalled,
+          isTrue,
+          reason:
+              'onClosing callback should be called when closing signal is received',
+        );
+        expect(
+          callCount,
+          equals(1),
+          reason: 'onClosing callback should be called once',
+        );
+      },
+    );
 
     test('onClose callback is called when closed signal is received', () async {
       bool closeCalled = false;
@@ -127,10 +150,17 @@ void main() {
       instanceB.sendClosed();
       await Future.delayed(const Duration(milliseconds: 500));
 
-      expect(closeCalled, isTrue,
-          reason: 'onClose callback should be called when closed signal is received');
-      expect(callCount, equals(1),
-          reason: 'onClose callback should be called once');
+      expect(
+        closeCalled,
+        isTrue,
+        reason:
+            'onClose callback should be called when closed signal is received',
+      );
+      expect(
+        callCount,
+        equals(1),
+        reason: 'onClose callback should be called once',
+      );
     });
 
     test('multiple callbacks can be registered on the same event', () async {
@@ -149,10 +179,16 @@ void main() {
       instanceB.sendHandshake();
       await Future.delayed(const Duration(milliseconds: 500));
 
-      expect(callCountCallback1, equals(1),
-          reason: 'First callback should be called once');
-      expect(callCountCallback2, equals(1),
-          reason: 'Second callback should be called once');
+      expect(
+        callCountCallback1,
+        equals(1),
+        reason: 'First callback should be called once',
+      );
+      expect(
+        callCountCallback2,
+        equals(1),
+        reason: 'Second callback should be called once',
+      );
     });
 
     test('callbacks are called in the correct sequence', () async {
@@ -185,13 +221,22 @@ void main() {
       instanceB.sendClosed();
       await Future.delayed(const Duration(milliseconds: 500));
 
-      expect(callSequence, containsAll(['handshake', 'open', 'closing', 'close']),
-          reason: 'All callbacks should be called');
+      expect(
+        callSequence,
+        containsAll(['handshake', 'open', 'closing', 'close']),
+        reason: 'All callbacks should be called',
+      );
       // Verify order: handshake should come before open, closing before close
-      expect(callSequence.indexOf('handshake'), lessThan(callSequence.indexOf('open')),
-          reason: 'handshake callback should be called before open callback');
-      expect(callSequence.indexOf('closing'), lessThan(callSequence.indexOf('close')),
-          reason: 'closing callback should be called before close callback');
+      expect(
+        callSequence.indexOf('handshake'),
+        lessThan(callSequence.indexOf('open')),
+        reason: 'handshake callback should be called before open callback',
+      );
+      expect(
+        callSequence.indexOf('closing'),
+        lessThan(callSequence.indexOf('close')),
+        reason: 'closing callback should be called before close callback',
+      );
     });
   });
 }

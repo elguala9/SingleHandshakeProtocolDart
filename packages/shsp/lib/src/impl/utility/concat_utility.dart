@@ -57,8 +57,10 @@ class ConcatUtility {
       } else if (item is List<int>) {
         byteArrays.add(Uint8List.fromList(item));
       } else {
-        throw ArgumentError('Unsupported type: ${item.runtimeType}. '
-            'Only String, Uint8List, and List<int> are supported.');
+        throw ArgumentError(
+          'Unsupported type: ${item.runtimeType}. '
+          'Only String, Uint8List, and List<int> are supported.',
+        );
       }
     }
 

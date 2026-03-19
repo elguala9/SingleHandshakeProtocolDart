@@ -50,16 +50,31 @@ void main() {
       final profile = instanceA.extractProfile();
 
       // Verify profile contains the expected listeners
-      expect(profile.onHandshakeListeners.length, equals(1),
-          reason: 'Profile should contain 1 handshake listener');
-      expect(profile.onOpenListeners.length, equals(1),
-          reason: 'Profile should contain 1 open listener');
-      expect(profile.onMessageListeners.length, equals(1),
-          reason: 'Profile should contain 1 message listener');
-      expect(profile.onClosingListeners.length, equals(0),
-          reason: 'Profile should contain 0 closing listeners');
-      expect(profile.onCloseListeners.length, equals(0),
-          reason: 'Profile should contain 0 close listeners');
+      expect(
+        profile.onHandshakeListeners.length,
+        equals(1),
+        reason: 'Profile should contain 1 handshake listener',
+      );
+      expect(
+        profile.onOpenListeners.length,
+        equals(1),
+        reason: 'Profile should contain 1 open listener',
+      );
+      expect(
+        profile.onMessageListeners.length,
+        equals(1),
+        reason: 'Profile should contain 1 message listener',
+      );
+      expect(
+        profile.onClosingListeners.length,
+        equals(0),
+        reason: 'Profile should contain 0 closing listeners',
+      );
+      expect(
+        profile.onCloseListeners.length,
+        equals(0),
+        reason: 'Profile should contain 0 close listeners',
+      );
     });
 
     test('extractProfile includes keepAliveSeconds configuration', () {
@@ -68,8 +83,11 @@ void main() {
 
       final profile = instanceA.extractProfile();
 
-      expect(profile.keepAliveSeconds, equals(customKeepAlive),
-          reason: 'Profile should capture the keepAliveSeconds setting');
+      expect(
+        profile.keepAliveSeconds,
+        equals(customKeepAlive),
+        reason: 'Profile should capture the keepAliveSeconds setting',
+      );
     });
 
     test('withProfile restores callbacks to a new instance', () async {
@@ -85,8 +103,11 @@ void main() {
       final profile = instanceA.extractProfile();
 
       // Create a new instance with the profile
-      final instanceC =
-          ShspInstance.withProfile(remotePeer: peerInfoB, socket: socketC, profile: profile);
+      final instanceC = ShspInstance.withProfile(
+        remotePeer: peerInfoB,
+        socket: socketC,
+        profile: profile,
+      );
 
       // Simulate receiving a handshake message on the new instance
       await Future.delayed(const Duration(milliseconds: 100));
@@ -94,12 +115,18 @@ void main() {
       await Future.delayed(const Duration(milliseconds: 500));
 
       // The handshake callback should have been called on instanceC
-      expect(handshakeCalled, isTrue,
-          reason: 'Handshake callback should be called on restored instance');
+      expect(
+        handshakeCalled,
+        isTrue,
+        reason: 'Handshake callback should be called on restored instance',
+      );
 
       // Verify keep-alive was restored
-      expect(instanceC.keepAliveSeconds, equals(instanceA.keepAliveSeconds),
-          reason: 'Keep-alive seconds should be restored from profile');
+      expect(
+        instanceC.keepAliveSeconds,
+        equals(instanceA.keepAliveSeconds),
+        reason: 'Keep-alive seconds should be restored from profile',
+      );
 
       // Clean up
       instanceC.close();
@@ -118,23 +145,38 @@ void main() {
       final profile = instanceA.extractProfile();
 
       // Create new instance with profile
-      final instanceC =
-          ShspInstance.withProfile(remotePeer: peerInfoB, socket: socketC, profile: profile);
+      final instanceC = ShspInstance.withProfile(
+        remotePeer: peerInfoB,
+        socket: socketC,
+        profile: profile,
+      );
 
       // Verify all listeners were restored
-      expect(instanceC.onHandshake.map.length, equals(2),
-          reason: 'Both handshake listeners should be restored');
-      expect(instanceC.onOpen.map.length, equals(1),
-          reason: 'Open listener should be restored');
+      expect(
+        instanceC.onHandshake.map.length,
+        equals(2),
+        reason: 'Both handshake listeners should be restored',
+      );
+      expect(
+        instanceC.onOpen.map.length,
+        equals(1),
+        reason: 'Open listener should be restored',
+      );
 
       // Simulate handshake
       instanceB.sendHandshake();
       await Future.delayed(const Duration(milliseconds: 500));
 
-      expect(handshakeCall1, equals(1),
-          reason: 'First handshake callback should be called once');
-      expect(handshakeCall2, equals(1),
-          reason: 'Second handshake callback should be called once');
+      expect(
+        handshakeCall1,
+        equals(1),
+        reason: 'First handshake callback should be called once',
+      );
+      expect(
+        handshakeCall2,
+        equals(1),
+        reason: 'Second handshake callback should be called once',
+      );
 
       instanceC.close();
     });
@@ -148,18 +190,27 @@ void main() {
       final profile = instanceA.extractProfile();
 
       // Create new instance
-      final instanceC =
-          ShspInstance.withProfile(remotePeer: peerInfoB, socket: socketC, profile: profile);
+      final instanceC = ShspInstance.withProfile(
+        remotePeer: peerInfoB,
+        socket: socketC,
+        profile: profile,
+      );
 
       // Verify callback is registered
-      expect(instanceC.onHandshake.map.length, equals(1),
-          reason: 'Listener should be registered on new instance');
+      expect(
+        instanceC.onHandshake.map.length,
+        equals(1),
+        reason: 'Listener should be registered on new instance',
+      );
 
       // Unregister the callback using the extracted listener
       instanceC.onHandshake.unregister(profile.onHandshakeListeners[0]);
 
-      expect(instanceC.onHandshake.map.length, equals(0),
-          reason: 'Listener should be unregistered');
+      expect(
+        instanceC.onHandshake.map.length,
+        equals(0),
+        reason: 'Listener should be unregistered',
+      );
 
       instanceC.close();
     });
@@ -172,16 +223,28 @@ void main() {
       final profile = instanceA.extractProfile();
 
       // Create new instance with profile
-      final instanceC =
-          ShspInstance.withProfile(remotePeer: peerInfoB, socket: socketC, profile: profile);
+      final instanceC = ShspInstance.withProfile(
+        remotePeer: peerInfoB,
+        socket: socketC,
+        profile: profile,
+      );
 
       // New instance should start fresh, not inherit connection state
-      expect(instanceC.handshake, isFalse,
-          reason: 'New instance should start with handshake=false');
-      expect(instanceC.open, isFalse,
-          reason: 'New instance should start with open=false');
-      expect(instanceC.closing, isFalse,
-          reason: 'New instance should start with closing=false');
+      expect(
+        instanceC.handshake,
+        isFalse,
+        reason: 'New instance should start with handshake=false',
+      );
+      expect(
+        instanceC.open,
+        isFalse,
+        reason: 'New instance should start with open=false',
+      );
+      expect(
+        instanceC.closing,
+        isFalse,
+        reason: 'New instance should start with closing=false',
+      );
 
       instanceC.close();
     });
@@ -195,11 +258,17 @@ void main() {
       final profile = instanceA.extractProfile();
 
       // Create first instance with profile
-      final instanceC =
-          ShspInstance.withProfile(remotePeer: peerInfoB, socket: socketC, profile: profile);
+      final instanceC = ShspInstance.withProfile(
+        remotePeer: peerInfoB,
+        socket: socketC,
+        profile: profile,
+      );
 
-      expect(instanceC.onHandshake.map.length, equals(1),
-          reason: 'First instance should have the listener');
+      expect(
+        instanceC.onHandshake.map.length,
+        equals(1),
+        reason: 'First instance should have the listener',
+      );
 
       instanceC.close();
 

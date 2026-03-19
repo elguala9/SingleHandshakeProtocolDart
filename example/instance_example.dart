@@ -22,7 +22,9 @@ void main() async {
 
   // Register message callback
   instance.messageCallback.register((peerInfo) {
-    print('User message received from ${peerInfo.address.address}:${peerInfo.port}\n');
+    print(
+      'User message received from ${peerInfo.address.address}:${peerInfo.port}\n',
+    );
   });
 
   // Simulate receiving protocol messages

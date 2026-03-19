@@ -4,10 +4,7 @@ import 'package:shsp/shsp.dart';
 
 /// Example service that depends on SHSP abstractions
 class MessageService {
-  MessageService({
-    required this.socket,
-    required this.callbacks,
-  });
+  MessageService({required this.socket, required this.callbacks});
 
   final IShspSocket socket;
   final IMessageCallbackMap callbacks;
@@ -23,11 +20,7 @@ class MessageService {
   }
 
   /// Send data to a remote peer
-  int sendToPeer(
-    InternetAddress address,
-    int port,
-    List<int> data,
-  ) {
+  int sendToPeer(InternetAddress address, int port, List<int> data) {
     final peerInfo = PeerInfo(address: address, port: port);
     return socket.sendTo(Uint8List.fromList(data), peerInfo);
   }
@@ -68,18 +61,20 @@ void main() async {
 
   // Send some data
   print('Sending data to registered peers...');
-  final bytesSent1 = messageService.sendToPeer(
-    remoteAddress1,
-    9000,
-    [1, 2, 3, 4, 5],
-  );
+  final bytesSent1 = messageService.sendToPeer(remoteAddress1, 9000, [
+    1,
+    2,
+    3,
+    4,
+    5,
+  ]);
   print('✓ Sent $bytesSent1 bytes to peer1');
 
-  final bytesSent2 = messageService.sendToPeer(
-    remoteAddress2,
-    9001,
-    [10, 20, 30],
-  );
+  final bytesSent2 = messageService.sendToPeer(remoteAddress2, 9001, [
+    10,
+    20,
+    30,
+  ]);
   print('✓ Sent $bytesSent2 bytes to peer2\n');
 
   // Benefits of using interfaces:

@@ -7,7 +7,8 @@ import '../../../types/remote_info.dart';
 import '../../../types/socket_profile.dart';
 import '../../../interfaces/exceptions/shsp_exceptions.dart';
 import '../../../interfaces/i_compression_codec.dart';
-import '../../../interfaces/i_shsp_instance.dart' show CallbackOn, CallbackOnError;
+import '../../../interfaces/i_shsp_instance.dart'
+    show CallbackOn, CallbackOnError;
 import '../../../interfaces/i_shsp_socket.dart';
 import '../../utility/message_callback_map.dart';
 import '../../utility/raw_shsp_socket.dart';
@@ -17,7 +18,10 @@ import '../features/shsp_socket_profile.dart';
 
 /// SHSP Socket implementation wrapping RawDatagramSocket
 class ShspSocket extends RawShspSocket
-    with ShspSocketCallbacksMixin, ShspSocketCompressionMixin, ShspSocketProfileMixin
+    with
+        ShspSocketCallbacksMixin,
+        ShspSocketCompressionMixin,
+        ShspSocketProfileMixin
     implements IShspSocket, IValueForRegistry {
   /// Internal constructor for factory creation
   ShspSocket.internal(
@@ -179,10 +183,15 @@ class ShspSocket extends RawShspSocket
 
     final rawSocket = await RawDatagramSocket.bind(address, port);
     final callbacks = MessageCallbackMap();
-    final shspSocket = ShspSocket.internal(rawSocket, callbacks, compressionCodec);
+    final shspSocket = ShspSocket.internal(
+      rawSocket,
+      callbacks,
+      compressionCodec,
+    );
 
     shspSocket._localAddress = address;
-    shspSocket._localPort = rawSocket.port;  // Read actual port from OS, not parameter
+    shspSocket._localPort =
+        rawSocket.port; // Read actual port from OS, not parameter
 
     shspSocket.invokeOnListening();
 
