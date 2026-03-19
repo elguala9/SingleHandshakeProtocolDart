@@ -7,6 +7,17 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [1.2.4] - 2026-03-19
+
+### Fixed
+
+- **Incomplete `shsp.dart` barrel**: Regenerated root library with all missing exports
+  - Added factory interfaces: `i_shsp_instance_factory`, `i_shsp_peer_factory`, `i_shsp_socket_factory`
+  - Added utility interfaces: `i_address_utility`, `i_callback_map`, `i_keep_alive_timer`, `i_message_callback_map`, `i_message_callback_map_singleton`, `i_raw_shsp_socket`, `i_shsp_socket_info_singleton`
+  - Added socket features: `shsp_socket_callbacks`, `shsp_socket_compression`, `shsp_socket_profile`
+  - Added dual socket: `dual_shsp_socket_message`, `dual_shsp_socket_profile`
+  - Reorganized exports in alphabetical/logical order
+
 ## [1.2.3] - 2026-03-19
 
 ### Fixed
