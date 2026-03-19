@@ -8,7 +8,7 @@ This is a unified monorepo containing the SHSP package and its comprehensive tes
 
 ```
 packages/
-├── shsp/               # Main unified SHSP package (v1.2.2)
+├── shsp/               # Main unified SHSP package (v1.2.3)
 │   ├── lib/
 │   │   ├── src/
 │   │   │   ├── interfaces/     # Protocol contracts (IShspSocket, IShspPeer, etc.)
@@ -34,7 +34,7 @@ Add to your `pubspec.yaml`:
 
 ```yaml
 dependencies:
-  shsp: ^1.2.2
+  shsp: ^1.2.3
 ```
 
 Then run:

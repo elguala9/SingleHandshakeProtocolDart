@@ -12,6 +12,7 @@ export 'i_shsp_instance.dart';
 export 'i_shsp_instance_handler.dart';
 export 'i_shsp_peer.dart';
 export 'i_shsp_socket.dart';
+export 'i_shsp_socket_base.dart';
 export 'socket/i_dual_shsp_socket.dart';
 export 'socket/i_simple_dual_socket_singleton.dart';
 export 'utility/i_address_utility.dart';
