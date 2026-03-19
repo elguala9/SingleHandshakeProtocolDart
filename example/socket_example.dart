@@ -26,7 +26,9 @@ void main() async {
     port: 8081,
   );
   socket.setMessageCallback(remotePeer, (record) {
-    print('Received message from ${record.rinfo.address.address}:${record.rinfo.port}');
+    print(
+      'Received message from ${record.rinfo.address.address}:${record.rinfo.port}',
+    );
     print('Message: ${String.fromCharCodes(record.msg)}');
   });
 

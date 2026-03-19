@@ -15,8 +15,9 @@ import './factory_inputs.dart';
 /// See IShspSocketFactory for the interface contract
 class ShspSocketFactory {
   static ShspSocket create(
-          RawDatagramSocket socket, MessageCallbackMap messageCallbacks) =>
-      ShspSocket.internal(socket, messageCallbacks);
+    RawDatagramSocket socket,
+    MessageCallbackMap messageCallbacks,
+  ) => ShspSocket.internal(socket, messageCallbacks);
 
   /// Create a ShspSocket providing only a RawDatagramSocket.
   /// This will create a default MessageCallbackMap internally.
@@ -35,14 +36,17 @@ class ShspSocketFactory {
 /// Static factory for creating ShspPeer instances
 /// See IShspPeerFactory for the interface contract
 class ShspPeerFactory {
-  static ShspPeer create(
-          {required PeerInfo remotePeer, required IShspSocket socket}) =>
-      ShspPeer(remotePeer: remotePeer, socket: socket);
+  static ShspPeer create({
+    required PeerInfo remotePeer,
+    required IShspSocket socket,
+  }) => ShspPeer(remotePeer: remotePeer, socket: socket);
 
   /// Create a ShspPeer from a RemoteInfo object and a raw socket.
   /// This will build required dependencies (MessageCallbackMap and ShspSocket) internally.
-  static ShspPeer createFromRemoteInfo(
-      {required PeerInfo remotePeer, required RawDatagramSocket rawSocket}) {
+  static ShspPeer createFromRemoteInfo({
+    required PeerInfo remotePeer,
+    required RawDatagramSocket rawSocket,
+  }) {
     final messageCallbacks = MessageCallbackMapFactory.create();
     final shspSocket = ShspSocketFactory.create(rawSocket, messageCallbacks);
     return ShspPeer(remotePeer: remotePeer, socket: shspSocket);
@@ -56,7 +60,9 @@ class ShspPeerFactory {
     }
     if (config.rawSocket != null) {
       return createFromRemoteInfo(
-          remotePeer: config.remotePeer, rawSocket: config.rawSocket!);
+        remotePeer: config.remotePeer,
+        rawSocket: config.rawSocket!,
+      );
     }
     // Fallback: create a RawDatagramSocket bound to any IPv4 port
     // Note: binding is synchronous here; callers can prefer to pass a rawSocket.
@@ -75,12 +81,11 @@ class ShspInstanceFactory {
     required PeerInfo remotePeer,
     required IShspSocket socket,
     int keepAliveSeconds = 30,
-  }) =>
-      ShspInstance(
-        remotePeer: remotePeer,
-        socket: socket,
-        keepAliveSeconds: keepAliveSeconds,
-      );
+  }) => ShspInstance(
+    remotePeer: remotePeer,
+    socket: socket,
+    keepAliveSeconds: keepAliveSeconds,
+  );
 
   /// Create a ShspInstance from PeerInfo and a RawDatagramSocket, building dependencies.
   static ShspInstance createFromSocket({
@@ -101,24 +106,27 @@ class ShspInstanceFactory {
   static ShspInstance createFromConfig(ShspInstanceInput config) {
     if (config.socket != null) {
       return ShspInstance(
-          remotePeer: config.remotePeer,
-          socket: config.socket!,
-          keepAliveSeconds: config.keepAliveSeconds);
+        remotePeer: config.remotePeer,
+        socket: config.socket!,
+        keepAliveSeconds: config.keepAliveSeconds,
+      );
     }
     if (config.rawSocket != null) {
       return createFromSocket(
-          remotePeer: config.remotePeer,
-          rawSocket: config.rawSocket!,
-          keepAliveSeconds: config.keepAliveSeconds);
+        remotePeer: config.remotePeer,
+        rawSocket: config.rawSocket!,
+        keepAliveSeconds: config.keepAliveSeconds,
+      );
     }
     final raw =
         RawDatagramSocket.bind(InternetAddress.anyIPv4, 0) as RawDatagramSocket;
     final messageCallbacks = MessageCallbackMapFactory.create();
     final shspSocket = ShspSocketFactory.create(raw, messageCallbacks);
     return ShspInstance(
-        remotePeer: config.remotePeer,
-        socket: shspSocket,
-        keepAliveSeconds: config.keepAliveSeconds);
+      remotePeer: config.remotePeer,
+      socket: shspSocket,
+      keepAliveSeconds: config.keepAliveSeconds,
+    );
   }
 
   /// Create a `ShspInstance` from an existing profile extracted from another instance.
@@ -130,12 +138,11 @@ class ShspInstanceFactory {
     required PeerInfo remotePeer,
     required IShspSocket socket,
     required ShspInstanceProfile profile,
-  }) =>
-      ShspInstance.withProfile(
-        remotePeer: remotePeer,
-        socket: socket,
-        profile: profile,
-      );
+  }) => ShspInstance.withProfile(
+    remotePeer: remotePeer,
+    socket: socket,
+    profile: profile,
+  );
 }
 
 // Inputs are defined in factory_inputs.dart

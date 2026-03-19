@@ -27,10 +27,7 @@ void main() {
     });
 
     test('should handle port 0', () {
-      final rinfo = RemoteInfo(
-        address: InternetAddress.loopbackIPv4,
-        port: 0,
-      );
+      final rinfo = RemoteInfo(address: InternetAddress.loopbackIPv4, port: 0);
 
       expect(rinfo.port, equals(0));
     });
@@ -72,10 +69,7 @@ void main() {
     });
 
     test('should deserialize from JSON correctly', () {
-      final json = {
-        'address': '172.16.0.1',
-        'port': 3000,
-      };
+      final json = {'address': '172.16.0.1', 'port': 3000};
 
       final rinfo = RemoteInfo.fromJson(json);
 
@@ -120,10 +114,7 @@ void main() {
       ];
 
       for (final ip in privateIPs) {
-        final rinfo = RemoteInfo(
-          address: InternetAddress(ip),
-          port: 8080,
-        );
+        final rinfo = RemoteInfo(address: InternetAddress(ip), port: 8080);
 
         expect(rinfo.address.address, equals(ip));
         expect(rinfo.address.type, equals(InternetAddressType.IPv4));
@@ -141,10 +132,14 @@ void main() {
 
     test('should differentiate between different IPs same port', () {
       const port = 8080;
-      final rinfo1 =
-          RemoteInfo(address: InternetAddress('10.0.0.1'), port: port);
-      final rinfo2 =
-          RemoteInfo(address: InternetAddress('10.0.0.2'), port: port);
+      final rinfo1 = RemoteInfo(
+        address: InternetAddress('10.0.0.1'),
+        port: port,
+      );
+      final rinfo2 = RemoteInfo(
+        address: InternetAddress('10.0.0.2'),
+        port: port,
+      );
 
       expect(rinfo1.port, equals(rinfo2.port));
       expect(rinfo1.address.address, isNot(equals(rinfo2.address.address)));

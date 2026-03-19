@@ -34,33 +34,43 @@ void main() {
     });
 
     test('Initial handshake and open flags are false', () {
-      expect(instanceA.handshake,
-          isFalse); // handshake deve essere false all'inizio per A
       expect(
-          instanceA.open, isFalse); // open deve essere false all'inizio per A
-      expect(instanceB.handshake,
-          isFalse); // handshake deve essere false all'inizio per B
+        instanceA.handshake,
+        isFalse,
+      ); // handshake deve essere false all'inizio per A
       expect(
-          instanceB.open, isFalse); // open deve essere false all'inizio per B
+        instanceA.open,
+        isFalse,
+      ); // open deve essere false all'inizio per A
+      expect(
+        instanceB.handshake,
+        isFalse,
+      ); // handshake deve essere false all'inizio per B
+      expect(
+        instanceB.open,
+        isFalse,
+      ); // open deve essere false all'inizio per B
     });
 
-    test('Closing flag is true after closing message and cannot send message',
-        () async {
-      instanceB.sendHandshake();
-      instanceA.sendHandshake();
-      await Future.delayed(const Duration(milliseconds: 500));
-      instanceB.sendHandshake();
-      instanceA.sendHandshake();
-      await Future.delayed(const Duration(milliseconds: 500));
-      expect(instanceA.open, isTrue); // open deve essere true dopo handshake
-      instanceB.sendClosing();
-      await Future.delayed(const Duration(milliseconds: 500));
-      expect(instanceB.closing, isTrue);
-      expect(instanceA.open, isTrue);
+    test(
+      'Closing flag is true after closing message and cannot send message',
+      () async {
+        instanceB.sendHandshake();
+        instanceA.sendHandshake();
+        await Future.delayed(const Duration(milliseconds: 500));
+        instanceB.sendHandshake();
+        instanceA.sendHandshake();
+        await Future.delayed(const Duration(milliseconds: 500));
+        expect(instanceA.open, isTrue); // open deve essere true dopo handshake
+        instanceB.sendClosing();
+        await Future.delayed(const Duration(milliseconds: 500));
+        expect(instanceB.closing, isTrue);
+        expect(instanceA.open, isTrue);
 
-      expect(() => instanceA.sendMessage([1, 2, 3]), throwsException);
-      expect(() => instanceB.sendMessage([1, 2, 3]), throwsException);
-    });
+        expect(() => instanceA.sendMessage([1, 2, 3]), throwsException);
+        expect(() => instanceB.sendMessage([1, 2, 3]), throwsException);
+      },
+    );
 
     test('Open flag is false after closed message', () async {
       instanceB.sendHandshake();

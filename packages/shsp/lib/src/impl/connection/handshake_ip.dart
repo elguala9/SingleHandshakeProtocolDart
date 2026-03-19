@@ -13,18 +13,18 @@ typedef InputHandshakeIP = ({
 
 class HandshakeIP implements IHandshakeIP {
   HandshakeIP(InputHandshakeIP input)
-      : publicIPv4 = input.publicIPv4,
-        publicIPv6 = input.publicIPv6,
-        localIPv4 = input.localIPv4,
-        localIPv6 = input.localIPv6;
+    : publicIPv4 = input.publicIPv4,
+      publicIPv6 = input.publicIPv6,
+      localIPv4 = input.localIPv4,
+      localIPv6 = input.localIPv6;
 
   HandshakeIP._iPv6(this.publicIPv6, this.localIPv6)
-      : publicIPv4 = null,
-        localIPv4 = null;
+    : publicIPv4 = null,
+      localIPv4 = null;
 
   HandshakeIP._iPv4(this.publicIPv4, this.localIPv4)
-      : publicIPv6 = null,
-        localIPv6 = null;
+    : publicIPv6 = null,
+      localIPv6 = null;
 
   PeerInfo? publicIPv4;
   PeerInfo? publicIPv6;
@@ -33,27 +33,31 @@ class HandshakeIP implements IHandshakeIP {
 
   static Future<HandshakeIP> createAsync(RawDatagramSocket socket) async {
     // Configure STUN handler
-    final input = (
-      address: null,
-      port: null,
-      socket: socket,
-    );
+    final input = (address: null, port: null, socket: socket);
     final handler = StunHandler(input);
     final local = await handler.performLocalRequest();
     final public = await handler.performStunRequest();
     if (socket.address.type == InternetAddressType.IPv4) {
       return HandshakeIP._iPv4(
         PeerInfo(
-            address: InternetAddress(public.publicIp), port: public.publicPort),
+          address: InternetAddress(public.publicIp),
+          port: public.publicPort,
+        ),
         PeerInfo(
-            address: InternetAddress(local.localIp), port: local.localPort),
+          address: InternetAddress(local.localIp),
+          port: local.localPort,
+        ),
       );
     } else {
       return HandshakeIP._iPv6(
         PeerInfo(
-            address: InternetAddress(public.publicIp), port: public.publicPort),
+          address: InternetAddress(public.publicIp),
+          port: public.publicPort,
+        ),
         PeerInfo(
-            address: InternetAddress(local.localIp), port: local.localPort),
+          address: InternetAddress(local.localIp),
+          port: local.localPort,
+        ),
       );
     }
   }
@@ -72,11 +76,7 @@ class HandshakeIP implements IHandshakeIP {
   static Future<HandshakeIP> createAsyncDual(DualShspSocket dualSocket) async {
     // Query IPv4 socket (always present)
     final ipv4RawSocket = dualSocket.ipv4Socket.socket;
-    final ipv4Input = (
-      address: null,
-      port: null,
-      socket: ipv4RawSocket,
-    );
+    final ipv4Input = (address: null, port: null, socket: ipv4RawSocket);
     final ipv4Handler = StunHandler(ipv4Input);
     final ipv4Local = await ipv4Handler.performLocalRequest();
     final ipv4Public = await ipv4Handler.performStunRequest();
@@ -97,11 +97,7 @@ class HandshakeIP implements IHandshakeIP {
     if (dualSocket.ipv6Socket != null) {
       try {
         final ipv6RawSocket = dualSocket.ipv6Socket!.socket;
-        final ipv6Input = (
-          address: null,
-          port: null,
-          socket: ipv6RawSocket,
-        );
+        final ipv6Input = (address: null, port: null, socket: ipv6RawSocket);
         final ipv6Handler = StunHandler(ipv6Input);
         final ipv6Local = await ipv6Handler.performLocalRequest();
         final ipv6Public = await ipv6Handler.performStunRequest();
@@ -120,14 +116,12 @@ class HandshakeIP implements IHandshakeIP {
       }
     }
 
-    return HandshakeIP(
-      (
-        publicIPv4: ipv4PublicPeer,
-        localIPv4: ipv4LocalPeer,
-        publicIPv6: ipv6PublicPeer,
-        localIPv6: ipv6LocalPeer,
-      ),
-    );
+    return HandshakeIP((
+      publicIPv4: ipv4PublicPeer,
+      localIPv4: ipv4LocalPeer,
+      publicIPv6: ipv6PublicPeer,
+      localIPv6: ipv6LocalPeer,
+    ));
   }
 
   @override

@@ -2,14 +2,15 @@ import 'dart:io';
 import 'package:test/test.dart';
 import 'package:shsp/shsp.dart';
 
-
 import 'shsp_peer_test.dart';
 
 void main() {
   group('AutoShspPeer - IShspPeer Compliance', () {
     // Run the existing IShspPeer compliance suite using the withSocket factory
-    testIShspPeer(({required remotePeer, required socket}) =>
-        AutoShspPeer.withSocket(remotePeer: remotePeer, socket: socket));
+    testIShspPeer(
+      ({required remotePeer, required socket}) =>
+          AutoShspPeer.withSocket(remotePeer: remotePeer, socket: socket),
+    );
   });
 
   group('AutoShspPeer - Singleton behavior', () {
@@ -52,10 +53,16 @@ void main() {
       final singleton2 = ShspSocketSingleton.getCurrent();
 
       // Verify same singleton instance is used
-      expect(identical(singleton1, singleton2), isTrue,
-          reason: 'Both peers should use the same singleton socket');
-      expect(identical(peer1.socket, peer2.socket), isTrue,
-          reason: 'Both peers should share the same underlying socket');
+      expect(
+        identical(singleton1, singleton2),
+        isTrue,
+        reason: 'Both peers should use the same singleton socket',
+      );
+      expect(
+        identical(peer1.socket, peer2.socket),
+        isTrue,
+        reason: 'Both peers should share the same underlying socket',
+      );
     });
 
     test('close() closes peer but not singleton socket', () async {
@@ -67,14 +74,20 @@ void main() {
       final peer = await AutoShspPeer.create(remotePeer: remotePeer);
       final singleton = ShspSocketSingleton.getCurrent();
 
-      expect(singleton!.isClosed, isFalse,
-          reason: 'Singleton should be open before close');
+      expect(
+        singleton!.isClosed,
+        isFalse,
+        reason: 'Singleton should be open before close',
+      );
 
       peer.close();
 
       // Singleton socket should still be open
-      expect(singleton.isClosed, isFalse,
-          reason: 'Singleton socket should remain open after peer.close()');
+      expect(
+        singleton.isClosed,
+        isFalse,
+        reason: 'Singleton socket should remain open after peer.close()',
+      );
 
       // Peer should not be able to send messages anymore
       expect(
@@ -95,12 +108,18 @@ void main() {
       final peerToB = await AutoShspPeer.create(remotePeer: remotePeerB);
 
       // Verify they share the same socket
-      expect(identical(peerToA.socket, peerToB.socket), isTrue,
-          reason: 'Multiple peers should share the same singleton socket');
+      expect(
+        identical(peerToA.socket, peerToB.socket),
+        isTrue,
+        reason: 'Multiple peers should share the same singleton socket',
+      );
 
       // Verify both peers have different remote peers
-      expect(peerToA.remotePeer, isNot(equals(peerToB.remotePeer)),
-          reason: 'Peers should have different remote peer addresses');
+      expect(
+        peerToA.remotePeer,
+        isNot(equals(peerToB.remotePeer)),
+        reason: 'Peers should have different remote peer addresses',
+      );
 
       // Verify both peers exist and are not closed
       expect(peerToA.remotePeer.port, equals(9000));
@@ -157,41 +176,52 @@ void main() {
 
       final singleton = ShspSocketSingleton.getCurrent()!;
 
-      expect(singleton.localAddress, equals(address),
-          reason: 'Singleton should use specified address');
-      expect(singleton.localPort, isNotNull,
-          reason: 'Singleton should have assigned port');
+      expect(
+        singleton.localAddress,
+        equals(address),
+        reason: 'Singleton should use specified address',
+      );
+      expect(
+        singleton.localPort,
+        isNotNull,
+        reason: 'Singleton should have assigned port',
+      );
     });
 
-    test('create() ignores parameters if singleton already initialized',
-        () async {
-      final address1 = InternetAddress.loopbackIPv4;
-      final remotePeer1 = PeerInfo(address: address1, port: 8000);
+    test(
+      'create() ignores parameters if singleton already initialized',
+      () async {
+        final address1 = InternetAddress.loopbackIPv4;
+        final remotePeer1 = PeerInfo(address: address1, port: 8000);
 
-      // Create first peer with specific address
-      await AutoShspPeer.create(
-        remotePeer: remotePeer1,
-        address: address1,
-        port: 0,
-      );
+        // Create first peer with specific address
+        await AutoShspPeer.create(
+          remotePeer: remotePeer1,
+          address: address1,
+          port: 0,
+        );
 
-      final port1 = ShspSocketSingleton.getCurrent()!.localPort;
+        final port1 = ShspSocketSingleton.getCurrent()!.localPort;
 
-      // Create second peer (parameters should be ignored)
-      final remotePeer2 = PeerInfo(address: address1, port: 8001);
-      await AutoShspPeer.create(
-        remotePeer: remotePeer2,
-        address: InternetAddress.anyIPv4, // Different address, should be ignored
-        port: 9999, // Different port, should be ignored
-      );
+        // Create second peer (parameters should be ignored)
+        final remotePeer2 = PeerInfo(address: address1, port: 8001);
+        await AutoShspPeer.create(
+          remotePeer: remotePeer2,
+          address:
+              InternetAddress.anyIPv4, // Different address, should be ignored
+          port: 9999, // Different port, should be ignored
+        );
 
-      final port2 = ShspSocketSingleton.getCurrent()!.localPort;
+        final port2 = ShspSocketSingleton.getCurrent()!.localPort;
 
-      // Port should remain the same (parameters were ignored)
-      expect(port1, equals(port2),
-          reason:
-              'Singleton should ignore parameters on subsequent calls');
-    });
+        // Port should remain the same (parameters were ignored)
+        expect(
+          port1,
+          equals(port2),
+          reason: 'Singleton should ignore parameters on subsequent calls',
+        );
+      },
+    );
 
     test('messages are routed to correct peer by remotePeer key', () async {
       final address = InternetAddress.loopbackIPv4;
@@ -217,8 +247,11 @@ void main() {
       peerB.messageCallback.register((_) => callbacksB.add(true));
 
       // Both peers use the same socket but are routed independently
-      expect(identical(peerA.socket, peerB.socket), isTrue,
-          reason: 'Both peers must share the same socket');
+      expect(
+        identical(peerA.socket, peerB.socket),
+        isTrue,
+        reason: 'Both peers must share the same socket',
+      );
 
       // Verify each peer's remotePeer is distinct
       expect(peerA.remotePeer.port, equals(portA));
@@ -245,26 +278,31 @@ void main() {
       serverB.close();
     });
 
-    test('withSocket factory creates peer with explicit socket for testing',
-        () async {
-      final testSocket = await ShspSocket.bind(InternetAddress.loopbackIPv4, 0);
+    test(
+      'withSocket factory creates peer with explicit socket for testing',
+      () async {
+        final testSocket = await ShspSocket.bind(
+          InternetAddress.loopbackIPv4,
+          0,
+        );
 
-      final remotePeer = PeerInfo(
-        address: InternetAddress.loopbackIPv4,
-        port: 9000,
-      );
+        final remotePeer = PeerInfo(
+          address: InternetAddress.loopbackIPv4,
+          port: 9000,
+        );
 
-      // Use withSocket to inject explicit socket (for testing)
-      final peer = AutoShspPeer.withSocket(
-        remotePeer: remotePeer,
-        socket: testSocket,
-      );
+        // Use withSocket to inject explicit socket (for testing)
+        final peer = AutoShspPeer.withSocket(
+          remotePeer: remotePeer,
+          socket: testSocket,
+        );
 
-      // Verify peer uses the injected socket
-      expect(identical(peer.socket, testSocket), isTrue);
+        // Verify peer uses the injected socket
+        expect(identical(peer.socket, testSocket), isTrue);
 
-      // Cleanup
-      testSocket.close();
-    });
+        // Cleanup
+        testSocket.close();
+      },
+    );
   });
 }

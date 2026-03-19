@@ -8,11 +8,11 @@ import '../../types/peer_types.dart';
 
 /// SHSP Peer implementation
 class ShspPeer implements IShspPeer, IValueForRegistry {
-  ShspPeer(
-      {required this.remotePeer,
-      required this.socket,
-      MessageCallback? messageCallback}) {
-
+  ShspPeer({
+    required this.remotePeer,
+    required this.socket,
+    MessageCallback? messageCallback,
+  }) {
     if (messageCallback != null) {
       _messageCallback = messageCallback;
     } else {
@@ -20,11 +20,9 @@ class ShspPeer implements IShspPeer, IValueForRegistry {
     }
     _socketCallback = (record) {
       onMessage(
-          record.msg,
-          PeerInfo(
-            address: record.rinfo.address,
-            port: record.rinfo.port,
-          ));
+        record.msg,
+        PeerInfo(address: record.rinfo.address, port: record.rinfo.port),
+      );
     };
 
     // Register this peer with the socket so it receives messages
@@ -58,10 +56,7 @@ class ShspPeer implements IShspPeer, IValueForRegistry {
   factory ShspPeer.create({
     required PeerInfo remotePeer,
     required IShspSocket socket,
-  }) => ShspPeer(
-    remotePeer: remotePeer,
-    socket: socket,
-  );
+  }) => ShspPeer(remotePeer: remotePeer, socket: socket);
 
   /// Maximum UDP message size (65507 = 65535 - 8 bytes UDP header - 20 bytes IP header)
   static const int maxMessageSize = 65507;

@@ -4,14 +4,14 @@ import '../../types/callback_types.dart';
 import '../../interfaces/utility/i_message_callback_map.dart';
 
 typedef CallbackOnMessage = CallbackHandler<MessageRecord, void>;
+
 /// A specialized callback map for handling messages from remote endpoints
 /// Supports both IPv4 and IPv6 addresses
 /// Key format:
 /// - IPv4: "192.168.1.100:8080"
 /// - IPv6: "[2001:db8::1]:8080"
 class MessageCallbackMap implements IMessageCallbackMap {
-  final Map<String, CallbackOnMessage>
-      _handlers = {};
+  final Map<String, CallbackOnMessage> _handlers = {};
 
   /// Add a callback for a specific remote endpoint
   /// Key format: IPv4 "192.168.1.100:8080" or IPv6 "[2001:db8::1]:8080"
@@ -34,21 +34,21 @@ class MessageCallbackMap implements IMessageCallbackMap {
 
   /// Add a callback using InternetAddress and port
   @override
-  void addByAddress(InternetAddress address, int port,
-      MessageCallbackFunction callback) {
+  void addByAddress(
+    InternetAddress address,
+    int port,
+    MessageCallbackFunction callback,
+  ) {
     final key = formatKey(address, port);
     add(key, callback);
   }
 
   /// Get a callback invoker using InternetAddress and port
   @override
-  MessageCallbackFunction? getByAddress(
-      InternetAddress address, int port) {
+  MessageCallbackFunction? getByAddress(InternetAddress address, int port) {
     final key = formatKey(address, port);
     return get(key);
   }
-
-
 
   /// Remove the callback for a key
   @override

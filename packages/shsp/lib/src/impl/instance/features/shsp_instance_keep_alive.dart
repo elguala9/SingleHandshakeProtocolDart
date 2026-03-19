@@ -41,7 +41,10 @@ mixin ShspInstanceKeepAliveMixin {
         } catch (e, stackTrace) {
           // Log error but don't crash the timer
           // In production, use a proper logger
-          log('Error in keep-alive callback: $e\n$stackTrace', name: 'ShspInstance');
+          log(
+            'Error in keep-alive callback: $e\n$stackTrace',
+            name: 'ShspInstance',
+          );
           // Optionally close the connection on repeated errors
         }
       },

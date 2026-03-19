@@ -8,8 +8,9 @@ class RemoteInfo {
   RemoteInfo({required this.address, required this.port});
 
   factory RemoteInfo.fromJson(Map<String, dynamic> json) => RemoteInfo(
-    address:
-        const InternetAddressConverter().fromJson(json['address'] as String),
+    address: const InternetAddressConverter().fromJson(
+      json['address'] as String,
+    ),
     port: (json['port'] as num).toInt(),
   );
 

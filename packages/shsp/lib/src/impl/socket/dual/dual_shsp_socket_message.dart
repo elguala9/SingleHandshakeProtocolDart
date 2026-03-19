@@ -22,7 +22,8 @@ mixin DualShspSocketMessageMixin {
   /// Returns true if the callback was found and removed from at least one socket.
   bool removeMessageCallback(PeerInfo peer, MessageCallbackFunction cb) {
     final ipv4Removed = ipv4SocketForMessages.removeMessageCallback(peer, cb);
-    final ipv6Removed = ipv6SocketForMessages?.removeMessageCallback(peer, cb) ?? false;
+    final ipv6Removed =
+        ipv6SocketForMessages?.removeMessageCallback(peer, cb) ?? false;
     return ipv4Removed || ipv6Removed;
   }
 }

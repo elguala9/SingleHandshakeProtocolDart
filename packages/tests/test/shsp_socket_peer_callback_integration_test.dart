@@ -69,64 +69,69 @@ void main() {
     });
 
     test(
-        'Secondary peers send messages to both principals, both receive correctly',
-        () async {
-      final completer1 = Completer<void>();
-      final completer2 = Completer<void>();
-      final completer3 = Completer<void>();
-      final completer4 = Completer<void>();
+      'Secondary peers send messages to both principals, both receive correctly',
+      () async {
+        final completer1 = Completer<void>();
+        final completer2 = Completer<void>();
+        final completer3 = Completer<void>();
+        final completer4 = Completer<void>();
 
-      principalPeer1.messageCallback.register((info) {
-        print(
-            'principalPeer1 callback: from port=${info.port}');
-        expect(info.address, principalInfo.address);
-        expect(info.port, peerPort1);
-        if (!completer1.isCompleted) completer1.complete();
-      });
-      principalPeer2.messageCallback.register((info) {
-        print(
-            'principalPeer2 callback: from port=${info.port}');
-        expect(info.address, principalInfo.address);
-        expect(info.port, peerPort2);
-        if (!completer2.isCompleted) completer2.complete();
-      });
-      principalPeer3.messageCallback.register((info) {
-        print(
-            'principalPeer3 callback: from port=${info.port}');
-        expect(info.address, principalInfo.address);
-        expect(info.port, peerPort3);
-        if (!completer3.isCompleted) completer3.complete();
-      });
-      principalPeer4.messageCallback.register((info) {
-        print(
-            'principalPeer4 callback: from port=${info.port}');
-        expect(info.address, principalInfo.address);
-        expect(info.port, peerPort4);
-        if (!completer4.isCompleted) completer4.complete();
-      });
+        principalPeer1.messageCallback.register((info) {
+          print('principalPeer1 callback: from port=${info.port}');
+          expect(info.address, principalInfo.address);
+          expect(info.port, peerPort1);
+          if (!completer1.isCompleted) completer1.complete();
+        });
+        principalPeer2.messageCallback.register((info) {
+          print('principalPeer2 callback: from port=${info.port}');
+          expect(info.address, principalInfo.address);
+          expect(info.port, peerPort2);
+          if (!completer2.isCompleted) completer2.complete();
+        });
+        principalPeer3.messageCallback.register((info) {
+          print('principalPeer3 callback: from port=${info.port}');
+          expect(info.address, principalInfo.address);
+          expect(info.port, peerPort3);
+          if (!completer3.isCompleted) completer3.complete();
+        });
+        principalPeer4.messageCallback.register((info) {
+          print('principalPeer4 callback: from port=${info.port}');
+          expect(info.address, principalInfo.address);
+          expect(info.port, peerPort4);
+          if (!completer4.isCompleted) completer4.complete();
+        });
 
-      // Invio dei messaggi dai peer secondari
-      peer1.sendMessage(message1.codeUnits);
-      peer2.sendMessage(message2.codeUnits);
-      peer3.sendMessage(message3.codeUnits);
-      peer4.sendMessage(message4.codeUnits);
+        // Invio dei messaggi dai peer secondari
+        peer1.sendMessage(message1.codeUnits);
+        peer2.sendMessage(message2.codeUnits);
+        peer3.sendMessage(message3.codeUnits);
+        peer4.sendMessage(message4.codeUnits);
 
-      // Attendi che tutte le callback siano chiamate (o timeout)
-      await Future.wait([
-        completer1.future.timeout(const Duration(seconds: 5),
-            onTimeout: () => fail('Timeout attesa callback 1')),
-        completer2.future.timeout(const Duration(seconds: 5),
-            onTimeout: () => fail('Timeout attesa callback 2')),
-        completer3.future.timeout(const Duration(seconds: 5),
-            onTimeout: () => fail('Timeout attesa callback 3')),
-        completer4.future.timeout(const Duration(seconds: 5),
-            onTimeout: () => fail('Timeout attesa callback 4')),
-      ]);
+        // Attendi che tutte le callback siano chiamate (o timeout)
+        await Future.wait([
+          completer1.future.timeout(
+            const Duration(seconds: 5),
+            onTimeout: () => fail('Timeout attesa callback 1'),
+          ),
+          completer2.future.timeout(
+            const Duration(seconds: 5),
+            onTimeout: () => fail('Timeout attesa callback 2'),
+          ),
+          completer3.future.timeout(
+            const Duration(seconds: 5),
+            onTimeout: () => fail('Timeout attesa callback 3'),
+          ),
+          completer4.future.timeout(
+            const Duration(seconds: 5),
+            onTimeout: () => fail('Timeout attesa callback 4'),
+          ),
+        ]);
 
-      peer1.sendMessage(message1.codeUnits);
-      peer2.sendMessage(message2.codeUnits);
-      peer3.sendMessage(message3.codeUnits);
-      peer4.sendMessage(message4.codeUnits);
-    });
+        peer1.sendMessage(message1.codeUnits);
+        peer2.sendMessage(message2.codeUnits);
+        peer3.sendMessage(message3.codeUnits);
+        peer4.sendMessage(message4.codeUnits);
+      },
+    );
   });
 }

@@ -45,7 +45,9 @@ void main() {
 
         expect(compressed.length, lessThan(repetitiveData.length));
         expect(ratio, greaterThan(50)); // Should compress >50%
-        print('LZ4 compression: ${repetitiveData.length} → ${compressed.length} bytes (${ratio.toStringAsFixed(1)}%)');
+        print(
+          'LZ4 compression: ${repetitiveData.length} → ${compressed.length} bytes (${ratio.toStringAsFixed(1)}%)',
+        );
       });
 
       test('should handle empty data', () {
@@ -63,7 +65,9 @@ void main() {
 
         expect(decompressed, equals(largeData));
         final ratio = ((1 - (compressed.length / largeData.length)) * 100);
-        print('LZ4 large data: ${largeData.length} → ${compressed.length} bytes (${ratio.toStringAsFixed(1)}%)');
+        print(
+          'LZ4 large data: ${largeData.length} → ${compressed.length} bytes (${ratio.toStringAsFixed(1)}%)',
+        );
       });
     });
 
@@ -86,12 +90,18 @@ void main() {
 
         expect(compressed.length, lessThan(testData.length));
         expect(ratio, greaterThan(60)); // Should compress >60%
-        print('ZSTD compression: ${testData.length} → ${compressed.length} bytes (${ratio.toStringAsFixed(1)}%)');
+        print(
+          'ZSTD compression: ${testData.length} → ${compressed.length} bytes (${ratio.toStringAsFixed(1)}%)',
+        );
       });
 
       test('should handle JSON-like data well', () {
         final jsonPattern = '{"id":123,"name":"test","value":456}'.codeUnits;
-        final repeatedData = <int>[...jsonPattern, ...jsonPattern, ...jsonPattern];
+        final repeatedData = <int>[
+          ...jsonPattern,
+          ...jsonPattern,
+          ...jsonPattern,
+        ];
 
         final compressed = codec.encode(repeatedData);
         final decompressed = codec.decode(compressed);
@@ -99,7 +109,9 @@ void main() {
         expect(decompressed, equals(repeatedData));
         final ratio = ((1 - (compressed.length / repeatedData.length)) * 100);
         expect(ratio, greaterThan(40)); // Should compress >40%
-        print('ZSTD JSON-like: ${repeatedData.length} → ${compressed.length} bytes (${ratio.toStringAsFixed(1)}%)');
+        print(
+          'ZSTD JSON-like: ${repeatedData.length} → ${compressed.length} bytes (${ratio.toStringAsFixed(1)}%)',
+        );
       });
 
       test('should handle large data', () {
@@ -109,7 +121,9 @@ void main() {
 
         expect(decompressed, equals(largeData));
         final ratio = ((1 - (compressed.length / largeData.length)) * 100);
-        print('ZSTD large data: ${largeData.length} → ${compressed.length} bytes (${ratio.toStringAsFixed(1)}%)');
+        print(
+          'ZSTD large data: ${largeData.length} → ${compressed.length} bytes (${ratio.toStringAsFixed(1)}%)',
+        );
       });
     });
 

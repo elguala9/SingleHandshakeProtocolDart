@@ -10,12 +10,18 @@ void main() {
     group('HandshakeSignal structure validation', () {
       test('should create HandshakeSignal with all required fields', () {
         final signal = HandshakeSignal(
-          publicIPv4:
-              PeerInfo(address: InternetAddress('203.0.113.1'), port: 8080),
-          publicIPv6:
-              PeerInfo(address: InternetAddress('2001:db8::1'), port: 8080),
-          localIPv4:
-              PeerInfo(address: InternetAddress('192.168.1.100'), port: 9090),
+          publicIPv4: PeerInfo(
+            address: InternetAddress('203.0.113.1'),
+            port: 8080,
+          ),
+          publicIPv6: PeerInfo(
+            address: InternetAddress('2001:db8::1'),
+            port: 8080,
+          ),
+          localIPv4: PeerInfo(
+            address: InternetAddress('192.168.1.100'),
+            port: 9090,
+          ),
           localIPv6: PeerInfo(address: InternetAddress('fe80::1'), port: 9090),
           publicKey: 'test-public-key-123',
           referenceTimestamp: DateTime(2024, 1, 1, 12, 0),
@@ -44,8 +50,10 @@ void main() {
         expect(signal.referenceTimestamp, equals(DateTime(2024, 1, 1, 12, 0)));
         expect(signal.maxHandshakeDurationSeconds, equals(10));
         expect(signal.intervalBetweenHandshakesSeconds, equals(30));
-        expect(signal.endHandshakeAvailability,
-            equals(DateTime(2024, 1, 1, 13, 0)));
+        expect(
+          signal.endHandshakeAvailability,
+          equals(DateTime(2024, 1, 1, 13, 0)),
+        );
       });
 
       test('should create HandshakeSignal with null optional fields', () {
@@ -58,8 +66,9 @@ void main() {
           referenceTimestamp: DateTime.now(),
           maxHandshakeDurationSeconds: 5,
           intervalBetweenHandshakesSeconds: 20,
-          endHandshakeAvailability:
-              DateTime.now().add(const Duration(hours: 2)),
+          endHandshakeAvailability: DateTime.now().add(
+            const Duration(hours: 2),
+          ),
         );
 
         expect(signal.publicIPv4, isNull);
@@ -73,11 +82,15 @@ void main() {
 
       test('should handle JSON serialization', () {
         final signal = HandshakeSignal(
-          publicIPv4:
-              PeerInfo(address: InternetAddress('10.0.0.1'), port: 8080),
+          publicIPv4: PeerInfo(
+            address: InternetAddress('10.0.0.1'),
+            port: 8080,
+          ),
           publicIPv6: null,
-          localIPv4:
-              PeerInfo(address: InternetAddress('192.168.1.1'), port: 9090),
+          localIPv4: PeerInfo(
+            address: InternetAddress('192.168.1.1'),
+            port: 9090,
+          ),
           localIPv6: null,
           publicKey: 'json-test-key',
           referenceTimestamp: DateTime(2024, 6, 15, 10, 30),
@@ -94,10 +107,14 @@ void main() {
 
         final restored = HandshakeSignal.fromJson(json);
         expect(restored.publicKey, equals(signal.publicKey));
-        expect(restored.maxHandshakeDurationSeconds,
-            equals(signal.maxHandshakeDurationSeconds));
-        expect(restored.intervalBetweenHandshakesSeconds,
-            equals(signal.intervalBetweenHandshakesSeconds));
+        expect(
+          restored.maxHandshakeDurationSeconds,
+          equals(signal.maxHandshakeDurationSeconds),
+        );
+        expect(
+          restored.intervalBetweenHandshakesSeconds,
+          equals(signal.intervalBetweenHandshakesSeconds),
+        );
         expect(restored.publicIPv4?.address.address, equals('10.0.0.1'));
         expect(restored.publicIPv4?.port, equals(8080));
       });
@@ -110,8 +127,9 @@ void main() {
           referenceTimestamp: DateTime.now(),
           maxHandshakeDurationSeconds: 10,
           intervalBetweenHandshakesSeconds: 30,
-          endHandshakeAvailability:
-              DateTime.now().add(const Duration(hours: 2)),
+          endHandshakeAvailability: DateTime.now().add(
+            const Duration(hours: 2),
+          ),
         );
 
         expect(signal.expirationPublicKey, equals(expirationDate));
@@ -130,8 +148,9 @@ void main() {
         expect(signal.maxHandshakeDurationSeconds, equals(60));
         expect(signal.intervalBetweenHandshakesSeconds, equals(300));
 
-        final timeDiff = signal.endHandshakeAvailability
-            .difference(signal.referenceTimestamp);
+        final timeDiff = signal.endHandshakeAvailability.difference(
+          signal.referenceTimestamp,
+        );
         expect(timeDiff.inHours, equals(2));
       });
     });

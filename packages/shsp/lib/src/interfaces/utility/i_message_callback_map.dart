@@ -12,8 +12,11 @@ abstract interface class IMessageCallbackMap {
   MessageCallbackFunction? get(String key);
 
   /// Add a callback using InternetAddress and port
-  void addByAddress(InternetAddress address, int port,
-      MessageCallbackFunction callback);
+  void addByAddress(
+    InternetAddress address,
+    int port,
+    MessageCallbackFunction callback,
+  );
 
   /// Get a callback invoker using InternetAddress and port
   MessageCallbackFunction? getByAddress(InternetAddress address, int port);

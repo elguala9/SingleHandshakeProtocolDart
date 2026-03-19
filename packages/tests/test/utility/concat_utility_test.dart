@@ -55,7 +55,7 @@ void main() {
 
       test('should handle single array', () {
         final arrays = [
-          Uint8List.fromList([10, 20, 30])
+          Uint8List.fromList([10, 20, 30]),
         ];
         final result = ConcatUtility.concatBytes(arrays);
         expect(result, equals(Uint8List.fromList([10, 20, 30])));
@@ -105,7 +105,7 @@ void main() {
 
       test('should handle single list', () {
         final lists = [
-          [10, 20, 30]
+          [10, 20, 30],
         ];
         final result = ConcatUtility.concatIntLists(lists);
         expect(result, equals([10, 20, 30]));
@@ -130,8 +130,10 @@ void main() {
         ];
 
         final result = ConcatUtility.concatIntLists(lists);
-        expect(result,
-            equals([-1, 0, 1, 255, 256, 65535, 2147483647, -2147483648]));
+        expect(
+          result,
+          equals([-1, 0, 1, 255, 256, 65535, 2147483647, -2147483648]),
+        );
       });
     });
 
@@ -151,8 +153,10 @@ void main() {
       test('should handle Unicode characters', () {
         const input = 'Hello 🌍';
         final result = ConcatUtility.stringToBytes(input);
-        expect(result.length,
-            greaterThan(7)); // UTF-8 encoding of emoji takes multiple bytes
+        expect(
+          result.length,
+          greaterThan(7),
+        ); // UTF-8 encoding of emoji takes multiple bytes
       });
 
       test('should handle special characters', () {
@@ -224,8 +228,11 @@ void main() {
         final original2 = ConcatUtility.stringToBytes(' ');
         final original3 = ConcatUtility.stringToBytes('World');
 
-        final concatenated =
-            ConcatUtility.concatBytes([original1, original2, original3]);
+        final concatenated = ConcatUtility.concatBytes([
+          original1,
+          original2,
+          original3,
+        ]);
         final result = ConcatUtility.bytesToString(concatenated);
 
         expect(result, equals('Hello World'));
@@ -237,8 +244,10 @@ void main() {
         // Invalid UTF-8 sequence
         final invalidBytes = Uint8List.fromList([0xFF, 0xFE]);
 
-        expect(() => ConcatUtility.bytesToString(invalidBytes),
-            throwsA(isA<FormatException>()));
+        expect(
+          () => ConcatUtility.bytesToString(invalidBytes),
+          throwsA(isA<FormatException>()),
+        );
       });
     });
 

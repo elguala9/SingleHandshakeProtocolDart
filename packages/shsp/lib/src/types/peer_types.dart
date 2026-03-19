@@ -8,8 +8,9 @@ class PeerInfo {
   PeerInfo({required this.address, required this.port});
 
   factory PeerInfo.fromJson(Map<String, dynamic> json) => PeerInfo(
-    address:
-        const InternetAddressConverter().fromJson(json['address'] as String),
+    address: const InternetAddressConverter().fromJson(
+      json['address'] as String,
+    ),
     port: (json['port'] as num).toInt(),
   );
 
@@ -54,19 +55,23 @@ class HandshakeSignal {
       // Validate required fields exist
       if (!json.containsKey('referenceTimestamp')) {
         throw const FormatException(
-            'Missing required field: referenceTimestamp');
+          'Missing required field: referenceTimestamp',
+        );
       }
       if (!json.containsKey('maxHandshakeDurationSeconds')) {
         throw const FormatException(
-            'Missing required field: maxHandshakeDurationSeconds');
+          'Missing required field: maxHandshakeDurationSeconds',
+        );
       }
       if (!json.containsKey('intervalBetweenHandshakesSeconds')) {
         throw const FormatException(
-            'Missing required field: intervalBetweenHandshakesSeconds');
+          'Missing required field: intervalBetweenHandshakesSeconds',
+        );
       }
       if (!json.containsKey('endHandshakeAvailability')) {
         throw const FormatException(
-            'Missing required field: endHandshakeAvailability');
+          'Missing required field: endHandshakeAvailability',
+        );
       }
 
       return HandshakeSignal(
@@ -86,14 +91,16 @@ class HandshakeSignal {
         expirationPublicKey: json['expirationPublicKey'] == null
             ? null
             : DateTime.parse(json['expirationPublicKey'] as String),
-        referenceTimestamp:
-            DateTime.parse(json['referenceTimestamp'] as String),
+        referenceTimestamp: DateTime.parse(
+          json['referenceTimestamp'] as String,
+        ),
         maxHandshakeDurationSeconds:
             (json['maxHandshakeDurationSeconds'] as num).toInt(),
         intervalBetweenHandshakesSeconds:
             (json['intervalBetweenHandshakesSeconds'] as num).toInt(),
-        endHandshakeAvailability:
-            DateTime.parse(json['endHandshakeAvailability'] as String),
+        endHandshakeAvailability: DateTime.parse(
+          json['endHandshakeAvailability'] as String,
+        ),
       );
     } on FormatException catch (e) {
       throw FormatException('Invalid HandshakeSignal JSON: ${e.message}');

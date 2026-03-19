@@ -7,7 +7,9 @@ void main() async {
 
   // Step 1: Create and bind a socket
   final socket = await ShspSocket.bind(InternetAddress.loopbackIPv4, 8080);
-  print('Socket bound on ${socket.localAddress?.address}:${socket.localPort}\n');
+  print(
+    'Socket bound on ${socket.localAddress?.address}:${socket.localPort}\n',
+  );
 
   // Step 2: Create a peer representing a remote endpoint
   final remotePeerInfo = PeerInfo(
@@ -15,11 +17,10 @@ void main() async {
     port: 8081,
   );
 
-  final peer = ShspPeer.create(
-    remotePeer: remotePeerInfo,
-    socket: socket,
+  final peer = ShspPeer.create(remotePeer: remotePeerInfo, socket: socket);
+  print(
+    'Peer created for ${remotePeerInfo.address.address}:${remotePeerInfo.port}\n',
   );
-  print('Peer created for ${remotePeerInfo.address.address}:${remotePeerInfo.port}\n');
 
   // Step 3: Register a callback to receive messages from this peer
   peer.messageCallback.register((peerInfo) {

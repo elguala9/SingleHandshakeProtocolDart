@@ -15,8 +15,7 @@ void main() {
 
         // Create all sockets
         for (int i = 0; i < socketCount; i++) {
-          final socket =
-              await ShspSocket.bind(InternetAddress.loopbackIPv4, 0);
+          final socket = await ShspSocket.bind(InternetAddress.loopbackIPv4, 0);
           sockets.add(socket);
         }
 
@@ -26,7 +25,10 @@ void main() {
         // Setup first socket to receive from all others
         for (int i = 1; i < socketCount; i++) {
           sockets[0].setMessageCallback(
-            PeerInfo(address: InternetAddress.loopbackIPv4, port: sockets[i].localPort!),
+            PeerInfo(
+              address: InternetAddress.loopbackIPv4,
+              port: sockets[i].localPort!,
+            ),
             (record) {
               messageCount++;
               if (messageCount == socketCount - 1) {
@@ -40,15 +42,20 @@ void main() {
         for (int i = 1; i < socketCount; i++) {
           sockets[i].sendTo(
             [i],
-            PeerInfo(address: InternetAddress.loopbackIPv4, port: sockets[0].localPort!),
+            PeerInfo(
+              address: InternetAddress.loopbackIPv4,
+              port: sockets[0].localPort!,
+            ),
           );
           await Future.delayed(const Duration(milliseconds: 10));
         }
 
-        await completer.future
-            .timeout(const Duration(seconds: 3), onTimeout: () {
-          fail('Stress test timeout - received $messageCount messages');
-        });
+        await completer.future.timeout(
+          const Duration(seconds: 3),
+          onTimeout: () {
+            fail('Stress test timeout - received $messageCount messages');
+          },
+        );
 
         expect(messageCount, equals(socketCount - 1));
 
@@ -61,8 +68,10 @@ void main() {
         for (int cycle = 0; cycle < 5; cycle++) {
           final sockets = <ShspSocket>[];
           for (int i = 0; i < 20; i++) {
-            final socket =
-                await ShspSocket.bind(InternetAddress.loopbackIPv4, 0);
+            final socket = await ShspSocket.bind(
+              InternetAddress.loopbackIPv4,
+              0,
+            );
             sockets.add(socket);
           }
 
@@ -72,25 +81,30 @@ void main() {
         }
       });
 
-      test('should handle callback registration and invocation under load',
-          () async {
-        final socket = await ShspSocket.bind(InternetAddress.loopbackIPv4, 0);
-        final address = InternetAddress.loopbackIPv4;
-        const callbackCount = 50;
+      test(
+        'should handle callback registration and invocation under load',
+        () async {
+          final socket = await ShspSocket.bind(InternetAddress.loopbackIPv4, 0);
+          final address = InternetAddress.loopbackIPv4;
+          const callbackCount = 50;
 
-        // Register 50 different callbacks
-        for (int i = 0; i < callbackCount; i++) {
-          socket.setMessageCallback(PeerInfo(address: address, port: 9000 + i), (record) {
-            // Callback registered
-          });
-        }
+          // Register 50 different callbacks
+          for (int i = 0; i < callbackCount; i++) {
+            socket.setMessageCallback(
+              PeerInfo(address: address, port: 9000 + i),
+              (record) {
+                // Callback registered
+              },
+            );
+          }
 
-        // Test that callbacks are registered
-        expect(socket.socket, isA<RawDatagramSocket>());
+          // Test that callbacks are registered
+          expect(socket.socket, isA<RawDatagramSocket>());
 
-        await Future.delayed(const Duration(milliseconds: 100));
-        socket.close();
-      });
+          await Future.delayed(const Duration(milliseconds: 100));
+          socket.close();
+        },
+      );
     });
 
     group('Message Size Variations', () {
@@ -112,14 +126,23 @@ void main() {
         final completer = Completer<void>();
 
         receiver.setMessageCallback(
-          PeerInfo(address: InternetAddress.loopbackIPv4, port: sender.localPort!),
+          PeerInfo(
+            address: InternetAddress.loopbackIPv4,
+            port: sender.localPort!,
+          ),
           (record) {
             expect(record.msg, equals(testMsg));
             completer.complete();
           },
         );
 
-        sender.sendTo(testMsg, PeerInfo(address: InternetAddress.loopbackIPv4, port: receiver.localPort!));
+        sender.sendTo(
+          testMsg,
+          PeerInfo(
+            address: InternetAddress.loopbackIPv4,
+            port: receiver.localPort!,
+          ),
+        );
         await completer.future.timeout(const Duration(seconds: 2));
       });
 
@@ -128,14 +151,23 @@ void main() {
         final completer = Completer<void>();
 
         receiver.setMessageCallback(
-          PeerInfo(address: InternetAddress.loopbackIPv4, port: sender.localPort!),
+          PeerInfo(
+            address: InternetAddress.loopbackIPv4,
+            port: sender.localPort!,
+          ),
           (record) {
             expect(record.msg.length, equals(256));
             completer.complete();
           },
         );
 
-        sender.sendTo(testMsg, PeerInfo(address: InternetAddress.loopbackIPv4, port: receiver.localPort!));
+        sender.sendTo(
+          testMsg,
+          PeerInfo(
+            address: InternetAddress.loopbackIPv4,
+            port: receiver.localPort!,
+          ),
+        );
         await completer.future.timeout(const Duration(seconds: 2));
       });
 
@@ -144,14 +176,23 @@ void main() {
         final completer = Completer<void>();
 
         receiver.setMessageCallback(
-          PeerInfo(address: InternetAddress.loopbackIPv4, port: sender.localPort!),
+          PeerInfo(
+            address: InternetAddress.loopbackIPv4,
+            port: sender.localPort!,
+          ),
           (record) {
             expect(record.msg.length, equals(512));
             completer.complete();
           },
         );
 
-        sender.sendTo(testMsg, PeerInfo(address: InternetAddress.loopbackIPv4, port: receiver.localPort!));
+        sender.sendTo(
+          testMsg,
+          PeerInfo(
+            address: InternetAddress.loopbackIPv4,
+            port: receiver.localPort!,
+          ),
+        );
         await completer.future.timeout(const Duration(seconds: 2));
       });
 
@@ -160,14 +201,23 @@ void main() {
         final completer = Completer<void>();
 
         receiver.setMessageCallback(
-          PeerInfo(address: InternetAddress.loopbackIPv4, port: sender.localPort!),
+          PeerInfo(
+            address: InternetAddress.loopbackIPv4,
+            port: sender.localPort!,
+          ),
           (record) {
             expect(record.msg.length, equals(1024));
             completer.complete();
           },
         );
 
-        sender.sendTo(testMsg, PeerInfo(address: InternetAddress.loopbackIPv4, port: receiver.localPort!));
+        sender.sendTo(
+          testMsg,
+          PeerInfo(
+            address: InternetAddress.loopbackIPv4,
+            port: receiver.localPort!,
+          ),
+        );
         await completer.future.timeout(const Duration(seconds: 2));
       });
 
@@ -176,18 +226,29 @@ void main() {
         final completer = Completer<void>();
 
         receiver.setMessageCallback(
-          PeerInfo(address: InternetAddress.loopbackIPv4, port: sender.localPort!),
+          PeerInfo(
+            address: InternetAddress.loopbackIPv4,
+            port: sender.localPort!,
+          ),
           (record) {
             expect(record.msg.length, equals(65000));
             completer.complete();
           },
         );
 
-        sender.sendTo(testMsg, PeerInfo(address: InternetAddress.loopbackIPv4, port: receiver.localPort!));
-        await completer.future
-            .timeout(const Duration(seconds: 2), onTimeout: () {
-          fail('Near-MTU message not received');
-        });
+        sender.sendTo(
+          testMsg,
+          PeerInfo(
+            address: InternetAddress.loopbackIPv4,
+            port: receiver.localPort!,
+          ),
+        );
+        await completer.future.timeout(
+          const Duration(seconds: 2),
+          onTimeout: () {
+            fail('Near-MTU message not received');
+          },
+        );
       });
     });
 
@@ -205,24 +266,32 @@ void main() {
       test('should handle callback that throws exception', () async {
         bool finalCallbackCalled = false;
 
-        socket.setMessageCallback(PeerInfo(address: InternetAddress('127.0.0.1'), port: 9000), (record) {
-          throw Exception('Callback error');
-        });
+        socket.setMessageCallback(
+          PeerInfo(address: InternetAddress('127.0.0.1'), port: 9000),
+          (record) {
+            throw Exception('Callback error');
+          },
+        );
 
-        socket.setMessageCallback(PeerInfo(address: InternetAddress('127.0.0.1'), port: 9001), (record) {
-          finalCallbackCalled = true;
-        });
+        socket.setMessageCallback(
+          PeerInfo(address: InternetAddress('127.0.0.1'), port: 9001),
+          (record) {
+            finalCallbackCalled = true;
+          },
+        );
 
         // This should not crash even though first callback throws
         try {
-          socket.testOnMessage(
-              [1], RemoteInfo(address: InternetAddress.loopbackIPv4, port: 9000));
+          socket.testOnMessage([
+            1,
+          ], RemoteInfo(address: InternetAddress.loopbackIPv4, port: 9000));
         } catch (e) {
           // Expected to throw
         }
 
-        socket.testOnMessage(
-            [2], RemoteInfo(address: InternetAddress.loopbackIPv4, port: 9001));
+        socket.testOnMessage([
+          2,
+        ], RemoteInfo(address: InternetAddress.loopbackIPv4, port: 9001));
 
         expect(finalCallbackCalled, isTrue);
       });
@@ -247,8 +316,7 @@ void main() {
     group('Port Binding Edge Cases', () {
       test('should handle binding to port 1', () async {
         try {
-          final socket =
-              await ShspSocket.bind(InternetAddress.loopbackIPv4, 1);
+          final socket = await ShspSocket.bind(InternetAddress.loopbackIPv4, 1);
           expect(socket.localPort, equals(1));
           socket.close();
         } catch (e) {
@@ -266,8 +334,10 @@ void main() {
 
       test('should validate port 65535', () async {
         try {
-          final socket =
-              await ShspSocket.bind(InternetAddress.loopbackIPv4, 65535);
+          final socket = await ShspSocket.bind(
+            InternetAddress.loopbackIPv4,
+            65535,
+          );
           expect(socket.localPort, equals(65535));
           socket.close();
         } catch (e) {
@@ -297,7 +367,10 @@ void main() {
         final completer = Completer<void>();
 
         socket1.setMessageCallback(
-          PeerInfo(address: InternetAddress.loopbackIPv4, port: socket2.localPort!),
+          PeerInfo(
+            address: InternetAddress.loopbackIPv4,
+            port: socket2.localPort!,
+          ),
           (record) {
             msg1Received++;
             if (msg1Received == 1 && msg2Received == 1) {
@@ -307,7 +380,10 @@ void main() {
         );
 
         socket2.setMessageCallback(
-          PeerInfo(address: InternetAddress.loopbackIPv4, port: socket1.localPort!),
+          PeerInfo(
+            address: InternetAddress.loopbackIPv4,
+            port: socket1.localPort!,
+          ),
           (record) {
             msg2Received++;
             if (msg1Received == 1 && msg2Received == 1) {
@@ -317,9 +393,21 @@ void main() {
         );
 
         // Send messages in both directions
-        socket1.sendTo([1], PeerInfo(address: InternetAddress.loopbackIPv4, port: socket2.localPort!));
+        socket1.sendTo(
+          [1],
+          PeerInfo(
+            address: InternetAddress.loopbackIPv4,
+            port: socket2.localPort!,
+          ),
+        );
         await Future.delayed(const Duration(milliseconds: 50));
-        socket2.sendTo([2], PeerInfo(address: InternetAddress.loopbackIPv4, port: socket1.localPort!));
+        socket2.sendTo(
+          [2],
+          PeerInfo(
+            address: InternetAddress.loopbackIPv4,
+            port: socket1.localPort!,
+          ),
+        );
 
         await completer.future.timeout(const Duration(seconds: 2));
         expect(msg1Received, equals(1));
@@ -333,11 +421,16 @@ void main() {
         final futures = <Future<void>>[];
 
         for (int i = 0; i < 20; i++) {
-          futures.add(Future(() {
-            socket.setMessageCallback(PeerInfo(address: InternetAddress.loopbackIPv4, port: 9000 + i), (record) {
-              // Callback
-            });
-          }));
+          futures.add(
+            Future(() {
+              socket.setMessageCallback(
+                PeerInfo(address: InternetAddress.loopbackIPv4, port: 9000 + i),
+                (record) {
+                  // Callback
+                },
+              );
+            }),
+          );
         }
 
         await Future.wait(futures);
@@ -346,26 +439,34 @@ void main() {
     });
 
     group('Socket State Consistency', () {
-      test('should maintain socket properties after multiple operations',
-          () async {
-        final socket = await ShspSocket.bind(InternetAddress.loopbackIPv4, 0);
-        final initialPort = socket.localPort;
-        final initialAddress = socket.localAddress;
+      test(
+        'should maintain socket properties after multiple operations',
+        () async {
+          final socket = await ShspSocket.bind(InternetAddress.loopbackIPv4, 0);
+          final initialPort = socket.localPort;
+          final initialAddress = socket.localAddress;
 
-        socket.setMessageCallback(PeerInfo(address: InternetAddress('127.0.0.1'), port: 1234), (_) {});
-        socket.setErrorCallback((_) {});
-        socket.setCloseCallback(() {});
+          socket.setMessageCallback(
+            PeerInfo(address: InternetAddress('127.0.0.1'), port: 1234),
+            (_) {},
+          );
+          socket.setErrorCallback((_) {});
+          socket.setCloseCallback(() {});
 
-        expect(socket.localPort, equals(initialPort));
-        expect(socket.localAddress, equals(initialAddress));
+          expect(socket.localPort, equals(initialPort));
+          expect(socket.localAddress, equals(initialAddress));
 
-        socket.removeMessageCallback(PeerInfo(address: InternetAddress('127.0.0.1'), port: 1234), (_) {});
+          socket.removeMessageCallback(
+            PeerInfo(address: InternetAddress('127.0.0.1'), port: 1234),
+            (_) {},
+          );
 
-        expect(socket.localPort, equals(initialPort));
-        expect(socket.localAddress, equals(initialAddress));
+          expect(socket.localPort, equals(initialPort));
+          expect(socket.localAddress, equals(initialAddress));
 
-        socket.close();
-      });
+          socket.close();
+        },
+      );
 
       test('should preserve socket reference', () async {
         final socket = await ShspSocket.bind(InternetAddress.loopbackIPv4, 0);
@@ -397,7 +498,10 @@ void main() {
         final completer = Completer<void>();
 
         receiver.setMessageCallback(
-          PeerInfo(address: InternetAddress.loopbackIPv4, port: sender.localPort!),
+          PeerInfo(
+            address: InternetAddress.loopbackIPv4,
+            port: sender.localPort!,
+          ),
           (record) {
             expect(record.msg, equals(originalMsg));
             completer.complete();
@@ -405,7 +509,12 @@ void main() {
         );
 
         sender.sendTo(
-            originalMsg, PeerInfo(address: InternetAddress.loopbackIPv4, port: receiver.localPort!));
+          originalMsg,
+          PeerInfo(
+            address: InternetAddress.loopbackIPv4,
+            port: receiver.localPort!,
+          ),
+        );
         await completer.future.timeout(const Duration(seconds: 2));
       });
 
@@ -413,7 +522,10 @@ void main() {
         final completer = Completer<void>();
 
         receiver.setMessageCallback(
-          PeerInfo(address: InternetAddress.loopbackIPv4, port: sender.localPort!),
+          PeerInfo(
+            address: InternetAddress.loopbackIPv4,
+            port: sender.localPort!,
+          ),
           (record) {
             expect(record.rinfo.address, equals(InternetAddress.loopbackIPv4));
             expect(record.rinfo.port, equals(sender.localPort));
@@ -421,7 +533,13 @@ void main() {
           },
         );
 
-        sender.sendTo([99], PeerInfo(address: InternetAddress.loopbackIPv4, port: receiver.localPort!));
+        sender.sendTo(
+          [99],
+          PeerInfo(
+            address: InternetAddress.loopbackIPv4,
+            port: receiver.localPort!,
+          ),
+        );
         await completer.future.timeout(const Duration(seconds: 2));
       });
     });
@@ -429,9 +547,11 @@ void main() {
     group('Resource Cleanup Verification', () {
       test('should properly cleanup after many open-close cycles', () async {
         for (int i = 0; i < 30; i++) {
-          final socket =
-              await ShspSocket.bind(InternetAddress.loopbackIPv4, 0);
-          socket.setMessageCallback(PeerInfo(address: InternetAddress('127.0.0.1'), port: 1111), (_) {});
+          final socket = await ShspSocket.bind(InternetAddress.loopbackIPv4, 0);
+          socket.setMessageCallback(
+            PeerInfo(address: InternetAddress('127.0.0.1'), port: 1111),
+            (_) {},
+          );
           socket.setErrorCallback((_) {});
           socket.close();
         }
@@ -441,7 +561,10 @@ void main() {
       test('should handle close after setting all callbacks', () async {
         final socket = await ShspSocket.bind(InternetAddress.loopbackIPv4, 0);
 
-        socket.setMessageCallback(PeerInfo(address: InternetAddress('127.0.0.1'), port: 1234), (_) {});
+        socket.setMessageCallback(
+          PeerInfo(address: InternetAddress('127.0.0.1'), port: 1234),
+          (_) {},
+        );
         socket.setErrorCallback((_) {});
         socket.setCloseCallback(() {});
         socket.setListeningCallback(() {});

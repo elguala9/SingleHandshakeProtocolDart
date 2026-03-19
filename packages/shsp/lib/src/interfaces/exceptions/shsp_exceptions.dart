@@ -6,11 +6,7 @@ abstract interface class IShspException implements Exception {
 
 /// Exception thrown when a protocol-level error occurs
 class ShspProtocolException implements IShspException {
-  ShspProtocolException(
-    this.message, {
-    this.messageType,
-    this.context,
-  });
+  ShspProtocolException(this.message, {this.messageType, this.context});
 
   @override
   final String message;
@@ -36,12 +32,7 @@ class ShspProtocolException implements IShspException {
 
 /// Exception thrown when a network-level error occurs
 class ShspNetworkException implements IShspException {
-  ShspNetworkException(
-    this.message, {
-    this.address,
-    this.port,
-    this.cause,
-  });
+  ShspNetworkException(this.message, {this.address, this.port, this.cause});
 
   @override
   final String message;
@@ -74,11 +65,7 @@ class ShspNetworkException implements IShspException {
 
 /// Exception thrown when input validation fails
 class ShspValidationException implements IShspException {
-  ShspValidationException(
-    this.message, {
-    this.field,
-    this.value,
-  });
+  ShspValidationException(this.message, {this.field, this.value});
 
   @override
   final String message;
@@ -105,11 +92,7 @@ class ShspValidationException implements IShspException {
 
 /// Exception thrown when a handshake operation fails
 class ShspHandshakeException implements IShspException {
-  ShspHandshakeException(
-    this.message, {
-    this.peerInfo,
-    this.stage,
-  });
+  ShspHandshakeException(this.message, {this.peerInfo, this.stage});
 
   @override
   final String message;

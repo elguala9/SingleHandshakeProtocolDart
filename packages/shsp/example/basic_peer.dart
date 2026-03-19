@@ -11,7 +11,9 @@ void main() async {
 
   final peer = await AutoShspPeer.create(remotePeer: remotePeer);
 
-  print('Peer created with local address: ${peer.socket.localAddress}:${peer.socket.localPort}');
+  print(
+    'Peer created with local address: ${peer.socket.localAddress}:${peer.socket.localPort}',
+  );
   print('Remote peer: ${remotePeer.address.address}:${remotePeer.port}');
 
   // Send some data

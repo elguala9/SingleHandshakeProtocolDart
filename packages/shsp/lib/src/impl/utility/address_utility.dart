@@ -25,10 +25,7 @@ class AddressUtility {
     final port = int.tryParse(parts[1]);
     if (port == null) return null;
 
-    return {
-      'address': parts[0],
-      'port': port,
-    };
+    return {'address': parts[0], 'port': port};
   }
 
   /// Create RemoteInfo from string format "address:port"
@@ -77,10 +74,7 @@ class AddressUtility {
         'Unable to determine local private IP address - no suitable network interface found',
       );
     } on SocketException catch (e) {
-      throw ShspNetworkException(
-        'Failed to list network interfaces',
-        cause: e,
-      );
+      throw ShspNetworkException('Failed to list network interfaces', cause: e);
     }
   }
 

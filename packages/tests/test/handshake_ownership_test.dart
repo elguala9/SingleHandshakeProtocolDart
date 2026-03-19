@@ -80,7 +80,7 @@ void main() {
 
     test('InputHandshakeOwnership record should work with constructor', () {
       const testNonce = 'record-based-nonce';
-      final input = (signedNonce: testNonce,);
+      final input = (signedNonce: testNonce);
 
       // Nota: Il costruttore attuale non usa il record, ma per completezza testiamo che il record funzioni
       expect(input.signedNonce, equals(testNonce));
