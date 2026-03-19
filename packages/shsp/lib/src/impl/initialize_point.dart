@@ -1,7 +1,6 @@
 import '../../shsp.dart';
 import 'package:singleton_manager/singleton_manager.dart';
 
-import '../generated/dual_shsp_socket_wrapper_di.dart';
 
 Future<void> initializePointDualShsp() async {
   final ipv4Socket = await ShspSocket.bindDefault();

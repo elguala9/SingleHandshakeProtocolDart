@@ -10,7 +10,7 @@ import 'i_shsp_socket_base.dart';
 
 /// Interface for SHSP Socket
 abstract interface class IShspSocket
-    implements IShspSocketBase, IValueForRegistry {
+    implements IShspSocketBase, IValueForRegistry, RawDatagramSocket {
   /// Returns the socket state as a serialized string (type, endpoints, registered callbacks)
   String serializedObject();
 
@@ -71,4 +71,7 @@ abstract interface class IShspSocket
 
   /// Close the socket
   void close();
+
+  /// Destroy the socket and release all resources
+  void destroy();
 }
