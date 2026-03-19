@@ -368,7 +368,7 @@ void main() {
       await initializePointDualShsp();
 
       final dualSocket = SingletonDIAccess.get<IDualShspSocket>();
-      final rawSocket = dualSocket.socket;
+      final rawSocket = dualSocket.ipv4Socket;
 
       expect(
         rawSocket,
