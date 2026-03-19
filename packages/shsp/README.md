@@ -20,7 +20,7 @@ Add to your `pubspec.yaml`:
 
 ```yaml
 dependencies:
-  shsp: ^1.2.1
+  shsp: ^1.2.2
 ```
 
 Then run:

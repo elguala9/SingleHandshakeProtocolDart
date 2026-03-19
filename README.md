@@ -8,7 +8,7 @@ This is a unified monorepo containing the SHSP package and its comprehensive tes
 
 ```
 packages/
-├── shsp/               # Main unified SHSP package (v1.2.1)
+├── shsp/               # Main unified SHSP package (v1.2.2)
 │   ├── lib/
 │   │   ├── src/
 │   │   │   ├── interfaces/     # Protocol contracts (IShspSocket, IShspPeer, etc.)
@@ -34,7 +34,7 @@ Add to your `pubspec.yaml`:
 
 ```yaml
 dependencies:
-  shsp: ^1.2.1
+  shsp: ^1.2.2
 ```
 
 Then run:
@@ -149,8 +149,6 @@ void main() async {
 ### AutoShspPeer Example (With Global Socket)
 
 For most use cases, prefer the high-level auto-wiring classes (`AutoShspPeer` and `AutoShspInstance`) which automatically bind to `ShspSocketSingleton` and handle reconnections seamlessly:
-
-```dart
 
 ```dart
 // Create a peer that auto-wires to the global socket
