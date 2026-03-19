@@ -1,5 +1,4 @@
 import 'package:shsp/shsp.dart';
-import 'package:shsp/src/generated/dual_shsp_socket_wrapper_di.dart';
 import 'package:singleton_manager/singleton_manager.dart';
 import 'package:test/test.dart';
 

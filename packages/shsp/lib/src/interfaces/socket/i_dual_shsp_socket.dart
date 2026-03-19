@@ -20,9 +20,6 @@ abstract interface class IDualShspSocket implements IShspSocketBase {
   /// The underlying IPv6 socket, if available
   IShspSocket? get ipv6Socket;
 
-  /// The raw datagram socket (from the IPv4 socket)
-  RawDatagramSocket get socket;
-
   InternetAddress? get localAddress;
   int? get localPort;
 

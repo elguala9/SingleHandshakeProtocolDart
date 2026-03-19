@@ -25,9 +25,6 @@ class DualShspSocketWrapper implements IDualShspSocket, IValueForRegistry {
   IShspSocket? get ipv6Socket => dualSocket.ipv6Socket;
 
   @override
-  RawDatagramSocket get socket => dualSocket.socket;
-
-  @override
   void applyProfile(ShspSocketProfile profile) =>
       dualSocket.applyProfile(profile);
 
