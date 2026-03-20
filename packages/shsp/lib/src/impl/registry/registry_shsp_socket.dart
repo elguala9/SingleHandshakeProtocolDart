@@ -47,11 +47,11 @@ class RegistryShspSocket with Registry<SocketType, IShspSocket> {
     return instance;
   }
 
-  /// Register sockets from an [IDualShspSocket].
+  /// Register sockets from an [IDualShspSocketMigratable].
   ///
   /// Returns [ReturnTypeInitialization.ipv4and6] if both are registered,
   /// [ReturnTypeInitialization.ipv4only] if only IPv4 is available.
-  ReturnTypeInitialization initialize(IDualShspSocket dualSocket) {
+  ReturnTypeInitialization initialize(IDualShspSocketMigratable dualSocket) {
     _registerSocket(SocketType.ipv4, dualSocket.ipv4Socket);
     if (dualSocket.ipv6Socket != null) {
       _registerSocket(SocketType.ipv6, dualSocket.ipv6Socket!);
@@ -60,9 +60,9 @@ class RegistryShspSocket with Registry<SocketType, IShspSocket> {
     return ReturnTypeInitialization.ipv4only;
   }
 
-  /// Initialize using a DI-provided [IDualShspSocket].
+  /// Initialize using a DI-provided [IDualShspSocketMigratable].
   ReturnTypeInitialization initializeDI() =>
-      initialize(SingletonDIAccess.get<IDualShspSocket>());
+      initialize(SingletonDIAccess.get<IDualShspSocketMigratable>());
 
   /// Bind new sockets from addresses/ports and register them.
   ///
@@ -85,7 +85,7 @@ class RegistryShspSocket with Registry<SocketType, IShspSocket> {
       );
     }
 
-    final dualSocket = DualShspSocket.fromSockets(
+    final dualSocket = DualShspSocketMigratable.fromWrappers(
       ShspSocketWrapper(ipv4Socket),
       ipv6Socket != null ? ShspSocketWrapper(ipv6Socket) : null,
     );

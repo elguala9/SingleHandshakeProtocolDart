@@ -19,6 +19,6 @@ class DualShspSocketWrapperDI extends DualShspSocketWrapper
 
   @override
   void initializeDI() {
-    dualSocket = SingletonDIAccess.get<IDualShspSocket>();
+    dualSocket = SingletonDIAccess.get<IDualShspSocketMigratable>();
   }
 }
