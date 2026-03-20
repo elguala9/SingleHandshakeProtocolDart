@@ -13,7 +13,7 @@ void main() {
     test('successfully creates and registers dual socket in DI', () async {
       await initializePointDualShsp();
 
-      final dualSocket = SingletonDIAccess.get<IDualShspSocket>();
+      final dualSocket = SingletonDIAccess.get<IDualShspSocketMigratable>();
       expect(
         dualSocket,
         isNotNull,
@@ -29,7 +29,7 @@ void main() {
     test('registered socket is open and usable', () async {
       await initializePointDualShsp();
 
-      final dualSocket = SingletonDIAccess.get<IDualShspSocket>();
+      final dualSocket = SingletonDIAccess.get<IDualShspSocketMigratable>();
       expect(dualSocket.isClosed, isFalse, reason: 'Socket should be open');
       expect(
         dualSocket.localPort,
@@ -41,7 +41,7 @@ void main() {
     test('dual socket contains both IPv4 and IPv6 support', () async {
       await initializePointDualShsp();
 
-      final dualSocket = SingletonDIAccess.get<IDualShspSocket>();
+      final dualSocket = SingletonDIAccess.get<IDualShspSocketMigratable>();
       expect(
         dualSocket,
         isA<DualShspSocket>(),
@@ -52,7 +52,7 @@ void main() {
     test('socket has valid local address', () async {
       await initializePointDualShsp();
 
-      final dualSocket = SingletonDIAccess.get<IDualShspSocket>();
+      final dualSocket = SingletonDIAccess.get<IDualShspSocketMigratable>();
       expect(
         dualSocket.localAddress,
         isNotNull,
@@ -63,7 +63,7 @@ void main() {
     test('socket has compression codec', () async {
       await initializePointDualShsp();
 
-      final dualSocket = SingletonDIAccess.get<IDualShspSocket>();
+      final dualSocket = SingletonDIAccess.get<IDualShspSocketMigratable>();
       expect(
         dualSocket.compressionCodec,
         isNotNull,
@@ -90,7 +90,7 @@ void main() {
     test('socket can set and retrieve message callbacks', () async {
       await initializePointDualShsp();
 
-      final dualSocket = SingletonDIAccess.get<IDualShspSocket>();
+      final dualSocket = SingletonDIAccess.get<IDualShspSocketMigratable>();
       final peerInfo = PeerInfo(
         address: InternetAddress.loopbackIPv4,
         port: 8888,
@@ -106,7 +106,7 @@ void main() {
     test('socket can send data to peer', () async {
       await initializePointDualShsp();
 
-      final dualSocket = SingletonDIAccess.get<IDualShspSocket>();
+      final dualSocket = SingletonDIAccess.get<IDualShspSocketMigratable>();
       final peerInfo = PeerInfo(
         address: InternetAddress.loopbackIPv4,
         port: 9999,
@@ -123,7 +123,7 @@ void main() {
     test('socket profile can be extracted', () async {
       await initializePointDualShsp();
 
-      final dualSocket = SingletonDIAccess.get<IDualShspSocket>();
+      final dualSocket = SingletonDIAccess.get<IDualShspSocketMigratable>();
       final profile = dualSocket.extractProfile();
 
       expect(profile, isNotNull, reason: 'Profile should be extractable');
@@ -137,7 +137,7 @@ void main() {
     test('socket can apply profile', () async {
       await initializePointDualShsp();
 
-      final dualSocket = SingletonDIAccess.get<IDualShspSocket>();
+      final dualSocket = SingletonDIAccess.get<IDualShspSocketMigratable>();
       final profile = dualSocket.extractProfile();
 
       expect(
@@ -150,7 +150,7 @@ void main() {
     test('socket callbacks are properly set up for listening', () async {
       await initializePointDualShsp();
 
-      final dualSocket = SingletonDIAccess.get<IDualShspSocket>();
+      final dualSocket = SingletonDIAccess.get<IDualShspSocketMigratable>();
 
       expect(
         () => dualSocket.onListening.register((_) {}),
@@ -162,7 +162,7 @@ void main() {
     test('socket callbacks are properly set up for errors', () async {
       await initializePointDualShsp();
 
-      final dualSocket = SingletonDIAccess.get<IDualShspSocket>();
+      final dualSocket = SingletonDIAccess.get<IDualShspSocketMigratable>();
 
       expect(
         () => dualSocket.onError.register((_) {}),
@@ -174,7 +174,7 @@ void main() {
     test('socket callbacks are properly set up for close', () async {
       await initializePointDualShsp();
 
-      final dualSocket = SingletonDIAccess.get<IDualShspSocket>();
+      final dualSocket = SingletonDIAccess.get<IDualShspSocketMigratable>();
 
       expect(
         () => dualSocket.onClose.register((_) {}),
@@ -186,7 +186,7 @@ void main() {
     test('can close initialized socket', () async {
       await initializePointDualShsp();
 
-      final dualSocket = SingletonDIAccess.get<IDualShspSocket>();
+      final dualSocket = SingletonDIAccess.get<IDualShspSocketMigratable>();
       expect(dualSocket.isClosed, isFalse);
 
       dualSocket.close();
@@ -198,8 +198,8 @@ void main() {
       () async {
         await initializePointDualShsp();
 
-        final socket1 = SingletonDIAccess.get<IDualShspSocket>();
-        final socket2 = SingletonDIAccess.get<IDualShspSocket>();
+        final socket1 = SingletonDIAccess.get<IDualShspSocketMigratable>();
+        final socket2 = SingletonDIAccess.get<IDualShspSocketMigratable>();
 
         expect(
           identical(socket1, socket2),
@@ -225,7 +225,7 @@ void main() {
 
       await initializePointDualShsp();
 
-      final dualSocket = SingletonDIAccess.get<IDualShspSocket>();
+      final dualSocket = SingletonDIAccess.get<IDualShspSocketMigratable>();
       expect(dualSocket, isNotNull);
 
       // Should work regardless of IPv6 availability
@@ -241,7 +241,7 @@ void main() {
     test('socket implements all required interfaces', () async {
       await initializePointDualShsp();
 
-      final dualSocket = SingletonDIAccess.get<IDualShspSocket>();
+      final dualSocket = SingletonDIAccess.get<IDualShspSocketMigratable>();
 
       expect(
         dualSocket,
@@ -253,7 +253,7 @@ void main() {
     test('socket has IPv4 socket accessible', () async {
       await initializePointDualShsp();
 
-      final dualSocket = SingletonDIAccess.get<IDualShspSocket>();
+      final dualSocket = SingletonDIAccess.get<IDualShspSocketMigratable>();
       expect(dualSocket, isA<DualShspSocket>());
 
       final typedSocket = dualSocket as DualShspSocket;
@@ -273,7 +273,7 @@ void main() {
       final hasIPv6 = await AddressUtility.canCreateIPv6Socket();
       await initializePointDualShsp();
 
-      final dualSocket = SingletonDIAccess.get<IDualShspSocket>();
+      final dualSocket = SingletonDIAccess.get<IDualShspSocketMigratable>();
       final typedSocket = dualSocket as DualShspSocket;
 
       if (hasIPv6) {
@@ -297,7 +297,7 @@ void main() {
       () async {
         await initializePointDualShsp();
 
-        final dualSocket = SingletonDIAccess.get<IDualShspSocket>();
+        final dualSocket = SingletonDIAccess.get<IDualShspSocketMigratable>();
 
         final peer1 = PeerInfo(
           address: InternetAddress.loopbackIPv4,
@@ -327,7 +327,7 @@ void main() {
     test('socket state remains consistent after operations', () async {
       await initializePointDualShsp();
 
-      final dualSocket = SingletonDIAccess.get<IDualShspSocket>();
+      final dualSocket = SingletonDIAccess.get<IDualShspSocketMigratable>();
 
       // Perform multiple operations
       for (int i = 0; i < 10; i++) {
@@ -353,7 +353,7 @@ void main() {
     test('socket local address is IPV4', () async {
       await initializePointDualShsp();
 
-      final dualSocket = SingletonDIAccess.get<IDualShspSocket>();
+      final dualSocket = SingletonDIAccess.get<IDualShspSocketMigratable>();
       final address = dualSocket.localAddress;
 
       expect(address, isNotNull);
@@ -367,7 +367,7 @@ void main() {
     test('socket raw datagram socket is accessible', () async {
       await initializePointDualShsp();
 
-      final dualSocket = SingletonDIAccess.get<IDualShspSocket>();
+      final dualSocket = SingletonDIAccess.get<IDualShspSocketMigratable>();
       final rawSocket = dualSocket.ipv4Socket;
 
       expect(
@@ -380,7 +380,7 @@ void main() {
     test('initialization is repeatable - new sockets each time', () async {
       // First initialization
       await initializePointDualShsp();
-      final socket1 = SingletonDIAccess.get<IDualShspSocket>();
+      final socket1 = SingletonDIAccess.get<IDualShspSocketMigratable>();
 
       // Clean up
       socket1.close();
@@ -388,7 +388,7 @@ void main() {
 
       // Second initialization
       await initializePointDualShsp();
-      final socket2 = SingletonDIAccess.get<IDualShspSocket>();
+      final socket2 = SingletonDIAccess.get<IDualShspSocketMigratable>();
       final port2 = socket2.localPort;
 
       expect(socket2.isClosed, isFalse, reason: 'New socket should be open');

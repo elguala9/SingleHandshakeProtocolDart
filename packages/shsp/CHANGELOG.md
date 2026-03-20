@@ -7,6 +7,22 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [1.5.0] - 2026-03-20
+
+### Changed
+
+- **`IDualShspSocketMigratable` is now the primary DI type** replacing `IDualShspSocket` throughout the framework
+  - `initializePointDualShsp()` now creates a `DualShspSocketMigratable` (instead of `DualShspSocket`) and registers it under `IDualShspSocketMigratable`
+  - `DualShspSocketWrapper.dualSocket` and `internalSocket` setter are now typed `IDualShspSocketMigratable`
+  - `ISimpleDualSocketSingleton.getInstance()` / `setInstance()` now use `IDualShspSocketMigratable`
+  - `RegistryShspSocket.initialize()` now accepts `IDualShspSocketMigratable`; `bind()` creates `DualShspSocketMigratable` internally
+  - `RegistryShspSocket.initializeDI()` resolves `IDualShspSocketMigratable` from DI
+
+### Breaking Changes
+
+- `SingletonDIAccess.get<IDualShspSocket>()` is no longer registered by `initializePointDualShsp()` — use `get<IDualShspSocketMigratable>()` instead
+- `ISimpleDualSocketSingleton.setInstance()` now requires an `IDualShspSocketMigratable`; plain `IDualShspSocket` instances are no longer accepted
+
 ## [1.4.0] - 2026-03-20
 
 ### Added

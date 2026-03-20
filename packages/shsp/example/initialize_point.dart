@@ -30,7 +30,7 @@ Future<void> main() async {
     print('✓ Singleton initialized\n');
 
     // Step 2: Get the dual socket from DI
-    final dualSocket = SingletonDIAccess.get<IDualShspSocket>();
+    final dualSocket = SingletonDIAccess.get<IDualShspSocketMigratable>();
     print('Socket Details:');
     print('  Local Address: ${dualSocket.localAddress}');
     print('  Local Port: ${dualSocket.localPort}');

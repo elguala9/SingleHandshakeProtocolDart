@@ -13,25 +13,25 @@ void main() {
       SingletonManager.instance.destroyAll();
     });
 
-    // ── DI: IDualShspSocket ──────────────────────────────────────────────────
+    // ── DI: IDualShspSocketMigratable ────────────────────────────────────────
 
-    test('registers IDualShspSocket in DI', () {
-      expect(() => SingletonDIAccess.get<IDualShspSocket>(), returnsNormally);
+    test('registers IDualShspSocketMigratable in DI', () {
+      expect(() => SingletonDIAccess.get<IDualShspSocketMigratable>(), returnsNormally);
     });
 
-    test('IDualShspSocket is a DualShspSocket', () {
-      expect(SingletonDIAccess.get<IDualShspSocket>(), isA<DualShspSocket>());
+    test('IDualShspSocketMigratable is a DualShspSocket', () {
+      expect(SingletonDIAccess.get<IDualShspSocketMigratable>(), isA<DualShspSocket>());
     });
 
     // ── IPv4 socket ──────────────────────────────────────────────────────────
 
     test('ipv4Socket is not closed', () {
-      final dual = SingletonDIAccess.get<IDualShspSocket>();
+      final dual = SingletonDIAccess.get<IDualShspSocketMigratable>();
       expect(dual.ipv4Socket.isClosed, isFalse);
     });
 
     test('ipv4Socket has an assigned local port', () {
-      final dual = SingletonDIAccess.get<IDualShspSocket>();
+      final dual = SingletonDIAccess.get<IDualShspSocketMigratable>();
       expect(dual.ipv4Socket.localPort, isNotNull);
       expect(dual.ipv4Socket.localPort, greaterThan(0));
     });
@@ -46,10 +46,10 @@ void main() {
     });
 
     test(
-      'DualShspSocketWrapperDI delegates to the registered IDualShspSocket',
+      'DualShspSocketWrapperDI delegates to the registered IDualShspSocketMigratable',
       () {
         final wrapper = SingletonDIAccess.get<DualShspSocketWrapperDI>();
-        final dual = SingletonDIAccess.get<IDualShspSocket>();
+        final dual = SingletonDIAccess.get<IDualShspSocketMigratable>();
         expect(wrapper.ipv4Socket, same(dual.ipv4Socket));
       },
     );
@@ -69,10 +69,10 @@ void main() {
     });
 
     test(
-      'RegistryShspSocket ipv4 socket matches IDualShspSocket.ipv4Socket',
+      'RegistryShspSocket ipv4 socket matches IDualShspSocketMigratable.ipv4Socket',
       () {
         final reg = SingletonDIAccess.get<RegistryShspSocket>();
-        final dual = SingletonDIAccess.get<IDualShspSocket>();
+        final dual = SingletonDIAccess.get<IDualShspSocketMigratable>();
         expect(reg.getInstance(SocketType.ipv4), same(dual.ipv4Socket));
       },
     );
@@ -81,7 +81,7 @@ void main() {
 
     test('IPv6 registration is consistent with system IPv6 support', () async {
       final hasIPv6 = await AddressUtility.canCreateIPv6Socket();
-      final dual = SingletonDIAccess.get<IDualShspSocket>();
+      final dual = SingletonDIAccess.get<IDualShspSocketMigratable>();
       final reg = SingletonDIAccess.get<RegistryShspSocket>();
 
       if (hasIPv6) {

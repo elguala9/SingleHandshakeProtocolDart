@@ -2,7 +2,7 @@ import '../../../../shsp.dart';
 
 /// Routing adapter that manages both IPv4 and IPv6 sockets as a single unified interface.
 ///
-/// This class implements [IDualShspSocket] and internally holds two [ShspSocket] instances:
+/// This class implements [IDualShspSocketMigratable] and internally holds two [ShspSocket] instances:
 /// - `_ipv4Socket`: IPv4 socket, always required
 /// - `_ipv6Socket`: IPv6 socket, optional (may be null on systems without IPv6)
 ///

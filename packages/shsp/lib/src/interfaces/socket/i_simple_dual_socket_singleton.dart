@@ -3,10 +3,10 @@ import '../../../shsp.dart';
 /// Interface for simple dual socket singleton management
 abstract interface class ISimpleDualSocketSingleton {
   /// Get the current dual socket instance
-  IDualShspSocket? getInstance();
+  IDualShspSocketMigratable? getInstance();
 
   /// Set a new dual socket instance
-  void setInstance(IDualShspSocket socket);
+  void setInstance(IDualShspSocketMigratable socket);
 
   /// Check if a socket is currently set
   bool hasInstance();

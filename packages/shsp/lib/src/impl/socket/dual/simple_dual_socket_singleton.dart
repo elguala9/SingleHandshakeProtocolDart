@@ -28,11 +28,11 @@ class SimpleDualSocketSingleton implements ISimpleDualSocketSingleton {
   static SimpleDualSocketSingleton get instance => _instance;
 
   @protected
-  late IDualShspSocket? dualSocket;
+  late IDualShspSocketMigratable? dualSocket;
 
-  IDualShspSocket? getInstance() => dualSocket;
+  IDualShspSocketMigratable? getInstance() => dualSocket;
 
-  void setInstance(IDualShspSocket socket) {
+  void setInstance(IDualShspSocketMigratable socket) {
     dualSocket?.close();
     dualSocket = socket;
   }

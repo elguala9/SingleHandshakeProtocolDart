@@ -11,11 +11,11 @@ Future<void> initializePointDualShsp() async {
     final ipv6Socket = await ShspSocket.bindDefault(ipv6: true);
     ipv6SocketWrapper = ShspSocketWrapper(ipv6Socket);
   }
-  final dualSocket = DualShspSocket.fromSockets(
+  final dualSocket = DualShspSocketMigratable.fromWrappers(
     ipv4SocketWrapper,
     ipv6SocketWrapper,
   );
-  SingletonDIAccess.addInstanceAs<IDualShspSocket, DualShspSocket>(dualSocket);
+  SingletonDIAccess.addInstanceAs<IDualShspSocketMigratable, DualShspSocketMigratable>(dualSocket);
 
   final dualSingleton = DualShspSocketWrapperDI.initializeDI();
   SingletonDIAccess.addInstance(dualSingleton);
