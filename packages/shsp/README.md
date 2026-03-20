@@ -21,7 +21,7 @@ Add to your `pubspec.yaml`:
 
 ```yaml
 dependencies:
-  shsp: ^1.4.0
+  shsp: ^1.5.0
 ```
 
 Then run:
@@ -152,9 +152,21 @@ for (final socket in socketRegistry.values) {
 }
 ```
 
-## Socket Migration (v1.4.0+)
+## Socket Migration (v1.4.0+) and DI (v1.5.0+)
 
 `ShspSocketWrapper` and `DualShspSocketMigratable` allow you to replace the underlying socket at runtime without invalidating any references held by peers or instances.
+
+As of v1.5.0, `IDualShspSocketMigratable` is the primary DI type registered by `initializePointDualShsp()`:
+
+```dart
+import 'package:shsp/shsp.dart';
+import 'package:singleton_manager/singleton_manager.dart';
+
+await initializePointDualShsp();
+final socket = SingletonDIAccess.get<IDualShspSocketMigratable>();
+// Migration methods are available without casting:
+socket.migrateSocketIpv4(newIpv4Socket);
+```
 
 ```dart
 import 'dart:io';
@@ -245,8 +257,8 @@ Protocol contracts for extensibility:
 - **Compression**: `ICompressionCodec`
 - **Handshake**: `IShspHandshake`
 - **Factories** (for dependency injection): `IShspSocketFactory`, `IShspPeerFactory`, `IShspInstanceFactory`
-- **Utilities**: `IAddressUtility`, `ICallbackMap<T>`, `IKeepAliveTimer`, `IMessageCallbackMap`, `IRawShspSocket`, `IDualShspSocket`
-- **Wrappers** (v1.4.0+): `IShspSocketWrapper`, `IDualShspSocketMigratable`
+- **Utilities**: `IAddressUtility`, `ICallbackMap<T>`, `IKeepAliveTimer`, `IMessageCallbackMap`, `IRawShspSocket`, `IDualShspSocket`, `IDualShspSocketMigratable`
+- **Wrappers** (v1.4.0+): `IShspSocketWrapper`
 - **Singletons**: `IMessageCallbackMapSingleton`, `IShspSocketInfoSingleton`
 
 ### Implementations

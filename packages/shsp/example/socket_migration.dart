@@ -86,9 +86,10 @@ Future<void> fromWrappersExample() async {
   ipv4Wrapper.setListeningCallback(() => print('  [fromWrappers] listening'));
 
   final migratable = DualShspSocketMigratable.fromWrappers(ipv4Wrapper);
+  final IDualShspSocket asInterface = migratable;
 
-  print('  Migratable implements IDualShspSocketMigratable: '
-      '${migratable is IDualShspSocketMigratable}');
+  print('  IDualShspSocket implements IDualShspSocketMigratable: '
+      '${asInterface is IDualShspSocketMigratable}');
   print('  ipv4SocketImpl is ShspSocketWrapper: '
       '${migratable.ipv4SocketImpl is ShspSocketWrapper}');
 

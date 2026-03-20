@@ -4,7 +4,7 @@ import 'package:meta/meta.dart';
 import '../../../../shsp.dart';
 import 'package:singleton_manager/singleton_manager.dart';
 
-/// Proxy for [IDualShspSocket] that allows swapping the underlying socket
+/// Proxy for [IDualShspSocketMigratable] that allows swapping the underlying socket
 /// without updating all references.
 @isSingleton
 class DualShspSocketWrapper implements IDualShspSocket, IValueForRegistry {
@@ -14,9 +14,9 @@ class DualShspSocketWrapper implements IDualShspSocket, IValueForRegistry {
 
   @isInjected
   @protected
-  late IDualShspSocket dualSocket;
+  late IDualShspSocketMigratable dualSocket;
 
-  set internalSocket(IDualShspSocket newSocket) => dualSocket = newSocket;
+  set internalSocket(IDualShspSocketMigratable newSocket) => dualSocket = newSocket;
 
   @override
   IShspSocket get ipv4Socket => dualSocket.ipv4Socket;
