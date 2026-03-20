@@ -7,6 +7,26 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [1.4.0] - 2026-03-20
+
+### Added
+
+- **`IShspSocketWrapper` interface**: New contract for socket proxy/wrapper classes
+  - `migrateSocket(IShspSocket newSocket)` — swaps the underlying socket and re-applies stored callbacks
+- **`IDualShspSocketMigratable` interface**: Contract for dual-socket migration
+  - `migrateSocketIpv4(IShspSocket socket)` — replaces the IPv4 underlying socket
+  - `migrateSocketIpv6(IShspSocket socket)` — replaces or adds the IPv6 underlying socket
+- **`DualShspSocketMigratable`**: New class extending `DualShspSocket` that implements `IDualShspSocketMigratable`
+  - Wraps raw sockets in `ShspSocketWrapper` automatically via its default constructor
+  - `fromWrappers` named constructor for pre-wrapped socket injection
+  - Enables live socket migration without losing peer callbacks or references
+
+### Changed
+
+- **`ShspSocketWrapper`** now implements `IShspSocketWrapper` instead of bare `IShspSocket`
+  - Added anti-nesting guard: wrapping another `ShspSocketWrapper` throws `ArgumentError`
+  - Stores listening, close, and error callbacks internally so they are re-applied on every `migrateSocket()` call
+
 ## [1.3.0] - 2026-03-19
 
 ### Added
