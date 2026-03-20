@@ -4,16 +4,43 @@ import 'dart:typed_data';
 import '../../../../shsp.dart';
 import 'package:singleton_manager/singleton_manager.dart';
 
+
 /// SHSP SocketWrapper: agisce come un proxy per permettere il cambio del socket
 /// sottostante senza dover aggiornare i riferimenti in ogni ShspPeer.
-class ShspSocketWrapper implements IShspSocket, IValueForRegistry {
-  ShspSocketWrapper(this._socket);
+class ShspSocketWrapper implements IValueForRegistry, IShspSocketWrapper {
+  ShspSocketWrapper(IShspSocket socket) : _socket = socket {
+    if (socket is ShspSocketWrapper) {
+      throw ArgumentError(
+        'ShspSocketWrapper cannot wrap another ShspSocketWrapper — nesting is not allowed.',
+      );
+    }
+  }
 
   // Rimosso 'final' per permettere il cambio del riferimento del socket
   IShspSocket _socket;
 
   // Setter per aggiornare il socket interno
   set internalSocket(ShspSocket newSocket) => _socket = newSocket;
+
+  // Stored event callbacks, re-applied to the new socket on migration
+  void Function()? _listeningCallback;
+  void Function()? _closeCallback;
+  void Function(dynamic)? _errorCallback;
+
+  // ── IShspSocketWrapper ─────────────────────────────────────────────────────
+
+  @override
+  void migrateSocket(IShspSocket newSocket) {
+    final profile = _socket.extractProfile();
+    _socket = newSocket;
+    _socket.applyProfile(profile);
+    final lc = _listeningCallback;
+    if (lc != null) _socket.setListeningCallback(lc);
+    final cc = _closeCallback;
+    if (cc != null) _socket.setCloseCallback(cc);
+    final ec = _errorCallback;
+    if (ec != null) _socket.setErrorCallback(ec);
+  }
 
   // Computed getter: aggiornato automaticamente dopo ogni swap
   RawDatagramSocket get _raw => _socket.socket;
@@ -64,15 +91,22 @@ class ShspSocketWrapper implements IShspSocket, IValueForRegistry {
   String serializedObject() => _socket.serializedObject();
 
   @override
-  void setCloseCallback(void Function() cb) => _socket.setCloseCallback(cb);
+  void setCloseCallback(void Function() cb) {
+    _closeCallback = cb;
+    _socket.setCloseCallback(cb);
+  }
 
   @override
-  void setErrorCallback(void Function(dynamic err) cb) =>
-      _socket.setErrorCallback(cb);
+  void setErrorCallback(void Function(dynamic err) cb) {
+    _errorCallback = cb;
+    _socket.setErrorCallback(cb);
+  }
 
   @override
-  void setListeningCallback(void Function() cb) =>
-      _socket.setListeningCallback(cb);
+  void setListeningCallback(void Function() cb) {
+    _listeningCallback = cb;
+    _socket.setListeningCallback(cb);
+  }
 
   @override
   void setMessageCallback(PeerInfo peer, MessageCallbackFunction cb) =>

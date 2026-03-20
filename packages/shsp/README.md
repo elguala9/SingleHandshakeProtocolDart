@@ -10,6 +10,7 @@ A high-performance Dart package implementing the Single HandShake Protocol (SHSP
 - **Pluggable Compression**: Built-in support for GZip, LZ4, and Zstd codecs
 - **Auto-Wiring Classes**: `AutoShspPeer` and `AutoShspInstance` for simplified usage
 - **Global Socket Management**: `ShspSocketSingleton` for seamless socket switching
+- **Live Socket Migration**: `ShspSocketWrapper` and `DualShspSocketMigratable` allow swapping the underlying socket at runtime without losing peer references or callbacks
 - **Cross-Platform**: Runs on Dart CLI, Flutter mobile, and web
 - **IPv4/IPv6 Support**: Dual-stack ready with automatic address formatting
 - **Comprehensive Testing**: 399+ passing tests ensuring reliability
@@ -20,7 +21,7 @@ Add to your `pubspec.yaml`:
 
 ```yaml
 dependencies:
-  shsp: ^1.2.4
+  shsp: ^1.4.0
 ```
 
 Then run:
@@ -151,6 +152,46 @@ for (final socket in socketRegistry.values) {
 }
 ```
 
+## Socket Migration (v1.4.0+)
+
+`ShspSocketWrapper` and `DualShspSocketMigratable` allow you to replace the underlying socket at runtime without invalidating any references held by peers or instances.
+
+```dart
+import 'dart:io';
+import 'package:shsp/shsp.dart';
+
+// Create a migratable dual socket
+final ipv4 = await ShspSocket.bind(InternetAddress.anyIPv4, 8080);
+final migratable = DualShspSocketMigratable(ipv4);
+
+// Register a peer callback — this reference stays valid across migrations
+final peer = PeerInfo(address: InternetAddress.loopbackIPv4, port: 9001);
+migratable.setMessageCallback(peer, (record) {
+  print('Received: ${record.msg}');
+});
+
+// Later: migrate to a new socket — callbacks are automatically re-applied
+final newIpv4 = await ShspSocket.bind(InternetAddress.anyIPv4, 8080);
+migratable.migrateSocketIpv4(newIpv4);
+
+// All callbacks and peer references remain intact
+migratable.close();
+```
+
+For single-socket migration use `ShspSocketWrapper` directly:
+
+```dart
+final socket = await ShspSocket.bind(InternetAddress.anyIPv4, 8080);
+final wrapper = ShspSocketWrapper(socket);
+
+// Register callbacks
+wrapper.setListeningCallback(() => print('Listening'));
+
+// Swap underlying socket — listening callback is re-applied automatically
+final newSocket = await ShspSocket.bind(InternetAddress.anyIPv4, 0);
+wrapper.migrateSocket(newSocket);
+```
+
 ### Advanced: Registry Mixin Pattern
 
 ```dart
@@ -205,6 +246,7 @@ Protocol contracts for extensibility:
 - **Handshake**: `IShspHandshake`
 - **Factories** (for dependency injection): `IShspSocketFactory`, `IShspPeerFactory`, `IShspInstanceFactory`
 - **Utilities**: `IAddressUtility`, `ICallbackMap<T>`, `IKeepAliveTimer`, `IMessageCallbackMap`, `IRawShspSocket`, `IDualShspSocket`
+- **Wrappers** (v1.4.0+): `IShspSocketWrapper`, `IDualShspSocketMigratable`
 - **Singletons**: `IMessageCallbackMapSingleton`, `IShspSocketInfoSingleton`
 
 ### Implementations
@@ -215,6 +257,8 @@ Concrete implementations:
 - `AutoShspPeer`: Auto-wiring peer (recommended for most use cases)
 - `AutoShspInstance`: Auto-wiring instance
 - `ShspSocketSingleton`: Global socket management
+- `ShspSocketWrapper`: Proxy wrapper enabling live socket migration (v1.4.0+)
+- `DualShspSocketMigratable`: Dual-stack socket with live IPv4/IPv6 migration support (v1.4.0+)
 - Compression codecs: `GZipCodec`, `LZ4Codec`, `ZstdCodec`
 
 ### Registry Utilities (v1.2.0+)
@@ -250,6 +294,7 @@ Comprehensive examples are available in the `example/` directory:
 3. **Socket Singleton with Compression** - Global socket management with data compression
 4. **Using Interfaces** - Dependency injection and interface-based design
 5. **Registry Management** (v1.2.0+) - Advanced instance management with registry patterns
+6. **Socket Migration** (v1.4.0+) - Live socket swapping with `ShspSocketWrapper` and `DualShspSocketMigratable`
 
 [View all examples](https://github.com/lgualandi/SingleHandShakeProtocolDart/tree/main/packages/shsp/example)
 
