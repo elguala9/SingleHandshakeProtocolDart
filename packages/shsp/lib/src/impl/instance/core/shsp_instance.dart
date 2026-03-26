@@ -114,8 +114,8 @@ class ShspInstance extends ShspPeer
       }
       return;
     }
-    if (isClosing(msg)) return;
-    if (isClosed(msg)) return;
+    if (isClosingMessage(msg)) return;
+    if (isClosedMessage(msg)) return;
     if (_isKeepAlive(msg)) return;
 
     // Pass to parent for user callback

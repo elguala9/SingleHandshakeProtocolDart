@@ -71,7 +71,7 @@ mixin ShspInstanceHandshakeMixin {
 
   /// Check if message is a closing signal (0x02)
   @protected
-  bool isClosing(List<int> msg) {
+  bool isClosingMessage(List<int> msg) {
     if (msg.isNotEmpty && msg[0] == closingPrefix) {
       closingState = true;
       onClosing.call(null);
@@ -82,7 +82,7 @@ mixin ShspInstanceHandshakeMixin {
 
   /// Check if message is a closed signal (0x03)
   @protected
-  bool isClosed(List<int> msg) {
+  bool isClosedMessage(List<int> msg) {
     if (msg.isNotEmpty && msg[0] == closedPrefix) {
       closingState = false;
       openState = false;
