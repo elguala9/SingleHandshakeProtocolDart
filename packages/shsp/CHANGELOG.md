@@ -7,6 +7,19 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [1.6.0] - 2026-03-26
+
+### Changed
+
+- Updated `singleton_manager` dependency from `^0.4.0` to `^0.5.0`
+- Updated `singleton_manager_generator` dev dependency from `^1.0.4` to `^1.2.0`
+- Renamed `isClosing()` to `isClosingMessage()` in `ShspInstanceHandshakeMixin`
+- Renamed `isClosed()` to `isClosedMessage()` in `ShspInstanceHandshakeMixin`
+
+### Removed
+
+- Removed `archive` dependency
+
 ## [1.5.0] - 2026-03-20
 
 ### Changed
