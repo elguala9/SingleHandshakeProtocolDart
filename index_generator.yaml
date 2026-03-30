@@ -1,0 +1,7 @@
+index_generator:
+  exclude:
+    - "**/test/**"
+  libraries:
+    - directory_path: packages/implementations/lib
+    - directory_path: packages/interfaces/lib
+    - directory_path: packages/types/lib
