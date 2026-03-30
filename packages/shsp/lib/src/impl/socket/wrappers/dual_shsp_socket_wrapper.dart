@@ -7,7 +7,7 @@ import 'package:singleton_manager/singleton_manager.dart';
 /// Proxy for [IDualShspSocketMigratable] that allows swapping the underlying socket
 /// without updating all references.
 @isSingleton
-class DualShspSocketWrapper implements IDualShspSocket, IValueForRegistry {
+class DualShspSocketWrapper implements IDualShspSocketWrapper {
   DualShspSocketWrapper();
 
   DualShspSocketWrapper.createFromSocket(this.dualSocket);

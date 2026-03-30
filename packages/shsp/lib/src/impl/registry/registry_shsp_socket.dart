@@ -38,7 +38,9 @@ class InputRegistryShspSocket {
 /// await registry.bind(InputRegistryShspSocket(ipv4Port: 8080));
 /// final ipv4 = registry.getByKey(SocketType.ipv4);
 /// ```
-class RegistryShspSocket with Registry<SocketType, IShspSocket> {
+class RegistryShspSocket
+    with Registry<SocketType, IShspSocket>
+    implements IRegistryShspSocket {
   RegistryShspSocket();
 
   factory RegistryShspSocket.initializeDI() {
@@ -85,7 +87,7 @@ class RegistryShspSocket with Registry<SocketType, IShspSocket> {
       );
     }
 
-    final dualSocket = DualShspSocketMigratable.fromWrappers(
+    final IDualShspSocketMigratable dualSocket = DualShspSocketMigratable.fromWrappers(
       ShspSocketWrapper(ipv4Socket),
       ipv6Socket != null ? ShspSocketWrapper(ipv6Socket) : null,
     );
@@ -99,6 +101,9 @@ class RegistryShspSocket with Registry<SocketType, IShspSocket> {
       replace(type, socket);
     }
   }
+
+  @override
+  void destroy() => destroyAll();
 }
 
 /// Backward-compatibility alias.

@@ -215,10 +215,27 @@ void main() {
       instanceC.close();
     });
 
-    test('connection state is not transferred in profile', () {
-      // Simulate connection state changes
-      instanceA.sendHandshake();
-      instanceA.sendHandshake(); // Send again to trigger _open
+    test('connection state is not transferred in profile', () async {
+      // Establish a real connection so instanceA has actual connection state
+      await Future.wait([
+        ShspHandshakeHandler.handshakeInstance(
+          instanceA,
+          const ShspHandshakeHandlerOptions(
+            timeoutMs: 5000,
+            intervalOfSendingHandshakeMs: 50,
+          ),
+          null,
+        ),
+        ShspHandshakeHandler.handshakeInstance(
+          instanceB,
+          const ShspHandshakeHandlerOptions(
+            timeoutMs: 5000,
+            intervalOfSendingHandshakeMs: 50,
+          ),
+          null,
+        ),
+      ]);
+      expect(instanceA.open, isTrue, reason: 'instanceA should be open after handshake');
 
       final profile = instanceA.extractProfile();
 
