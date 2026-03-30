@@ -1,0 +1,40 @@
+Analyzing ....
+
+   info - lib\src\impl\socket\dual_shsp_socket.dart:59:18 - The member 'ipv4Socket' overrides an inherited member but isn't annotated with '@override'. Try adding the '@override' annotation. - annotate_overrides
+   info - lib\src\impl\socket\dual_shsp_socket.dart:62:19 - The member 'ipv6Socket' overrides an inherited member but isn't annotated with '@override'. Try adding the '@override' annotation. - annotate_overrides
+   info - lib\src\impl\socket\dual_shsp_socket.dart:65:25 - The member 'socket' overrides an inherited member but isn't annotated with '@override'. Try adding the '@override' annotation. - annotate_overrides
+   info - lib\src\impl\socket\dual_shsp_socket.dart:213:25 - The member 'compressionCodec' overrides an inherited member but isn't annotated with '@override'. Try adding the '@override' annotation. - annotate_overrides
+   info - lib\src\impl\socket\shsp_socket.dart:279:24 - The member 'localAddress' overrides an inherited member but isn't annotated with '@override'. Try adding the '@override' annotation. - annotate_overrides
+   info - lib\src\impl\socket\shsp_socket.dart:282:12 - The member 'localPort' overrides an inherited member but isn't annotated with '@override'. Try adding the '@override' annotation. - annotate_overrides
+   info - lib\src\impl\socket\shsp_socket.dart:285:25 - The member 'compressionCodec' overrides an inherited member but isn't annotated with '@override'. Try adding the '@override' annotation. - annotate_overrides
+   info - lib\src\impl\utility\callback_map.dart:13:8 - The member 'add' overrides an inherited member but isn't annotated with '@override'. Try adding the '@override' annotation. - annotate_overrides
+   info - lib\src\impl\utility\callback_map.dart:18:16 - The member 'get' overrides an inherited member but isn't annotated with '@override'. Try adding the '@override' annotation. - annotate_overrides
+   info - lib\src\impl\utility\callback_map.dart:23:8 - The member 'update' overrides an inherited member but isn't annotated with '@override'. Try adding the '@override' annotation. - annotate_overrides
+   info - lib\src\impl\utility\callback_map.dart:31:8 - The member 'remove' overrides an inherited member but isn't annotated with '@override'. Try adding the '@override' annotation. - annotate_overrides
+   info - lib\src\impl\utility\callback_map.dart:36:8 - The member 'clear' overrides an inherited member but isn't annotated with '@override'. Try adding the '@override' annotation. - annotate_overrides
+   info - lib\src\impl\utility\callback_map.dart:41:8 - The member 'has' overrides an inherited member but isn't annotated with '@override'. Try adding the '@override' annotation. - annotate_overrides
+   info - lib\src\impl\utility\callback_map.dart:46:24 - The member 'keys' overrides an inherited member but isn't annotated with '@override'. Try adding the '@override' annotation. - annotate_overrides
+   info - lib\src\impl\utility\callback_map.dart:49:29 - The member 'values' overrides an inherited member but isn't annotated with '@override'. Try adding the '@override' annotation. - annotate_overrides
+   info - lib\src\impl\utility\callback_map.dart:52:47 - The member 'entries' overrides an inherited member but isn't annotated with '@override'. Try adding the '@override' annotation. - annotate_overrides
+   info - lib\src\impl\utility\callback_map.dart:55:10 - The member 'serializedObject' overrides an inherited member but isn't annotated with '@override'. Try adding the '@override' annotation. - annotate_overrides
+   info - lib\src\impl\utility\callback_map.dart:61:11 - The member 'length' overrides an inherited member but isn't annotated with '@override'. Try adding the '@override' annotation. - annotate_overrides
+   info - lib\src\impl\utility\callback_map.dart:64:12 - The member 'isEmpty' overrides an inherited member but isn't annotated with '@override'. Try adding the '@override' annotation. - annotate_overrides
+   info - lib\src\impl\utility\callback_map.dart:67:12 - The member 'isNotEmpty' overrides an inherited member but isn't annotated with '@override'. Try adding the '@override' annotation. - annotate_overrides
+   info - lib\src\impl\utility\keep_alive_timer.dart:26:8 - The member 'stop' overrides an inherited member but isn't annotated with '@override'. Try adding the '@override' annotation. - annotate_overrides
+   info - lib\src\impl\utility\keep_alive_timer.dart:68:8 - The member 'resetTick' overrides an inherited member but isn't annotated with '@override'. Try adding the '@override' annotation. - annotate_overrides
+   info - lib\src\impl\utility\message_callback_map.dart:19:8 - The member 'add' overrides an inherited member but isn't annotated with '@override'. Try adding the '@override' annotation. - annotate_overrides
+   info - lib\src\impl\utility\message_callback_map.dart:27:28 - The member 'get' overrides an inherited member but isn't annotated with '@override'. Try adding the '@override' annotation. - annotate_overrides
+   info - lib\src\impl\utility\message_callback_map.dart:40:8 - The member 'addByAddress' overrides an inherited member but isn't annotated with '@override'. Try adding the '@override' annotation. - annotate_overrides
+   info - lib\src\impl\utility\message_callback_map.dart:47:28 - The member 'getByAddress' overrides an inherited member but isn't annotated with '@override'. Try adding the '@override' annotation. - annotate_overrides
+   info - lib\src\impl\utility\message_callback_map.dart:56:8 - The member 'remove' overrides an inherited member but isn't annotated with '@override'. Try adding the '@override' annotation. - annotate_overrides
+   info - lib\src\impl\utility\message_callback_map.dart:66:8 - The member 'removeByAddress' overrides an inherited member but isn't annotated with '@override'. Try adding the '@override' annotation. - annotate_overrides
+   info - lib\src\impl\utility\message_callback_map.dart:72:8 - The member 'containsKey' overrides an inherited member but isn't annotated with '@override'. Try adding the '@override' annotation. - annotate_overrides
+   info - lib\src\impl\utility\message_callback_map.dart:77:8 - The member 'containsAddress' overrides an inherited member but isn't annotated with '@override'. Try adding the '@override' annotation. - annotate_overrides
+   info - lib\src\impl\utility\message_callback_map.dart:83:24 - The member 'keys' overrides an inherited member but isn't annotated with '@override'. Try adding the '@override' annotation. - annotate_overrides
+   info - lib\src\impl\utility\message_callback_map.dart:86:11 - The member 'length' overrides an inherited member but isn't annotated with '@override'. Try adding the '@override' annotation. - annotate_overrides
+   info - lib\src\impl\utility\message_callback_map.dart:89:8 - The member 'clear' overrides an inherited member but isn't annotated with '@override'. Try adding the '@override' annotation. - annotate_overrides
+   info - lib\src\impl\utility\shsp_socket_info_singleton.dart:8:16 - The member 'address' overrides an inherited member but isn't annotated with '@override'. Try adding the '@override' annotation. - annotate_overrides
+   info - lib\src\impl\utility\shsp_socket_info_singleton.dart:9:13 - The member 'port' overrides an inherited member but isn't annotated with '@override'. Try adding the '@override' annotation. - annotate_overrides
+   info - lib\src\interfaces\socket\i_dual_shsp_socket.dart:14:25 - The member 'socket' overrides an inherited member but isn't annotated with '@override'. Try adding the '@override' annotation. - annotate_overrides
+
+36 issues found.

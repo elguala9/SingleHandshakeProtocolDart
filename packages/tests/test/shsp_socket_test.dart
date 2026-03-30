@@ -1,12 +1,12 @@
 import 'dart:io';
 import 'dart:async';
 import 'package:test/test.dart';
-import 'package:shsp_interfaces/shsp_interfaces.dart';
-import 'package:shsp_implementations/src/shsp_socket.dart';
-import 'package:shsp_types/shsp_types.dart';
+import 'package:shsp/shsp.dart';
+import 'helpers/testable_shsp_socket.dart';
 
 /// Factory function type for creating IShspSocket
-typedef IShspSocketFactory = Future<IShspSocket> Function(InternetAddress address, int port);
+typedef IShspSocketFactory =
+    Future<IShspSocket> Function(InternetAddress address, int port);
 
 void testIShspSocket(IShspSocketFactory createSocket) {
   group('IShspSocket interface', () {
@@ -16,8 +16,10 @@ void testIShspSocket(IShspSocketFactory createSocket) {
 
     setUp(() async {
       address = InternetAddress.loopbackIPv4;
-      port = 9000;
-      socket = await createSocket(address, port);
+      // Use ephemeral port (0) to avoid conflicts when tests run in parallel
+      socket = await createSocket(address, 0);
+      // Read actual port assigned by OS
+      port = (socket as ShspSocket).localPort!;
     });
 
     tearDown(() {
@@ -27,52 +29,53 @@ void testIShspSocket(IShspSocketFactory createSocket) {
     test('should set and call message callback', () async {
       final testMsg = [1, 2, 3];
       final rinfo = RemoteInfo(address: address, port: port);
+      final peerInfo = PeerInfo(address: address, port: port);
       bool called = false;
-      socket.setMessageCallback(
-        '${address.address}:$port',
-        (msg, info) {
-          called = true;
-          expect(msg, equals(testMsg));
-          expect(info.address, equals(address));
-          expect(info.port, equals(port));
-        },
-      );
-      socket.onMessage(testMsg, rinfo);
+      socket.setMessageCallback(peerInfo, (record) {
+        called = true;
+        expect(record.msg, equals(testMsg));
+        expect(record.rinfo.address, equals(address));
+        expect(record.rinfo.port, equals(port));
+      });
+      (socket as ShspSocket).testOnMessage(testMsg, rinfo);
       expect(called, isTrue);
     });
 
     test('should send and receive messages between two sockets', () async {
       final address2 = InternetAddress.loopbackIPv4;
-      final port2 = port + 1;
       final socket1 = socket;
-      final socket2 = await createSocket(address2, port2);
+      final socket2 = await createSocket(address2, 0);
+      final port2 = (socket2 as ShspSocket).localPort!;
 
       final testMsg = [10, 20, 30];
       final completer = Completer<void>();
 
-      final callbackKey = '${address.address}:$port';
-      print('DEBUG: callbackKey = $callbackKey');
+      final peerInfo = PeerInfo(address: address, port: port);
+      print('DEBUG: peerInfo = ${peerInfo.address.address}:${peerInfo.port}');
       print('DEBUG: socket1 port = $port, socket2 port = $port2');
 
-      socket2.setMessageCallback(
-        callbackKey,
-        (msg, info) {
-          print('DEBUG: Ricevuto messaggio: $msg da ${info.address}:${info.port}');
-          expect(msg, equals(testMsg));
-          expect(info.address, equals(address));
-          expect(info.port, equals(port));
-          completer.complete();
-        },
-      );
+      socket2.setMessageCallback(peerInfo, (record) {
+        print(
+          'DEBUG: Ricevuto messaggio: ${record.msg} da ${record.rinfo.address}:${record.rinfo.port}',
+        );
+        expect(record.msg, equals(testMsg));
+        expect(record.rinfo.address, equals(address));
+        expect(record.rinfo.port, equals(port));
+        completer.complete();
+      });
 
       print('DEBUG: Invio messaggio da socket1 a socket2');
-      socket1.sendTo(testMsg, address2, port2);
+      final peerInfo2 = PeerInfo(address: address2, port: port2);
+      socket1.sendTo(testMsg, peerInfo2);
 
       // Attendi la ricezione (fino a 2 secondi)
-      await completer.future.timeout(Duration(seconds: 2), onTimeout: () {
-        print('DEBUG: Timeout, messaggio non ricevuto');
-        fail('Messaggio non ricevuto entro il timeout');
-      });
+      await completer.future.timeout(
+        const Duration(seconds: 2),
+        onTimeout: () {
+          print('DEBUG: Timeout, messaggio non ricevuto');
+          fail('Messaggio non ricevuto entro il timeout');
+        },
+      );
 
       print('DEBUG: Chiusura socket2');
       socket2.close();
@@ -80,24 +83,38 @@ void testIShspSocket(IShspSocketFactory createSocket) {
 
     test('should set and call close callback', () async {
       bool closed = false;
-      socket.setCloseCallback(() {
+      socket.onClose.register((_) {
         closed = true;
       });
-      socket.onClose();
+      (socket as ShspSocket).onClose.call(null);
       expect(closed, isTrue);
     });
 
     test('should set and call error callback', () async {
       bool errored = false;
       final error = Exception('Test error');
-      socket.setErrorCallback((err) {
+      socket.onError.register((err) {
         errored = true;
         expect(err, equals(error));
       });
-      socket.onError(error);
+      (socket as ShspSocket).onError.call(error);
       expect(errored, isTrue);
     });
 
+    test(
+      'close() should be idempotent - can be called multiple times',
+      () async {
+        // Create a new socket for this test
+        final testSocket = await createSocket(address, 0);
+
+        // Call close multiple times - should not throw
+        expect(() {
+          testSocket.close();
+          testSocket.close();
+          testSocket.close();
+        }, returnsNormally);
+      },
+    );
   });
 }
 
