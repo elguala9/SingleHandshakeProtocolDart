@@ -8,7 +8,7 @@ This is a unified monorepo containing the SHSP package and its comprehensive tes
 
 ```
 packages/
-├── shsp/               # Main unified SHSP package (v1.2.4)
+├── shsp/               # Main unified SHSP package (v1.6.1)
 │   ├── lib/
 │   │   ├── src/
 │   │   │   ├── interfaces/     # Protocol contracts (IShspSocket, IShspPeer, etc.)
@@ -34,7 +34,7 @@ Add to your `pubspec.yaml`:
 
 ```yaml
 dependencies:
-  shsp: ^1.2.4
+  shsp: ^1.6.1
 ```
 
 Then run:
@@ -65,7 +65,7 @@ void main() async {
   await initializePointDualShsp();
 
   // Use the global socket singleton
-  final socket = SingletonDIAccess.get<IDualShspSocket>();
+  final socket = SingletonDIAccess.get<IDualShspSocketMigratable>();
   print('Socket ready on port ${socket.localPort}');
 }
 ```
@@ -127,7 +127,7 @@ void main() async {
   await initializePointDualShsp();
 
   // Get the singleton socket
-  final socket = SingletonDIAccess.get<IDualShspSocket>();
+  final socket = SingletonDIAccess.get<IDualShspSocketMigratable>();
   print('Socket bound to ${socket.localAddress}:${socket.localPort}');
 
   // Register socket lifecycle callbacks
