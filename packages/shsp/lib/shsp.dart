@@ -64,6 +64,7 @@ export 'src/interfaces/i_shsp_socket_base.dart';
 export 'src/interfaces/index.dart';
 export 'src/interfaces/socket/i_dual_shsp_socket.dart';
 export 'src/interfaces/socket/i_simple_dual_socket_singleton.dart';
+export 'src/interfaces/registry/i_registry_shsp_socket.dart';
 export 'src/interfaces/wrapper/i_dual_shsp_socket_wrapper.dart';
 export 'src/interfaces/wrapper/i_shsp_socket_wrapper.dart';
 export 'src/interfaces/utility/i_address_utility.dart';
