@@ -1,5 +1,5 @@
 import 'dart:io';
-import 'package:shsp_implementations/shsp_implementations.dart';
+import 'package:shsp/shsp.dart';
 
 /// Example demonstrating ShspSocket usage
 void main() async {
@@ -7,7 +7,9 @@ void main() async {
 
   // Create and bind a new SHSP socket
   final socket = await ShspSocket.bind(InternetAddress.loopbackIPv4, 8080);
-  print('Socket bound on ${socket.localAddress?.address}:${socket.localPort}\n');
+  print(
+    'Socket bound on ${socket.localAddress?.address}:${socket.localPort}\n',
+  );
 
   // Set up callbacks
   socket.setErrorCallback((error) {
@@ -19,15 +21,20 @@ void main() async {
   });
 
   // Set message callback for a specific peer
-  socket.setMessageCallback('127.0.0.1:8081', (msg, rinfo) {
-    print('Received message from ${rinfo.address.address}:${rinfo.port}');
-    print('Message: ${String.fromCharCodes(msg)}');
+  final remotePeer = PeerInfo(
+    address: InternetAddress('127.0.0.1'),
+    port: 8081,
+  );
+  socket.setMessageCallback(remotePeer, (record) {
+    print(
+      'Received message from ${record.rinfo.address.address}:${record.rinfo.port}',
+    );
+    print('Message: ${String.fromCharCodes(record.msg)}');
   });
-
 
   // Simulate sending a message
   final message = 'Hello from Dart!'.codeUnits.toList();
-  final bytesSent = socket.sendTo(message, InternetAddress('127.0.0.1'), 8081);
+  final bytesSent = socket.sendTo(message, remotePeer);
   print('Sent $bytesSent bytes to 127.0.0.1:8081\n');
 
   // Keep the socket open for a few seconds to receive messages
