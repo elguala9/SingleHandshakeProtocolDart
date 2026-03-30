@@ -525,10 +525,10 @@ packages:
     dependency: transitive
     description:
       name: singleton_manager
-      sha256: cc564c962988f4ea3d2f08b9b5dab6ef10d3791b656295d5953e34030f86eaf2
+      sha256: "0e75b05998f07ad61c8c08efc2c2d5a5a04bcc4a10ed1ddcdd22ed116ccc74a2"
       url: "https://pub.dev"
     source: hosted
-    version: "0.5.0"
+    version: "0.6.1"
   singleton_manager_generator:
     dependency: transitive
     description:
