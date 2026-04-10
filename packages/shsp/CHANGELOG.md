@@ -7,6 +7,19 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [1.7.1] - 2026-04-11
+
+### Fixed
+
+#### Code Quality
+- Removed unused import `dart:typed_data` from peer_communicator.dart
+- Removed unused variable `startTime` from test file
+- Added `const` keyword to all constructors for performance optimization
+- Fixed double literal `2.0` to `2` where appropriate
+- Optimized `const` declarations in test code
+
+**Result:** ✅ **Zero dart analyze issues** - Ready for pub.dev maximum score
+
 ## [1.7.0] - 2026-03-30
 
 ### Added
