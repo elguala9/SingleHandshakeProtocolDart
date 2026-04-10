@@ -15,6 +15,7 @@ export 'src/impl/instance/core/shsp_instance.dart';
 export 'src/impl/instance/features/shsp_instance_handshake.dart';
 export 'src/impl/instance/features/shsp_instance_keep_alive.dart';
 export 'src/impl/instance/handlers/shsp_handshake_handler.dart';
+export 'src/impl/instance/handlers/shsp_handshake_retry_handler.dart';
 export 'src/impl/instance/handlers/shsp_instance_handler.dart';
 export 'src/impl/instance/handlers/shsp_instance_handler_singleton.dart';
 export 'src/impl/peer/auto_shsp_peer.dart';
