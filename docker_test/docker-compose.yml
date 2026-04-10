@@ -1,0 +1,57 @@
+version: '3.8'
+
+services:
+  # Peer 1 - Initiator
+  peer1:
+    build:
+      context: ..
+      dockerfile: docker_test/Dockerfile
+    container_name: shsp_peer1
+    hostname: peer1
+    networks:
+      test_network:
+        ipv4_address: 192.168.10.10
+    environment:
+      PEER_ID: peer1
+      PEER_PORT: 5000
+      REMOTE_PEER_HOST: 192.168.10.20
+      REMOTE_PEER_PORT: 5001
+      NAT_TYPE: ${NAT_TYPE:-full_cone}
+      TEST_MODE: "true"
+    cap_add:
+      - NET_ADMIN
+    volumes:
+      - ./results:/app/results
+      - ./scripts:/app/test_scripts:ro
+    command: /app/test_scripts/run_peer.sh
+
+  # Peer 2 - Responder
+  peer2:
+    build:
+      context: ..
+      dockerfile: docker_test/Dockerfile
+    container_name: shsp_peer2
+    hostname: peer2
+    networks:
+      test_network:
+        ipv4_address: 192.168.10.20
+    environment:
+      PEER_ID: peer2
+      PEER_PORT: 5001
+      REMOTE_PEER_HOST: 192.168.10.10
+      REMOTE_PEER_PORT: 5000
+      NAT_TYPE: ${NAT_TYPE:-full_cone}
+      TEST_MODE: "true"
+    cap_add:
+      - NET_ADMIN
+    volumes:
+      - ./results:/app/results
+      - ./scripts:/app/test_scripts:ro
+    command: /app/test_scripts/run_peer.sh
+
+networks:
+  test_network:
+    driver: bridge
+    ipam:
+      config:
+        - subnet: 192.168.10.0/24
