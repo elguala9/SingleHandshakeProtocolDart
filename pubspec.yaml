@@ -1,6 +1,6 @@
 name: single_hand_shake_protocol_monorepo
 description: A Dart monorepo for Single HandShake Protocol
-version: 1.0.0
+version: 1.1.0
 publish_to: none
 
 environment:
@@ -135,3 +135,42 @@ melos:
     barrels:
       run: melos exec --ignore=shsp_tests -- dart pub run index_generator
       description: Generate barrel files (indexes) for all packages using index_generator.
+
+    # === DOCKER NAT TESTING COMMANDS ===
+
+    # Setup Docker NAT testing
+    docker:test:setup:
+      run: bash docker_test/setup.sh
+      description: Setup Docker environment for NAT testing (one-time setup).
+
+    # Run all NAT type tests
+    docker:test:all:
+      run: bash docker_test/run_all_tests.sh
+      description: Run all 4 NAT type tests (Full Cone, Address Restricted, Port Restricted, Symmetric).
+
+    # Run specific NAT type test
+    docker:test:full_cone:
+      run: cd docker_test && export NAT_TYPE=full_cone && docker-compose up --abort-on-container-exit
+      description: Run Full Cone NAT test.
+
+    docker:test:address_restricted:
+      run: cd docker_test && export NAT_TYPE=address_restricted && docker-compose up --abort-on-container-exit
+      description: Run Address Restricted Cone NAT test.
+
+    docker:test:port_restricted:
+      run: cd docker_test && export NAT_TYPE=port_restricted && docker-compose up --abort-on-container-exit
+      description: Run Port Restricted Cone NAT test.
+
+    docker:test:symmetric:
+      run: cd docker_test && export NAT_TYPE=symmetric && docker-compose up --abort-on-container-exit
+      description: Run Symmetric NAT test.
+
+    # View Docker test results
+    docker:test:results:
+      run: bash docker_test/scripts/view_results.sh docker_test/results
+      description: Display Docker NAT test results in JSON format.
+
+    # Clean Docker test artifacts
+    docker:test:clean:
+      run: cd docker_test && docker-compose down && rm -rf results/
+      description: Stop Docker containers and clean test results.
