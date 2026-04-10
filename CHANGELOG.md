@@ -5,7 +5,20 @@ All notable changes to the Single HandShake Protocol monorepo are documented in 
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
-## [1.1.0] - 2026-04-10
+## [1.7.1] - 2026-04-11
+
+### Fixed
+
+#### Code Quality
+- Removed unused import `dart:typed_data` from peer_communicator.dart
+- Removed unused variable `startTime` from test file
+- Added `const` keyword to all constructors for performance optimization
+- Fixed double literal `2.0` to `2` where appropriate
+- Optimized `const` declarations in test code
+
+**Result:** ✅ **Zero dart analyze issues** - Ready for pub.dev maximum score
+
+## [1.7.0] - 2026-03-30
 
 ### Added
 
@@ -40,6 +53,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - HTML report generation with summary statistics
 - Aggregated results combining all 4 NAT type tests
 
+#### Core Features
+- **IDualShspSocketWrapper**: Dual socket wrapper interface for seamless socket migration
+- **IRegistryShspSocket**: Registry-backed socket interface for managed socket instances
+- Enhanced ShspHandshakeHandler with improved error handling
+
 ### Test Coverage
 
 **4 NAT Types Tested:**
@@ -55,6 +73,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - **run_peer.sh**: Fixed Dart invocation from `dart run` to `dart` for standalone script execution
 - **docker-compose.yml**: Changed hostname-based communication to direct IP addresses (192.168.10.x) for reliable DNS resolution
 - **handshake_test.dart**: Simplified UDP communication implementation, removed incorrect SHSP API usage
+- **ShspHandshakeHandler**: Fixed socket handling and error propagation
 
 ### Technical Improvements
 - Isolated Docker network (192.168.10.0/24) for test environment
