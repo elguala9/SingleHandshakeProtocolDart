@@ -71,7 +71,7 @@ class MockShspInstance implements IShspInstance {
   void stopKeepAlive() {}
 
   @override
-  ShspInstanceProfile extractProfile() => ShspInstanceProfile(
+  ShspInstanceProfile extractProfile() => const ShspInstanceProfile(
     keepAliveSeconds: 30,
     onHandshakeListeners: [],
     onOpenListeners: [],
@@ -124,7 +124,7 @@ void main() {
       instance.simulateHandshakeResponse();
 
       // Give callback time to execute
-      await Future.delayed(Duration(milliseconds: 50));
+      await Future.delayed(const Duration(milliseconds: 50));
 
       expect(retry.isActive, isFalse);
     });
@@ -142,7 +142,7 @@ void main() {
       expect(retry.isActive, isFalse);
 
       // Wait longer than first retry interval
-      await Future.delayed(Duration(milliseconds: 600));
+      await Future.delayed(const Duration(milliseconds: 600));
 
       // Should not have sent more handshakes after cancel
       expect(instance.handshakeSendCount, equals(1));
@@ -150,10 +150,10 @@ void main() {
 
     test('respects maxAttempts configuration', () async {
       final instance = MockShspInstance();
-      final options = ShspHandshakeRetryOptions(
+      const options = ShspHandshakeRetryOptions(
         maxAttempts: 3,
         initialDelayMs: 10,
-        backoffMultiplier: 2.0,
+        backoffMultiplier: 2,
       );
 
       var maxAttemptsCallCount = 0;
@@ -165,7 +165,7 @@ void main() {
 
       // Initial + 2 retries = 3 attempts
       // Wait for all retries to complete: 10ms + 20ms + buffer
-      await Future.delayed(Duration(milliseconds: 200));
+      await Future.delayed(const Duration(milliseconds: 200));
 
       expect(instance.handshakeSendCount, equals(3));
       expect(maxAttemptsCallCount, equals(1));
@@ -177,13 +177,12 @@ void main() {
       final timestamps = <int>[];
 
       // Create custom options with small delays for testing
-      final options = ShspHandshakeRetryOptions(
+      const options = ShspHandshakeRetryOptions(
         maxAttempts: 4,
         initialDelayMs: 20,
-        backoffMultiplier: 2.0,
+        backoffMultiplier: 2,
       );
 
-      final startTime = DateTime.now().millisecondsSinceEpoch;
       ShspHandshakeRetryHandler.startRetry(
         instance: instance,
         options: options,
@@ -193,7 +192,7 @@ void main() {
       timestamps.add(0);
 
       // Wait for all attempts with buffer
-      await Future.delayed(Duration(milliseconds: 300));
+      await Future.delayed(const Duration(milliseconds: 300));
 
       // Expected delays:
       // Attempt 0: 0ms (immediate)
@@ -207,7 +206,7 @@ void main() {
 
     test('does not retry after connection is open', () async {
       final instance = MockShspInstance();
-      final options = ShspHandshakeRetryOptions(
+      const options = ShspHandshakeRetryOptions(
         maxAttempts: 5,
         initialDelayMs: 10,
         backoffMultiplier: 1.5,
@@ -219,13 +218,13 @@ void main() {
       );
 
       // Wait a bit
-      await Future.delayed(Duration(milliseconds: 30));
+      await Future.delayed(const Duration(milliseconds: 30));
 
       // Simulate successful connection
       instance._openState = true;
       instance.simulateHandshakeResponse();
 
-      await Future.delayed(Duration(milliseconds: 100));
+      await Future.delayed(const Duration(milliseconds: 100));
 
       // Should have sent fewer than max attempts because we stopped early
       expect(instance.handshakeSendCount, lessThan(5));
