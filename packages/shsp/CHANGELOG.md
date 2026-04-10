@@ -7,6 +7,22 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [1.7.0] - 2026-03-30
+
+### Added
+
+- `IDualShspSocketWrapper` interface for `DualShspSocketWrapper`/`DualShspSocketWrapperDI` proxy
+- `IRegistryShspSocket` interface for `RegistryShspSocket`
+
+### Changed
+
+- `buildDualSocket()` now returns `IDualShspSocketMigratable` instead of `DualShspSocketMigratable`
+- `initializePointDualShsp()` registers registry under `IRegistryShspSocket` interface
+- `initializePointRegistryAccess()` uses `IDualShspSocketWrapper` and `IRegistryShspSocket` as registration keys
+- `DualShspSocketWrapper` now explicitly implements `IDualShspSocketWrapper`
+- `RegistryShspSocket` now explicitly implements `IRegistryShspSocket`
+- `ShspHandshakeHandler.handshakeInstance` rewritten as event-driven (Completer + Timer.periodic) instead of polling; eliminates a race condition where the `onOpen` callback was never invoked when the socket read event and the delay timer fired in the same event-loop tick
+
 ## [1.6.1] - 2026-03-30
 
 ### Changed
