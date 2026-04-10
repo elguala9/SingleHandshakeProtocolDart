@@ -116,7 +116,7 @@ Future<void> main(List<String> args) async {
       bool responseReceived = false;
       late StreamSubscription sub;
 
-      final future = Future.delayed(Duration(seconds: 10)).then((_) {
+      final future = Future.delayed(const Duration(seconds: 10)).then((_) {
         if (!responseReceived) {
           sub.cancel();
         }
