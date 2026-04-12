@@ -30,8 +30,12 @@ echo "✓ Docker Compose found: $(docker-compose --version)"
 command -v python3 >/dev/null 2>&1 || { echo "✗ Python 3 is not installed. Please install Python 3."; exit 1; }
 echo "✓ Python 3 found: $(python3 --version)"
 
-command -v jq >/dev/null 2>&1 || { echo "✗ jq is not installed. Please install jq."; exit 1; }
-echo "✓ jq found: $(jq --version)"
+# Check for jq (optional - used only for results display, not for running tests)
+if command -v jq >/dev/null 2>&1; then
+    echo "✓ jq found: $(jq --version)"
+else
+    echo "⚠ jq not found - results display will be limited (tests will still run)"
+fi
 
 command -v dart >/dev/null 2>&1 || { echo "✗ Dart SDK is not installed. Please install Dart."; exit 1; }
 echo "✓ Dart found: $(dart --version)"
