@@ -1,8 +1,5 @@
 import 'package:test/test.dart';
 import 'package:shsp/shsp.dart';
-import 'package:shsp/src/impl/socket/compression/gzip_codec.dart';
-import 'package:shsp/src/impl/socket/compression/zstd_codec.dart';
-import 'package:shsp/src/impl/socket/compression/lz4_codec.dart';
 
 void main() {
   group('GZipCodec', () {

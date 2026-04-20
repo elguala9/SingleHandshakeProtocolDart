@@ -1,6 +1,5 @@
 import 'dart:io';
 import 'package:test/test.dart';
-import 'package:callback_handler/callback_handler.dart';
 import 'package:shsp/shsp.dart';
 
 void main() {

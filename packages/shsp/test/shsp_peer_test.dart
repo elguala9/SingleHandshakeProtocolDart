@@ -129,7 +129,7 @@ void main() {
         });
 
         sender.sendMessage([0x41, 0x42]);
-        await Future.delayed(Duration(milliseconds: 50));
+        await Future.delayed(const Duration(milliseconds: 50));
 
         expect(callbackFired, isTrue);
       });

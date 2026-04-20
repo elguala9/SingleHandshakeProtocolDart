@@ -4,11 +4,11 @@ import 'package:test/test.dart';
 
 /// NAT simulation for testing protocol behavior through different NAT types
 class NatSimulator {
+
+  NatSimulator(this.type);
   final String type; // 'fullCone', 'addressRestricted'
   final Map<String, dynamic> natMappings = {};
   final Set<String> allowedPeers = {};
-
-  NatSimulator(this.type);
 
   /// Record that internal IP:port is mapped to external IP:port
   void mapInternalToExternal(String internalAddr, String externalAddr) {
@@ -16,9 +16,7 @@ class NatSimulator {
   }
 
   /// Extract IP address from 'IP:port' string
-  String _extractIP(String address) {
-    return address.split(':').first;
-  }
+  String _extractIP(String address) => address.split(':').first;
 
   /// Check if incoming packet from peer should be allowed through NAT
   bool canReceivePacket(String fromPeer, String originalDestination) {
