@@ -310,7 +310,6 @@ void main() {
 
       test('keepAliveSeconds setter restarts the timer', () async {
         instance.startKeepAlive();
-        final timerBefore = instance.keepAliveTimerValue;
 
         instance.keepAliveSeconds = 60;
 

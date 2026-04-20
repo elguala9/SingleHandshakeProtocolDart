@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'dart:io';
 import 'package:test/test.dart';
 import 'package:callback_handler/callback_handler.dart';
@@ -111,7 +112,7 @@ void main() {
         final instance = MockShspInstance(initialOpen: true);
         expect(instance.handshakeSendCount, equals(0));
 
-        await ShspHandshakeHandler.handshakeInstance(instance);
+        await ShspHandshakeHandler.handshakeInstance(instance, const ShspHandshakeHandlerOptions());
 
         expect(instance.handshakeSendCount, equals(0));
       });
@@ -123,7 +124,7 @@ void main() {
           onOpenCallbackFired = true;
         });
 
-        await ShspHandshakeHandler.handshakeInstance(instance);
+        await ShspHandshakeHandler.handshakeInstance(instance, const ShspHandshakeHandlerOptions());
 
         expect(onOpenCallbackFired, isTrue);
       });
@@ -132,7 +133,7 @@ void main() {
     group('resolves on open', () {
       test('sends initial handshake immediately', () async {
         final instance = MockShspInstance();
-        ShspHandshakeHandler.handshakeInstance(instance);
+        unawaited(ShspHandshakeHandler.handshakeInstance(instance, const ShspHandshakeHandlerOptions()));
         await Future.microtask(() {});
 
         expect(instance.handshakeSendCount, greaterThan(0));
@@ -140,11 +141,11 @@ void main() {
 
       test('resolves the returned future when onOpen fires', () async {
         final instance = MockShspInstance();
-        final future = ShspHandshakeHandler.handshakeInstance(instance);
+        final future = ShspHandshakeHandler.handshakeInstance(instance, const ShspHandshakeHandlerOptions());
 
-        Future.delayed(const Duration(milliseconds: 30)).then((_) {
+        unawaited(Future.delayed(const Duration(milliseconds: 30)).then((_) {
           instance.setOpen();
-        });
+        }));
 
         await expectLater(future, completes);
       });
@@ -187,7 +188,7 @@ void main() {
           intervalOfSendingHandshakeMs: 50,
         );
 
-        ShspHandshakeHandler.handshakeInstance(instance, options);
+        unawaited(ShspHandshakeHandler.handshakeInstance(instance, options));
         await Future.delayed(const Duration(milliseconds: 180));
 
         expect(instance.handshakeSendCount, greaterThanOrEqualTo(2));
@@ -305,8 +306,8 @@ void main() {
         final peer1 = PeerInfo(address: InternetAddress.loopbackIPv4, port: 8080);
         final peer2 = PeerInfo(address: InternetAddress.loopbackIPv4, port: 8081);
 
-        await handler.initiateShsp(peer1, instance1, ());
-        await handler.initiateShsp(peer2, instance2, ());
+        await handler.initiateShsp(peer1, instance1, (instanceCallback: null));
+        await handler.initiateShsp(peer2, instance2, (instanceCallback: null));
 
         handler.closeAll();
 

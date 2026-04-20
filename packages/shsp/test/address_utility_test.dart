@@ -116,7 +116,7 @@ void main() {
 
       test('returned string is a valid IPv4 dotted-quad format', () async {
         try {
-          final ip = AddressUtility.getLocalIp();
+          final ip = await AddressUtility.getLocalIp();
           final parts = ip.split('.');
           expect(parts.length, equals(4));
           for (final part in parts) {

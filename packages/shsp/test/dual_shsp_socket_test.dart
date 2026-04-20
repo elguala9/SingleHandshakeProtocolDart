@@ -14,7 +14,7 @@ class MockDualMigratable implements IDualShspSocketMigratable {
   bool get isClosed => closed;
 
   @override
-  IShspSocket? get ipv4Socket => null;
+  IShspSocket get ipv4Socket => throw UnimplementedError();
 
   @override
   IShspSocket? get ipv6Socket => null;
@@ -38,10 +38,10 @@ class MockDualMigratable implements IDualShspSocketMigratable {
   InternetAddress? get localAddress => null;
 
   @override
-  ICompressionCodec? get compressionCodec => null;
+  ICompressionCodec get compressionCodec => throw UnimplementedError();
 
   @override
-  void removeMessageCallback(PeerInfo key, MessageCallbackFunction callback) {}
+  bool removeMessageCallback(PeerInfo key, MessageCallbackFunction callback) => false;
 
   @override
   void setMessageCallback(PeerInfo key, MessageCallbackFunction callback) {}
@@ -51,6 +51,48 @@ class MockDualMigratable implements IDualShspSocketMigratable {
 
   @override
   Future<void> destroy() async {}
+
+  @override
+  void setListeningCallback(void Function() cb) {}
+
+  @override
+  void setCloseCallback(void Function() cb) {}
+
+  @override
+  void setErrorCallback(void Function(dynamic err) cb) {}
+
+  @override
+  CallbackOn get onClose => throw UnimplementedError();
+
+  @override
+  CallbackOnError get onError => throw UnimplementedError();
+
+  @override
+  CallbackOn get onListening => throw UnimplementedError();
+
+  @override
+  String serializedObject() => '';
+
+  @override
+  IShspSocket get ipv4SocketForMessages => throw UnimplementedError();
+
+  @override
+  IShspSocket? get ipv6SocketForMessages => null;
+
+  @override
+  IShspSocket get ipv4SocketForProfile => throw UnimplementedError();
+
+  @override
+  IShspSocket? get ipv6SocketForProfile => null;
+
+  @override
+  late IShspSocket ipv4SocketImpl;
+
+  @override
+  late IShspSocket? ipv6SocketImpl;
+
+  @override
+  IShspSocket get socket => throw UnimplementedError();
 }
 
 void main() {
