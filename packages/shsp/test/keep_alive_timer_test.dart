@@ -151,12 +151,9 @@ void main() {
 
     group('resetTick', () {
       test('resetTick() after firing: next fire is delayed by a full interval', () async {
-        var callCount = 0;
         final kaTimer = KeepAliveTimer.periodic(
           const Duration(milliseconds: 80),
-          (_) {
-            callCount++;
-          },
+          (_) {},
         );
         addTearDown(kaTimer.cancel);
 

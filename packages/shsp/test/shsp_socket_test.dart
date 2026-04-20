@@ -82,7 +82,7 @@ void main() {
         addTearDown(rawSocket.close);
 
         socket = ShspSocket.fromRaw(rawSocket);
-        expect(socket.localAddress.address, equals(rawSocket.address.address));
+        expect(socket.localAddress?.address, equals(rawSocket.address.address));
       });
 
       test('isClosed is false', () async {
