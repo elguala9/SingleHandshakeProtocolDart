@@ -5,6 +5,30 @@ All notable changes to the Single HandShake Protocol monorepo are documented in 
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [1.8.0] - 2026-04-20
+
+### Added
+
+#### Comprehensive Test Suite Expansion
+- **625+ passing tests** - Significantly expanded test coverage across all protocol components
+- Enhanced test coverage for:
+  - Socket creation and lifecycle management
+  - Message callback mapping with IPv4/IPv6 support
+  - Handshake protocol validation
+  - Keep-alive mechanism testing
+  - Compression codec validation (GZip, LZ4, Zstd)
+  - Socket migration scenarios
+  - Registry management patterns
+  - Auto-wiring peer/instance functionality
+  - Singleton management and DI integration
+
+### Fixed
+
+#### Code Quality
+- Fixed MessageCallbackMap implementation and test coverage
+- Fixed Dart analysis issues for pub.dev compliance
+- Minor Dart SDK compatibility fixes
+
 ## [1.7.1] - 2026-04-11
 
 ### Fixed
