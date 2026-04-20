@@ -34,14 +34,14 @@ void main() {
 
       test('bind throws ShspValidationException for port -1', () async {
         expect(
-          () async => await ShspSocket.bind(InternetAddress.anyIPv4, -1),
+          () async => ShspSocket.bind(InternetAddress.anyIPv4, -1),
           throwsA(isA<ShspValidationException>()),
         );
       });
 
       test('bind throws ShspValidationException for port 65536', () async {
         expect(
-          () async => await ShspSocket.bind(InternetAddress.anyIPv4, 65536),
+          () async => ShspSocket.bind(InternetAddress.anyIPv4, 65536),
           throwsA(isA<ShspValidationException>()),
         );
       });
@@ -63,7 +63,7 @@ void main() {
 
       test('fromRaw wraps existing RawDatagramSocket', () async {
         final rawSocket = await RawDatagramSocket.bind(InternetAddress.anyIPv4, 0);
-        addTearDown(() => rawSocket.close());
+        addTearDown(rawSocket.close);
 
         socket = ShspSocket.fromRaw(rawSocket);
         expect(socket, isA<ShspSocket>());
@@ -71,7 +71,7 @@ void main() {
 
       test('localPort matches the raw socket port', () async {
         final rawSocket = await RawDatagramSocket.bind(InternetAddress.anyIPv4, 0);
-        addTearDown(() => rawSocket.close());
+        addTearDown(rawSocket.close);
 
         socket = ShspSocket.fromRaw(rawSocket);
         expect(socket.localPort, equals(rawSocket.port));
@@ -79,7 +79,7 @@ void main() {
 
       test('localAddress matches the raw socket address', () async {
         final rawSocket = await RawDatagramSocket.bind(InternetAddress.anyIPv4, 0);
-        addTearDown(() => rawSocket.close());
+        addTearDown(rawSocket.close);
 
         socket = ShspSocket.fromRaw(rawSocket);
         expect(socket.localAddress.address, equals(rawSocket.address.address));
@@ -87,7 +87,7 @@ void main() {
 
       test('isClosed is false', () async {
         final rawSocket = await RawDatagramSocket.bind(InternetAddress.anyIPv4, 0);
-        addTearDown(() => rawSocket.close());
+        addTearDown(rawSocket.close);
 
         socket = ShspSocket.fromRaw(rawSocket);
         expect(socket.isClosed, isFalse);
@@ -104,9 +104,7 @@ void main() {
       test('close() is idempotent — calling twice does not throw', () async {
         final socket = await ShspSocket.bind(InternetAddress.anyIPv4, 0);
         socket.close();
-        expect(() {
-          socket.close();
-        }, returnsNormally);
+        expect(socket.close, returnsNormally);
       });
     });
 
@@ -132,7 +130,7 @@ void main() {
         });
 
         sender.sendTo([0x00, 0x41], receiverPeer);
-        await Future.delayed(Duration(milliseconds: 50));
+        await Future.delayed(const Duration(milliseconds: 50));
 
         expect(callbackFired, isTrue);
       });
@@ -167,7 +165,7 @@ void main() {
 
         final profile = socket.extractProfile();
         final socket2 = await ShspSocket.bind(InternetAddress.anyIPv4, 0);
-        addTearDown(() => socket2.close());
+        addTearDown(socket2.close);
 
         socket2.applyProfile(profile);
         expect(socket2.extractProfile().messageListeners, isNotEmpty);
