@@ -7,6 +7,35 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [1.8.0] - 2026-04-20
+
+### Added
+
+#### Test Coverage
+- **10 comprehensive test files** with **227+ test cases** covering all SHSP components:
+  - `shsp_exceptions_test.dart`: All 6 exception types (ShspProtocolException, ShspNetworkException, ShspValidationException, ShspHandshakeException, ShspInstanceException, ShspConfigurationException)
+  - `peer_types_test.dart`: PeerInfo/RemoteInfo with JSON round-trips, equality, and hashCode
+  - `address_utility_test.dart`: AddressUtility static methods (format, parse, fromString, getLocalIp, canCreateIPv6Socket)
+  - `callback_map_test.dart`: Generic CallbackMap<T> and MessageCallbackMapSingleton
+  - `compression_codecs_test.dart`: All 3 compression codecs (GZipCodec, ZstdCodec, LZ4Codec)
+  - `keep_alive_timer_test.dart`: KeepAliveTimer lifecycle (periodic, from, cancel, resetTick)
+  - `shsp_socket_test.dart`: ShspSocket operations (bind, fromRaw, close, sendTo, profile round-trips)
+  - `dual_shsp_socket_test.dart`: DualShspSocket and SimpleDualSocketSingleton
+  - `shsp_peer_test.dart`: ShspPeer construction, validation, delivery, and lifecycle
+  - `shsp_instance_test.dart`: ShspInstance message routing (0x00-0x04 prefixes) and state machine
+  - `shsp_handlers_and_factories_test.dart`: ShspHandshakeHandler, ShspInstanceHandler, and all Factory classes
+
+**Coverage includes:** exceptions, types, utilities, callbacks, sockets (single/dual), peers, instances, handlers, factories, and compression.
+
+**Test patterns:** Manual mocks (no mockito), Future.microtask() for callbacks, Future.delayed() for timers, real UDP sockets on loopback, full internal src/ imports enabled.
+
+### Changed
+
+- Documentation now aligns with comprehensive test coverage
+- Quality baseline established with 227 test cases passing
+
+**Result:** ✅ **Comprehensive test suite** - All major components verified
+
 ## [1.7.1] - 2026-04-11
 
 ### Fixed
