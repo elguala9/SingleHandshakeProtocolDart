@@ -123,7 +123,7 @@ void main() {
         try {
           ipv6 = await ShspSocket.bind(InternetAddress.anyIPv6, 0);
           addTearDown(() {
-            if (!ipv6!.isClosed) ipv6!.close();
+            if (!ipv6!.isClosed) ipv6.close();
           });
         } catch (_) {
           markTestSkipped('IPv6 not available on this system');
@@ -153,9 +153,7 @@ void main() {
       test('close() is idempotent', () async {
         final dual = await DualShspSocket.create();
         dual.close();
-        expect(() {
-          dual.close();
-        }, returnsNormally);
+        expect(dual.close, returnsNormally);
       });
     });
   });

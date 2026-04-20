@@ -44,10 +44,28 @@ class MessageCallbackMap implements IMessageCallbackMap {
   }
 
   /// Get a callback invoker using InternetAddress and port
+  /// Falls back to IP-only match if exact IP:port is not found
+  /// (handles NAT scenarios where port gets remapped but IP stays same)
   @override
   MessageCallbackFunction? getByAddress(InternetAddress address, int port) {
     final key = formatKey(address, port);
-    return get(key);
+    final cb = get(key);
+    if (cb != null) return cb;
+    return _getByAddressFallback(address);
+  }
+
+  /// Fallback: find first callback registered for this IP (any port)
+  /// Returns null if no handler exists for this IP address
+  MessageCallbackFunction? _getByAddressFallback(InternetAddress address) {
+    final targetIp = address.address;
+    for (final key in _handlers.keys) {
+      final parsed = parseKey(key);
+      if (parsed != null && parsed.address == targetIp) {
+        final callback = get(key);
+        if (callback != null) return callback;
+      }
+    }
+    return null;
   }
 
   /// Remove the callback for a key

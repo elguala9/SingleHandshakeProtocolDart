@@ -17,7 +17,7 @@ void main() {
       });
 
       test('add then get returns the same callback', () {
-        final callback = 'callback1';
+        const callback = 'callback1';
         map.add('key1', callback);
         expect(map.get('key1'), equals(callback));
       });
@@ -173,9 +173,7 @@ void main() {
   });
 
   group('MessageCallbackMapSingleton', () {
-    tearDown(() {
-      MessageCallbackMapSingleton.destroyStatic();
-    });
+    tearDown(MessageCallbackMapSingleton.destroyStatic);
 
     group('factory singleton', () {
       test('two calls to constructor return same instance', () {
@@ -211,9 +209,7 @@ void main() {
 
       test('destroyStatic() is idempotent — calling twice does not throw', () {
         MessageCallbackMapSingleton.destroyStatic();
-        expect(() {
-          MessageCallbackMapSingleton.destroyStatic();
-        }, returnsNormally);
+        expect(MessageCallbackMapSingleton.destroyStatic, returnsNormally);
       });
     });
 

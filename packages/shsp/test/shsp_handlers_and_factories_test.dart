@@ -2,7 +2,6 @@ import 'dart:io';
 import 'package:test/test.dart';
 import 'package:callback_handler/callback_handler.dart';
 import 'package:shsp/shsp.dart';
-import 'package:shsp/src/impl/utility/message_callback_map.dart';
 
 class MockShspInstance implements IShspInstance {
   MockShspInstance({
@@ -20,7 +19,7 @@ class MockShspInstance implements IShspInstance {
 
   final bool initialOpen;
   int handshakeSendCount = 0;
-  bool _handshakeState = false;
+  final bool _handshakeState = false;
   bool _openState = false;
   late CallbackHandler<PeerInfo, void> _messageCallback;
 
@@ -143,7 +142,7 @@ void main() {
         final instance = MockShspInstance();
         final future = ShspHandshakeHandler.handshakeInstance(instance);
 
-        Future.delayed(Duration(milliseconds: 30)).then((_) {
+        Future.delayed(const Duration(milliseconds: 30)).then((_) {
           instance.setOpen();
         });
 
@@ -164,7 +163,7 @@ void main() {
     group('timeout', () {
       test('future completes after timeoutMs even if onOpen never fires', () async {
         final instance = MockShspInstance();
-        final options = ShspHandshakeHandlerOptions(timeoutMs: 100);
+        const options = ShspHandshakeHandlerOptions(timeoutMs: 100);
 
         final future = ShspHandshakeHandler.handshakeInstance(instance, options);
         await expectLater(future, completes);
@@ -172,7 +171,7 @@ void main() {
 
       test('instance.open is still false after timeout if never opened', () async {
         final instance = MockShspInstance();
-        final options = ShspHandshakeHandlerOptions(timeoutMs: 100);
+        const options = ShspHandshakeHandlerOptions(timeoutMs: 100);
 
         await ShspHandshakeHandler.handshakeInstance(instance, options);
 
@@ -183,13 +182,13 @@ void main() {
     group('periodic retry', () {
       test('sends handshake multiple times during retry interval before timeout', () async {
         final instance = MockShspInstance();
-        final options = ShspHandshakeHandlerOptions(
+        const options = ShspHandshakeHandlerOptions(
           timeoutMs: 200,
           intervalOfSendingHandshakeMs: 50,
         );
 
         ShspHandshakeHandler.handshakeInstance(instance, options);
-        await Future.delayed(Duration(milliseconds: 180));
+        await Future.delayed(const Duration(milliseconds: 180));
 
         expect(instance.handshakeSendCount, greaterThanOrEqualTo(2));
       });
@@ -336,7 +335,7 @@ void main() {
   group('ShspSocketFactory', () {
     test('create returns a ShspSocket wrapping provided socket', () async {
       final rawSocket = await RawDatagramSocket.bind(InternetAddress.anyIPv4, 0);
-      addTearDown(() => rawSocket.close());
+      addTearDown(rawSocket.close);
 
       final messageCallbacks = MessageCallbackMapFactory.create();
       final socket = ShspSocketFactory.create(rawSocket, messageCallbacks);
@@ -349,7 +348,7 @@ void main() {
 
     test('createFromSocket creates ShspSocket with empty callback map', () async {
       final rawSocket = await RawDatagramSocket.bind(InternetAddress.anyIPv4, 0);
-      addTearDown(() => rawSocket.close());
+      addTearDown(rawSocket.close);
 
       final socket = ShspSocketFactory.createFromSocket(rawSocket);
       addTearDown(() {
@@ -376,7 +375,7 @@ void main() {
     test('createFromRemoteInfo returns a ShspPeer with internal socket', () async {
       final remotePeer = PeerInfo(address: InternetAddress.loopbackIPv4, port: 8080);
       final rawSocket = await RawDatagramSocket.bind(InternetAddress.anyIPv4, 0);
-      addTearDown(() => rawSocket.close());
+      addTearDown(rawSocket.close);
 
       final shspPeer = ShspPeerFactory.createFromRemoteInfo(
         remotePeer: remotePeer,
@@ -411,7 +410,7 @@ void main() {
     test('createFromSocket returns a ShspInstance wrapping a new ShspSocket', () async {
       final remotePeer = PeerInfo(address: InternetAddress.loopbackIPv4, port: 8080);
       final rawSocket = await RawDatagramSocket.bind(InternetAddress.anyIPv4, 0);
-      addTearDown(() => rawSocket.close());
+      addTearDown(rawSocket.close);
 
       final instance = ShspInstanceFactory.createFromSocket(
         remotePeer: remotePeer,
