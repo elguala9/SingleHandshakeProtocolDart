@@ -284,7 +284,7 @@ void main() {
           targetPeer: '203.0.113.2:45000',
         );
 
-        final retry = ShspHandshakeRetryHandler.startRetry(instance: instance);
+        ShspHandshakeRetryHandler.startRetry(instance: instance);
 
         // Handshake must be sent first to open NAT for responses
         instance.simulateHandshakeResponse(instance.targetPeer);

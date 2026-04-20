@@ -22,7 +22,7 @@ void main() {
       test('construction registers message callback on socket for the remote peer key', () async {
         socket = await ShspSocket.bind(InternetAddress.anyIPv4, 0);
         final peer = PeerInfo(address: InternetAddress.loopbackIPv4, port: 9999);
-        final shspPeer = ShspPeer.create(remotePeer: peer, socket: socket);
+        ShspPeer.create(remotePeer: peer, socket: socket);
 
         // After construction, the profile should contain the peer callback
         final profile = socket.extractProfile();
@@ -150,10 +150,7 @@ void main() {
       });
 
       test('close() sets no further messages delivered to callback', () async {
-        var callbackFired = false;
-        peer.messageCallback.register((info) {
-          callbackFired = true;
-        });
+        peer.messageCallback.register((_) {});
 
         peer.close();
 
