@@ -19,6 +19,8 @@ abstract interface class IMessageCallbackMap {
   );
 
   /// Get a callback invoker using InternetAddress and port
+  /// Falls back to IP-only match if exact IP:port is not found
+  /// (handles NAT scenarios where port gets remapped but IP stays same)
   MessageCallbackFunction? getByAddress(InternetAddress address, int port);
 
   /// Remove the callback for a key

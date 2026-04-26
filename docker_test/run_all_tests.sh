@@ -98,13 +98,31 @@ python3 "${DOCKER_TEST_DIR}/scripts/aggregate_results.py" "${RESULTS_DIR}"
 echo "[SUMMARY] Results saved to: ${RESULTS_DIR}"
 echo "[SUMMARY] View results with: jq . ${RESULTS_DIR}/aggregate_results.json"
 
-# Display results
+# Display results and save to file
 if [ -f "${RESULTS_DIR}/aggregate_results.json" ]; then
   echo ""
   echo "========================================="
   echo "Aggregated Results:"
   echo "========================================="
-  cat "${RESULTS_DIR}/aggregate_results.json" | jq .
+
+  # Save JSON to results.json file
+  JSON_OUTPUT="${RESULTS_DIR}/results.json"
+  if command -v jq >/dev/null 2>&1; then
+    cat "${RESULTS_DIR}/aggregate_results.json" | jq . | tee "${JSON_OUTPUT}"
+  else
+    cat "${RESULTS_DIR}/aggregate_results.json" | tee "${JSON_OUTPUT}"
+  fi
+
+  echo ""
+  echo "[SUMMARY] Full JSON results saved to: ${JSON_OUTPUT}"
 fi
+
+echo ""
+echo "========================================="
+echo "Log Files Location:"
+echo "========================================="
+echo "Results Directory: ${RESULTS_DIR}"
+ls -lh "${RESULTS_DIR}"/ 2>/dev/null
+echo "========================================="
 
 exit 0

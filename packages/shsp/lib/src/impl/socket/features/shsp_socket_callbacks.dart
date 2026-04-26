@@ -73,10 +73,10 @@ mixin ShspSocketCallbacksMixin {
   }
 
   /// Invoke the message callback for a specific peer
+  /// Uses getByAddress which falls back to IP-only match if exact port doesn't match
   @protected
   void invokeMessageCallback(List<int> msg, RemoteInfo rinfo) {
-    final key = MessageCallbackMap.formatKey(rinfo.address, rinfo.port);
-    final cb = messageCallbacksImpl.get(key);
+    final cb = messageCallbacksImpl.getByAddress(rinfo.address, rinfo.port);
     cb?.call((msg: msg, rinfo: rinfo));
   }
 

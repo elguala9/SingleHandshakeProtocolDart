@@ -1,10 +1,12 @@
-# Setup Instructions - Monorepo
+# Setup Instructions - Unified SHSP Package
+
+> **Note:** As of v1.8.0, SHSP is a single unified package. The previous multi-package structure (types, interfaces, implementations) has been consolidated into `packages/shsp/`.
 
 ## Prerequisites
 
 ### Install Dart SDK
 
-Since you'll be running this on both backend and mobile, you have two options:
+Since you can run this on both backend and mobile, you have two options:
 
 #### Option 1: Install Flutter (Recommended for Mobile + Backend)
 Flutter includes Dart SDK, so you get both:
@@ -21,145 +23,93 @@ If you only need backend functionality:
 2. Extract and add to PATH
 3. Verify with: `dart --version`
 
-## After Installing Dart/Flutter
+## Quick Start
 
-### 1. Install All Package Dependencies
+### 1. Install Dependencies
 
-Using the provided script (Windows):
-```powershell
-.\install_all.bat
-```
-
-Or manually:
-```powershell
-cd packages\types
+```bash
+cd packages/shsp
 dart pub get
-
-cd ..\interfaces
-dart pub get
-
-cd ..\implementations
-dart pub get
-
-cd ..\tests
-dart pub get
-
-cd ..\..
 ```
 
 ### 2. Run Tests
 
-```powershell
-cd packages\tests
+```bash
+cd packages/shsp
 dart test
 ```
 
 ### 3. Run Examples
 
-Backend example:
-```powershell
-dart run bin\backend_main.dart
+```bash
+cd packages/shsp
+dart run example/socket_example.dart
 ```
 
-Socket example:
-```powershell
-dart run example\socket_example.dart
-```
-
-## Monorepo Structure
+## Project Structure
 
 ```
 SingleHandShakeProtocolDart/
 ├── packages/
-│   ├── types/                      # Type definitions
+│   ├── shsp/                   # Main unified SHSP package (v1.8.0)
 │   │   ├── lib/
-│   │   │   ├── shsp_types.dart
-│   │   │   └── src/
-│   │   │       └── remote_info.dart
-│   │   └── pubspec.yaml
+│   │   │   ├── src/
+│   │   │   │   ├── interfaces/     # Protocol contracts
+│   │   │   │   ├── types/          # Type definitions
+│   │   │   │   ├── impl/           # Concrete implementations
+│   │   │   │   └── utility/        # Helper utilities
+│   │   │   └── shsp.dart           # Main export
+│   │   ├── example/                # Usage examples
+│   │   ├── test/                   # Test suite (625+ tests)
+│   │   ├── pubspec.yaml
+│   │   └── README.md               # Package documentation
 │   │
-│   ├── interfaces/                 # Interface contracts
-│   │   ├── lib/
-│   │   │   ├── shsp_interfaces.dart
-│   │   │   └── src/
-│   │   │       └── i_shsp_socket.dart
-│   │   └── pubspec.yaml
-│   │
-│   ├── implementations/            # Concrete implementations
-│   │   ├── lib/
-│   │   │   ├── shsp_implementations.dart
-│   │   │   └── src/
-│   │   │       ├── shsp_socket.dart
-│   │   │       ├── handshake_protocol.dart
-│   │   │       └── utility/
-│   │   │           ├── callback_map.dart
-│   │   │           └── address_utility.dart
-│   │   └── pubspec.yaml
-│   │
-│   └── tests/                      # Test suite
-│       ├── test/
-│       │   ├── socket_test.dart
-│       │   └── handshake_protocol_test.dart
-│       └── pubspec.yaml
+│   └── tests/                  # Deprecated - tests now in packages/shsp/test
 │
-├── bin/                            # Executable examples
-├── example/                        # Usage examples
-├── pubspec.yaml                    # Root package
-├── install_all.bat                 # Dependency installer
-└── README.md
+├── docker_test/                # Docker-based NAT testing
+├── README.md                   # This repository's documentation
+└── CHANGELOG.md                # Version history
 ```
 
-## Using in Your Projects
+## Using SHSP in Your Projects
 
-### In a Dart/Backend Project
+### Using from pub.dev (Recommended)
 
 Add to your `pubspec.yaml`:
 
 ```yaml
 dependencies:
-  shsp_types:
-    path: ../SingleHandShakeProtocolDart/packages/types
-  shsp_interfaces:
-    path: ../SingleHandShakeProtocolDart/packages/interfaces
-  shsp_implementations:
-    path: ../SingleHandShakeProtocolDart/packages/implementations
+  shsp: ^1.8.0
 ```
 
-Then import what you need:
+Then run:
 
-```dart
-import 'package:shsp_types/shsp_types.dart';
-import 'package:shsp_interfaces/shsp_interfaces.dart';
-import 'package:shsp_implementations/shsp_implementations.dart';
+```bash
+dart pub get
 ```
 
-### In a Flutter/Mobile Project
+### Using from Git (Development)
 
-Same as above - all packages are platform-agnostic.
-
-## Development Workflow
-
-1. **Make changes** to any package
-2. **Run tests** from the tests package: `cd packages\tests && dart test`
-3. **Test in examples** if needed
-4. Changes are automatically reflected in dependent packages (path dependencies)
-
-## Package Dependencies
-
+```yaml
+dependencies:
+  shsp:
+    git:
+      url: https://github.com/lgualandi/SingleHandShakeProtocolDart
+      path: packages/shsp
 ```
-shsp_types (no dependencies)
-    ↓
-shsp_interfaces (depends on: types)
-    ↓
-shsp_implementations (depends on: types, interfaces)
-    ↓
-shsp_tests (depends on: all packages)
+
+### Using from Local Path
+
+```yaml
+dependencies:
+  shsp:
+    path: ../SingleHandShakeProtocolDart/packages/shsp
 ```
 
 ## Next Steps
 
 1. Install Dart SDK or Flutter SDK
-2. Run `.\install_all.bat` to install all dependencies
-3. Run tests: `cd packages\tests && dart test`
-4. Explore examples in `bin\` and `example\`
-5. Start building your handshake protocol!
+2. Run tests: `cd packages/shsp && dart test`
+3. Explore examples in `packages/shsp/example/`
+4. Read the [SHSP README](packages/shsp/README.md) for detailed API documentation
+5. Start building with SHSP!
