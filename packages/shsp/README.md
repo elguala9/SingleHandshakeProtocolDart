@@ -13,7 +13,7 @@ A high-performance Dart package implementing the Single HandShake Protocol (SHSP
 - **Live Socket Migration**: `ShspSocketWrapper` and `DualShspSocketMigratable` allow swapping the underlying socket at runtime without losing peer references or callbacks
 - **Cross-Platform**: Runs on Dart CLI, Flutter mobile, and web
 - **IPv4/IPv6 Support**: Dual-stack ready with automatic address formatting
-- **Comprehensive Testing**: 399+ passing tests ensuring reliability
+- **Comprehensive Testing**: 625+ passing tests ensuring reliability
 
 ## Installation
 
@@ -21,7 +21,7 @@ Add to your `pubspec.yaml`:
 
 ```yaml
 dependencies:
-  shsp: ^1.7.0
+  shsp: ^1.8.0
 ```
 
 Then run:
