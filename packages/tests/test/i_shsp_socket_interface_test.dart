@@ -242,11 +242,16 @@ void main() {
       ipv4.close();
       expect(
         dual.isClosed,
-        isTrue,
-        reason: 'Dual socket should be closed if any socket is closed',
+        isFalse,
+        reason: 'Dual socket should not be closed if IPv6 is still open',
       );
 
-      dual.close(); // Clean up remaining socket
+      ipv6.close();
+      expect(
+        dual.isClosed,
+        isTrue,
+        reason: 'Dual socket should be closed only if both sockets are closed',
+      );
     });
 
     test('extractProfile from DualShspSocket merges both sockets', () async {
