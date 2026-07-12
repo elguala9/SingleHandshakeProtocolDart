@@ -51,7 +51,7 @@ class ShspPeer implements IShspPeer, IValueForRegistry {
   /// ```
   factory ShspPeer.create({
     required PeerInfo remotePeer,
-    required IShspSocket socket,
+    required IShspSocketBase socket,
   }) => ShspPeer(remotePeer: remotePeer, socket: socket);
 
   /// Maximum UDP message size (65507 = 65535 - 8 bytes UDP header - 20 bytes IP header)
