@@ -8,7 +8,7 @@ This is a unified monorepo containing the SHSP package and its comprehensive tes
 
 ```
 packages/
-├── shsp/               # Main unified SHSP package (v1.8.0)
+├── shsp/               # Main unified SHSP package (v1.9.0)
 │   ├── lib/
 │   │   ├── src/
 │   │   │   ├── interfaces/     # Protocol contracts (IShspSocket, IShspPeer, etc.)
@@ -34,7 +34,7 @@ Add to your `pubspec.yaml`:
 
 ```yaml
 dependencies:
-  shsp: ^1.8.0
+  shsp: ^1.9.0
 ```
 
 Then run:
@@ -123,7 +123,7 @@ For most applications, start with `initializePointDualShsp()` to set up the glob
 import 'package:shsp/shsp.dart';
 
 void main() async {
-  // Initialize singleton with IPv4/IPv6 dual-stack support
+  // Initialize singleton with IPv4/IPv6 dual-stack support (v1.9.0+: IPv4 is optional)
   await initializePointDualShsp();
 
   // Get the singleton socket

@@ -6,11 +6,11 @@ This directory contains practical examples of using the Single HandShake Protoco
 
 ### 0. Initialize Point (`initialize_point.dart`) - v1.2.1+
 
-The recommended starting point for most applications. Sets up the global socket singleton with IPv4/IPv6 support in one call.
+The recommended starting point for most applications. Sets up the global socket singleton with IPv4/IPv6 support in one call. As of v1.9.0, IPv4 is now optional — the singleton works with any available address family.
 
 **Demonstrates:**
 - Using `initializePointDualShsp()` for easy setup
-- Accessing the global dual socket singleton
+- Accessing the global dual socket singleton via `IDualShspSocketMigratable`
 - Setting up socket lifecycle callbacks
 - Extracting socket profiles
 - Proper resource cleanup with DualShspSocketSingleton
@@ -18,6 +18,21 @@ The recommended starting point for most applications. Sets up the global socket 
 **Run:**
 ```bash
 dart example/initialize_point.dart
+```
+
+### 0b. Initialize Point - Registry Access (`initialize_point_registry_access.dart`) - v1.7.0+
+
+Key-based alternative to `initializePointDualShsp()`. Stores socket instances under explicit string keys in the global registry, enabling multiple independent dual-socket instances.
+
+**Demonstrates:**
+- `initializePointRegistryAccess()` for key-based singleton registration
+- Accessing sockets via `RegistryAccess.getInstance<IDualShspSocketMigratable>(key)`
+- Running multiple named socket instances side by side
+- Proper registry cleanup with `RegistryAccess.unregister()`
+
+**Run:**
+```bash
+dart example/initialize_point_registry_access.dart
 ```
 
 ### 1. Basic Peer (`basic_peer.dart`)
@@ -96,6 +111,21 @@ Advanced example showcasing the new registry system for managing multiple instan
 dart example/registry_management.dart
 ```
 
+### 6. Socket Migration (`socket_migration.dart`) - v1.4.0+
+
+Demonstrates live socket migration using `ShspSocketWrapper` and `DualShspSocketMigratable`. As of v1.9.0, constructor uses the `Sockets` value object and IPv4 is optional.
+
+**Demonstrates:**
+- Single-socket migration with `ShspSocketWrapper`
+- Dual-socket migration with `DualShspSocketMigratable` (constructor now takes `Sockets`)
+- `fromWrappers` constructor for pre-configured socket injection
+- Callback preservation across socket migrations
+
+**Run:**
+```bash
+dart example/socket_migration.dart
+```
+
 ## Common Patterns
 
 ### Creating a Peer
@@ -159,6 +189,8 @@ dart example/instance_with_keepalive.dart
 dart example/singleton_with_compression.dart
 dart example/using_interfaces.dart
 dart example/registry_management.dart
+dart example/socket_migration.dart
+dart example/initialize_point_registry_access.dart
 ```
 
 Note: Some examples require a remote SHSP server running on the specified address/port to fully demonstrate functionality. For isolated testing, see the test suite in `packages/tests/`.
