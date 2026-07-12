@@ -32,6 +32,7 @@ export 'src/impl/socket/core/base_shsp_socket_singleton.dart';
 export 'src/impl/socket/core/shsp_socket.dart';
 export 'src/impl/socket/core/shsp_socket_singleton.dart';
 export 'src/impl/socket/dual/dual_shsp_socket.dart';
+export 'src/impl/socket/dual/dual_shsp_socket_auto.dart';
 export 'src/impl/socket/dual/dual_shsp_socket_message.dart';
 export 'src/impl/socket/dual/dual_shsp_socket_migratable.dart';
 export 'src/impl/socket/dual/dual_shsp_socket_profile.dart';

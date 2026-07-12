@@ -14,8 +14,8 @@ Future<IDualShspSocketMigratable> buildDualSocket() async {
   final ipv4Socket = await ShspSocket.bindDefault();
   final IShspSocketWrapper ipv4SocketWrapper = ShspSocketWrapper(ipv4Socket);
   return DualShspSocketMigratable.fromWrappers(
-    ipv4SocketWrapper,
-    ipv6SocketWrapper,
+    ipv4Wrapper: ipv4SocketWrapper,
+    ipv6Wrapper: ipv6SocketWrapper,
   );
 }
 

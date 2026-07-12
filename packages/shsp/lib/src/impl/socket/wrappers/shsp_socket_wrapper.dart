@@ -31,7 +31,8 @@ class ShspSocketWrapper implements IValueForRegistry, IShspSocketWrapper {
 
   @override
   void migrateSocket(IShspSocket newSocket) {
-    final profile = _socket.extractProfile();
+    final oldSocket = _socket;
+    final profile = oldSocket.extractProfile();
     _socket = newSocket;
     _socket.applyProfile(profile);
     final lc = _listeningCallback;
@@ -40,6 +41,9 @@ class ShspSocketWrapper implements IValueForRegistry, IShspSocketWrapper {
     if (cc != null) _socket.setCloseCallback(cc);
     final ec = _errorCallback;
     if (ec != null) _socket.setErrorCallback(ec);
+    if (!oldSocket.isClosed) {
+      oldSocket.close();
+    }
   }
 
   // Computed getter: aggiornato automaticamente dopo ogni swap

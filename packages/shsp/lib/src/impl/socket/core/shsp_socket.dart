@@ -186,6 +186,19 @@ class ShspSocket extends RawShspSocket
     return shspSocket;
   }
 
+  static Future<ShspSocket?> bindIfPossible(
+    InternetAddress address,
+    int port, [
+    ICompressionCodec? compressionCodec,
+  ]) async {
+    try{
+      return ShspSocket.bind(address, port, compressionCodec);
+    }
+    catch(error){
+      return null;
+    }
+  }
+
   /// Creates a new ShspSocket from an existing profile.
   ///
   /// This restores all message callbacks registered on the old socket
