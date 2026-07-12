@@ -85,13 +85,13 @@ void main() {
           reason: 'Should have local address');
     });
 
-    test('socket local address is IPv4', () async {
+    test('socket local address is available', () async {
       await initializePointRegistryAccess(testKey);
 
       final socket =
           RegistryAccess.getInstance<IDualShspSocketMigratable>(testKey);
-      expect(socket.localAddress?.type, equals(InternetAddressType.IPv4),
-          reason: 'Should bind to IPv4 by default');
+      expect(socket.localAddress, isNotNull,
+          reason: 'Should have a bound address');
     });
 
     test('socket has a compression codec', () async {
@@ -306,7 +306,7 @@ void main() {
           RegistryAccess.getInstance<IDualShspSocketMigratable>(testKey);
       expect(socket.ipv4Socket, isNotNull,
           reason: 'IPv4 socket should exist');
-      expect(socket.ipv4Socket.isClosed, isFalse,
+      expect(socket.ipv4Socket?.isClosed, isFalse,
           reason: 'IPv4 socket should be open');
     });
 

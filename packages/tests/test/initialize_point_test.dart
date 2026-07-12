@@ -263,7 +263,7 @@ void main() {
         reason: 'IPv4 socket should exist',
       );
       expect(
-        typedSocket.ipv4Socket.isClosed,
+        typedSocket.ipv4Socket?.isClosed,
         isFalse,
         reason: 'IPv4 socket should be open',
       );
@@ -350,18 +350,14 @@ void main() {
       );
     });
 
-    test('socket local address is IPV4', () async {
+    test('socket local address is available', () async {
       await initializePointDualShsp();
 
       final dualSocket = SingletonDIAccess.get<IDualShspSocketMigratable>();
       final address = dualSocket.localAddress;
 
-      expect(address, isNotNull);
-      expect(
-        address?.type,
-        equals(InternetAddressType.IPv4),
-        reason: 'Should bind to IPv4 by default',
-      );
+      expect(address, isNotNull,
+          reason: 'Should have a bound address');
     });
 
     test('socket raw datagram socket is accessible', () async {

@@ -54,7 +54,10 @@ class RegistryShspSocket
   /// Returns [ReturnTypeInitialization.ipv4and6] if both are registered,
   /// [ReturnTypeInitialization.ipv4only] if only IPv4 is available.
   ReturnTypeInitialization initialize(IDualShspSocketMigratable dualSocket) {
-    _registerSocket(SocketType.ipv4, dualSocket.ipv4Socket);
+    final ipv4 = dualSocket.ipv4Socket;
+    if (ipv4 != null) {
+      _registerSocket(SocketType.ipv4, ipv4);
+    }
     if (dualSocket.ipv6Socket != null) {
       _registerSocket(SocketType.ipv6, dualSocket.ipv6Socket!);
       return ReturnTypeInitialization.ipv4and6;

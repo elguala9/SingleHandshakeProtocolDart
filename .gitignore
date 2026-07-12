@@ -53,3 +53,4 @@ app.*.map.json
 .vexp/
 .serena/
 .*
+.speedy/

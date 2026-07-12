@@ -14,7 +14,7 @@ class MockDualMigratable implements IDualShspSocketMigratable {
   bool get isClosed => closed;
 
   @override
-  IShspSocket get ipv4Socket => throw UnimplementedError();
+  IShspSocket? get ipv4Socket => throw UnimplementedError();
 
   @override
   IShspSocket? get ipv6Socket => null;
@@ -74,25 +74,25 @@ class MockDualMigratable implements IDualShspSocketMigratable {
   String serializedObject() => '';
 
   @override
-  IShspSocket get ipv4SocketForMessages => throw UnimplementedError();
+  IShspSocket? get ipv4SocketForMessages => throw UnimplementedError();
 
   @override
   IShspSocket? get ipv6SocketForMessages => null;
 
   @override
-  IShspSocket get ipv4SocketForProfile => throw UnimplementedError();
+  IShspSocket? get ipv4SocketForProfile => throw UnimplementedError();
 
   @override
   IShspSocket? get ipv6SocketForProfile => null;
 
   @override
-  late IShspSocket ipv4SocketImpl;
+  late IShspSocket? ipv4SocketImpl;
 
   @override
   late IShspSocket? ipv6SocketImpl;
 
   @override
-  IShspSocket get socket => throw UnimplementedError();
+  RawDatagramSocket get socket => throw UnimplementedError();
 }
 
 void main() {

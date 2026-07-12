@@ -15,7 +15,7 @@ import '../i_shsp_socket_base.dart';
 /// peer's address family. It intentionally does not extend [IShspSocket].
 abstract interface class IDualShspSocket implements IShspSocketBase {
   /// The underlying IPv4 socket
-  IShspSocket get ipv4Socket;
+  IShspSocket? get ipv4Socket;
 
   /// The underlying IPv6 socket, if available
   IShspSocket? get ipv6Socket;

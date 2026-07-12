@@ -74,21 +74,29 @@ class HandshakeIP implements IHandshakeIP {
   ///
   /// Returns: A HandshakeIP with all available address fields populated
   static Future<HandshakeIP> createAsyncDual(DualShspSocket dualSocket) async {
-    // Query IPv4 socket (always present)
-    final ipv4RawSocket = dualSocket.ipv4Socket.socket;
-    final ipv4Input = (address: null, port: null, socket: ipv4RawSocket);
-    final ipv4Handler = StunHandler(ipv4Input);
-    final ipv4Local = await ipv4Handler.performLocalRequest();
-    final ipv4Public = await ipv4Handler.performStunRequest();
+    PeerInfo? ipv4PublicPeer;
+    PeerInfo? ipv4LocalPeer;
 
-    final ipv4PublicPeer = PeerInfo(
-      address: InternetAddress(ipv4Public.publicIp),
-      port: ipv4Public.publicPort,
-    );
-    final ipv4LocalPeer = PeerInfo(
-      address: InternetAddress(ipv4Local.localIp),
-      port: ipv4Local.localPort,
-    );
+    if (dualSocket.ipv4Socket != null) {
+      try {
+        final ipv4RawSocket = dualSocket.ipv4Socket!.socket;
+        final ipv4Input = (address: null, port: null, socket: ipv4RawSocket);
+        final ipv4Handler = StunHandler(ipv4Input);
+        final ipv4Local = await ipv4Handler.performLocalRequest();
+        final ipv4Public = await ipv4Handler.performStunRequest();
+
+        ipv4PublicPeer = PeerInfo(
+          address: InternetAddress(ipv4Public.publicIp),
+          port: ipv4Public.publicPort,
+        );
+        ipv4LocalPeer = PeerInfo(
+          address: InternetAddress(ipv4Local.localIp),
+          port: ipv4Local.localPort,
+        );
+      } catch (e) {
+        // IPv4 STUN query failed
+      }
+    }
 
     // Query IPv6 socket if available
     PeerInfo? ipv6PublicPeer;
@@ -112,7 +120,6 @@ class HandshakeIP implements IHandshakeIP {
         );
       } catch (e) {
         // IPv6 STUN query failed, leave IPv6 addresses as null
-        // This is not fatal - IPv4 addresses are still available
       }
     }
 

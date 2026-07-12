@@ -27,7 +27,14 @@ class DualShspSocketMigratable
 
   @override
   void migrateSocketIpv4(IShspSocket socket) {
-    if (ipv4SocketImpl is! ShspSocketWrapper) ipv4SocketImpl = ShspSocketWrapper(ipv4SocketImpl);
+    final ipv4 = ipv4SocketImpl;
+    if (ipv4 == null) {
+      ipv4SocketImpl = ShspSocketWrapper(socket);
+      return;
+    }
+    if (ipv4 is! ShspSocketWrapper) {
+      ipv4SocketImpl = ShspSocketWrapper(ipv4);
+    }
     (ipv4SocketImpl as ShspSocketWrapper).migrateSocket(socket);
   }
 
