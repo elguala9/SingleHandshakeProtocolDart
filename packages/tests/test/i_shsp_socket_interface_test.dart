@@ -31,7 +31,7 @@ void main() {
         0,
         GZipCodec(),
       );
-      final dual = DualShspSocket(ipv4, null);
+      final dual = DualShspSocket(Sockets(ipv4SocketImpl: ipv4));
 
       expect(
         dual.isClosed,
@@ -76,7 +76,7 @@ void main() {
         0,
         GZipCodec(),
       );
-      final dual = DualShspSocket(ipv4, null);
+      final dual = DualShspSocket(Sockets(ipv4SocketImpl: ipv4));
 
       final profile = dual.extractProfile();
 
@@ -132,7 +132,7 @@ void main() {
         0,
         GZipCodec(),
       );
-      final dual = DualShspSocket(ipv4, null);
+      final dual = DualShspSocket(Sockets(ipv4SocketImpl: ipv4));
 
       // Create a profile with a callback
       final peer = PeerInfo(address: InternetAddress.loopbackIPv4, port: 1234);
@@ -145,7 +145,7 @@ void main() {
         0,
         GZipCodec(),
       );
-      final dual2 = DualShspSocket(ipv4b, null);
+      final dual2 = DualShspSocket(Sockets(ipv4SocketImpl: ipv4b));
       dual2.applyProfile(profile);
 
       // Verify callback was applied
@@ -231,7 +231,7 @@ void main() {
         0,
         GZipCodec(),
       );
-      final dual = DualShspSocket(ipv4, ipv6);
+      final dual = DualShspSocket(Sockets(ipv4SocketImpl: ipv4, ipv6SocketImpl: ipv6));
 
       expect(
         dual.isClosed,
@@ -265,7 +265,7 @@ void main() {
         0,
         GZipCodec(),
       );
-      final dual = DualShspSocket(ipv4, ipv6);
+      final dual = DualShspSocket(Sockets(ipv4SocketImpl: ipv4, ipv6SocketImpl: ipv6));
 
       // Add callbacks to both sockets
       final peer4 = PeerInfo(address: InternetAddress.loopbackIPv4, port: 4444);
@@ -294,7 +294,7 @@ void main() {
           0,
           GZipCodec(),
         );
-        final dual1 = DualShspSocket(ipv4a, null);
+        final dual1 = DualShspSocket(Sockets(ipv4SocketImpl: ipv4a));
 
         // Create profile with callback
         final peer = PeerInfo(
@@ -310,7 +310,7 @@ void main() {
           0,
           GZipCodec(),
         );
-        final dual2 = DualShspSocket(ipv4b, null);
+        final dual2 = DualShspSocket(Sockets(ipv4SocketImpl: ipv4b));
         dual2.applyProfile(profile);
 
         // Verify

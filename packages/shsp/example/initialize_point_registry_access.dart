@@ -50,8 +50,8 @@ Future<void> main() async {
       print('→ Socket closed');
     });
 
-    dualSocket.onError.register((error) {
-      print('→ Socket error: $error');
+    dualSocket.onError.register((err) {
+      print('→ Socket error: ${err.error}');
     });
     print('✓ Callbacks registered\n');
 

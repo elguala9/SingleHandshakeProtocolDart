@@ -13,38 +13,36 @@ import '../../../../shsp.dart';
 class DualShspSocket
     with DualShspSocketMessageMixin, DualShspSocketProfileMixin
     implements IDualShspSocket {
-  DualShspSocket(IShspSocket? ipv4Socket, IShspSocket? ipv6Socket) {
-    ipv4SocketImpl = ipv4Socket;
-    ipv6SocketImpl = ipv6Socket;
-    _onClose = CallbackOn();
-    _onError = CallbackOnError();
-    _onListening = CallbackOn();
+  DualShspSocket(Sockets sockets) {
+    ipv4SocketImpl = sockets.ipv4SocketImpl;
+    ipv6SocketImpl = sockets.ipv6SocketImpl;
+    _onClose = CallbackOnWithSocket();
+    _onError = CallbackOnErrorWithSocket();
+    _onListening = CallbackOnWithSocket();
 
-    // Register callbacks on IPv4 socket to forward events
     final ipv4 = ipv4SocketImpl;
     if (ipv4 != null) {
       ipv4.setListeningCallback(() {
-        _onListening.call(null);
+        _onListening.call(ipv4);
       });
       ipv4.setCloseCallback(() {
-        _onClose.call(null);
+        _onClose.call(ipv4);
       });
       ipv4.setErrorCallback((err) {
-        _onError.call(err);
+        _onError.call((error: err, socket: ipv4));
       });
     }
 
-    // Register callbacks on IPv6 socket if available
     final ipv6 = ipv6SocketImpl;
     if (ipv6 != null) {
       ipv6.setListeningCallback(() {
-        _onListening.call(null);
+        _onListening.call(ipv6);
       });
       ipv6.setCloseCallback(() {
-        _onClose.call(null);
+        _onClose.call(ipv6);
       });
       ipv6.setErrorCallback((err) {
-        _onError.call(err);
+        _onError.call((error: err, socket: ipv6));
       });
     }
   }
@@ -65,14 +63,14 @@ class DualShspSocket
   /// final ipv6 = await ShspSocket.bind(InternetAddress.anyIPv6, 8000);
   /// final dualSocket = DualShspSocket.fromSockets(ipv4, ipv6);
   /// ```
-  DualShspSocket.fromSockets(IShspSocket? ipv4Socket, [IShspSocket? ipv6Socket])
-    : this(ipv4Socket, ipv6Socket);
+  DualShspSocket.fromSockets(Sockets sockets)
+    : this(sockets);
 
   late IShspSocket? ipv4SocketImpl;
   late IShspSocket? ipv6SocketImpl;
-  late CallbackOn _onClose;
-  late CallbackOnError _onError;
-  late CallbackOn _onListening;
+  late CallbackOnWithSocket _onClose;
+  late CallbackOnErrorWithSocket _onError;
+  late CallbackOnWithSocket _onListening;
 
   /// Factory method to create a DualShspSocket without parameters.
   ///
@@ -103,7 +101,7 @@ class DualShspSocket
     // no socket, no party
     if(ipv4Socket == null && ipv6Socket == null)
       throw ArgumentError('Error during the socket binding');
-    return DualShspSocket(ipv4Socket, ipv6Socket);
+    return DualShspSocket(Sockets(ipv4SocketImpl: ipv4Socket, ipv6SocketImpl: ipv6Socket));
   }
 
   /// Exposes the IPv4 socket for direct access if needed
@@ -138,13 +136,13 @@ class DualShspSocket
   IShspSocket? get ipv6SocketForProfile => ipv6SocketImpl;
 
   @override
-  CallbackOn get onClose => _onClose;
+  CallbackOnWithSocket get onClose => _onClose;
 
   @override
-  CallbackOnError get onError => _onError;
+  CallbackOnErrorWithSocket get onError => _onError;
 
   @override
-  CallbackOn get onListening => _onListening;
+  CallbackOnWithSocket get onListening => _onListening;
 
   @override
   void setListeningCallback(void Function() cb) {
@@ -158,7 +156,7 @@ class DualShspSocket
 
   @override
   void setErrorCallback(void Function(dynamic err) cb) {
-    _onError.register(cb);
+    _onError.register((record) => cb(record.error));
   }
 
   /// Send data to a peer, routing to the appropriate socket based on address family.

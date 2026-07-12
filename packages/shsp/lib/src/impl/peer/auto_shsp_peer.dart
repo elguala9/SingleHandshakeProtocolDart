@@ -1,12 +1,7 @@
 import 'dart:io';
 
 import 'package:meta/meta.dart';
-import '../../interfaces/i_compression_codec.dart';
-import '../../interfaces/i_shsp_socket.dart';
-import '../../types/peer_types.dart';
-
-import 'shsp_peer.dart';
-import '../socket/core/shsp_socket_singleton.dart';
+import '../../../shsp.dart';
 
 /// A [ShspPeer] that automatically uses the global [ShspSocketSingleton] socket.
 ///

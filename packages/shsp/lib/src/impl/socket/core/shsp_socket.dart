@@ -2,19 +2,7 @@ import 'dart:async';
 import 'dart:io';
 import 'package:meta/meta.dart';
 import 'package:singleton_manager/singleton_manager.dart';
-import '../../../types/peer_types.dart';
-import '../../../types/remote_info.dart';
-import '../../../types/socket_profile.dart';
-import '../../../interfaces/exceptions/shsp_exceptions.dart';
-import '../../../interfaces/i_compression_codec.dart';
-import '../../../interfaces/i_shsp_instance.dart'
-    show CallbackOn, CallbackOnError;
-import '../../../interfaces/i_shsp_socket.dart';
-import '../../utility/message_callback_map.dart';
-import '../../utility/raw_shsp_socket.dart';
-import '../features/shsp_socket_callbacks.dart';
-import '../features/shsp_socket_compression.dart';
-import '../features/shsp_socket_profile.dart';
+import '../../../../shsp.dart';
 
 /// SHSP Socket implementation wrapping RawDatagramSocket
 class ShspSocket extends RawShspSocket

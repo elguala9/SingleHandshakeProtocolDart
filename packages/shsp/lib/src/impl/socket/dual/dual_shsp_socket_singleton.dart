@@ -1,6 +1,7 @@
 import 'dart:io';
 import 'package:meta/meta.dart';
 import '../../../interfaces/i_compression_codec.dart';
+import '../../../types/sockets.dart';
 import '../core/base_shsp_socket_singleton.dart';
 import '../compression/gzip_codec.dart';
 import 'dual_shsp_socket.dart';
@@ -77,7 +78,7 @@ class DualShspSocketSingleton extends BaseShspSocketSingleton<DualShspSocket> {
     final ipv4Socket = await ShspSocket.bind(bindAddress, ipv4Port, codec);
 
     // Create dual socket wrapper
-    final dualSocket = DualShspSocket(ipv4Socket, ipv6Socket);
+    final dualSocket = DualShspSocket(Sockets(ipv4SocketImpl: ipv4Socket, ipv6SocketImpl: ipv6Socket));
     _instance = DualShspSocketSingleton._(
       dualSocket,
       bindAddress,
@@ -114,7 +115,7 @@ class DualShspSocketSingleton extends BaseShspSocketSingleton<DualShspSocket> {
     final ipv4Port = ipv6Socket?.localPort ?? port;
     final ipv4Socket = await ShspSocket.bind(address, ipv4Port, codec);
 
-    return DualShspSocket(ipv4Socket, ipv6Socket);
+    return DualShspSocket(Sockets(ipv4SocketImpl: ipv4Socket, ipv6SocketImpl: ipv6Socket));
   }
 
   @override
@@ -124,7 +125,7 @@ class DualShspSocketSingleton extends BaseShspSocketSingleton<DualShspSocket> {
     ICompressionCodec codec,
   ) =>
       // Wrap single socket in DualShspSocket (IPv6 remains null)
-      DualShspSocket(shspSocket, null);
+      DualShspSocket(Sockets(ipv4SocketImpl: shspSocket));
 
   @override
   @protected

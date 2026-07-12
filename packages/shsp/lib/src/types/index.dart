@@ -8,3 +8,4 @@ export 'internet_address_converter.dart';
 export 'peer_types.dart';
 export 'remote_info.dart';
 export 'socket_profile.dart';
+export 'sockets.dart';
