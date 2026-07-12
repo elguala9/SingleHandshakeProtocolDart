@@ -14,16 +14,20 @@ class DualShspSocketMigratable
     implements IDualShspSocketMigratable {
   /// Creates a [DualShspSocketMigratable] wrapping raw sockets in [ShspSocketWrapper] internally.
   DualShspSocketMigratable(IShspSocket ipv4Socket, [IShspSocket? ipv6Socket])
-    : super(
-        ShspSocketWrapper(ipv4Socket),
-        ipv6Socket != null ? ShspSocketWrapper(ipv6Socket) : null,
-      );
+    : super(Sockets(
+        ipv4SocketImpl: ShspSocketWrapper(ipv4Socket),
+        ipv6SocketImpl:
+            ipv6Socket != null ? ShspSocketWrapper(ipv6Socket) : null,
+      ));
 
   /// Creates a [DualShspSocketMigratable] from already-wrapped sockets.
   DualShspSocketMigratable.fromWrappers(
     IShspSocketWrapper ipv4Wrapper, [
     IShspSocketWrapper? ipv6Wrapper,
-  ]) : super(ipv4Wrapper, ipv6Wrapper);
+  ]) : super(Sockets(
+        ipv4SocketImpl: ipv4Wrapper,
+        ipv6SocketImpl: ipv6Wrapper,
+      ));
 
   @override
   void migrateSocketIpv4(IShspSocket socket) {

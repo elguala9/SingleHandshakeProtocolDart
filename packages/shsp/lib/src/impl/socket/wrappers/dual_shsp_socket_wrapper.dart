@@ -50,13 +50,13 @@ class DualShspSocketWrapper implements IDualShspSocketWrapper {
   int? get localPort => dualSocket.localPort;
 
   @override
-  CallbackOn get onClose => dualSocket.onClose;
+  CallbackOnWithSocket get onClose => dualSocket.onClose;
 
   @override
-  CallbackOnError get onError => dualSocket.onError;
+  CallbackOnErrorWithSocket get onError => dualSocket.onError;
 
   @override
-  CallbackOn get onListening => dualSocket.onListening;
+  CallbackOnWithSocket get onListening => dualSocket.onListening;
 
   @override
   bool removeMessageCallback(PeerInfo peer, MessageCallbackFunction cb) =>

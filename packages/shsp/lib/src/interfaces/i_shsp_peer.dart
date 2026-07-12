@@ -1,6 +1,6 @@
 import 'package:singleton_manager/singleton_manager.dart';
 
-import '../types/peer_types.dart';
+import '../../shsp.dart';
 
 /// Interface for SHSP Peer
 abstract interface class IShspPeer implements IValueForRegistry {

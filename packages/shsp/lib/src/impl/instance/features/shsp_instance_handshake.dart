@@ -1,5 +1,5 @@
 import 'package:meta/meta.dart';
-import '../../../interfaces/i_shsp_instance.dart' show CallbackOn;
+import '../../../../shsp.dart';
 
 const int handshakePrefix = 0x01;
 const int closingPrefix = 0x02;

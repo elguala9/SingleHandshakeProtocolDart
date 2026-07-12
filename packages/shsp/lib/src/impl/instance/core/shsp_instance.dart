@@ -1,12 +1,4 @@
-import '../../../interfaces/exceptions/shsp_exceptions.dart';
-import '../../../interfaces/i_shsp_instance.dart';
-import '../../../interfaces/i_shsp_socket.dart';
-import '../../../types/instance_profile.dart';
-import '../../../types/peer_types.dart';
-import '../../peer/shsp_peer.dart';
-import '../../utility/keep_alive_timer.dart';
-import '../features/shsp_instance_keep_alive.dart';
-import '../features/shsp_instance_handshake.dart';
+import '../../../../shsp.dart';
 
 const int dataPrefix = 0x00;
 const int keepAlivePrefix = 0x04;

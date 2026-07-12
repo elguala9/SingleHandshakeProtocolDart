@@ -1,10 +1,6 @@
-// ...existing code...
-import '../../interfaces/exceptions/shsp_exceptions.dart';
-import '../../interfaces/i_shsp_peer.dart';
-import '../../interfaces/i_shsp_socket.dart';
+import '../../../shsp.dart';
 import 'package:singleton_manager/singleton_manager.dart';
-import '../../types/callback_types.dart';
-import '../../types/peer_types.dart';
+
 
 /// SHSP Peer implementation
 class ShspPeer implements IShspPeer, IValueForRegistry {
@@ -62,7 +58,7 @@ class ShspPeer implements IShspPeer, IValueForRegistry {
   static const int maxMessageSize = 65507;
 
   final PeerInfo remotePeer;
-  final IShspSocket socket;
+  final IShspSocketBase socket;
   late final MessageCallback _messageCallback;
   late MessageCallbackFunction _socketCallback;
   bool _closed = false;

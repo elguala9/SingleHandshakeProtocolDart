@@ -1,10 +1,5 @@
-import 'dart:io';
-
 import '../../types/callback_types.dart';
 import '../../types/peer_types.dart';
-import '../../types/socket_profile.dart';
-import '../i_compression_codec.dart';
-import '../i_shsp_instance.dart' show CallbackOn, CallbackOnError;
 import '../i_shsp_socket.dart';
 import '../i_shsp_socket_base.dart';
 
@@ -20,14 +15,9 @@ abstract interface class IDualShspSocket implements IShspSocketBase {
   /// The underlying IPv6 socket, if available
   IShspSocket? get ipv6Socket;
 
-  InternetAddress? get localAddress;
-  int? get localPort;
-
-  ICompressionCodec get compressionCodec;
-
-  CallbackOn get onClose;
-  CallbackOnError get onError;
-  CallbackOn get onListening;
+  CallbackOnWithSocket get onClose;
+  CallbackOnErrorWithSocket get onError;
+  CallbackOnWithSocket get onListening;
 
   void setListeningCallback(void Function() cb);
   void setCloseCallback(void Function() cb);
@@ -40,11 +30,7 @@ abstract interface class IDualShspSocket implements IShspSocketBase {
 
   bool get isClosed;
 
-  ShspSocketProfile extractProfile();
-  void applyProfile(ShspSocketProfile profile);
-
   String serializedObject();
 
-  void close();
   void destroy();
 }

@@ -1,6 +1,5 @@
 import 'package:json_annotation/json_annotation.dart';
 import 'dart:io';
-import 'package:callback_handler/callback_handler.dart';
 import 'internet_address_converter.dart';
 
 @JsonSerializable()
@@ -156,4 +155,4 @@ class SecuritySignal {
   };
 }
 
-typedef MessageCallback = CallbackHandler<PeerInfo, void>;
+

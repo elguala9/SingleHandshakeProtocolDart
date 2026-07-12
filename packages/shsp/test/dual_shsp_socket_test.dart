@@ -62,13 +62,13 @@ class MockDualMigratable implements IDualShspSocketMigratable {
   void setErrorCallback(void Function(dynamic err) cb) {}
 
   @override
-  CallbackOn get onClose => throw UnimplementedError();
+  CallbackOnWithSocket get onClose => throw UnimplementedError();
 
   @override
-  CallbackOnError get onError => throw UnimplementedError();
+  CallbackOnErrorWithSocket get onError => throw UnimplementedError();
 
   @override
-  CallbackOn get onListening => throw UnimplementedError();
+  CallbackOnWithSocket get onListening => throw UnimplementedError();
 
   @override
   String serializedObject() => '';
@@ -140,7 +140,7 @@ void main() {
           if (!ipv4.isClosed) ipv4.close();
         });
 
-        dual = DualShspSocket.fromSockets(ipv4);
+        dual = DualShspSocket.fromSockets(Sockets(ipv4SocketImpl: ipv4));
         expect(dual.ipv4Socket, equals(ipv4));
       });
 
@@ -150,7 +150,7 @@ void main() {
           if (!ipv4.isClosed) ipv4.close();
         });
 
-        dual = DualShspSocket.fromSockets(ipv4);
+        dual = DualShspSocket.fromSockets(Sockets(ipv4SocketImpl: ipv4));
         expect(dual.ipv6Socket, isNull);
       });
 
@@ -172,7 +172,7 @@ void main() {
         }
 
         if (ipv6 != null) {
-          dual = DualShspSocket.fromSockets(ipv4, ipv6);
+          dual = DualShspSocket.fromSockets(Sockets(ipv4SocketImpl: ipv4, ipv6SocketImpl: ipv6));
           expect(dual.ipv6Socket, isNotNull);
         }
       });
