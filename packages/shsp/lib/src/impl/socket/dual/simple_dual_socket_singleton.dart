@@ -28,7 +28,7 @@ class SimpleDualSocketSingleton implements ISimpleDualSocketSingleton {
   static SimpleDualSocketSingleton get instance => _instance;
 
   @protected
-  late IDualShspSocketMigratable? dualSocket;
+  IDualShspSocketMigratable? dualSocket;
 
   IDualShspSocketMigratable? getInstance() => dualSocket;
 

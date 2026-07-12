@@ -37,6 +37,7 @@ Future<void> initializePointDualShsp() async {
 
   final reg = RegistrySingletonShspSocket.instance;
   SingletonDIAccess.addInstanceAs<IRegistryShspSocket, RegistrySingletonShspSocket>(reg);
+  SingletonDIAccess.addInstanceAs<RegistryShspSocket, RegistrySingletonShspSocket>(reg);
   SingletonDIAccess.addInstance(reg);
   reg.initializeDI();
 }
