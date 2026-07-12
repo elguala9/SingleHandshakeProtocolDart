@@ -48,7 +48,7 @@ void main() {
     group('create', () {
       test('creates a DualShspSocketAuto with at least one socket', () async {
         final auto = await DualShspSocketAuto.create();
-        addTearDown(() => auto.close());
+        addTearDown(auto.close);
 
         expect(auto, isA<DualShspSocketAuto>());
         expect(auto.ipv4Socket, isA<IShspSocket>());
@@ -143,8 +143,8 @@ void main() {
 
       test('throws StateError when no ipv4 socket bound', () {
         final empty = DualShspSocketAuto(Sockets());
-        addTearDown(() => empty.close());
-        expect(() => empty.refreshSocketIpv4(), throwsStateError);
+        addTearDown(empty.close);
+        expect(empty.refreshSocketIpv4, throwsStateError);
       });
     });
 
@@ -195,8 +195,8 @@ void main() {
       test('throws StateError when no ipv6 socket bound', () async {
         final ipv4 = await ShspSocket.bind(InternetAddress.anyIPv4, 0);
         final noIpv6 = DualShspSocketAuto(Sockets(ipv4SocketImpl: ipv4));
-        addTearDown(() => noIpv6.close());
-        expect(() => noIpv6.refreshSocketIpv6(), throwsStateError);
+        addTearDown(noIpv6.close);
+        expect(noIpv6.refreshSocketIpv6, throwsStateError);
       });
     });
 

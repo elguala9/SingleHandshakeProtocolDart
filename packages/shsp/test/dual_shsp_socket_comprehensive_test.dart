@@ -158,13 +158,13 @@ void main() {
         }
 
         addTearDown(() {
-          if (ipv6Receiver != null && !ipv6Receiver!.isClosed) {
-            ipv6Receiver!.close();
+          if (ipv6Receiver != null && !ipv6Receiver.isClosed) {
+            ipv6Receiver.close();
           }
         });
         addTearDown(() {
-          if (ipv6Sender != null && !ipv6Sender!.isClosed) {
-            ipv6Sender!.close();
+          if (ipv6Sender != null && !ipv6Sender.isClosed) {
+            ipv6Sender.close();
           }
         });
 
@@ -179,7 +179,7 @@ void main() {
           address: InternetAddress.loopbackIPv6,
           port: dual.localPort!,
         );
-        ipv6Receiver!.setMessageCallback(senderPeer, (record) {
+        ipv6Receiver.setMessageCallback(senderPeer, (record) {
           callbackFired = true;
         });
 
@@ -308,13 +308,13 @@ void main() {
         }
 
         addTearDown(() {
-          if (ipv6Receiver != null && !ipv6Receiver!.isClosed) {
-            ipv6Receiver!.close();
+          if (ipv6Receiver != null && !ipv6Receiver.isClosed) {
+            ipv6Receiver.close();
           }
         });
         addTearDown(() {
-          if (ipv6Sender != null && !ipv6Sender!.isClosed) {
-            ipv6Sender!.close();
+          if (ipv6Sender != null && !ipv6Sender.isClosed) {
+            ipv6Sender.close();
           }
         });
 
@@ -337,7 +337,7 @@ void main() {
           address: InternetAddress.loopbackIPv6,
           port: ipv6SenderPort,
         );
-        ipv6Receiver!.setMessageCallback(senderPeer, (record) {
+        ipv6Receiver.setMessageCallback(senderPeer, (record) {
           callbackFired = true;
         });
 
@@ -350,8 +350,6 @@ void main() {
 
     group('message callbacks — dual routing', () {
       late DualShspSocket dual;
-      ShspSocket? ipv4Receiver;
-      ShspSocket? ipv6Receiver;
 
       tearDown(() {
         if (!dual.isClosed) dual.close();
@@ -705,7 +703,7 @@ void main() {
         if (!dual.isClosed) dual.close();
       });
 
-      IShspSocketBase base = dual;
+      final IShspSocketBase base = dual;
       expect(base, isA<IShspSocketBase>());
       expect(base.isClosed, isFalse);
       expect(base.localPort, isNotNull);
@@ -716,7 +714,7 @@ void main() {
       addTearDown(() {
         if (!dual.isClosed) dual.close();
       });
-      IShspSocketBase base = dual;
+      final IShspSocketBase base = dual;
 
       final receiver = await ShspSocket.bind(InternetAddress.loopbackIPv4, 0);
       addTearDown(() {
@@ -748,7 +746,7 @@ void main() {
       addTearDown(() {
         if (!dual.isClosed) dual.close();
       });
-      IShspSocketBase base = dual;
+      final IShspSocketBase base = dual;
 
       final peer = PeerInfo(address: InternetAddress.loopbackIPv4, port: 5555);
       base.setMessageCallback(peer, (record) {});
@@ -762,7 +760,7 @@ void main() {
       addTearDown(() {
         if (!dual.isClosed) dual.close();
       });
-      IShspSocketBase base = dual;
+      final IShspSocketBase base = dual;
 
       final peer = PeerInfo(address: InternetAddress.loopbackIPv4, port: 5555);
       void cb(MessageRecord r) {}
@@ -779,7 +777,7 @@ void main() {
       addTearDown(() {
         if (!dual.isClosed) dual.close();
       });
-      IShspSocketBase base = dual;
+      final IShspSocketBase base = dual;
 
       final peer = PeerInfo(address: InternetAddress.loopbackIPv4, port: 8080);
       base.setMessageCallback(peer, (record) {});
@@ -790,7 +788,7 @@ void main() {
       addTearDown(() {
         if (!dual2.isClosed) dual2.close();
       });
-      IShspSocketBase base2 = dual2;
+      final IShspSocketBase base2 = dual2;
 
       base2.applyProfile(profile);
       final restoredProfile = base2.extractProfile();
@@ -838,7 +836,7 @@ void main() {
         if (!dual.isClosed) dual.close();
       });
 
-      IShspSocket socket = dual.ipv4Socket!;
+      final IShspSocket socket = dual.ipv4Socket!;
       final peer = PeerInfo(address: InternetAddress.loopbackIPv4, port: 9090);
       socket.setMessageCallback(peer, (record) {});
 
@@ -857,13 +855,13 @@ void main() {
       }
 
       addTearDown(() {
-        if (ipv6Receiver != null && !ipv6Receiver!.isClosed) {
-          ipv6Receiver!.close();
+        if (ipv6Receiver != null && !ipv6Receiver.isClosed) {
+          ipv6Receiver.close();
         }
       });
       addTearDown(() {
-        if (ipv6Sender != null && !ipv6Sender!.isClosed) {
-          ipv6Sender!.close();
+        if (ipv6Sender != null && !ipv6Sender.isClosed) {
+          ipv6Sender.close();
         }
       });
 
@@ -874,7 +872,7 @@ void main() {
         if (!dual.isClosed) dual.close();
       });
 
-      IShspSocket socket = dual.ipv6Socket!;
+      final IShspSocket socket = dual.ipv6Socket!;
 
       var callbackFired = false;
       final receiverPeer = PeerInfo(
@@ -885,7 +883,7 @@ void main() {
         address: InternetAddress.loopbackIPv6,
         port: socket.localPort!,
       );
-      ipv6Receiver!.setMessageCallback(senderPeer, (record) {
+      ipv6Receiver.setMessageCallback(senderPeer, (record) {
         callbackFired = true;
       });
 
@@ -910,7 +908,7 @@ void main() {
 
       final dual = DualShspSocket.fromSockets(Sockets(ipv6SocketImpl: ipv6));
 
-      IShspSocket socket = dual.ipv6Socket!;
+      final IShspSocket socket = dual.ipv6Socket!;
       expect(socket.isClosed, isFalse);
 
       socket.close();
@@ -931,7 +929,7 @@ void main() {
       if (ipv6 == null) return;
 
       final dual = DualShspSocket.fromSockets(Sockets(ipv6SocketImpl: ipv6));
-      IShspSocket socket = dual.ipv6Socket!;
+      final IShspSocket socket = dual.ipv6Socket!;
 
       socket.close();
 
@@ -1095,8 +1093,8 @@ void main() {
         }
 
         addTearDown(() {
-          if (ipv6Sender != null && !ipv6Sender!.isClosed) {
-            ipv6Sender!.close();
+          if (ipv6Sender != null && !ipv6Sender.isClosed) {
+            ipv6Sender.close();
           }
         });
 
@@ -1165,7 +1163,6 @@ void main() {
     group('dual-stack — ShspPeer via DualShspSocket', () {
       late DualShspSocket dual;
       late ShspPeer peerIpv4;
-      late ShspPeer peerIpv6;
 
       tearDown(() {
         if (!dual.isClosed) dual.close();
@@ -1197,13 +1194,8 @@ void main() {
           address: InternetAddress.loopbackIPv4,
           port: 8081,
         );
-        final peerInfoV6 = PeerInfo(
-          address: InternetAddress.loopbackIPv6,
-          port: 8082,
-        );
 
         peerIpv4 = ShspPeer.create(remotePeer: peerInfoV4, socket: dual);
-        peerIpv6 = ShspPeer.create(remotePeer: peerInfoV6, socket: dual);
 
         final profile = dual.extractProfile();
         expect(profile.messageListeners.length, greaterThanOrEqualTo(2));

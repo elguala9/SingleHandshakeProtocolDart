@@ -5,6 +5,50 @@ All notable changes to the Single HandShake Protocol monorepo are documented in 
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [1.9.0] - 2026-07-12
+
+### Added
+
+#### DualShspSocket Architecture Overhaul
+- **DualShspSocket as pure router**: `IDualShspSocket` no longer extends `IShspSocket` — now a dedicated dual-stack router interface extending `IShspSocketBase`
+- **IShspSocketBase extracted**: Core socket members (callbacks, send, close, destroy) separated from the `RawDatagramSocket` contract
+- **Optional IPv4/IPv6**: Both address families are now independently optional; `DualShspSocket.create()` works with any available combination
+- **IDualShspSocketAuto**: New interface for auto-detecting and refreshing dual-stack socket instances on network changes
+
+#### DualShspSocketAuto
+- Automatically refreshes underlying sockets to handle network interface changes
+- `refreshSocketIpv4()`, `refreshSocketIpv6()`, `refreshSockets()` methods for on-demand refresh
+- Implements `IDualShspSocketMigratable` for seamless migration
+
+#### New Types
+- `Sockets` value object encapsulating optional IPv4/IPv6 `IShspSocket` references, used throughout dual-socket constructors
+
+#### Enhanced Callbacks
+- `CallbackOnWithSocket` and `CallbackOnErrorWithSocket` carry the source socket reference in `DualShspSocket` events
+
+### Changed
+
+#### Interface Reorganization
+- Interfaces reorganized into `socket/`, `dual/`, and `wrapper/` subdirectories for better discoverability
+- `IDualShspSocket` moved to `src/interfaces/dual/i_dual_shsp_socket.dart`
+- `IShspSocket` moved to `src/interfaces/socket/i_shsp_socket.dart`
+
+#### DualShspSocket Constructor (Breaking)
+- Constructor and `fromSockets` now accept `Sockets` instead of individual socket parameters
+- IPv4/IPv6 precedence changed: local address, port, and compression codec prefer IPv6
+
+#### ISendTo Validation
+- `sendTo()` now validates address family matches available socket, throws `StateError` on mismatch
+
+### Fixed
+- Handshake IP mapping race condition
+- Dual socket callback forwarding now correctly identifies source socket
+- Message callback map IPv4/IPv6 key parity
+- Constructor consistency across factory implementations
+
+### Test Coverage
+- **1,589+ new test lines**: comprehensive dual socket tests (1,286 lines) and auto-detection tests (303 lines)
+
 ## [1.8.0] - 2026-04-20
 
 ### Added

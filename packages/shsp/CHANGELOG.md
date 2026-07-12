@@ -7,6 +7,72 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [1.9.0] - 2026-07-12
+
+### Added
+
+#### DualShspSocket as IShspSocket
+- `IDualShspSocket` no longer extends `IShspSocket` — it is now a pure router interface extending `IShspSocketBase`
+- `IShspSocketBase` extracted from `IShspSocket` providing core members (onClose, onError, onListening, setMessageCallback, sendTo, isClosed, destroy) without the `RawDatagramSocket` contract
+- `IDualShspSocketAuto` interface for auto-detecting and refreshing dual-stack socket instances
+
+#### Optional IPv4/IPv6
+- IPv4 socket is now optional in `DualShspSocket` — the framework works with IPv6-only or IPv4-only setups
+- `DualShspSocket.create()` attempts IPv6 first, then IPv4, and works if at least one succeeds
+- `socket` getter returns IPv6 socket with IPv4 fallback
+- `localAddress`, `localPort`, `compressionCodec` all prefer IPv6 with IPv4 fallback
+
+#### Auto-Detection via DualShspSocketAuto
+- `DualShspSocketAuto` automatically refreshes underlying sockets to handle network changes
+- `refreshSocketIpv4()`, `refreshSocketIpv6()`, `refreshSockets()` methods for on-demand socket refresh
+- Implements `IDualShspSocketMigratable` for seamless socket migration
+
+#### New Types
+- `Sockets` value object holding optional IPv4 and IPv6 `IShspSocket` references
+- Centralized in `src/types/sockets.dart`
+- Used throughout `DualShspSocket`, `DualShspSocketMigratable`, and `DualShspSocketWrapper` constructors
+
+#### Enhanced Callback Types
+- `CallbackOnWithSocket` and `CallbackOnErrorWithSocket` — callbacks now carry the source socket reference in `DualShspSocket` events
+- Event handlers can identify which socket (IPv4 vs IPv6) triggered the event
+
+### Changed
+
+#### Interface Reorganization
+- `IShspSocket` moved to `src/interfaces/socket/i_shsp_socket.dart`
+- `IDualShspSocket` moved to `src/interfaces/dual/i_dual_shsp_socket.dart`
+- `IDualShspSocketMigratable` moved to `src/interfaces/dual/i_dual_shsp_socket_migratable.dart`
+- `IDualShspSocketAuto` added to `src/interfaces/dual/i_dual_shsp_socket_auto.dart`
+- `IShspSocketBase` added to `src/interfaces/socket/i_shsp_socket_base.dart`
+
+#### DualShspSocket Constructor Change (Breaking)
+- Constructor now accepts `Sockets sockets` instead of `(IShspSocket ipv4Socket, IShspSocket? ipv6Socket)`
+- `fromSockets` factory now takes `Sockets` instead of two parameters
+
+#### IPv4/IPv6 Preference Changes
+- `localAddress` returns IPv6 address first (previously IPv4 first)
+- `localPort` returns IPv6 port first (previously IPv4 first)
+- `compressionCodec` prefers IPv6 codec (previously IPv4 first)
+- `isClosed` uses AND logic (both must be closed) instead of OR
+
+#### ISendTo Validation
+- `sendTo()` validates address family matches available socket type
+- Throws `StateError` when sending IPv6 address with only IPv4 socket (and vice versa)
+
+### Fixed
+
+#### Bug Fixes
+- Handshake IP mapping race condition resolved
+- Socket callback forwarding in dual socket properly identifies source socket
+- Message callback map IPv4/IPv6 key parity fixed
+- Various constructor consistency improvements across factories
+
+### Test Coverage
+
+- **1,589+ comprehensive test lines** added for dual socket scenarios:
+  - `dual_shsp_socket_comprehensive_test.dart`: 1,286 lines covering IPv4-only, IPv6-only, dual-stack, and migration scenarios
+  - `dual_shsp_socket_auto_test.dart`: 303 lines testing auto-detection and socket refresh
+
 ## [1.8.0] - 2026-04-20
 
 ### Added
