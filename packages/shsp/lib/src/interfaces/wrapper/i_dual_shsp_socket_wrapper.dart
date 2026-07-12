@@ -3,6 +3,19 @@
 import 'package:singleton_manager/singleton_manager.dart';
 import '../../../shsp.dart';
 
+
+/// Interface for autonomus sockets
+/// implements DualShspSocket so that i am sure that is the same
+abstract interface class IDualShspSocketAutonomus
+    implements IDualShspSocketMigratable, IValueForRegistry {
+  /// create a new socket for ipv4
+  IShspSocket refreshSocketIpv4();
+  /// create a new socket for ipv6
+  IShspSocket refreshSocketIpv6();
+/// create a new socket for ipv6 and ipv4
+  void refreshSockets();
+}
+
 /// Interface for SHSP Socket
 /// // implements DualShspSocket so that i am sure that is the same
 abstract interface class IDualShspSocketMigratable
@@ -10,6 +23,7 @@ abstract interface class IDualShspSocketMigratable
   void migrateSocketIpv4(IShspSocket socket);
   void migrateSocketIpv6(IShspSocket socket);
 }
+
 
 /// Interface for the DualShspSocketWrapper/DualShspSocketWrapperDI proxy.
 abstract interface class IDualShspSocketWrapper

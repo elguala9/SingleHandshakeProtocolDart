@@ -27,13 +27,13 @@ void main() {
 
     test('ipv4Socket is not closed', () {
       final dual = SingletonDIAccess.get<IDualShspSocketMigratable>();
-      expect(dual.ipv4Socket.isClosed, isFalse);
+      expect(dual.ipv4Socket?.isClosed, isFalse);
     });
 
     test('ipv4Socket has an assigned local port', () {
       final dual = SingletonDIAccess.get<IDualShspSocketMigratable>();
-      expect(dual.ipv4Socket.localPort, isNotNull);
-      expect(dual.ipv4Socket.localPort, greaterThan(0));
+      expect(dual.ipv4Socket?.localPort, isNotNull);
+      expect(dual.ipv4Socket?.localPort, greaterThan(0));
     });
 
     // ── DI: DualShspSocketWrapperDI ──────────────────────────────────────────

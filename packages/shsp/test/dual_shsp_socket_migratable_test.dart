@@ -136,14 +136,14 @@ void main() {
       });
 
       test('migrates to new IPv4 socket (localPort changes)', () async {
-        final oldPort = migratable.ipv4Socket.localPort;
+        final oldPort = migratable.ipv4Socket!.localPort;
         final newSocket = await ShspSocket.bind(InternetAddress.anyIPv4, 0);
         addTearDown(() { if (!newSocket.isClosed) newSocket.close(); });
 
         migratable.migrateSocketIpv4(newSocket);
 
-        expect(migratable.ipv4Socket.localPort, equals(newSocket.localPort));
-        expect(migratable.ipv4Socket.localPort, isNot(equals(oldPort)));
+        expect(migratable.ipv4Socket!.localPort, equals(newSocket.localPort));
+        expect(migratable.ipv4Socket!.localPort, isNot(equals(oldPort)));
       });
 
       test('ipv4SocketImpl remains a ShspSocketWrapper after migration', () async {

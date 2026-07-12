@@ -19,7 +19,7 @@ class DualShspSocketWrapper implements IDualShspSocketWrapper {
   set internalSocket(IDualShspSocketMigratable newSocket) => dualSocket = newSocket;
 
   @override
-  IShspSocket get ipv4Socket => dualSocket.ipv4Socket;
+  IShspSocket? get ipv4Socket => dualSocket.ipv4Socket;
 
   @override
   IShspSocket? get ipv6Socket => dualSocket.ipv6Socket;

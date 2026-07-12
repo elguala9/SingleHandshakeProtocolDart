@@ -5,14 +5,14 @@ import 'package:singleton_manager/singleton_manager.dart';
 ///
 /// Shared by [initializePointDualShsp] and [initializePointRegistryAccess].
 Future<IDualShspSocketMigratable> buildDualSocket() async {
-  final ipv4Socket = await ShspSocket.bindDefault();
-  final IShspSocketWrapper ipv4SocketWrapper = ShspSocketWrapper(ipv4Socket);
   final hasIPv6 = await AddressUtility.canCreateIPv6Socket();
   IShspSocketWrapper? ipv6SocketWrapper;
   if (hasIPv6) {
     final ipv6Socket = await ShspSocket.bindDefault(ipv6: true);
     ipv6SocketWrapper = ShspSocketWrapper(ipv6Socket);
   }
+  final ipv4Socket = await ShspSocket.bindDefault();
+  final IShspSocketWrapper ipv4SocketWrapper = ShspSocketWrapper(ipv4Socket);
   return DualShspSocketMigratable.fromWrappers(
     ipv4SocketWrapper,
     ipv6SocketWrapper,

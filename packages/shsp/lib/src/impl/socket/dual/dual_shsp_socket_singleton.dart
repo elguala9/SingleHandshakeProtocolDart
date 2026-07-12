@@ -60,24 +60,21 @@ class DualShspSocketSingleton extends BaseShspSocketSingleton<DualShspSocket> {
     final bindPort = port ?? 0;
     final codec = compressionCodec ?? GZipCodec();
 
-    // Bind IPv4 socket (always required)
-    final ipv4Socket = await ShspSocket.bind(bindAddress, bindPort, codec);
-
-    // Bind IPv6 socket (optional, graceful fallback if unavailable)
+    // Bind IPv6 socket first (preferred), graceful fallback if unavailable
     ShspSocket? ipv6Socket;
     try {
-      // Use the same port as IPv4 if available
-      final ipv6Port = ipv4Socket.localPort ?? bindPort;
       ipv6Socket = await ShspSocket.bind(
         InternetAddress.anyIPv6,
-        ipv6Port,
+        bindPort,
         codec,
       );
     } catch (e) {
-      // IPv6 not available on this system, continue with IPv4 only
-      // This is not an error condition - just gracefully degrade
       ipv6Socket = null;
     }
+
+    // Bind IPv4 socket (with same port as IPv6 if available)
+    final ipv4Port = ipv6Socket?.localPort ?? bindPort;
+    final ipv4Socket = await ShspSocket.bind(bindAddress, ipv4Port, codec);
 
     // Create dual socket wrapper
     final dualSocket = DualShspSocket(ipv4Socket, ipv6Socket);
@@ -101,22 +98,21 @@ class DualShspSocketSingleton extends BaseShspSocketSingleton<DualShspSocket> {
     int port,
     ICompressionCodec codec,
   ) async {
-    // Bind IPv4 socket (always required)
-    final ipv4Socket = await ShspSocket.bind(address, port, codec);
-
-    // Bind IPv6 socket (optional, graceful fallback if unavailable)
+    // Bind IPv6 socket first (preferred), graceful fallback if unavailable
     ShspSocket? ipv6Socket;
     try {
-      final ipv6Port = ipv4Socket.localPort ?? port;
       ipv6Socket = await ShspSocket.bind(
         InternetAddress.anyIPv6,
-        ipv6Port,
+        port,
         codec,
       );
     } catch (e) {
-      // IPv6 not available, continue with IPv4 only
       ipv6Socket = null;
     }
+
+    // Bind IPv4 socket
+    final ipv4Port = ipv6Socket?.localPort ?? port;
+    final ipv4Socket = await ShspSocket.bind(address, ipv4Port, codec);
 
     return DualShspSocket(ipv4Socket, ipv6Socket);
   }

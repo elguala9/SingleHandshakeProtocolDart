@@ -13,7 +13,7 @@ import '../../../../shsp.dart';
 class DualShspSocket
     with DualShspSocketMessageMixin, DualShspSocketProfileMixin
     implements IDualShspSocket {
-  DualShspSocket(IShspSocket ipv4Socket, IShspSocket? ipv6Socket) {
+  DualShspSocket(IShspSocket? ipv4Socket, IShspSocket? ipv6Socket) {
     ipv4SocketImpl = ipv4Socket;
     ipv6SocketImpl = ipv6Socket;
     _onClose = CallbackOn();
@@ -21,15 +21,18 @@ class DualShspSocket
     _onListening = CallbackOn();
 
     // Register callbacks on IPv4 socket to forward events
-    ipv4SocketImpl.setListeningCallback(() {
-      _onListening.call(null);
-    });
-    ipv4SocketImpl.setCloseCallback(() {
-      _onClose.call(null);
-    });
-    ipv4SocketImpl.setErrorCallback((err) {
-      _onError.call(err);
-    });
+    final ipv4 = ipv4SocketImpl;
+    if (ipv4 != null) {
+      ipv4.setListeningCallback(() {
+        _onListening.call(null);
+      });
+      ipv4.setCloseCallback(() {
+        _onClose.call(null);
+      });
+      ipv4.setErrorCallback((err) {
+        _onError.call(err);
+      });
+    }
 
     // Register callbacks on IPv6 socket if available
     final ipv6 = ipv6SocketImpl;
@@ -53,7 +56,7 @@ class DualShspSocket
   /// as a single unified dual-stack interface.
   ///
   /// Parameters:
-  ///   - [ipv4Socket]: The IPv4 ShspSocket instance (required)
+  ///   - [ipv4Socket]: The IPv4 ShspSocket instance (optional)
   ///   - [ipv6Socket]: The IPv6 ShspSocket instance (optional)
   ///
   /// Example:
@@ -62,10 +65,10 @@ class DualShspSocket
   /// final ipv6 = await ShspSocket.bind(InternetAddress.anyIPv6, 8000);
   /// final dualSocket = DualShspSocket.fromSockets(ipv4, ipv6);
   /// ```
-  DualShspSocket.fromSockets(IShspSocket ipv4Socket, [IShspSocket? ipv6Socket])
+  DualShspSocket.fromSockets(IShspSocket? ipv4Socket, [IShspSocket? ipv6Socket])
     : this(ipv4Socket, ipv6Socket);
 
-  late IShspSocket ipv4SocketImpl;
+  late IShspSocket? ipv4SocketImpl;
   late IShspSocket? ipv6SocketImpl;
   late CallbackOn _onClose;
   late CallbackOnError _onError;
@@ -84,39 +87,53 @@ class DualShspSocket
   /// final dualSocket = await DualShspSocket.create();
   /// ```
   static Future<DualShspSocket> create() async {
-    final ipv4Socket = await ShspSocket.bind(InternetAddress.anyIPv4, 0);
-
     ShspSocket? ipv6Socket;
     try {
       ipv6Socket = await ShspSocket.bind(InternetAddress.anyIPv6, 0);
     } catch (e) {
-      // IPv6 not available on this system, continue with IPv4 only
       ipv6Socket = null;
     }
 
+    ShspSocket? ipv4Socket;
+    try {
+      ipv4Socket = await ShspSocket.bind(InternetAddress.anyIPv4, 0);
+    } catch (e) {
+      ipv4Socket = null;
+    }
+    // no socket, no party
+    if(ipv4Socket == null && ipv6Socket == null)
+      throw ArgumentError('Error during the socket binding');
     return DualShspSocket(ipv4Socket, ipv6Socket);
   }
 
   /// Exposes the IPv4 socket for direct access if needed
   @override
-  IShspSocket get ipv4Socket => ipv4SocketImpl;
+  IShspSocket? get ipv4Socket => ipv4SocketImpl;
 
   /// Exposes the IPv6 socket for direct access if available
   @override
   IShspSocket? get ipv6Socket => ipv6SocketImpl;
 
   /// Get the underlying RawDatagramSocket from the IPv4 socket (for backward compatibility)
-  RawDatagramSocket get socket => ipv4SocketImpl.socket;
+  RawDatagramSocket get socket {
+    final ipv6 = ipv6SocketImpl;
+    if (ipv6 != null)
+      return ipv6.socket;
+    final ipv4 = ipv4SocketImpl;
+    if (ipv4 != null)
+      return ipv4.socket;
+    throw StateError('No Socket Found');
+  }
 
   /// Getters for message mixin
   @override
-  IShspSocket get ipv4SocketForMessages => ipv4SocketImpl;
+  IShspSocket? get ipv4SocketForMessages => ipv4SocketImpl;
   @override
   IShspSocket? get ipv6SocketForMessages => ipv6SocketImpl;
 
   /// Getters for profile mixin
   @override
-  IShspSocket get ipv4SocketForProfile => ipv4SocketImpl;
+  IShspSocket? get ipv4SocketForProfile => ipv4SocketImpl;
   @override
   IShspSocket? get ipv6SocketForProfile => ipv6SocketImpl;
 
@@ -153,53 +170,64 @@ class DualShspSocket
   @override
   int sendTo(List<int> buffer, PeerInfo peer) {
     final isIPv6 = peer.address.type == InternetAddressType.IPv6;
+    final isIPv4 = peer.address.type == InternetAddressType.IPv4;
     final ipv6 = ipv6SocketImpl;
+    final ipv4 = ipv4SocketImpl;
 
     if (isIPv6 && ipv6 != null) {
       return ipv6.sendTo(buffer, peer);
-    } else {
-      return ipv4SocketImpl.sendTo(buffer, peer);
+    } 
+    if (isIPv4 && ipv4 != null) {
+      return ipv4.sendTo(buffer, peer);
     }
+    if(isIPv6 && ipv6 == null && ipv4 != null)
+      throw StateError('IPv6 adress but only ipv4 socket found');
+    if(isIPv4 && ipv4 == null && ipv6 != null)
+      throw StateError('IPv4 adress but only ipv6 socket found');
+    throw StateError('Socket not found for sending data');
   }
 
-  /// Check if either socket is closed
+  /// Check if both sockets are closed (or unavailable)
   @override
   bool get isClosed =>
-      ipv4SocketImpl.isClosed || (ipv6SocketImpl?.isClosed ?? false);
+      (ipv4SocketImpl?.isClosed ?? true) && (ipv6SocketImpl?.isClosed ?? true);
 
   /// Close both sockets
   @override
   void close() {
-    ipv4SocketImpl.close();
-    final ipv6 = ipv6SocketImpl;
-    if (ipv6 != null) {
-      ipv6.close();
-    }
+    ipv4SocketImpl?.close();
+    ipv6SocketImpl?.close();
   }
 
   /// Serialized state of both sockets
   @override
   String serializedObject() {
+    final ipv4 = ipv4SocketImpl;
     final ipv6 = ipv6SocketImpl;
-    if (ipv6 != null) {
-      return 'DualShspSocket(IPv4: ${ipv4SocketImpl.serializedObject()}, IPv6: ${ipv6.serializedObject()})';
-    } else {
-      return 'DualShspSocket(IPv4: ${ipv4SocketImpl.serializedObject()}, IPv6: null)';
-    }
+    final ipv4Str = ipv4?.serializedObject() ?? 'null';
+    final ipv6Str = ipv6?.serializedObject() ?? 'null';
+    return 'DualShspSocket(IPv4: $ipv4Str, IPv6: $ipv6Str)';
   }
 
-  /// Get the local address (returns IPv4 address, with IPv6 as fallback)
+  /// Get the local address (returns IPv6 address, with IPv4 as fallback)
   @override
   InternetAddress? get localAddress =>
-      ipv4SocketImpl.localAddress ?? ipv6SocketImpl?.localAddress;
+      ipv6SocketImpl?.localAddress ?? ipv4SocketImpl?.localAddress;
 
-  /// Get the local port (returns IPv4 port, with IPv6 as fallback if IPv4 not available)
+  /// Get the local port (returns IPv6 port, with IPv4 as fallback if IPv6 not available)
   @override
-  int? get localPort => ipv4SocketImpl.localPort ?? ipv6SocketImpl?.localPort;
+  int? get localPort =>
+      ipv6SocketImpl?.localPort ?? ipv4SocketImpl?.localPort;
 
-  /// Get the compression codec (from IPv4 socket)
+  /// Get the compression codec (from IPv6 socket, with IPv4 as fallback)
   @override
-  ICompressionCodec get compressionCodec => ipv4SocketImpl.compressionCodec;
+  ICompressionCodec get compressionCodec {
+    final ipv6 = ipv6SocketImpl;
+    if (ipv6 != null) return ipv6.compressionCodec;
+    final ipv4 = ipv4SocketImpl;
+    if (ipv4 != null) return ipv4.compressionCodec;
+    throw StateError('No socket available to get compression codec');
+  }
 
   @override
   void destroy() {
