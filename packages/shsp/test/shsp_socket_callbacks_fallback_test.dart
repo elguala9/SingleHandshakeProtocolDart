@@ -86,43 +86,31 @@ void main() {
       });
     });
 
-    // ── NAT port remapping scenario ─────────────────────────────────────────
-    group('NAT port remapping fallback', () {
+    // ── NAT port remapping ── exact port match required ──────────────────────
+    group('exact port matching required', () {
       test(
-          'callback registered on :9002 invoked when message arrives on same IP but port :58349',
+          'callback registered on :9002 not invoked when message arrives on same IP but different port :58349',
           () async {
         var callbackInvoked = false;
-        late List<int> receivedMsg;
-        late String receivedIp;
-        late int receivedPort;
 
         void callback(MessageRecord record) {
           callbackInvoked = true;
-          receivedMsg = record.msg;
-          receivedIp = record.rinfo.address.address;
-          receivedPort = record.rinfo.port;
         }
 
-        // Bob registers callback for 172.20.0.3:9002
         final bobAddr = InternetAddress('172.20.0.3');
         harness.setMessageCallback(
           PeerInfo(address: bobAddr, port: 9002),
           callback,
         );
 
-        // Behind NAT, MASQUERADE remaps Bob's source port to :58349
-        // But invokeMessageCallback receives the remapped address
         final remappedRinfo = RemoteInfo(address: bobAddr, port: 58349);
         harness.testInvokeMessageCallback([42, 43, 44], remappedRinfo);
 
         await Future.microtask(() {});
-        expect(callbackInvoked, isTrue);
-        expect(receivedMsg, equals([42, 43, 44]));
-        expect(receivedIp, equals('172.20.0.3'));
-        expect(receivedPort, equals(58349)); // Message reports remapped port
+        expect(callbackInvoked, isFalse);
       });
 
-      test('fallback works with IPv6 addresses', () async {
+      test('different port with IPv6 does not invoke callback', () async {
         var callbackInvoked = false;
         void callback(record) {
           callbackInvoked = true;
@@ -138,32 +126,26 @@ void main() {
         harness.testInvokeMessageCallback([1, 2, 3], remappedRinfo);
 
         await Future.microtask(() {});
-        expect(callbackInvoked, isTrue);
+        expect(callbackInvoked, isFalse);
       });
 
-      test('exact match takes precedence over fallback', () async {
+      test('exact match invokes callback', () async {
         var exactMatchInvoked = false;
 
         void exactCallback(MessageRecord record) {
           exactMatchInvoked = true;
         }
 
-        void fallbackCallback(MessageRecord record) {
-          // Not invoked
-        }
-
         final addr = InternetAddress('192.168.1.100');
-        // Register handlers for two different ports on same IP
         harness.setMessageCallback(
           PeerInfo(address: addr, port: 8080),
           exactCallback,
         );
         harness.setMessageCallback(
           PeerInfo(address: addr, port: 9090),
-          fallbackCallback,
+          (record) {},
         );
 
-        // Message arrives for exact port match
         final exactRinfo = RemoteInfo(address: addr, port: 8080);
         harness.testInvokeMessageCallback([1, 2, 3], exactRinfo);
 
@@ -174,7 +156,7 @@ void main() {
 
     // ── Edge cases ──────────────────────────────────────────────────────────
     group('edge cases', () {
-      test('works when callback is removed and message arrives', () async {
+      test('does not invoke callback when removed', () async {
         var callbackInvoked = false;
         void callback(record) {
           callbackInvoked = true;
@@ -185,7 +167,7 @@ void main() {
         harness.setMessageCallback(peer, callback);
         harness.removeMessageCallback(peer, callback);
 
-        final rinfo = RemoteInfo(address: addr, port: 58349);
+        final rinfo = RemoteInfo(address: addr, port: 8080);
         harness.testInvokeMessageCallback([1, 2, 3], rinfo);
 
         await Future.microtask(() {});
@@ -207,7 +189,7 @@ void main() {
           callback,
         );
 
-        final rinfo = RemoteInfo(address: addr, port: 58349);
+        final rinfo = RemoteInfo(address: addr, port: 8080);
         harness.testInvokeMessageCallback([], rinfo);
 
         await Future.microtask(() {});
@@ -231,7 +213,7 @@ void main() {
         );
 
         final largeMsg = List.generate(10000, (i) => i % 256);
-        final rinfo = RemoteInfo(address: addr, port: 58349);
+        final rinfo = RemoteInfo(address: addr, port: 8080);
         harness.testInvokeMessageCallback(largeMsg, rinfo);
 
         await Future.microtask(() {});
