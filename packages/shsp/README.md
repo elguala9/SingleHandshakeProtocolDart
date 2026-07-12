@@ -174,7 +174,7 @@ import 'package:shsp/shsp.dart';
 
 // Create a migratable dual socket
 final ipv4 = await ShspSocket.bind(InternetAddress.anyIPv4, 8080);
-final migratable = DualShspSocketMigratable(ipv4);
+final migratable = DualShspSocketMigratable(Sockets(ipv4SocketImpl: ipv4));
 
 // Register a peer callback — this reference stays valid across migrations
 final peer = PeerInfo(address: InternetAddress.loopbackIPv4, port: 9001);

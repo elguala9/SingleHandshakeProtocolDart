@@ -49,7 +49,7 @@ Future<void> dualSocketMigration() async {
   print('\n=== Example 2: DualShspSocketMigratable migration ===');
 
   final ipv4 = await ShspSocket.bind(InternetAddress.anyIPv4, 0);
-  final migratable = DualShspSocketMigratable(ipv4);
+  final migratable = DualShspSocketMigratable(Sockets(ipv4SocketImpl: ipv4));
 
   // Register a message callback
   final peer = PeerInfo(address: InternetAddress.loopbackIPv4, port: 9020);
@@ -85,7 +85,7 @@ Future<void> fromWrappersExample() async {
   // Pre-configure the wrapper before injecting it
   ipv4Wrapper.setListeningCallback(() => print('  [fromWrappers] listening'));
 
-  final migratable = DualShspSocketMigratable.fromWrappers(ipv4Wrapper);
+  final migratable = DualShspSocketMigratable.fromWrappers(ipv4Wrapper: ipv4Wrapper);
   final IDualShspSocket asInterface = migratable;
 
   print('  IDualShspSocket implements IDualShspSocketMigratable: '

@@ -91,8 +91,8 @@ class RegistryShspSocket
     }
 
     final IDualShspSocketMigratable dualSocket = DualShspSocketMigratable.fromWrappers(
-      ShspSocketWrapper(ipv4Socket),
-      ipv6Socket != null ? ShspSocketWrapper(ipv6Socket) : null,
+      ipv4Wrapper: ShspSocketWrapper(ipv4Socket),
+      ipv6Wrapper: ipv6Socket != null ? ShspSocketWrapper(ipv6Socket) : null,
     );
     return initialize(dualSocket);
   }

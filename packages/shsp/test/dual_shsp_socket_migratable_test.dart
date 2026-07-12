@@ -12,7 +12,7 @@ void main() {
 
       setUp(() async {
         ipv4Socket = await ShspSocket.bind(InternetAddress.anyIPv4, 0);
-        migratable = DualShspSocketMigratable(ipv4Socket);
+        migratable = DualShspSocketMigratable(Sockets(ipv4SocketImpl: ipv4Socket));
       });
 
       tearDown(() {
@@ -42,17 +42,16 @@ void main() {
 
     group('constructor — wraps both IPv4 and IPv6 in ShspSocketWrapper', () {
       late ShspSocket ipv4Socket;
-      late ShspSocket ipv6Socket;
+      late ShspSocket? ipv6Socket;
       late DualShspSocketMigratable migratable;
 
       setUp(() async {
         ipv4Socket = await ShspSocket.bind(InternetAddress.anyIPv4, 0);
-        try {
-          ipv6Socket = await ShspSocket.bind(InternetAddress.anyIPv6, 0);
-        } catch (_) {
-          ipv6Socket = await ShspSocket.bind(InternetAddress.anyIPv4, 0);
-        }
-        migratable = DualShspSocketMigratable(ipv4Socket, ipv6Socket);
+        ipv6Socket = await ShspSocket.bindIfPossible(InternetAddress.anyIPv6, 0);
+        migratable = DualShspSocketMigratable(Sockets(
+          ipv4SocketImpl: ipv4Socket,
+          ipv6SocketImpl: ipv6Socket,
+        ));
       });
 
       tearDown(() {
@@ -63,7 +62,8 @@ void main() {
         expect(migratable.ipv4SocketImpl, isA<ShspSocketWrapper>());
       });
 
-      test('ipv6SocketImpl is ShspSocketWrapper', () {
+      test('ipv6SocketImpl is ShspSocketWrapper when ipv6 available', () {
+        if (ipv6Socket == null) return;
         expect(migratable.ipv6SocketImpl, isA<ShspSocketWrapper>());
       });
     });
@@ -76,7 +76,7 @@ void main() {
       setUp(() async {
         ipv4Socket = await ShspSocket.bind(InternetAddress.anyIPv4, 0);
         ipv4Wrapper = ShspSocketWrapper(ipv4Socket);
-        migratable = DualShspSocketMigratable.fromWrappers(ipv4Wrapper);
+        migratable = DualShspSocketMigratable.fromWrappers(ipv4Wrapper: ipv4Wrapper);
       });
 
       tearDown(() {
@@ -94,17 +94,20 @@ void main() {
 
     group('fromWrappers constructor — with both wrappers', () {
       late ShspSocket ipv4Socket;
-      late ShspSocket ipv6Socket;
+      late ShspSocket? ipv6Socket;
       late ShspSocketWrapper ipv4Wrapper;
-      late ShspSocketWrapper ipv6Wrapper;
+      late ShspSocketWrapper? ipv6Wrapper;
       late DualShspSocketMigratable migratable;
 
       setUp(() async {
         ipv4Socket = await ShspSocket.bind(InternetAddress.anyIPv4, 0);
-        ipv6Socket = await ShspSocket.bind(InternetAddress.anyIPv4, 0);
+        ipv6Socket = await ShspSocket.bindIfPossible(InternetAddress.anyIPv6, 0);
         ipv4Wrapper = ShspSocketWrapper(ipv4Socket);
-        ipv6Wrapper = ShspSocketWrapper(ipv6Socket);
-        migratable = DualShspSocketMigratable.fromWrappers(ipv4Wrapper, ipv6Wrapper);
+        ipv6Wrapper = ipv6Socket != null ? ShspSocketWrapper(ipv6Socket!) : null;
+        migratable = DualShspSocketMigratable.fromWrappers(
+          ipv4Wrapper: ipv4Wrapper,
+          ipv6Wrapper: ipv6Wrapper,
+        );
       });
 
       tearDown(() {
@@ -115,7 +118,8 @@ void main() {
         expect(migratable.ipv4SocketImpl, same(ipv4Wrapper));
       });
 
-      test('ipv6SocketImpl is exact ipv6Wrapper', () {
+      test('ipv6SocketImpl is exact ipv6Wrapper when ipv6 available', () {
+        if (ipv6Socket == null) return;
         expect(migratable.ipv6SocketImpl, same(ipv6Wrapper));
       });
     });
@@ -128,7 +132,7 @@ void main() {
 
       setUp(() async {
         originalIpv4 = await ShspSocket.bind(InternetAddress.anyIPv4, 0);
-        migratable = DualShspSocketMigratable(originalIpv4);
+        migratable = DualShspSocketMigratable(Sockets(ipv4SocketImpl: originalIpv4));
       });
 
       tearDown(() {
@@ -178,7 +182,7 @@ void main() {
 
       setUp(() async {
         final ipv4 = await ShspSocket.bind(InternetAddress.anyIPv4, 0);
-        migratable = DualShspSocketMigratable(ipv4);
+        migratable = DualShspSocketMigratable(Sockets(ipv4SocketImpl: ipv4));
         expect(migratable.ipv6SocketImpl, isNull);
       });
 
@@ -208,13 +212,16 @@ void main() {
     });
 
     group('migrateSocketIpv6 — ipv6 already exists as wrapper', () {
-      late ShspSocket originalIpv6;
+      late ShspSocket? originalIpv6;
       late DualShspSocketMigratable migratable;
 
       setUp(() async {
         final ipv4 = await ShspSocket.bind(InternetAddress.anyIPv4, 0);
-        originalIpv6 = await ShspSocket.bind(InternetAddress.anyIPv4, 0);
-        migratable = DualShspSocketMigratable(ipv4, originalIpv6);
+        originalIpv6 = await ShspSocket.bindIfPossible(InternetAddress.anyIPv6, 0);
+        migratable = DualShspSocketMigratable(Sockets(
+          ipv4SocketImpl: ipv4,
+          ipv6SocketImpl: originalIpv6,
+        ));
       });
 
       tearDown(() {
@@ -222,6 +229,7 @@ void main() {
       });
 
       test('migrates to new IPv6 socket (localPort changes)', () async {
+        if (originalIpv6 == null) return;
         final oldPort = migratable.ipv6Socket!.localPort;
         final newIpv6 = await ShspSocket.bind(InternetAddress.anyIPv4, 0);
         addTearDown(() { if (!newIpv6.isClosed) newIpv6.close(); });
@@ -233,6 +241,7 @@ void main() {
       });
 
       test('ipv6SocketImpl remains a ShspSocketWrapper after migration', () async {
+        if (originalIpv6 == null) return;
         final newIpv6 = await ShspSocket.bind(InternetAddress.anyIPv4, 0);
         addTearDown(() { if (!newIpv6.isClosed) newIpv6.close(); });
 
@@ -242,7 +251,7 @@ void main() {
       });
 
       test('auto-wraps ipv6SocketImpl if not already a ShspSocketWrapper', () async {
-        // Force ipv6SocketImpl to a raw ShspSocket
+        if (originalIpv6 == null) return;
         final rawIpv6 = await ShspSocket.bind(InternetAddress.anyIPv4, 0);
         addTearDown(() { if (!rawIpv6.isClosed) rawIpv6.close(); });
         migratable.ipv6SocketImpl = rawIpv6;
