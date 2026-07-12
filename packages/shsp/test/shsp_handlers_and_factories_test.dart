@@ -120,11 +120,14 @@ void main() {
       test('invokes onOpen callback if provided when already open', () async {
         var onOpenCallbackFired = false;
         final instance = MockShspInstance(initialOpen: true);
-        instance.onOpen.register((_) {
-          onOpenCallbackFired = true;
-        });
 
-        await ShspHandshakeHandler.handshakeInstance(instance, const ShspHandshakeHandlerOptions());
+        await ShspHandshakeHandler.handshakeInstance(
+          instance,
+          const ShspHandshakeHandlerOptions(),
+          (_) {
+            onOpenCallbackFired = true;
+          },
+        );
 
         expect(onOpenCallbackFired, isTrue);
       });
