@@ -2,7 +2,7 @@ import 'dart:io';
 import 'package:callback_handler/callback_handler.dart';
 import 'package:meta/meta.dart';
 import '../../../interfaces/i_compression_codec.dart';
-import '../../../interfaces/i_shsp_socket_base.dart';
+import '../../../interfaces/socket/i_shsp_socket_base.dart';
 import '../../../types/socket_profile.dart';
 import 'shsp_socket.dart';
 

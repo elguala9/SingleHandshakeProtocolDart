@@ -1,4 +1,4 @@
-import '../../../interfaces/i_shsp_socket.dart';
+import '../../../interfaces/socket/i_shsp_socket.dart';
 import '../../../types/socket_profile.dart';
 
 /// Mixin for managing profile extraction and application to dual sockets
