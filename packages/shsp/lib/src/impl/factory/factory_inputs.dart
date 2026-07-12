@@ -2,7 +2,7 @@ import 'dart:io';
 import 'dart:async';
 
 import '../../types/peer_types.dart';
-import '../../interfaces/i_shsp_socket.dart';
+import '../../interfaces/socket/i_shsp_socket.dart';
 import '../utility/message_callback_map.dart';
 
 // Inputs for implementations factories

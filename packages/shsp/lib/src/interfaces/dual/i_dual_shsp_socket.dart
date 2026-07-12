@@ -1,7 +1,7 @@
 import '../../types/callback_types.dart';
 import '../../types/peer_types.dart';
-import '../i_shsp_socket.dart';
-import '../i_shsp_socket_base.dart';
+import '../socket/i_shsp_socket.dart';
+import '../socket/i_shsp_socket_base.dart';
 
 /// Composite interface for dual IPv4/IPv6 socket routing.
 ///

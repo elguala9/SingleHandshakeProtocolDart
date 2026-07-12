@@ -1,5 +1,5 @@
 import 'dart:io';
-import '../i_shsp_socket.dart';
+import '../socket/i_shsp_socket.dart';
 import '../i_shsp_instance.dart';
 import '../../types/peer_types.dart';
 import '../../types/instance_profile.dart';

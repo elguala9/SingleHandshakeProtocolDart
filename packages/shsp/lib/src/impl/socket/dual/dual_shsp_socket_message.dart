@@ -1,4 +1,4 @@
-import '../../../interfaces/i_shsp_socket.dart';
+import '../../../interfaces/socket/i_shsp_socket.dart';
 import '../../../types/callback_types.dart';
 import '../../../types/peer_types.dart';
 

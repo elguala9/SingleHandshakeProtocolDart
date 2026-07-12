@@ -1,6 +1,6 @@
 import 'dart:io';
 
-import '../../shsp.dart';
+import '../../../shsp.dart';
 /// Minimal lifecycle interface shared by [IShspSocket] and [IDualShspSocket].
 ///
 /// Contains only the management methods needed by [BaseShspSocketSingleton]
