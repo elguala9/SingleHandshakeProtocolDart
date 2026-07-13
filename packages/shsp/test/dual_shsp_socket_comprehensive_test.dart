@@ -1163,6 +1163,7 @@ void main() {
     group('dual-stack — ShspPeer via DualShspSocket', () {
       late DualShspSocket dual;
       late ShspPeer peerIpv4;
+      late ShspPeer peerIpv6;
 
       tearDown(() {
         if (!dual.isClosed) dual.close();
@@ -1194,8 +1195,13 @@ void main() {
           address: InternetAddress.loopbackIPv4,
           port: 8081,
         );
+        final peerInfoV6 = PeerInfo(
+          address: InternetAddress.loopbackIPv6,
+          port: 8082,
+        );
 
         peerIpv4 = ShspPeer.create(remotePeer: peerInfoV4, socket: dual);
+        peerIpv6 = ShspPeer.create(remotePeer: peerInfoV6, socket: dual);
 
         final profile = dual.extractProfile();
         expect(profile.messageListeners.length, greaterThanOrEqualTo(2));
