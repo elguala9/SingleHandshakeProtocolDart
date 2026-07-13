@@ -3,6 +3,7 @@ import '../../../../shsp.dart';
 class DualShspSocketMigratable
     extends DualShspSocket
     implements IDualShspSocketMigratable {
+
   DualShspSocketMigratable(Sockets sockets)
     : super(Sockets(
         ipv4SocketImpl: _wrap(sockets.ipv4SocketImpl),
@@ -45,5 +46,23 @@ class DualShspSocketMigratable
       if (existing is! ShspSocketWrapper) ipv6SocketImpl = ShspSocketWrapper(existing);
       (ipv6SocketImpl as ShspSocketWrapper).migrateSocket(socket);
     }
+  }
+
+  @override
+  IShspSocketWrapper get ipv4SocketWrapper {
+    final ipv4 = ipv4SocketImpl;
+    if (ipv4 is! IShspSocketWrapper) {
+      throw StateError('IPv4 socket is not available or not wrapped');
+    }
+    return ipv4;
+  }
+
+  @override
+  IShspSocketWrapper get ipv6SocketWrapper {
+    final ipv6 = ipv6SocketImpl;
+    if (ipv6 is! IShspSocketWrapper) {
+      throw StateError('IPv6 socket is not available or not wrapped');
+    }
+    return ipv6;
   }
 }

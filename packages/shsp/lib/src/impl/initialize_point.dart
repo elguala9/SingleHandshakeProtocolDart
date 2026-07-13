@@ -1,36 +1,30 @@
 import '../../shsp.dart';
 import 'package:singleton_manager/singleton_manager.dart';
 
-/// Builds a [IDualShspSocketMigratable] with IPv4 (always) and IPv6 (when available).
+/// Builds a [DualShspSocketAuto] with IPv4 (when available) and IPv6 (when available).
+///
+/// Its sockets can be rebound at runtime via [DualShspSocketAuto.refreshSocketIpv4],
+/// [DualShspSocketAuto.refreshSocketIpv6] or [DualShspSocketAuto.refreshSockets],
+/// useful to recover from network interface changes (Wi-Fi reconnects, VPN
+/// toggles, etc.).
 ///
 /// Shared by [initializePointDualShsp] and [initializePointRegistryAccess].
-Future<IDualShspSocketMigratable> buildDualSocket() async {
-  final hasIPv6 = await AddressUtility.canCreateIPv6Socket();
-  IShspSocketWrapper? ipv6SocketWrapper;
-  if (hasIPv6) {
-    final ipv6Socket = await ShspSocket.bindDefault(ipv6: true);
-    ipv6SocketWrapper = ShspSocketWrapper(ipv6Socket);
-  }
-  final ipv4Socket = await ShspSocket.bindDefault();
-  final IShspSocketWrapper ipv4SocketWrapper = ShspSocketWrapper(ipv4Socket);
-  return DualShspSocketMigratable.fromWrappers(
-    ipv4Wrapper: ipv4SocketWrapper,
-    ipv6Wrapper: ipv6SocketWrapper,
-  );
-}
+Future<IDualShspSocketAuto> buildDualSocket() => DualShspSocketAuto.create();
 
 /// Initializes SHSP using the singleton DI container.
 ///
 /// Creates dual IPv4/IPv6 sockets and registers them in [SingletonDIAccess].
 /// Access the socket afterwards with:
 /// ```dart
-/// final socket = SingletonDIAccess.get<IDualShspSocketMigratable>();
+/// final socket = SingletonDIAccess.get<IDualShspSocketAuto>();
+/// socket.refreshSockets();
 /// ```
 ///
 /// See also: [initializePointRegistryAccess] for key-based access.
 Future<void> initializePointDualShsp() async {
   final dualSocket = await buildDualSocket();
   SingletonDIAccess.addInstance<IDualShspSocketMigratable>(dualSocket);
+  SingletonDIAccess.addInstance<IDualShspSocketAuto>(dualSocket);
 
   final dualSingleton = DualShspSocketWrapperDI.initializeDI();
   SingletonDIAccess.addInstance(dualSingleton);
@@ -49,7 +43,7 @@ Future<void> initializePointDualShsp() async {
 ///
 /// Access afterwards with:
 /// ```dart
-/// final socket = RegistryAccess.getInstance<IDualShspSocketMigratable>(key);
+/// final socket = RegistryAccess.getInstance<IDualShspSocketAuto>(key);
 /// final wrapper = RegistryAccess.getInstance<IDualShspSocketWrapper>(key);
 /// final reg    = RegistryAccess.getInstance<IRegistryShspSocket>(key);
 /// ```
@@ -60,6 +54,7 @@ Future<void> initializePointDualShsp() async {
 Future<void> initializePointRegistryAccess(String key) async {
   final dualSocket = await buildDualSocket();
   RegistryAccess.register<IDualShspSocketMigratable>(key, dualSocket);
+  RegistryAccess.register<IDualShspSocketAuto>(key, dualSocket);
 
   final IDualShspSocketWrapper dualWrapper = DualShspSocketWrapperDI();
   dualWrapper.internalSocket = dualSocket;

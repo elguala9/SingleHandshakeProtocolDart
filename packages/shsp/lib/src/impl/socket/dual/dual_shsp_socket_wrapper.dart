@@ -4,25 +4,75 @@ import 'package:meta/meta.dart';
 import '../../../../shsp.dart';
 import 'package:singleton_manager/singleton_manager.dart';
 
-/// Proxy for [IDualShspSocketMigratable] that allows swapping the underlying socket
+/// Proxy for [IDualShspSocketAuto] that allows swapping the underlying socket
 /// without updating all references.
 @isSingleton
 class DualShspSocketWrapper implements IDualShspSocketWrapper {
   DualShspSocketWrapper();
 
+  DualShspSocketWrapper.emptyForDI();
+
   DualShspSocketWrapper.createFromSocket(this.dualSocket);
 
   @isInjected
   @protected
-  late IDualShspSocketMigratable dualSocket;
+  late IDualShspSocketAuto dualSocket;
 
-  set internalSocket(IDualShspSocketMigratable newSocket) => dualSocket = newSocket;
+  set internalSocket(IDualShspSocketAuto newSocket) => dualSocket = newSocket;
 
   @override
   IShspSocket? get ipv4Socket => dualSocket.ipv4Socket;
 
   @override
   IShspSocket? get ipv6Socket => dualSocket.ipv6Socket;
+
+  @override
+  IShspSocket? get ipv4SocketImpl => dualSocket.ipv4SocketImpl;
+
+  @override
+  set ipv4SocketImpl(IShspSocket? socket) => dualSocket.ipv4SocketImpl = socket;
+
+  @override
+  IShspSocket? get ipv6SocketImpl => dualSocket.ipv6SocketImpl;
+
+  @override
+  set ipv6SocketImpl(IShspSocket? socket) => dualSocket.ipv6SocketImpl = socket;
+
+  @override
+  IShspSocket? get ipv4SocketForMessages => dualSocket.ipv4SocketForMessages;
+
+  @override
+  IShspSocket? get ipv6SocketForMessages => dualSocket.ipv6SocketForMessages;
+
+  @override
+  IShspSocket? get ipv4SocketForProfile => dualSocket.ipv4SocketForProfile;
+
+  @override
+  IShspSocket? get ipv6SocketForProfile => dualSocket.ipv6SocketForProfile;
+
+  @override
+  IShspSocketWrapper get ipv4SocketWrapper => dualSocket.ipv4SocketWrapper;
+
+  @override
+  IShspSocketWrapper get ipv6SocketWrapper => dualSocket.ipv6SocketWrapper;
+
+  @override
+  RawDatagramSocket get socket => dualSocket.socket;
+
+  @override
+  void migrateSocketIpv4(IShspSocket socket) => dualSocket.migrateSocketIpv4(socket);
+
+  @override
+  void migrateSocketIpv6(IShspSocket socket) => dualSocket.migrateSocketIpv6(socket);
+
+  @override
+  IShspSocket refreshSocketIpv4() => dualSocket.refreshSocketIpv4();
+
+  @override
+  IShspSocket refreshSocketIpv6() => dualSocket.refreshSocketIpv6();
+
+  @override
+  Sockets refreshSockets() => dualSocket.refreshSockets();
 
   @override
   void applyProfile(ShspSocketProfile profile) =>

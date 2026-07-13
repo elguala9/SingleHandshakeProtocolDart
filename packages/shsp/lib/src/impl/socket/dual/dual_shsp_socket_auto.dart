@@ -15,6 +15,13 @@ class DualShspSocketAuto
           ipv6Wrapper: ipv6Wrapper,
         );
 
+  DualShspSocketAuto.fromMigratable(
+    DualShspSocketMigratable migratable
+  ) : super.fromWrappers(
+          ipv4Wrapper: migratable.ipv4SocketWrapper,
+          ipv6Wrapper: migratable.ipv4SocketWrapper,
+        );
+
   static Future<DualShspSocketAuto> create() async {
     final ipv4Socket = await ShspSocket.bindIfPossible(InternetAddress.anyIPv4, 0);
     final ipv6Socket = await ShspSocket.bindIfPossible(InternetAddress.anyIPv6, 0);

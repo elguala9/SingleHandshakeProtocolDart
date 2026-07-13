@@ -5,4 +5,6 @@ abstract interface class IDualShspSocketMigratable
     implements DualShspSocket, IValueForRegistry {
   void migrateSocketIpv4(IShspSocket socket);
   void migrateSocketIpv6(IShspSocket socket);
+  IShspSocketWrapper get ipv4SocketWrapper;
+  IShspSocketWrapper get ipv6SocketWrapper;
 }

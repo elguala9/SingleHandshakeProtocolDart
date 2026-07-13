@@ -93,6 +93,12 @@ class MockDualMigratable implements IDualShspSocketMigratable {
 
   @override
   RawDatagramSocket get socket => throw UnimplementedError();
+
+  @override
+  IShspSocketWrapper get ipv4SocketWrapper => throw UnimplementedError();
+
+  @override
+  IShspSocketWrapper get ipv6SocketWrapper => throw UnimplementedError();
 }
 
 void main() {

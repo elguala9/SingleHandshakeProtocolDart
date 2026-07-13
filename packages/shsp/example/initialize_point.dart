@@ -30,7 +30,7 @@ Future<void> main() async {
     print('✓ Singleton initialized\n');
 
     // Step 2: Get the dual socket from DI
-    final dualSocket = SingletonDIAccess.get<IDualShspSocketMigratable>();
+    final dualSocket = SingletonDIAccess.get<IDualShspSocketAuto>();
     print('Socket Details:');
     print('  Local Address: ${dualSocket.localAddress}');
     print('  Local Port: ${dualSocket.localPort}');
@@ -102,11 +102,26 @@ Future<void> main() async {
     await Future.delayed(const Duration(seconds: 1));
     print('✓ Operations complete\n');
 
-    // Step 9: Cleanup (important!)
+    // Step 9: Rebind sockets at runtime — useful to recover from network
+    // interface changes (Wi-Fi reconnects, VPN toggles, etc.)
+    print('Refreshing IPv4 socket...');
+    dualSocket.refreshSocketIpv4();
+
+    if (await AddressUtility.canCreateIPv6Socket()) {
+      print('Refreshing IPv6 socket...');
+      dualSocket.refreshSocketIpv6();
+    }
+
+    print('Refreshing both sockets at once...');
+    dualSocket.refreshSockets();
+    print('✓ Sockets refreshed\n');
+
+    // Step 10: Cleanup (important!)
     print('Cleaning up...');
     dualSocket.close();
     DualShspSocketSingleton.destroy();
     print('✓ Socket closed and singleton destroyed');
+
     print('\n✓ Example completed successfully!');
   } catch (e) {
     print('✗ Error: $e');
