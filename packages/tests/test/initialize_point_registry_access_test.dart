@@ -13,6 +13,9 @@ void _cleanup(String key) {
     RegistryAccess.unregister<IDualShspSocketMigratable>(key);
   } catch (_) {}
   try {
+    RegistryAccess.unregister<IDualShspSocketAuto>(key);
+  } catch (_) {}
+  try {
     RegistryAccess.unregister<IDualShspSocketWrapper>(key);
   } catch (_) {}
   try {
