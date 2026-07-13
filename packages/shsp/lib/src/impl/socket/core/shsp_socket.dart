@@ -125,7 +125,7 @@ class ShspSocket extends RawShspSocket
   /// final socketIPv6 = await ShspSocket.bindDefault(ipv6: true);
   /// ```
   static Future<ShspSocket> bindDefault({
-    bool ipv6 = false,
+    bool ipv6 = true,
     int port = 0,
     ICompressionCodec? compressionCodec,
   }) async {
