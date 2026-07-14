@@ -5,6 +5,31 @@ All notable changes to the Single HandShake Protocol monorepo are documented in 
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [1.10.0] - 2026-07-13
+
+### Added
+
+- `DualShspSocketAuto.fromMigratable()` to build an auto-refreshing dual socket from an existing `DualShspSocketMigratable`
+- `IDualShspSocketMigratable.ipv4SocketWrapper` / `ipv6SocketWrapper` getters
+
+### Changed
+
+- `ShspSocket.bindDefault()` now defaults `ipv6` to `true`
+- `buildDualSocket()` now returns `IDualShspSocketAuto` (built via `DualShspSocketAuto.create()`), used by `initializePointDualShsp()` and `initializePointRegistryAccess()`
+- Both initialize-point functions now also register the socket under `IDualShspSocketAuto`, alongside the existing `IDualShspSocketMigratable` registration
+- `DualShspSocketWrapperDI` resolves `IDualShspSocketAuto` from DI instead of `IDualShspSocketMigratable`
+- Socket wrapper files reorganized: `socket/wrappers/` merged into `socket/core/` and `socket/dual/`
+
+### Fixed
+
+- Copy-paste bug in `DualShspSocketAuto.fromMigratable()` assigning the IPv4 wrapper to both address families
+- `DualShspSocketWrapper` and `Sockets` were missing from the public `shsp.dart` barrel export after the wrapper file move; barrel regenerated
+- Test fixes for the default-IPv6 change and `AddressUtility` async call sites
+
+### Test Coverage
+
+- Added regression coverage for `DualShspSocketAuto.fromMigratable()` and full constructor/delegation coverage for `DualShspSocketWrapper`, previously untested
+
 ## [1.9.0] - 2026-07-12
 
 ### Added

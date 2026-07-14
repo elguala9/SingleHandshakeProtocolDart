@@ -7,6 +7,33 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [1.10.0] - 2026-07-13
+
+### Added
+
+- `DualShspSocketAuto.fromMigratable()` constructor to build an auto-refreshing dual socket from an existing `DualShspSocketMigratable`
+- `IDualShspSocketMigratable.ipv4SocketWrapper` / `ipv6SocketWrapper` getters, throwing `StateError` when the underlying socket isn't wrapped
+
+### Changed
+
+- `ShspSocket.bindDefault()` now defaults `ipv6` to `true` (previously `false`)
+- `buildDualSocket()` (used by `initializePointDualShsp()` and `initializePointRegistryAccess()`) now returns `IDualShspSocketAuto`, built via `DualShspSocketAuto.create()`, instead of manually wiring `DualShspSocketMigratable`
+- `initializePointDualShsp()` and `initializePointRegistryAccess()` now also register the socket under `IDualShspSocketAuto`, in addition to the existing `IDualShspSocketMigratable` registration
+- `DualShspSocketWrapperDI` now resolves `IDualShspSocketAuto` from DI instead of `IDualShspSocketMigratable`
+- `IDualShspSocketWrapper.internalSocket` now typed as `IDualShspSocketAuto` (previously `IDualShspSocketMigratable`)
+- Socket wrapper files reorganized: `src/impl/socket/wrappers/` merged into `src/impl/socket/core/shsp_socket_wrapper.dart` and `src/impl/socket/dual/dual_shsp_socket_wrapper.dart`
+
+### Fixed
+
+- Copy-paste bug in `DualShspSocketAuto.fromMigratable()` that assigned the IPv4 wrapper to both the IPv4 and IPv6 slots
+- `DualShspSocketWrapper` and `Sockets` were missing from the `package:shsp/shsp.dart` barrel export after the `wrappers/` → `core/`+`dual/` file move; regenerated via `index_generator`
+- `AddressUtility.parseAddress()` test expectation and `getLocalIp()` / `canCreateIPv6Socket()` call sites updated to match their `Future`-returning signatures
+
+### Test Coverage
+
+- Added `fromMigratable` test group (`dual_shsp_socket_auto_test.dart`) asserting IPv4/IPv6 wrappers are distinct instances, covering the previously-untested constructor where the copy-paste bug above was hiding
+- Added `dual_shsp_socket_wrapper_test.dart`: full coverage for `DualShspSocketWrapper`'s three constructors (default, `emptyForDI`, `createFromSocket`) and every delegated member, with IPv4/IPv6 pairs asserted as distinct instances to catch swap-style bugs
+
 ## [1.9.0] - 2026-07-12
 
 ### Added

@@ -104,6 +104,36 @@ void main() {
       });
     });
 
+    group('fromMigratable', () {
+      late ShspSocket ipv4Socket;
+      late ShspSocket? ipv6Socket;
+      late DualShspSocketMigratable migratable;
+      late DualShspSocketAuto autoSocket;
+
+      setUp(() async {
+        ipv4Socket = await ShspSocket.bind(InternetAddress.anyIPv4, 0);
+        ipv6Socket = await ShspSocket.bindIfPossible(InternetAddress.anyIPv6, 0);
+        migratable = DualShspSocketMigratable(
+          Sockets(ipv4SocketImpl: ipv4Socket, ipv6SocketImpl: ipv6Socket),
+        );
+        autoSocket = DualShspSocketAuto.fromMigratable(migratable);
+      });
+
+      tearDown(() {
+        autoSocket.close();
+      });
+
+      test('ipv4SocketImpl is the migratable IPv4 wrapper', () {
+        expect(autoSocket.ipv4SocketImpl, same(migratable.ipv4SocketWrapper));
+      });
+
+      test('ipv6SocketImpl is the migratable IPv6 wrapper, not the IPv4 one', () {
+        if (ipv6Socket == null) return;
+        expect(autoSocket.ipv6SocketImpl, same(migratable.ipv6SocketWrapper));
+        expect(autoSocket.ipv6SocketImpl, isNot(same(migratable.ipv4SocketWrapper)));
+      });
+    });
+
     group('refreshSocketIpv4', () {
       late ShspSocket ipv4Socket;
       late DualShspSocketAuto autoSocket;
