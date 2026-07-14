@@ -19,7 +19,7 @@ class DualShspSocketAuto
     DualShspSocketMigratable migratable
   ) : super.fromWrappers(
           ipv4Wrapper: migratable.ipv4SocketWrapper,
-          ipv6Wrapper: migratable.ipv4SocketWrapper,
+          ipv6Wrapper: migratable.ipv6SocketWrapper,
         );
 
   static Future<DualShspSocketAuto> create() async {
