@@ -126,6 +126,20 @@ Demonstrates live socket migration using `ShspSocketWrapper` and `DualShspSocket
 dart example/socket_migration.dart
 ```
 
+### 7. Using Mixins (`using_mixins.dart`) - v1.10.1+
+
+Build custom components from the public SHSP mixins exported by the `shsp.dart` barrel.
+
+**Demonstrates:**
+- `IdempotentCloseMixin` for safe, idempotent `close()`/`destroy()` with a single `closeImpl()` hook
+- `MessageSizeValidationMixin` for standard outgoing-message validation (closed state, empty payload, max UDP size)
+- Standard SHSP exceptions (`ShspValidationException`, `ShspNetworkException`) thrown by the validation helpers
+
+**Run:**
+```bash
+dart example/using_mixins.dart
+```
+
 ## Common Patterns
 
 ### Creating a Peer
@@ -190,6 +204,7 @@ dart example/singleton_with_compression.dart
 dart example/using_interfaces.dart
 dart example/registry_management.dart
 dart example/socket_migration.dart
+dart example/using_mixins.dart
 dart example/initialize_point_registry_access.dart
 ```
 

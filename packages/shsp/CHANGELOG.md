@@ -7,6 +7,25 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [1.10.1] - 2026-07-15
+
+### Fixed
+
+- `AutoShspPeer.close()` never unregistered its socket-changed listener from `ShspSocketSingleton`, leaking the callback registration after the peer was closed
+
+### Added
+
+- New public mixins, exported from the `package:shsp/shsp.dart` barrel:
+  - `IdempotentCloseMixin`: idempotent `close()` / `destroy()` with an `isClosed` flag and a `closeImpl()` hook
+  - `MessageSizeValidationMixin`: shared outgoing-message validation (closed state, empty payload, max UDP size)
+  - `SocketChangeListenerMixin`: registration/deregistration of a singleton socket-changed listener that re-registers the message callback on the new socket
+  - `SocketProfileTransferMixin`: profile extract/close/rebuild/apply/notify sequence for socket replacement (`transferProfileAsync` / `transferProfileSync`)
+  - `ShspSocketWrapperDelegationMixin` / `DualShspSocketWrapperDelegationMixin`: member-by-member delegation to the wrapped socket
+
+### Changed
+
+- `ShspPeer`, `ShspSocket`, `ShspSocketWrapper`, `DualShspSocketWrapper`, `BaseShspSocketSingleton`, `AutoShspPeer` and `AutoShspInstance` refactored to use the new mixins instead of duplicated inline logic (no behavioral change besides the fix above)
+
 ## [1.10.0] - 2026-07-13
 
 ### Added
