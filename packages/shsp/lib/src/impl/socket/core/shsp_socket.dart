@@ -7,6 +7,7 @@ import '../../../../shsp.dart';
 /// SHSP Socket implementation wrapping RawDatagramSocket
 class ShspSocket extends RawShspSocket
     with
+        IdempotentCloseMixin,
         ShspSocketCallbacksMixin,
         ShspSocketCompressionMixin,
         ShspSocketProfileMixin
@@ -63,7 +64,6 @@ class ShspSocket extends RawShspSocket
 
   InternetAddress? _localAddress;
   int? _localPort;
-  bool _closed = false;
 
   /// Setup event listeners for the raw socket
   void _setupEventListeners() {
@@ -243,24 +243,10 @@ class ShspSocket extends RawShspSocket
   }
 
   @override
-  void close() {
-    // Make close() idempotent - can be called multiple times safely
-    if (_closed) return;
-    _closed = true;
-
-    // Cancel the stream subscription if active
+  void closeImpl() {
     _socketSubscription?.cancel();
-
-    // Clear all message callbacks to prevent memory leaks
     clearCallbacks();
-
-    // Close the underlying socket
     socket.close();
-  }
-
-  @override
-  void destroy() {
-    close();
   }
 
   // ...existing code...
@@ -279,7 +265,7 @@ class ShspSocket extends RawShspSocket
 
   /// Check if the socket is closed
   @override
-  bool get isClosed => _closed;
+  bool get isClosed => super.isClosed;
 
   /// Getter for profile mixin to access message callbacks
   MessageCallbackMap get messageCallbacksForProfile => _messageCallbacksImpl;

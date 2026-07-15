@@ -6,6 +6,7 @@ import '../../../interfaces/socket/i_shsp_socket.dart';
 import '../../../types/peer_types.dart';
 
 import '../../socket/core/shsp_socket_singleton.dart';
+import '../../mixins/socket_change_listener_mixin.dart';
 import 'shsp_instance.dart';
 
 /// An [ShspInstance] that automatically uses the global [ShspSocketSingleton] socket.
@@ -38,7 +39,7 @@ import 'shsp_instance.dart';
 ///   remotePeer: PeerInfo(address: remoteAddress, port: remotePort),
 /// );
 /// ```
-class AutoShspInstance extends ShspInstance {
+class AutoShspInstance extends ShspInstance with SocketChangeListenerMixin {
   AutoShspInstance._({
     required super.remotePeer,
     required super.socket,
@@ -46,13 +47,7 @@ class AutoShspInstance extends ShspInstance {
     ShspSocketSingleton? singleton,
   }) {
     if (singleton != null) {
-      _singleton = singleton;
-      // Save reference so we can deregister in close()
-      _socketChangedListener = (newSocket) {
-        // Re-register this instance's callback with the new socket
-        newSocket.setMessageCallback(remotePeer, socketCallbackFunction);
-      };
-      singleton.socketChangedCallback.register(_socketChangedListener!);
+      initSocketChangeListener(singleton);
     }
   }
 
@@ -70,9 +65,6 @@ class AutoShspInstance extends ShspInstance {
     socket: socket,
     keepAliveSeconds: keepAliveSeconds,
   );
-
-  ShspSocketSingleton? _singleton;
-  void Function(IShspSocket)? _socketChangedListener;
 
   /// Crea un [AutoShspInstance] per comunicare con [remotePeer].
   ///
@@ -117,11 +109,7 @@ class AutoShspInstance extends ShspInstance {
   /// separatamente.
   @override
   void close() {
-    if (_socketChangedListener != null) {
-      _singleton!.socketChangedCallback.unregister(_socketChangedListener!);
-      _socketChangedListener = null;
-      _singleton = null;
-    }
+    deregisterSocketChangeListener();
     super.close();
   }
 }

@@ -4,6 +4,7 @@ import 'package:meta/meta.dart';
 import '../../../interfaces/i_compression_codec.dart';
 import '../../../interfaces/socket/i_shsp_socket_base.dart';
 import '../../../types/socket_profile.dart';
+import '../../mixins/socket_profile_transfer_mixin.dart';
 import 'shsp_socket.dart';
 
 /// Abstract base class for SHSP socket singletons.
@@ -12,7 +13,8 @@ import 'shsp_socket.dart';
 /// including reconnection, profile management, and callback notification.
 ///
 /// Type parameter [T] specifies the concrete socket type (e.g., ShspSocket or DualShspSocket).
-abstract class BaseShspSocketSingleton<T extends IShspSocketBase> {
+abstract class BaseShspSocketSingleton<T extends IShspSocketBase>
+    with SocketProfileTransferMixin<T> {
   /// Protected constructor for subclasses
   @protected
   BaseShspSocketSingleton(
@@ -78,24 +80,7 @@ abstract class BaseShspSocketSingleton<T extends IShspSocketBase> {
   ///   - [StateError] if singleton has not been initialized
   Future<void> reconnect() async {
     _requireInitialized();
-
-    // Extract profile before closing
-    final profile = socket.extractProfile();
-
-    // Close old socket
-    socket.close();
-
-    // Build new socket
-    final newSocket = await buildSocket(_address, _port, _compressionCodec);
-
-    // Apply profile to new socket
-    newSocket.applyProfile(profile);
-
-    // Replace in subclass
-    replaceSocket(newSocket);
-
-    // Notify listeners that socket has changed
-    _socketChangedCallback(newSocket);
+    await transferProfileAsync(() => buildSocket(_address, _port, _compressionCodec));
   }
 
   /// Restores socket state from a profile (advanced usage)
@@ -106,21 +91,10 @@ abstract class BaseShspSocketSingleton<T extends IShspSocketBase> {
   ///   - [StateError] if singleton has not been initialized
   Future<void> restoreProfile(ShspSocketProfile profile) async {
     _requireInitialized();
-
-    // Close old socket
-    socket.close();
-
-    // Build new socket
-    final newSocket = await buildSocket(_address, _port, _compressionCodec);
-
-    // Apply profile to new socket
-    newSocket.applyProfile(profile);
-
-    // Replace in subclass
-    replaceSocket(newSocket);
-
-    // Notify listeners that socket has changed
-    _socketChangedCallback(newSocket);
+    await transferProfileAsync(
+      () => buildSocket(_address, _port, _compressionCodec),
+      profile: profile,
+    );
   }
 
   /// Replaces the internal socket with a new ShspSocket instance.
@@ -132,22 +106,9 @@ abstract class BaseShspSocketSingleton<T extends IShspSocketBase> {
   ///   - [StateError] if singleton has not been initialized
   void setSocket(ShspSocket newSocket) {
     _requireInitialized();
-
-    // Extract profile from old socket
-    final profile = socket.extractProfile();
-
-    // Close old socket
-    socket.close();
-
-    // Wrap and apply profile
-    final wrappedSocket = wrapRawSocket(newSocket, newSocket.compressionCodec);
-    wrappedSocket.applyProfile(profile);
-
-    // Replace in subclass
-    replaceSocket(wrappedSocket);
-
-    // Notify listeners that socket has changed
-    _socketChangedCallback(wrappedSocket);
+    transferProfileSync(
+      () => wrapRawSocket(newSocket, newSocket.compressionCodec),
+    );
   }
 
   /// Replaces the internal socket with a RawDatagramSocket.
@@ -159,25 +120,9 @@ abstract class BaseShspSocketSingleton<T extends IShspSocketBase> {
   ///   - [StateError] if singleton has not been initialized
   void setSocketRaw(RawDatagramSocket rawSocket) {
     _requireInitialized();
-
-    // Extract profile from old socket
-    final profile = socket.extractProfile();
-
-    // Close old socket
-    socket.close();
-
-    // Create new socket from raw
-    final newSocket = ShspSocket.fromRaw(rawSocket, _compressionCodec);
-
-    // Wrap and apply profile
-    final wrappedSocket = wrapRawSocket(newSocket, _compressionCodec);
-    wrappedSocket.applyProfile(profile);
-
-    // Replace in subclass
-    replaceSocket(wrappedSocket);
-
-    // Notify listeners that socket has changed
-    _socketChangedCallback(wrappedSocket);
+    transferProfileSync(
+      () => wrapRawSocket(ShspSocket.fromRaw(rawSocket, _compressionCodec), _compressionCodec),
+    );
   }
 
   /// Abstract method to replace the internal socket.

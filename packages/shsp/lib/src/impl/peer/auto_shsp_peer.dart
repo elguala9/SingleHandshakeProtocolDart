@@ -25,7 +25,7 @@ import '../../../shsp.dart';
 ///   remotePeer: PeerInfo(address: remoteAddress, port: remotePort),
 /// );
 /// ```
-class AutoShspPeer extends ShspPeer {
+class AutoShspPeer extends ShspPeer with SocketChangeListenerMixin {
   AutoShspPeer._({
     required super.remotePeer,
     required super.socket,
@@ -33,11 +33,7 @@ class AutoShspPeer extends ShspPeer {
     ShspSocketSingleton? singleton,
   }) {
     if (singleton != null) {
-      // Register to be notified when the singleton socket changes
-      singleton.socketChangedCallback.register((newSocket) {
-        // Re-register this peer's callback with the new socket
-        newSocket.setMessageCallback(remotePeer, socketCallbackFunction);
-      });
+      initSocketChangeListener(singleton);
     }
   }
 
@@ -99,6 +95,7 @@ class AutoShspPeer extends ShspPeer {
   /// separatamente.
   @override
   void close() {
+    deregisterSocketChangeListener();
     super.close();
   }
 }
