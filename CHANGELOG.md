@@ -5,6 +5,17 @@ All notable changes to the Single HandShake Protocol monorepo are documented in 
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [1.10.1] - 2026-07-15
+
+### Fixed
+
+- `AutoShspPeer.close()` never unregistered its socket-changed listener from the singleton, leaking the callback registration after close
+
+### Changed
+
+- Duplicated lifecycle/validation/delegation logic extracted into reusable public mixins: `IdempotentCloseMixin`, `MessageSizeValidationMixin`, `SocketChangeListenerMixin`, `SocketProfileTransferMixin`, `ShspSocketWrapperDelegationMixin`, `DualShspSocketWrapperDelegationMixin` (all exported from the `shsp.dart` barrel)
+- `ShspPeer`, `ShspSocket`, `ShspSocketWrapper`, `DualShspSocketWrapper`, `BaseShspSocketSingleton`, `AutoShspPeer` and `AutoShspInstance` refactored to use the new mixins (no behavioral change besides the fix above)
+
 ## [1.10.0] - 2026-07-13
 
 ### Added
