@@ -3,8 +3,8 @@ import 'package:singleton_manager/singleton_manager.dart';
 
 /// Builds a [DualShspSocketAuto] with IPv4 (when available) and IPv6 (when available).
 ///
-/// Its sockets can be rebound at runtime via [DualShspSocketAuto.refreshSocketIpv4],
-/// [DualShspSocketAuto.refreshSocketIpv6] or [DualShspSocketAuto.refreshSockets],
+/// Its sockets can be rebound at runtime via [DualShspSocketAuto.refreshSocket],
+/// or [DualShspSocketAuto.refreshSockets],
 /// useful to recover from network interface changes (Wi-Fi reconnects, VPN
 /// toggles, etc.).
 ///

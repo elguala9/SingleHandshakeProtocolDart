@@ -32,17 +32,17 @@ class DualShspSocketAuto
   }
 
   @override
-  IShspSocket refreshSocketIpv4() {
-    _rebindIpv4Async();
-    final ipv4 = ipv4SocketImpl;
-    if (ipv4 == null) {
-      throw StateError('Cannot refresh IPv4 socket: no IPv4 socket bound');
+  IShspSocket refreshSocket([
+    InternetAddressType type = InternetAddressType.IPv6,
+  ]) {
+    if (type == InternetAddressType.IPv4) {
+      _rebindIpv4Async();
+      final ipv4 = ipv4SocketImpl;
+      if (ipv4 == null) {
+        throw StateError('Cannot refresh IPv4 socket: no IPv4 socket bound');
+      }
+      return ipv4;
     }
-    return ipv4;
-  }
-
-  @override
-  IShspSocket refreshSocketIpv6() {
     _rebindIpv6Async();
     final ipv6 = ipv6SocketImpl;
     if (ipv6 == null) {
@@ -50,6 +50,10 @@ class DualShspSocketAuto
     }
     return ipv6;
   }
+
+  IShspSocket refreshSocketIpv4() => refreshSocket(InternetAddressType.IPv4);
+
+  IShspSocket refreshSocketIpv6() => refreshSocket(InternetAddressType.IPv6);
 
   @override
   Sockets refreshSockets() {

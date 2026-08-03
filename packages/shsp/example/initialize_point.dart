@@ -105,11 +105,11 @@ Future<void> main() async {
     // Step 9: Rebind sockets at runtime — useful to recover from network
     // interface changes (Wi-Fi reconnects, VPN toggles, etc.)
     print('Refreshing IPv4 socket...');
-    dualSocket.refreshSocketIpv4();
+    dualSocket.refreshSocket(InternetAddressType.IPv4);
 
     if (await AddressUtility.canCreateIPv6Socket()) {
       print('Refreshing IPv6 socket...');
-      dualSocket.refreshSocketIpv6();
+      dualSocket.refreshSocket(InternetAddressType.IPv6);
     }
 
     print('Refreshing both sockets at once...');
