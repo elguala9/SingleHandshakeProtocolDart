@@ -1,3 +1,4 @@
+import 'dart:io';
 import '../../../../shsp.dart';
 
 class DualShspSocketMigratable
@@ -25,7 +26,19 @@ class DualShspSocketMigratable
   }
 
   @override
-  void migrateSocketIpv4(IShspSocket socket) {
+  void migrateSocket(
+    IShspSocket socket, [
+    InternetAddressType type = InternetAddressType.IPv6,
+  ]) {
+    switch (type) {
+      case InternetAddressType.IPv4:
+        _migrateSocketIpv4(socket);
+      case InternetAddressType.IPv6:
+        _migrateSocketIpv6(socket);
+    }
+  }
+
+  void _migrateSocketIpv4(IShspSocket socket) {
     final ipv4 = ipv4SocketImpl;
     if (ipv4 == null) {
       ipv4SocketImpl = ShspSocketWrapper(socket);
@@ -37,8 +50,7 @@ class DualShspSocketMigratable
     (ipv4SocketImpl as ShspSocketWrapper).migrateSocket(socket);
   }
 
-  @override
-  void migrateSocketIpv6(IShspSocket socket) {
+  void _migrateSocketIpv6(IShspSocket socket) {
     final existing = ipv6SocketImpl;
     if (existing == null) {
       ipv6SocketImpl = ShspSocketWrapper(socket);
@@ -49,20 +61,22 @@ class DualShspSocketMigratable
   }
 
   @override
-  IShspSocketWrapper get ipv4SocketWrapper {
-    final ipv4 = ipv4SocketImpl;
-    if (ipv4 is! IShspSocketWrapper) {
-      throw StateError('IPv4 socket is not available or not wrapped');
+  IShspSocketWrapper getSocketWrapper([
+    InternetAddressType type = InternetAddressType.IPv6,
+  ]) {
+    final impl = type == InternetAddressType.IPv4 ? ipv4SocketImpl : ipv6SocketImpl;
+    if (impl is! IShspSocketWrapper) {
+      final label = type == InternetAddressType.IPv4 ? 'IPv4' : 'IPv6';
+      throw StateError('$label socket is not available or not wrapped');
     }
-    return ipv4;
+    return impl;
   }
 
-  @override
-  IShspSocketWrapper get ipv6SocketWrapper {
-    final ipv6 = ipv6SocketImpl;
-    if (ipv6 is! IShspSocketWrapper) {
-      throw StateError('IPv6 socket is not available or not wrapped');
-    }
-    return ipv6;
-  }
+  void migrateSocketIpv4(IShspSocket socket) => _migrateSocketIpv4(socket);
+
+  void migrateSocketIpv6(IShspSocket socket) => _migrateSocketIpv6(socket);
+
+  IShspSocketWrapper get ipv4SocketWrapper => getSocketWrapper(InternetAddressType.IPv4);
+
+  IShspSocketWrapper get ipv6SocketWrapper => getSocketWrapper(InternetAddressType.IPv6);
 }

@@ -77,9 +77,10 @@ class HandshakeIP implements IHandshakeIP {
     PeerInfo? ipv4PublicPeer;
     PeerInfo? ipv4LocalPeer;
 
-    if (dualSocket.ipv4Socket != null) {
+    final ipv4Socket = dualSocket.getSocket(InternetAddressType.IPv4);
+    if (ipv4Socket != null) {
       try {
-        final ipv4RawSocket = dualSocket.ipv4Socket!.socket;
+        final ipv4RawSocket = ipv4Socket.socket;
         final ipv4Input = (address: null, port: null, socket: ipv4RawSocket);
         final ipv4Handler = StunHandler(ipv4Input);
         final ipv4Local = await ipv4Handler.performLocalRequest();
@@ -102,9 +103,10 @@ class HandshakeIP implements IHandshakeIP {
     PeerInfo? ipv6PublicPeer;
     PeerInfo? ipv6LocalPeer;
 
-    if (dualSocket.ipv6Socket != null) {
+    final ipv6Socket = dualSocket.getSocket(InternetAddressType.IPv6);
+    if (ipv6Socket != null) {
       try {
-        final ipv6RawSocket = dualSocket.ipv6Socket!.socket;
+        final ipv6RawSocket = ipv6Socket.socket;
         final ipv6Input = (address: null, port: null, socket: ipv6RawSocket);
         final ipv6Handler = StunHandler(ipv6Input);
         final ipv6Local = await ipv6Handler.performLocalRequest();

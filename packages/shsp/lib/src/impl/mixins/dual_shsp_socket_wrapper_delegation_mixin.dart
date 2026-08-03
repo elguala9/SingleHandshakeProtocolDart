@@ -12,10 +12,12 @@ mixin DualShspSocketWrapperDelegationMixin implements IDualShspSocketAuto {
   IDualShspSocketAuto get delegateDualSocket;
 
   @override
-  IShspSocket? get ipv4Socket => delegateDualSocket.ipv4Socket;
+  IShspSocket? getSocket([InternetAddressType type = InternetAddressType.IPv6]) =>
+      delegateDualSocket.getSocket(type);
 
-  @override
-  IShspSocket? get ipv6Socket => delegateDualSocket.ipv6Socket;
+  IShspSocket? get ipv4Socket => getSocket(InternetAddressType.IPv4);
+
+  IShspSocket? get ipv6Socket => getSocket(InternetAddressType.IPv6);
 
   @override
   IShspSocket? get ipv4SocketImpl => delegateDualSocket.ipv4SocketImpl;
@@ -48,29 +50,37 @@ mixin DualShspSocketWrapperDelegationMixin implements IDualShspSocketAuto {
       delegateDualSocket.ipv6SocketForProfile;
 
   @override
-  IShspSocketWrapper get ipv4SocketWrapper =>
-      delegateDualSocket.ipv4SocketWrapper;
+  IShspSocketWrapper getSocketWrapper([
+    InternetAddressType type = InternetAddressType.IPv6,
+  ]) => delegateDualSocket.getSocketWrapper(type);
 
-  @override
-  IShspSocketWrapper get ipv6SocketWrapper =>
-      delegateDualSocket.ipv6SocketWrapper;
+  IShspSocketWrapper get ipv4SocketWrapper => getSocketWrapper(InternetAddressType.IPv4);
+
+  IShspSocketWrapper get ipv6SocketWrapper => getSocketWrapper(InternetAddressType.IPv6);
 
   @override
   RawDatagramSocket get socket => delegateDualSocket.socket;
 
   @override
+  void migrateSocket(
+    IShspSocket socket, [
+    InternetAddressType type = InternetAddressType.IPv6,
+  ]) => delegateDualSocket.migrateSocket(socket, type);
+
   void migrateSocketIpv4(IShspSocket socket) =>
-      delegateDualSocket.migrateSocketIpv4(socket);
+      migrateSocket(socket, InternetAddressType.IPv4);
 
-  @override
   void migrateSocketIpv6(IShspSocket socket) =>
-      delegateDualSocket.migrateSocketIpv6(socket);
+      migrateSocket(socket, InternetAddressType.IPv6);
 
   @override
-  IShspSocket refreshSocketIpv4() => delegateDualSocket.refreshSocketIpv4();
+  IShspSocket refreshSocket([
+    InternetAddressType type = InternetAddressType.IPv6,
+  ]) => delegateDualSocket.refreshSocket(type);
 
-  @override
-  IShspSocket refreshSocketIpv6() => delegateDualSocket.refreshSocketIpv6();
+  IShspSocket refreshSocketIpv4() => refreshSocket(InternetAddressType.IPv4);
+
+  IShspSocket refreshSocketIpv6() => refreshSocket(InternetAddressType.IPv6);
 
   @override
   Sockets refreshSockets() => delegateDualSocket.refreshSockets();
