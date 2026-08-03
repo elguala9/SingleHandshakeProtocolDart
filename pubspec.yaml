@@ -136,6 +136,11 @@ melos:
       run: melos exec --ignore=shsp_tests -- dart pub run index_generator
       description: Generate barrel files (indexes) for all packages using index_generator.
 
+    # Regenerate the singleton registry for the shsp package
+    registry:
+      run: melos exec --scope=shsp -- dart run singleton_manager_generator --input lib --registry-output lib/main_injection.dart
+      description: Regenerate the singleton registry (lib/main_injection.dart) for the shsp package.
+
     # === DOCKER NAT TESTING COMMANDS ===
 
     # Setup Docker NAT testing

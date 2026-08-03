@@ -38,16 +38,36 @@ class InputRegistryShspSocket {
 /// await registry.bind(InputRegistryShspSocket(ipv4Port: 8080));
 /// final ipv4 = registry.getByKey(SocketType.ipv4);
 /// ```
+///
+/// Or resolve its IPv4/IPv6 sockets via DI — connect each [IShspSocket]
+/// into [RegistryManager] under the matching `'ipv4'`/`'ipv6'` subkey (see
+/// `connectDualShspSockets`) and call [dependencyInjectionFactory]:
+/// ```dart
+/// await connectDualShspSockets();
+/// final registry = RegistryShspSocket.dependencyInjectionFactory();
+/// ```
+@dependencyInjectable
 class RegistryShspSocket
-    with Registry<SocketType, IShspSocket>
+    with KeyedRegistry<SocketType, IShspSocket>
     implements IRegistryShspSocket {
-  RegistryShspSocket();
-
-  factory RegistryShspSocket.initializeDI() {
-    final instance = RegistryShspSocket();
-    instance.initializeDI();
-    return instance;
+  RegistryShspSocket({
+    @Subkey('ipv4') IShspSocket? ipv4Socket,
+    @Subkey('ipv6') IShspSocket? ipv6Socket,
+  }) {
+    if (ipv4Socket != null) _registerSocket(SocketType.ipv4, ipv4Socket);
+    if (ipv6Socket != null) _registerSocket(SocketType.ipv6, ipv6Socket);
   }
+
+  // ignore: avoid_unused_constructor_parameters, // GENERATED CODE - DO NOT MODIFY BY HAND
+  factory RegistryShspSocket.dependencyInjectionFactory({String key = 'default', String subkey = 'default'}) { // GENERATED CODE - DO NOT MODIFY BY HAND
+    final ipv4Socket = RegistryManager.instance.getInstanceNullable<IShspSocket>(key: key, subkey: 'ipv4'); // GENERATED CODE - DO NOT MODIFY BY HAND
+    final ipv6Socket = RegistryManager.instance.getInstanceNullable<IShspSocket>(key: key, subkey: 'ipv6'); // GENERATED CODE - DO NOT MODIFY BY HAND
+
+    return RegistryShspSocket( // GENERATED CODE - DO NOT MODIFY BY HAND
+      ipv4Socket: ipv4Socket, // GENERATED CODE - DO NOT MODIFY BY HAND
+      ipv6Socket: ipv6Socket, // GENERATED CODE - DO NOT MODIFY BY HAND
+    ); // GENERATED CODE - DO NOT MODIFY BY HAND
+  } // GENERATED CODE - DO NOT MODIFY BY HAND
 
   /// Register sockets from an [IDualShspSocketMigratable].
   ///
@@ -65,10 +85,6 @@ class RegistryShspSocket
     }
     return ReturnTypeInitialization.ipv4only;
   }
-
-  /// Initialize using a DI-provided [IDualShspSocketMigratable].
-  ReturnTypeInitialization initializeDI() =>
-      initialize(SingletonDIAccess.get<IDualShspSocketMigratable>());
 
   /// Bind new sockets from addresses/ports and register them.
   ///
@@ -106,8 +122,12 @@ class RegistryShspSocket
     }
   }
 
-  @override
-  void destroy() => destroyAll();
+  void destroy() {
+    for (final type in keys) {
+      getInstance(type).destroy();
+    }
+    clearRegistry();
+  }
 }
 
 /// Backward-compatibility alias.

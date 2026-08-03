@@ -1,17 +1,43 @@
 import 'dart:async';
 import 'dart:io';
 import 'package:meta/meta.dart';
-import 'package:singleton_manager/singleton_manager.dart';
 import '../../../../shsp.dart';
+import 'package:singleton_manager/singleton_manager.dart';
 
-/// SHSP Socket implementation wrapping RawDatagramSocket
+/// SHSP Socket implementation wrapping RawDatagramSocket.
+///
+/// Resolves [rawSocket] via DI when tagged `@Subkey.inherited()` — connect a
+/// `RawDatagramSocket` into [RegistryManager] under the `'ipv4'`/`'ipv6'`
+/// subkey (see `connectDualShspSockets`) and call
+/// [dependencyInjectionFactory]:
+/// ```dart
+/// await connectDualShspSockets();
+/// final socket = ShspSocket.dependencyInjectionFactory(subkey: 'ipv4');
+/// ```
+@dependencyInjectable
 class ShspSocket extends RawShspSocket
     with
         IdempotentCloseMixin,
         ShspSocketCallbacksMixin,
         ShspSocketCompressionMixin,
         ShspSocketProfileMixin
-    implements IShspSocket, IValueForRegistry {
+    implements IShspSocket {
+  /// Resolves [rawSocket] via DI — see the class docs above.
+  ShspSocket(
+    @Subkey.inherited() RawDatagramSocket rawSocket, [
+    ICompressionCodec? compressionCodec,
+  ]) : this.fromRaw(rawSocket, compressionCodec);
+
+  factory ShspSocket.dependencyInjectionFactory({String key = 'default', String subkey = 'default'}) { // GENERATED CODE - DO NOT MODIFY BY HAND
+    final rawSocket = RegistryManager.instance.getInstance<RawDatagramSocket>(key: key, subkey: subkey); // GENERATED CODE - DO NOT MODIFY BY HAND
+    final compressionCodec = RegistryManager.instance.getInstanceNullable<ICompressionCodec>(key: key); // GENERATED CODE - DO NOT MODIFY BY HAND
+
+    return ShspSocket( // GENERATED CODE - DO NOT MODIFY BY HAND
+      rawSocket, // GENERATED CODE - DO NOT MODIFY BY HAND
+      compressionCodec, // GENERATED CODE - DO NOT MODIFY BY HAND
+    ); // GENERATED CODE - DO NOT MODIFY BY HAND
+  } // GENERATED CODE - DO NOT MODIFY BY HAND
+
   /// Internal constructor for factory creation
   ShspSocket.internal(
     super.socket,

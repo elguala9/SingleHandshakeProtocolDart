@@ -2,14 +2,13 @@
 
 library;
 
-export 'src/generated/dual_shsp_socket_wrapper_di.dart';
 export 'src/impl/connection/connection.dart';
 export 'src/impl/connection/handshake_ip.dart';
 export 'src/impl/connection/handshake_ownership.dart';
 export 'src/impl/connection/handshake_time.dart';
 export 'src/impl/factory/factory_inputs.dart';
 export 'src/impl/factory/shsp_factories.dart';
-export 'src/impl/initialize_point.dart';
+export 'main_injection.dart';
 export 'src/impl/instance/core/auto_shsp_instance.dart';
 export 'src/impl/instance/core/shsp_instance.dart';
 export 'src/impl/instance/features/shsp_instance_handshake.dart';
@@ -20,6 +19,7 @@ export 'src/impl/instance/handlers/shsp_instance_handler.dart';
 export 'src/impl/instance/handlers/shsp_instance_handler_singleton.dart';
 export 'src/impl/peer/auto_shsp_peer.dart';
 export 'src/impl/peer/shsp_peer.dart';
+export 'src/impl/registry/dual_shsp_registry_wiring.dart';
 export 'src/impl/registry/registry_shsp.dart';
 export 'src/impl/registry/registry_shsp_socket.dart';
 export 'src/impl/registry/registry_shsp_socket_singleton.dart';

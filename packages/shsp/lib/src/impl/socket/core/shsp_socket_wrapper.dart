@@ -1,16 +1,32 @@
 import '../../../../shsp.dart';
 import 'package:singleton_manager/singleton_manager.dart';
 
+/// Resolves [socket] via DI — connect an `IShspSocket` into
+/// [RegistryManager] under the `'ipv4'`/`'ipv6'` subkey (see
+/// `connectDualShspSockets`) and call [dependencyInjectionFactory]:
+/// ```dart
+/// await connectDualShspSockets();
+/// final wrapper = ShspSocketWrapper.dependencyInjectionFactory(subkey: 'ipv4');
+/// ```
+@dependencyInjectable
 class ShspSocketWrapper
     with ShspSocketWrapperDelegationMixin
-    implements IValueForRegistry, IShspSocketWrapper {
-  ShspSocketWrapper(IShspSocket socket) : _socket = socket {
+    implements IShspSocketWrapper {
+  ShspSocketWrapper(@Subkey.inherited() IShspSocket socket) : _socket = socket {
     if (socket is ShspSocketWrapper) {
       throw ArgumentError(
         'ShspSocketWrapper cannot wrap another ShspSocketWrapper — nesting is not allowed.',
       );
     }
   }
+
+  factory ShspSocketWrapper.dependencyInjectionFactory({String key = 'default', String subkey = 'default'}) { // GENERATED CODE - DO NOT MODIFY BY HAND
+    final socket = RegistryManager.instance.getInstance<IShspSocket>(key: key, subkey: subkey); // GENERATED CODE - DO NOT MODIFY BY HAND
+
+    return ShspSocketWrapper( // GENERATED CODE - DO NOT MODIFY BY HAND
+      socket, // GENERATED CODE - DO NOT MODIFY BY HAND
+    ); // GENERATED CODE - DO NOT MODIFY BY HAND
+  } // GENERATED CODE - DO NOT MODIFY BY HAND
 
   IShspSocket _socket;
 
