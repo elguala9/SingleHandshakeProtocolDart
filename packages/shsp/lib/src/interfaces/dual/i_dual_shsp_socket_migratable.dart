@@ -1,10 +1,9 @@
 import 'dart:io';
 
-import 'package:singleton_manager/singleton_manager.dart';
 import '../../../shsp.dart';
 
 abstract interface class IDualShspSocketMigratable
-    implements DualShspSocket, IValueForRegistry {
+    implements DualShspSocket {
   /// Migrates the socket for the given address family. Defaults to IPv6;
   /// pass [InternetAddressType.IPv4] to migrate the IPv4 socket.
   void migrateSocket(

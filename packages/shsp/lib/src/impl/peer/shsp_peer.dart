@@ -1,8 +1,7 @@
 import '../../../shsp.dart';
-import 'package:singleton_manager/singleton_manager.dart';
 
 /// SHSP Peer implementation
-class ShspPeer with IdempotentCloseMixin, MessageSizeValidationMixin implements IShspPeer, IValueForRegistry {
+class ShspPeer with IdempotentCloseMixin, MessageSizeValidationMixin implements IShspPeer {
   ShspPeer({
     required this.remotePeer,
     required this.socket,
