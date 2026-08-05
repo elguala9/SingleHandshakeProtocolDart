@@ -16,8 +16,8 @@ class DualShspSocketWrapper
     with DualShspSocketWrapperDelegationMixin
     implements IDualShspSocketWrapper {
   DualShspSocketWrapper({
-    @Subkey('ipv4') IShspSocket? ipv4Socket,
-    @Subkey('ipv6') IShspSocket? ipv6Socket,
+    @Subkey('ipv4') IShspSocketWrapper? ipv4Socket,
+    @Subkey('ipv6') IShspSocketWrapper? ipv6Socket,
   }) {
     if (ipv4Socket != null || ipv6Socket != null) {
       dualSocket = DualShspSocketAuto(
@@ -28,8 +28,8 @@ class DualShspSocketWrapper
 
   // ignore: avoid_unused_constructor_parameters, // GENERATED CODE - DO NOT MODIFY BY HAND
   factory DualShspSocketWrapper.dependencyInjectionFactory({String key = 'default', String subkey = 'default'}) { // GENERATED CODE - DO NOT MODIFY BY HAND
-    final ipv4Socket = RegistryManager.instance.getInstanceNullable<IShspSocket>(key: key, subkey: 'ipv4'); // GENERATED CODE - DO NOT MODIFY BY HAND
-    final ipv6Socket = RegistryManager.instance.getInstanceNullable<IShspSocket>(key: key, subkey: 'ipv6'); // GENERATED CODE - DO NOT MODIFY BY HAND
+    final ipv4Socket = RegistryManager.instance.getInstanceNullable<IShspSocketWrapper>(key: key, subkey: 'ipv4'); // GENERATED CODE - DO NOT MODIFY BY HAND
+    final ipv6Socket = RegistryManager.instance.getInstanceNullable<IShspSocketWrapper>(key: key, subkey: 'ipv6'); // GENERATED CODE - DO NOT MODIFY BY HAND
 
     return DualShspSocketWrapper( // GENERATED CODE - DO NOT MODIFY BY HAND
       ipv4Socket: ipv4Socket, // GENERATED CODE - DO NOT MODIFY BY HAND

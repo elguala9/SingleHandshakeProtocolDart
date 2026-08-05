@@ -165,10 +165,10 @@ packages:
     dependency: transitive
     description:
       name: config_manager
-      sha256: "5434ab57e64d3c193035cb8230802b52e26a8bc4809be98251fbfc84cfa4f6b7"
+      sha256: "81f02939cfaac167b852f3c3d21a19f5fc0498edd2e0a0f98c09fc445e8f9d5f"
       url: "https://pub.dev"
     source: hosted
-    version: "0.4.1"
+    version: "0.4.2"
   console:
     dependency: transitive
     description:

@@ -32,7 +32,7 @@ platforms:
 dependencies:
   callback_handler: ^0.0.3
   clock_dart: ^1.0.0
-  config_manager: ^0.4.1
+  config_manager: ^0.4.2
   json_annotation: ^4.10.0
   meta: ^1.18.1
   singleton_manager: ^2.2.1

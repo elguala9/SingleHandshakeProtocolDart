@@ -38,7 +38,8 @@ mixin MainInjectionShspMixin { // GENERATED CODE - DO NOT MODIFY BY HAND
       ..connectInstance<IRegistryShspSocket, RegistryShspSocket>(() => RegistryShspSocket.dependencyInjectionFactory(key: key), key: key) // GENERATED CODE - DO NOT MODIFY BY HAND
       ..connectInstance<IShspSocket, ShspSocket>(() => ShspSocket.dependencyInjectionFactory(key: key, subkey: 'ipv4'), key: key, subkey: 'ipv4') // GENERATED CODE - DO NOT MODIFY BY HAND
       ..connectInstance<IShspSocket, ShspSocket>(() => ShspSocket.dependencyInjectionFactory(key: key, subkey: 'ipv6'), key: key, subkey: 'ipv6') // GENERATED CODE - DO NOT MODIFY BY HAND
-      ..connectInstance<IShspSocketWrapper, ShspSocketWrapper>(() => ShspSocketWrapper.dependencyInjectionFactory(key: key), key: key) // GENERATED CODE - DO NOT MODIFY BY HAND
+      ..connectInstance<IShspSocketWrapper, ShspSocketWrapper>(() => ShspSocketWrapper.dependencyInjectionFactory(key: key, subkey: 'ipv4'), key: key, subkey: 'ipv4') // GENERATED CODE - DO NOT MODIFY BY HAND
+      ..connectInstance<IShspSocketWrapper, ShspSocketWrapper>(() => ShspSocketWrapper.dependencyInjectionFactory(key: key, subkey: 'ipv6'), key: key, subkey: 'ipv6') // GENERATED CODE - DO NOT MODIFY BY HAND
       ..connectInstance<IDualShspSocketWrapper, DualShspSocketWrapper>(() => DualShspSocketWrapper.dependencyInjectionFactory(key: key), key: key); // GENERATED CODE - DO NOT MODIFY BY HAND
     afterRegisterAllSingletonsShsp(key: key); // GENERATED CODE - DO NOT MODIFY BY HAND
   } // GENERATED CODE - DO NOT MODIFY BY HAND
