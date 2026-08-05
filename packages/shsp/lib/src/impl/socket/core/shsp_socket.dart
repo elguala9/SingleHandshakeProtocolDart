@@ -30,7 +30,7 @@ class ShspSocket extends RawShspSocket
 
   factory ShspSocket.dependencyInjectionFactory({String key = 'default', String subkey = 'default'}) { // GENERATED CODE - DO NOT MODIFY BY HAND
     final rawSocket = RegistryManager.instance.getInstance<RawDatagramSocket>(key: key, subkey: subkey); // GENERATED CODE - DO NOT MODIFY BY HAND
-    final compressionCodec = RegistryManager.instance.getInstanceNullable<ICompressionCodec>(key: key); // GENERATED CODE - DO NOT MODIFY BY HAND
+    final compressionCodec = RegistryManager.instance.tryGetInstance<ICompressionCodec>(key: key); // GENERATED CODE - DO NOT MODIFY BY HAND
 
     return ShspSocket( // GENERATED CODE - DO NOT MODIFY BY HAND
       rawSocket, // GENERATED CODE - DO NOT MODIFY BY HAND

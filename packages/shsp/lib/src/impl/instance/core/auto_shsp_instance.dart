@@ -58,7 +58,7 @@ class AutoShspInstance extends ShspInstance with SocketChangeListenerMixin {
     final remotePeer = RegistryManager.instance.getInstance<PeerInfo>(key: key); // GENERATED CODE - DO NOT MODIFY BY HAND
     final socket = RegistryManager.instance.getInstance<IShspSocketBase>(key: key, subkey: subkey); // GENERATED CODE - DO NOT MODIFY BY HAND
     final keepAliveSeconds = RegistryManager.instance.getInstance<int>(key: key); // GENERATED CODE - DO NOT MODIFY BY HAND
-    final singleton = RegistryManager.instance.getInstanceNullable<ShspSocketSingleton>(key: key); // GENERATED CODE - DO NOT MODIFY BY HAND
+    final singleton = RegistryManager.instance.tryGetInstance<ShspSocketSingleton>(key: key); // GENERATED CODE - DO NOT MODIFY BY HAND
 
     return AutoShspInstance( // GENERATED CODE - DO NOT MODIFY BY HAND
       remotePeer: remotePeer, // GENERATED CODE - DO NOT MODIFY BY HAND

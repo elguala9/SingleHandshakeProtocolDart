@@ -246,14 +246,13 @@ void main() {
 
   group('missing RawDatagramSocket subkey', () {
     test(
-      'DualShspSocketAuto.dependencyInjectionFactory throws instead of degrading to ipv4-only '
+      'DualShspSocketAuto.dependencyInjectionFactory degrades to ipv4-only '
       'when only the ipv4 RawDatagramSocket is registered',
       () async {
-        // Regression/documentation test: getInstanceNullable<IShspSocketMigratable>
-        // is expected to tolerate a missing ipv6 slot, but ShspSocket/ShspSocketMigratable's
-        // own factories resolve their dependency with the non-nullable getInstance(),
-        // so a missing ipv6 RawDatagramSocket surfaces as a thrown RegistryNotFoundError
-        // instead of the ipv6 slot silently resolving to null.
+        // RegistryManager.tryGetInstance<IShspSocketMigratable> collapses a
+        // RegistryNotFoundError raised deep in the ipv6 factory chain (missing
+        // ipv6 RawDatagramSocket) to null, instead of letting it propagate and
+        // fail the whole DualShspSocketAuto construction.
         const key = 'wiring_missing_ipv6_raw_socket';
         final ipv4Raw = await RawDatagramSocket.bind(InternetAddress.anyIPv4, 0);
         addTearDown(ipv4Raw.close);
@@ -276,10 +275,11 @@ void main() {
         );
         connectShspSocketMigratableSubkeys(key: key);
 
-        expect(
-          () => DualShspSocketAuto.dependencyInjectionFactory(key: key),
-          throwsA(isA<RegistryNotFoundError>()),
-        );
+        final auto = DualShspSocketAuto.dependencyInjectionFactory(key: key);
+        addTearDown(auto.close);
+
+        expect(auto.ipv4SocketImpl, isNotNull);
+        expect(auto.ipv6SocketImpl, isNull);
       },
     );
   });

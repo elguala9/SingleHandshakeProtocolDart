@@ -212,10 +212,10 @@ packages:
     dependency: transitive
     description:
       name: singleton_manager
-      sha256: "429ef80f388c3ae27a4dad5707a4cc7dc8c3ec9ef9256f9005187ad2cafa2666"
+      sha256: a4507b7ccd09be944274893f3c37510aeff34f020044084dbb9cd72f11df5b41
       url: "https://pub.dev"
     source: hosted
-    version: "2.2.1"
+    version: "2.2.2"
   source_span:
     dependency: transitive
     description:

@@ -17,8 +17,8 @@ class DualShspSocketMigratable
 
   // ignore: avoid_unused_constructor_parameters, // GENERATED CODE - DO NOT MODIFY BY HAND
   factory DualShspSocketMigratable.dependencyInjectionFactory({String key = 'default', String subkey = 'default'}) { // GENERATED CODE - DO NOT MODIFY BY HAND
-    final ipv4Migratable = RegistryManager.instance.getInstanceNullable<IShspSocketMigratable>(key: key, subkey: 'ipv4'); // GENERATED CODE - DO NOT MODIFY BY HAND
-    final ipv6Migratable = RegistryManager.instance.getInstanceNullable<IShspSocketMigratable>(key: key, subkey: 'ipv6'); // GENERATED CODE - DO NOT MODIFY BY HAND
+    final ipv4Migratable = RegistryManager.instance.tryGetInstance<IShspSocketMigratable>(key: key, subkey: 'ipv4'); // GENERATED CODE - DO NOT MODIFY BY HAND
+    final ipv6Migratable = RegistryManager.instance.tryGetInstance<IShspSocketMigratable>(key: key, subkey: 'ipv6'); // GENERATED CODE - DO NOT MODIFY BY HAND
 
     return DualShspSocketMigratable( // GENERATED CODE - DO NOT MODIFY BY HAND
       ipv4Migratable: ipv4Migratable, // GENERATED CODE - DO NOT MODIFY BY HAND
