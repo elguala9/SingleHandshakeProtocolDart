@@ -5,7 +5,6 @@ library;
 export 'main_injection.dart';
 export 'src/config/shsp_config.dart';
 export 'src/impl/connection/connection.dart';
-export 'src/impl/connection/handshake_ip.dart';
 export 'src/impl/connection/handshake_ownership.dart';
 export 'src/impl/connection/handshake_time.dart';
 export 'src/impl/factory/factory_inputs.dart';

@@ -585,14 +585,6 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "1.4.1"
-  stun:
-    dependency: "direct dev"
-    description:
-      name: stun
-      sha256: "493fd0a7cef42b097d645cbed30504456c0e28e2b794f5096edf499c02aa539f"
-      url: "https://pub.dev"
-    source: hosted
-    version: "1.2.0"
   term_glyph:
     dependency: transitive
     description:

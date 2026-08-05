@@ -9,10 +9,8 @@ Test completo per tutte le interfacce e implementazioni del progetto Single Hand
 - **shsp_instance_test.dart**: Test esistente per `ShspInstance` 
 - **shsp_peer_test.dart**: Test esistente per `ShspPeer`
 - **shsp_socket_test.dart**: Test esistente per `ShspSocket`
-- **stun_handler_test.dart**: Test per `StunHandler` (implementazione di `IStunHandler`)
 
 ### Test Handshake
-- **handshake_ip_test.dart**: Test per `HandshakeIP` (implementazione di `IHandshakeIP`)
 - **handshake_ownership_test.dart**: Test per `HandshakeOwnership` (implementazione di `IHandshakeOwnership`)
 - **handshake_time_test.dart**: Test per `HandshakeTime` (implementazione di `IHandshakeTime`)
 - **handshake_initiator_signal_handler_test.dart**: Test per le interfacce di segnalazione handshake
@@ -34,8 +32,6 @@ Test completo per tutte le interfacce e implementazioni del progetto Single Hand
 packages/tests/test/
 ├── all_tests.dart                          # Test runner principale
 ├── shsp_test.dart                         # Test core Shsp
-├── stun_handler_test.dart                 # Test STUN handler
-├── handshake_ip_test.dart                # Test handshake IP
 ├── handshake_ownership_test.dart         # Test handshake ownership
 ├── handshake_time_test.dart              # Test handshake time
 ├── handshake_initiator_signal_handler_test.dart  # Test signal handler
@@ -84,16 +80,12 @@ I test coprono:
 
 ### ✅ Implementazioni Complete
 - `Shsp` - Implementazione base IShsp
-- `StunHandler` - Gestione STUN requests  
-- `HandshakeIP` - Gestione indirizzi IP handshake
 - `HandshakeOwnership` - Gestione ownership handshake
 - `HandshakeTime` - Gestione timing handshake
 - Tutte le utility classes
 
 ### ✅ Interfacce Testate
 - `IShsp`
-- `IStunHandler` 
-- `IHandshakeIP`
 - `IHandshakeOwnership`
 - `IHandshakeTime`
 - `IHandshakeInitiatorSignalHandler`
@@ -118,7 +110,7 @@ I test coprono:
 ## Note Implementative
 
 Alcuni test contengono sezioni commentate per funzionalità che richiedono:
-- Connessioni di rete reali (STUN servers)
+- Connessioni di rete reali
 - Librerie esterne non disponibili in test environment
 - Implementazioni async non complete
 

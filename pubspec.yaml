@@ -15,7 +15,6 @@ dependencies:
   meta: ^1.18.1
 
 dev_dependencies:
-  stun: ^1.0.1
   melos: ^7.4.0
   lints: ^6.0.0
   test: ^1.29.0
