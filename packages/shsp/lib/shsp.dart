@@ -9,6 +9,8 @@ export 'src/impl/connection/handshake_time.dart';
 export 'src/impl/factory/factory_inputs.dart';
 export 'src/impl/factory/shsp_factories.dart';
 export 'main_injection.dart';
+export 'src/impl/migration/dual_shsp_socket_migration.dart';
+export 'src/impl/migration/shsp_socket_migration.dart';
 export 'src/impl/instance/core/auto_shsp_instance.dart';
 export 'src/impl/instance/core/shsp_instance.dart';
 export 'src/impl/instance/features/shsp_instance_handshake.dart';

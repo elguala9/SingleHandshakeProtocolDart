@@ -204,10 +204,10 @@ packages:
     dependency: transitive
     description:
       name: singleton_manager
-      sha256: "56f8548e395f22c43d115acaa3049100c55472290b4de36f5c2ead8bc385d24f"
+      sha256: "429ef80f388c3ae27a4dad5707a4cc7dc8c3ec9ef9256f9005187ad2cafa2666"
       url: "https://pub.dev"
     source: hosted
-    version: "2.2.0"
+    version: "2.2.1"
   source_span:
     dependency: transitive
     description:
