@@ -152,7 +152,6 @@ class NatAwareMockShspInstance implements IShspInstance {
   @override
   void onMessage(List<int> msg, PeerInfo info) {}
 
-  @override
   void destroy() {}
 
   /// Simulate peer attempting to send handshake response
