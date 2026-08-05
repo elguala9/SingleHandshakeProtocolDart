@@ -10,7 +10,7 @@ environment:
 dependencies:
   shsp:
     path: ../shsp
-  singleton_manager: ^2.2.0
+  singleton_manager: ^2.2.1
 
 dev_dependencies:
   lints: ^6.0.0
