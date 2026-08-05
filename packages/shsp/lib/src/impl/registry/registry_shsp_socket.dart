@@ -60,8 +60,8 @@ class RegistryShspSocket
 
   // ignore: avoid_unused_constructor_parameters, // GENERATED CODE - DO NOT MODIFY BY HAND
   factory RegistryShspSocket.dependencyInjectionFactory({String key = 'default', String subkey = 'default'}) { // GENERATED CODE - DO NOT MODIFY BY HAND
-    final ipv4Socket = RegistryManager.instance.getInstanceNullable<IShspSocket>(key: key, subkey: 'ipv4'); // GENERATED CODE - DO NOT MODIFY BY HAND
-    final ipv6Socket = RegistryManager.instance.getInstanceNullable<IShspSocket>(key: key, subkey: 'ipv6'); // GENERATED CODE - DO NOT MODIFY BY HAND
+    final ipv4Socket = RegistryManager.instance.tryGetInstance<IShspSocket>(key: key, subkey: 'ipv4'); // GENERATED CODE - DO NOT MODIFY BY HAND
+    final ipv6Socket = RegistryManager.instance.tryGetInstance<IShspSocket>(key: key, subkey: 'ipv6'); // GENERATED CODE - DO NOT MODIFY BY HAND
 
     return RegistryShspSocket( // GENERATED CODE - DO NOT MODIFY BY HAND
       ipv4Socket: ipv4Socket, // GENERATED CODE - DO NOT MODIFY BY HAND

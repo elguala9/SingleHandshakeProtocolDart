@@ -501,18 +501,18 @@ packages:
     dependency: transitive
     description:
       name: singleton_manager
-      sha256: "429ef80f388c3ae27a4dad5707a4cc7dc8c3ec9ef9256f9005187ad2cafa2666"
+      sha256: a4507b7ccd09be944274893f3c37510aeff34f020044084dbb9cd72f11df5b41
       url: "https://pub.dev"
     source: hosted
-    version: "2.2.1"
+    version: "2.2.2"
   singleton_manager_generator:
     dependency: transitive
     description:
       name: singleton_manager_generator
-      sha256: "1c745b15301605ec8130976823ee9a4bd992b80cf0e997e66708470a18953104"
+      sha256: "1399b85f08161d40154f1264c9eb346a8f7632764585e90d45829f7798a60055"
       url: "https://pub.dev"
     source: hosted
-    version: "2.3.0"
+    version: "2.3.2"
   source_gen:
     dependency: transitive
     description:
@@ -586,13 +586,13 @@ packages:
     source: hosted
     version: "1.4.1"
   stun:
-    dependency: "direct main"
+    dependency: "direct dev"
     description:
       name: stun
-      sha256: "7eb28f576f99936eefabd14f9b8c6aaa1f30d67a7163b61a22af8654aa722121"
+      sha256: "493fd0a7cef42b097d645cbed30504456c0e28e2b794f5096edf499c02aa539f"
       url: "https://pub.dev"
     source: hosted
-    version: "1.0.1"
+    version: "1.2.0"
   term_glyph:
     dependency: transitive
     description:

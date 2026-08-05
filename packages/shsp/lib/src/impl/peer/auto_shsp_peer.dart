@@ -42,8 +42,8 @@ class AutoShspPeer extends ShspPeer with SocketChangeListenerMixin {
   factory AutoShspPeer.dependencyInjectionFactory({String key = 'default', String subkey = 'default'}) { // GENERATED CODE - DO NOT MODIFY BY HAND
     final remotePeer = RegistryManager.instance.getInstance<PeerInfo>(key: key); // GENERATED CODE - DO NOT MODIFY BY HAND
     final socket = RegistryManager.instance.getInstance<IShspSocketBase>(key: key, subkey: subkey); // GENERATED CODE - DO NOT MODIFY BY HAND
-    final messageCallback = RegistryManager.instance.getInstanceNullable<MessageCallback>(key: key); // GENERATED CODE - DO NOT MODIFY BY HAND
-    final singleton = RegistryManager.instance.getInstanceNullable<ShspSocketSingleton>(key: key); // GENERATED CODE - DO NOT MODIFY BY HAND
+    final messageCallback = RegistryManager.instance.tryGetInstance<MessageCallback>(key: key); // GENERATED CODE - DO NOT MODIFY BY HAND
+    final singleton = RegistryManager.instance.tryGetInstance<ShspSocketSingleton>(key: key); // GENERATED CODE - DO NOT MODIFY BY HAND
 
     return AutoShspPeer( // GENERATED CODE - DO NOT MODIFY BY HAND
       remotePeer: remotePeer, // GENERATED CODE - DO NOT MODIFY BY HAND
