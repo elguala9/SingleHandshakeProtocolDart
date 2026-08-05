@@ -7,7 +7,7 @@ import '../../types/callback_types.dart';
 import '../../types/peer_types.dart';
 import '../../types/socket_profile.dart';
 
-mixin ShspSocketWrapperDelegationMixin implements IShspSocket {
+mixin ShspSocketMigratableDelegationMixin implements IShspSocket {
   IShspSocket get delegateSocket;
 
   @override

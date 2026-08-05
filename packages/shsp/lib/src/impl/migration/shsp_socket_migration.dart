@@ -37,7 +37,7 @@ Future<IShspSocket> migrateShspSocket(
 
   final oldIshspSocket = RegistryManager.instance.getInstance<IShspSocket>();
   
-  final wrapper = RegistryManager.instance.getInstance<IShspSocketWrapper>();
+  final wrapper = RegistryManager.instance.getInstance<IShspSocketMigratable>();
 
   final newIShspSocket = ShspSocket.withRawAndProfile(socket, oldIshspSocket.extractProfile());
 

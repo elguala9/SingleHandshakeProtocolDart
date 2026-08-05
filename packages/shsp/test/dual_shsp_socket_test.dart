@@ -34,13 +34,13 @@ class MockDualMigratable implements IDualShspSocketMigratable {
   void migrateSocketIpv6(IShspSocket socket) {}
 
   @override
-  IShspSocketWrapper getSocketWrapper([
+  IShspSocketMigratable getSocketMigratable([
     InternetAddressType type = InternetAddressType.IPv6,
   ]) => throw UnimplementedError();
 
-  IShspSocketWrapper get ipv4SocketWrapper => throw UnimplementedError();
+  IShspSocketMigratable get ipv4SocketMigratable => throw UnimplementedError();
 
-  IShspSocketWrapper get ipv6SocketWrapper => throw UnimplementedError();
+  IShspSocketMigratable get ipv6SocketMigratable => throw UnimplementedError();
 
   @override
   void applyProfile(ShspSocketProfile profile) {}
