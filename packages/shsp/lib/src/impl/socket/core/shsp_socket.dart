@@ -82,6 +82,35 @@ class ShspSocket extends RawShspSocket
     invokeOnListening();
   }
 
+  /// Creates a new ShspSocket wrapping an existing RawDatagramSocket,
+  /// restoring all message callbacks from an existing profile.
+  ///
+  /// This restores all message callbacks registered on the old socket
+  /// without needing to re-register them manually. Useful for reusing
+  /// an already-bound RawDatagramSocket while maintaining peer message
+  /// handlers from a previous ShspSocket.
+  factory ShspSocket.withRawAndProfile(
+    RawDatagramSocket rawSocket,
+    ShspSocketProfile profile, [
+    ICompressionCodec? compressionCodec,
+  ]) {
+    final newSocket = ShspSocket.fromRaw(rawSocket, compressionCodec);
+    newSocket._restoreProfile(profile);
+    return newSocket;
+  }
+
+  /// Re-registers every message listener recorded in [profile] onto this socket.
+  void _restoreProfile(ShspSocketProfile profile) {
+    for (final entry in profile.messageListeners.entries) {
+      final key = entry.key;
+      final handlers = entry.value;
+
+      for (final listener in handlers) {
+        _messageCallbacksImpl.add(key, listener);
+      }
+    }
+  }
+
   late MessageCallbackMap _messageCallbacksImpl;
   late CallbackOn _onClose;
   late CallbackOnError _onError;
@@ -238,18 +267,7 @@ class ShspSocket extends RawShspSocket
   ]) async {
     // Create a new socket
     final newSocket = await bind(address, port, compressionCodec);
-
-    // Restore all message callbacks from profile
-    for (final entry in profile.messageListeners.entries) {
-      final key = entry.key;
-      final handlers = entry.value;
-
-      for (final listener in handlers) {
-        // Re-register the listener in the new socket
-        newSocket._messageCallbacksImpl.add(key, listener);
-      }
-    }
-
+    newSocket._restoreProfile(profile);
     return newSocket;
   }
 

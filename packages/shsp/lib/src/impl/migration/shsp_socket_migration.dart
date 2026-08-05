@@ -19,35 +19,49 @@ String shspSocketSubkeyFor(InternetAddressType type) =>
 /// entries for the resolved subkey are overwritten (via
 /// [RegistryManager.setInstance]), since those are the ones meant to be
 /// swapped out.
-IShspSocket migrateShspSocket(
-  IShspSocket socket, {
+Future<IShspSocket> migrateShspSocket(
+  RawDatagramSocket socket, {
   String key = 'default',
-}) {
-  final address = socket.localAddress;
-  if (address == null) {
-    throw ArgumentError.value(
-      socket,
-      'socket',
-      'must be bound to a local address before it can be migrated.',
-    );
-  }
+}) async {
+  final address = socket.address;
+
   final type = address.type;
   final subkey = shspSocketSubkeyFor(type);
 
-  final current = RegistryManager.instance
-      .getInstance<IDualShspSocketMigratable>(key: key);
-  current.migrateSocket(socket, type);
 
   RegistryManager.instance.setInstance<RawDatagramSocket>(
-    socket.socket,
-    key: key,
-    subkey: subkey,
-  );
-  RegistryManager.instance.setInstance<IShspSocket>(
     socket,
     key: key,
     subkey: subkey,
   );
 
-  return socket;
+  final oldIshspSocket = RegistryManager.instance.getInstance<IShspSocket>();
+  
+  final wrapper = RegistryManager.instance.getInstance<IShspSocketWrapper>();
+
+  final newIShspSocket = ShspSocket.withRawAndProfile(socket, oldIshspSocket.extractProfile());
+
+  wrapper.migrateSocket(newIShspSocket);
+
+  RegistryManager.instance.setInstance<IShspSocket>(
+    newIShspSocket,
+    key: key,
+    subkey: subkey,
+  );
+
+  return newIShspSocket;
+}
+
+Future<IShspSocket> migrateShspSocketIpv4({
+  String key = 'default',
+}) async {
+  final socket = await RawDatagramSocket.bind(InternetAddress.anyIPv4, 0);
+  return migrateShspSocket(socket, key: key);
+}
+
+Future<IShspSocket> migrateShspSocketIpv6({
+  String key = 'default',
+}) async {
+  final socket = await RawDatagramSocket.bind(InternetAddress.anyIPv6, 0);
+  return migrateShspSocket(socket, key: key);
 }
