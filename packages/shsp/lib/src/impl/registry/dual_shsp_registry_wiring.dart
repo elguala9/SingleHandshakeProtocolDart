@@ -4,8 +4,11 @@ import 'package:singleton_manager/singleton_manager.dart';
 
 import '../../../shsp.dart';
 
-/// Binds a real IPv4 `RawDatagramSocket` and, best-effort, a real IPv6 one,
-/// and registers each under the matching `'ipv4'`/`'ipv6'` subkey.
+/// Binds a real IPv4 and a real IPv6 `RawDatagramSocket` — both best-effort —
+/// and registers each one that succeeded under the matching `'ipv4'`/`'ipv6'`
+/// subkey. Either family may be unavailable on the host; only the subkeys
+/// whose bind succeeded get connected. Throws [SocketException] if neither
+/// family could be bound, since nothing would supply a raw socket at all.
 ///
 /// `ShspSocket` resolves its raw socket parameter via `@Subkey.inherited()`
 /// — auto-connected under both `'ipv4'`/`'ipv6'` by the generated
@@ -21,7 +24,15 @@ import '../../../shsp.dart';
 /// and `IShspSocket`/the wrapper/registry types are different registry
 /// slots.
 Future<void> connectDualShspSockets({String key = 'default'}) async {
-  final ipv4Socket = await RawDatagramSocket.bind(InternetAddress.anyIPv4, 0);
+  RawDatagramSocket? ipv4Socket;
+  try {
+    ipv4Socket = await RawDatagramSocket.bind(InternetAddress.anyIPv4, 0);
+  } catch (e) {
+    print(
+      'Warning: IPv4 socket binding failed - IPv4 may not be available: $e',
+    );
+  }
+
   RawDatagramSocket? ipv6Socket;
   try {
     ipv6Socket = await RawDatagramSocket.bind(InternetAddress.anyIPv6, 0);
@@ -31,12 +42,20 @@ Future<void> connectDualShspSockets({String key = 'default'}) async {
     );
   }
 
+  if (ipv4Socket == null && ipv6Socket == null) {
+    throw const SocketException(
+      'connectDualShspSockets: neither IPv4 nor IPv6 could be bound',
+    );
+  }
+
   final registry = RegistryManager.instance;
-  registry.connectInstance<RawDatagramSocket, RawDatagramSocket>(
-    () => ipv4Socket,
-    key: key,
-    subkey: 'ipv4',
-  );
+  if (ipv4Socket != null) {
+    registry.connectInstance<RawDatagramSocket, RawDatagramSocket>(
+      () => ipv4Socket!,
+      key: key,
+      subkey: 'ipv4',
+    );
+  }
   if (ipv6Socket != null) {
     registry.connectInstance<RawDatagramSocket, RawDatagramSocket>(
       () => ipv6Socket!,

@@ -60,6 +60,139 @@ void main() {
     });
   });
 
+  group('connectAutoShspPeerSubkeys / connectAutoShspInstanceSubkeys', () {
+    /// Wires the socket graph under [key] and supplies the extra dependencies
+    /// `AutoShspPeer`/`AutoShspInstance` need but that nothing connects for
+    /// them: `IShspSocketBase` per subkey, plus a `PeerInfo` and a keep-alive
+    /// `int` under the key itself.
+    Future<void> wirePeerDependencies(String key) async {
+      await const DualShspInjector().registerAllSingletonsShspAsync(key: key);
+      final registry = RegistryManager.instance;
+      for (final subkey in ['ipv4', 'ipv6']) {
+        registry.connectInstance<IShspSocketBase, ShspSocketMigratable>(
+          () =>
+              registry.getInstance<IShspSocketMigratable>(
+                    key: key,
+                    subkey: subkey,
+                  )
+                  as ShspSocketMigratable,
+          key: key,
+          subkey: subkey,
+        );
+      }
+      registry
+        ..connectInstance<PeerInfo, PeerInfo>(
+          () => PeerInfo(address: InternetAddress.loopbackIPv4, port: 9501),
+          key: key,
+        )
+        ..connectInstance<int, int>(() => 7, key: key);
+    }
+
+    test('AutoShspPeer resolves per subkey onto the matching socket', () async {
+      const key = 'wiring_auto_peer_subkeys';
+      await wirePeerDependencies(key);
+      connectAutoShspPeerSubkeys(key: key);
+
+      final ipv4Migratable = RegistryManager.instance
+          .getInstance<IShspSocketMigratable>(key: key, subkey: 'ipv4');
+      addTearDown(() {
+        if (!ipv4Migratable.isClosed) ipv4Migratable.close();
+      });
+
+      final peer = RegistryManager.instance.getInstance<AutoShspPeer>(
+        key: key,
+        subkey: 'ipv4',
+      );
+
+      expect(peer.socket, same(ipv4Migratable));
+      expect(peer.remotePeer.port, 9501);
+      // Resolving the same subkey again returns the cached singleton.
+      expect(
+        RegistryManager.instance.getInstance<AutoShspPeer>(
+          key: key,
+          subkey: 'ipv4',
+        ),
+        same(peer),
+      );
+    });
+
+    test('AutoShspInstance resolves per subkey with the connected keep-alive', () async {
+      const key = 'wiring_auto_instance_subkeys';
+      await wirePeerDependencies(key);
+      connectAutoShspInstanceSubkeys(key: key);
+
+      final ipv4Migratable = RegistryManager.instance
+          .getInstance<IShspSocketMigratable>(key: key, subkey: 'ipv4');
+      addTearDown(() {
+        if (!ipv4Migratable.isClosed) ipv4Migratable.close();
+      });
+
+      final instance = RegistryManager.instance.getInstance<AutoShspInstance>(
+        key: key,
+        subkey: 'ipv4',
+      );
+
+      expect(instance.socket, same(ipv4Migratable));
+      expect(instance.keepAliveSeconds, 7);
+    });
+
+    test('the ipv6 variants resolve onto the ipv6 socket when available', () async {
+      const key = 'wiring_auto_peer_ipv6_subkey';
+      await wirePeerDependencies(key);
+      connectAutoShspPeerSubkeys(key: key);
+
+      final ipv6Migratable = RegistryManager.instance
+          .getInstanceNullable<IShspSocketMigratable>(key: key, subkey: 'ipv6');
+      if (ipv6Migratable == null) return; // host without IPv6
+      addTearDown(() {
+        if (!ipv6Migratable.isClosed) ipv6Migratable.close();
+      });
+
+      final ipv4Peer = RegistryManager.instance.getInstance<AutoShspPeer>(
+        key: key,
+        subkey: 'ipv4',
+      );
+      final ipv6Peer = RegistryManager.instance.getInstance<AutoShspPeer>(
+        key: key,
+        subkey: 'ipv6',
+      );
+
+      expect(ipv6Peer, isNot(same(ipv4Peer)));
+      expect(ipv6Peer.socket, same(ipv6Migratable));
+    });
+
+    test('resolving without a connected PeerInfo throws', () async {
+      const key = 'wiring_auto_peer_missing_peerinfo';
+      await const DualShspInjector().registerAllSingletonsShspAsync(key: key);
+      RegistryManager.instance
+          .connectInstance<IShspSocketBase, ShspSocketMigratable>(
+            () =>
+                RegistryManager.instance.getInstance<IShspSocketMigratable>(
+                      key: key,
+                      subkey: 'ipv4',
+                    )
+                    as ShspSocketMigratable,
+            key: key,
+            subkey: 'ipv4',
+          );
+      connectAutoShspPeerSubkeys(key: key);
+
+      final ipv4Migratable = RegistryManager.instance
+          .getInstance<IShspSocketMigratable>(key: key, subkey: 'ipv4');
+      addTearDown(() {
+        if (!ipv4Migratable.isClosed) ipv4Migratable.close();
+      });
+
+      expect(
+        () => RegistryManager.instance.getInstance<AutoShspPeer>(
+          key: key,
+          subkey: 'ipv4',
+        ),
+        throwsA(isA<RegistryNotFoundError>()),
+      );
+    });
+  });
+
   group('DualShspInjector — full tree resolution', () {
     test('resolves IShspSocket -> IShspSocketMigratable -> IDualShspSocketAuto / IDualShspSocketMigratable end-to-end', () async {
       const key = 'wiring_full_tree';

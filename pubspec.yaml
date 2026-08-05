@@ -138,7 +138,7 @@ melos:
 
     # Regenerate the singleton registry for the shsp package
     registry:
-      run: melos exec --scope=shsp -- dart run singleton_manager_generator --input lib --registry-output lib/main_injection.dart
+      run: melos exec --scope=shsp -- dart run singleton_manager_generator --input lib --registry-output lib/src/main_injection.dart
       description: Regenerate the singleton registry (lib/main_injection.dart) for the shsp package.
 
     # === DOCKER NAT TESTING COMMANDS ===

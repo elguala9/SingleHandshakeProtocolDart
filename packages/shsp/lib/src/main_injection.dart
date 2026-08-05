@@ -2,18 +2,18 @@
 
 import 'package:singleton_manager/singleton_manager.dart'; // GENERATED CODE - DO NOT MODIFY BY HAND
 
-import 'src/impl/instance/core/auto_shsp_instance.dart'; // GENERATED CODE - DO NOT MODIFY BY HAND
-import 'src/impl/peer/auto_shsp_peer.dart'; // GENERATED CODE - DO NOT MODIFY BY HAND
-import 'src/impl/registry/registry_shsp_socket.dart'; // GENERATED CODE - DO NOT MODIFY BY HAND
-import 'src/impl/socket/core/shsp_socket.dart'; // GENERATED CODE - DO NOT MODIFY BY HAND
-import 'src/impl/socket/core/shsp_socket_migratable.dart'; // GENERATED CODE - DO NOT MODIFY BY HAND
-import 'src/impl/socket/dual/dual_shsp_socket_auto.dart'; // GENERATED CODE - DO NOT MODIFY BY HAND
-import 'src/impl/socket/dual/dual_shsp_socket_migratable.dart'; // GENERATED CODE - DO NOT MODIFY BY HAND
-import 'src/interfaces/dual/i_dual_shsp_socket_auto.dart'; // GENERATED CODE - DO NOT MODIFY BY HAND
-import 'src/interfaces/dual/i_dual_shsp_socket_migratable.dart'; // GENERATED CODE - DO NOT MODIFY BY HAND
-import 'src/interfaces/registry/i_registry_shsp_socket.dart'; // GENERATED CODE - DO NOT MODIFY BY HAND
-import 'src/interfaces/socket/i_shsp_socket.dart'; // GENERATED CODE - DO NOT MODIFY BY HAND
-import 'src/interfaces/socket/i_shsp_socket_migratable.dart'; // GENERATED CODE - DO NOT MODIFY BY HAND
+import 'impl/instance/core/auto_shsp_instance.dart'; // GENERATED CODE - DO NOT MODIFY BY HAND
+import 'impl/peer/auto_shsp_peer.dart'; // GENERATED CODE - DO NOT MODIFY BY HAND
+import 'impl/registry/registry_shsp_socket.dart'; // GENERATED CODE - DO NOT MODIFY BY HAND
+import 'impl/socket/core/shsp_socket.dart'; // GENERATED CODE - DO NOT MODIFY BY HAND
+import 'impl/socket/core/shsp_socket_migratable.dart'; // GENERATED CODE - DO NOT MODIFY BY HAND
+import 'impl/socket/dual/dual_shsp_socket_auto.dart'; // GENERATED CODE - DO NOT MODIFY BY HAND
+import 'impl/socket/dual/dual_shsp_socket_migratable.dart'; // GENERATED CODE - DO NOT MODIFY BY HAND
+import 'interfaces/dual/i_dual_shsp_socket_auto.dart'; // GENERATED CODE - DO NOT MODIFY BY HAND
+import 'interfaces/dual/i_dual_shsp_socket_migratable.dart'; // GENERATED CODE - DO NOT MODIFY BY HAND
+import 'interfaces/registry/i_registry_shsp_socket.dart'; // GENERATED CODE - DO NOT MODIFY BY HAND
+import 'interfaces/socket/i_shsp_socket.dart'; // GENERATED CODE - DO NOT MODIFY BY HAND
+import 'interfaces/socket/i_shsp_socket_migratable.dart'; // GENERATED CODE - DO NOT MODIFY BY HAND
 
 /// Connects every `@dependencyInjectable` class discovered under the scanned
 /// input directory to `RegistryManager.instance`, using each generated
