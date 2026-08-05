@@ -28,16 +28,25 @@ Future<IShspSocket> migrateShspSocket(
   final type = address.type;
   final subkey = shspSocketSubkeyFor(type);
 
+  // Resolved before the RawDatagramSocket entry is overwritten: if the
+  // IShspSocket for this slot has not been built yet, resolving it afterwards
+  // would build it from [socket] itself and there would be no old profile left
+  // to carry over.
+  final oldIshspSocket = RegistryManager.instance.getInstance<IShspSocket>(
+    key: key,
+    subkey: subkey,
+  );
+
+  final wrapper = RegistryManager.instance.getInstance<IShspSocketMigratable>(
+    key: key,
+    subkey: subkey,
+  );
 
   RegistryManager.instance.setInstance<RawDatagramSocket>(
     socket,
     key: key,
     subkey: subkey,
   );
-
-  final oldIshspSocket = RegistryManager.instance.getInstance<IShspSocket>();
-  
-  final wrapper = RegistryManager.instance.getInstance<IShspSocketMigratable>();
 
   final newIShspSocket = ShspSocket.withRawAndProfile(socket, oldIshspSocket.extractProfile());
 

@@ -2,7 +2,6 @@
 
 library;
 
-export 'main_injection.dart';
 export 'src/config/shsp_config.dart';
 export 'src/impl/connection/connection.dart';
 export 'src/impl/connection/handshake_ownership.dart';
@@ -83,6 +82,7 @@ export 'src/interfaces/utility/i_message_callback_map.dart';
 export 'src/interfaces/utility/i_message_callback_map_singleton.dart';
 export 'src/interfaces/utility/i_raw_shsp_socket.dart';
 export 'src/interfaces/utility/i_shsp_socket_info_singleton.dart';
+export 'src/main_injection.dart';
 export 'src/types/callback_types.dart';
 export 'src/types/index.dart';
 export 'src/types/instance_profile.dart';
