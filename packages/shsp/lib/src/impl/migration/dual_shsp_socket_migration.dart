@@ -18,11 +18,11 @@ import '../../../shsp.dart';
 /// As with [migrateShspSocket], the dual migratable's own router is never
 /// replaced; only the plain `IShspSocket`/`RawDatagramSocket` registry
 /// entries move.
-({IShspSocket? ipv4, IShspSocket? ipv6}) migrateDualShspSockets({
-  IShspSocket? ipv4Socket,
-  IShspSocket? ipv6Socket,
+Future<({IShspSocket? ipv4, IShspSocket? ipv6})> migrateDualShspSockets({
+  RawDatagramSocket? ipv4Socket,
+  RawDatagramSocket? ipv6Socket,
   String key = 'default',
-}) {
+}) async {
   if (ipv4Socket == null && ipv6Socket == null) {
     throw ArgumentError(
       'migrateDualShspSockets: pass at least one of '
@@ -35,26 +35,30 @@ import '../../../shsp.dart';
   RegistryManager.instance.getInstance<IDualShspSocketMigratable>(key: key);
 
   if (ipv4Socket != null &&
-      ipv4Socket.localAddress?.type != InternetAddressType.IPv4) {
+      ipv4Socket.address.type != InternetAddressType.IPv4) {
     throw ArgumentError.value(
       ipv4Socket,
       'ipv4Socket',
       'must be bound to an IPv4 address, got '
-          '${ipv4Socket.localAddress?.type}.',
+          '${ipv4Socket.address.type}.',
     );
   }
   if (ipv6Socket != null &&
-      ipv6Socket.localAddress?.type != InternetAddressType.IPv6) {
+      ipv6Socket.address.type != InternetAddressType.IPv6) {
     throw ArgumentError.value(
       ipv6Socket,
       'ipv6Socket',
       'must be bound to an IPv6 address, got '
-          '${ipv6Socket.localAddress?.type}.',
+          '${ipv6Socket.address.type}.',
     );
   }
 
   return (
-    ipv4: ipv4Socket == null ? null : migrateShspSocket(ipv4Socket, key: key),
-    ipv6: ipv6Socket == null ? null : migrateShspSocket(ipv6Socket, key: key),
+    ipv4: ipv4Socket == null
+        ? null
+        : await migrateShspSocket(ipv4Socket, key: key),
+    ipv6: ipv6Socket == null
+        ? null
+        : await migrateShspSocket(ipv6Socket, key: key),
   );
 }

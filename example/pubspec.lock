@@ -73,6 +73,14 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "1.19.1"
+  config_manager:
+    dependency: transitive
+    description:
+      name: config_manager
+      sha256: "5434ab57e64d3c193035cb8230802b52e26a8bc4809be98251fbfc84cfa4f6b7"
+      url: "https://pub.dev"
+    source: hosted
+    version: "0.4.1"
   console:
     dependency: transitive
     description:
@@ -224,14 +232,6 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "1.4.1"
-  stun:
-    dependency: transitive
-    description:
-      name: stun
-      sha256: "493fd0a7cef42b097d645cbed30504456c0e28e2b794f5096edf499c02aa539f"
-      url: "https://pub.dev"
-    source: hosted
-    version: "1.2.0"
   term_glyph:
     dependency: transitive
     description:
