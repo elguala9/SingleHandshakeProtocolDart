@@ -9,13 +9,13 @@ import '../../../shsp.dart';
 ///
 /// `ShspSocket` resolves its raw socket parameter via `@Subkey.inherited()`
 /// — auto-connected under both `'ipv4'`/`'ipv6'` by the generated
-/// `registerAllSingletonsShsp()` because `DualShspSocketWrapper`/
+/// `registerAllSingletonsShsp()` because `DualShspSocketAuto`/
 /// `RegistryShspSocket` demand `IShspSocket` under those same subkeys via
 /// `@Subkey('ipv4')`/`@Subkey('ipv6')`. But binding a socket is async and
 /// `RawDatagramSocket` itself isn't `@dependencyInjectable`, so nothing ever
 /// supplies it without this call.
 ///
-/// Call this once per [key] before resolving `IDualShspSocketWrapper`/
+/// Call this once per [key] before resolving `IDualShspSocketAuto`/
 /// `IRegistryShspSocket` under that same [key] — order relative to
 /// `registerAllSingletonsShsp()` doesn't matter, since `RawDatagramSocket`
 /// and `IShspSocket`/the wrapper/registry types are different registry
@@ -46,26 +46,26 @@ Future<void> connectDualShspSockets({String key = 'default'}) async {
   }
 }
 
-/// Connects `ShspSocketWrapper` under the `'ipv4'`/`'ipv6'` subkeys.
+/// Connects `ShspSocketMigratable` under the `'ipv4'`/`'ipv6'` subkeys.
 ///
-/// `ShspSocketWrapper` has no fixed subkey of its own and nothing else in
-/// the graph demands `IShspSocketWrapper` under `'ipv4'`/`'ipv6'` (unlike
-/// `IShspSocket`, which `DualShspSocketWrapper`/`RegistryShspSocket` do
+/// `ShspSocketMigratable` has no fixed subkey of its own and nothing else in
+/// the graph demands `IShspSocketMigratable` under `'ipv4'`/`'ipv6'` (unlike
+/// `IShspSocket`, which `DualShspSocketAuto`/`RegistryShspSocket` do
 /// demand), so the generator can't infer this automatically — it connects
-/// `ShspSocketWrapper` once, under the default subkey, same as the `Single`
+/// `ShspSocketMigratable` once, under the default subkey, same as the `Single`
 /// pattern in the `singleton_manager` README.
-void connectShspSocketWrapperSubkeys({String key = 'default'}) {
+void connectShspSocketMigratableSubkeys({String key = 'default'}) {
   RegistryManager.instance
-    ..connectInstance<IShspSocketWrapper, ShspSocketWrapper>(
-      () => ShspSocketWrapper.dependencyInjectionFactory(
+    ..connectInstance<IShspSocketMigratable, ShspSocketMigratable>(
+      () => ShspSocketMigratable.dependencyInjectionFactory(
         key: key,
         subkey: 'ipv4',
       ),
       key: key,
       subkey: 'ipv4',
     )
-    ..connectInstance<IShspSocketWrapper, ShspSocketWrapper>(
-      () => ShspSocketWrapper.dependencyInjectionFactory(
+    ..connectInstance<IShspSocketMigratable, ShspSocketMigratable>(
+      () => ShspSocketMigratable.dependencyInjectionFactory(
         key: key,
         subkey: 'ipv6',
       ),
@@ -76,7 +76,7 @@ void connectShspSocketWrapperSubkeys({String key = 'default'}) {
 
 /// Connects `AutoShspPeer` under the `'ipv4'`/`'ipv6'` subkeys.
 ///
-/// Same situation as [connectShspSocketWrapperSubkeys]: `AutoShspPeer`
+/// Same situation as [connectShspSocketMigratableSubkeys]: `AutoShspPeer`
 /// implements nothing, so it registers under its own class name, and
 /// nothing else demands `AutoShspPeer` under a subkey — the generator can't
 /// infer this automatically.
@@ -120,7 +120,7 @@ void connectAutoShspInstanceSubkeys({String key = 'default'}) {
 }
 
 /// [MainInjectionShspMixin] host that wires [connectDualShspSockets] into
-/// `beforeRegisterAllSingletonsShspAsync` and [connectShspSocketWrapperSubkeys]/
+/// `beforeRegisterAllSingletonsShspAsync` and [connectShspSocketMigratableSubkeys]/
 /// [connectAutoShspPeerSubkeys]/[connectAutoShspInstanceSubkeys] into
 /// `beforeRegisterAllSingletonsShsp`, so a single call to
 /// `registerAllSingletonsShspAsync` binds the ipv4/ipv6 sockets and connects
@@ -131,7 +131,7 @@ class DualShspInjector with MainInjectionShspMixin {
 
   @override
   void beforeRegisterAllSingletonsShsp({String key = 'default'}) {
-    connectShspSocketWrapperSubkeys(key: key);
+    connectShspSocketMigratableSubkeys(key: key);
     connectAutoShspPeerSubkeys(key: key);
     connectAutoShspInstanceSubkeys(key: key);
   }

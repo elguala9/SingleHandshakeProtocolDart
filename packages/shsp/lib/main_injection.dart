@@ -6,12 +6,14 @@ import 'src/impl/instance/core/auto_shsp_instance.dart'; // GENERATED CODE - DO 
 import 'src/impl/peer/auto_shsp_peer.dart'; // GENERATED CODE - DO NOT MODIFY BY HAND
 import 'src/impl/registry/registry_shsp_socket.dart'; // GENERATED CODE - DO NOT MODIFY BY HAND
 import 'src/impl/socket/core/shsp_socket.dart'; // GENERATED CODE - DO NOT MODIFY BY HAND
-import 'src/impl/socket/core/shsp_socket_wrapper.dart'; // GENERATED CODE - DO NOT MODIFY BY HAND
-import 'src/impl/socket/dual/dual_shsp_socket_wrapper.dart'; // GENERATED CODE - DO NOT MODIFY BY HAND
-import 'src/interfaces/dual/i_dual_shsp_socket_wrapper.dart'; // GENERATED CODE - DO NOT MODIFY BY HAND
+import 'src/impl/socket/core/shsp_socket_migratable.dart'; // GENERATED CODE - DO NOT MODIFY BY HAND
+import 'src/impl/socket/dual/dual_shsp_socket_auto.dart'; // GENERATED CODE - DO NOT MODIFY BY HAND
+import 'src/impl/socket/dual/dual_shsp_socket_migratable.dart'; // GENERATED CODE - DO NOT MODIFY BY HAND
+import 'src/interfaces/dual/i_dual_shsp_socket_auto.dart'; // GENERATED CODE - DO NOT MODIFY BY HAND
+import 'src/interfaces/dual/i_dual_shsp_socket_migratable.dart'; // GENERATED CODE - DO NOT MODIFY BY HAND
 import 'src/interfaces/registry/i_registry_shsp_socket.dart'; // GENERATED CODE - DO NOT MODIFY BY HAND
 import 'src/interfaces/socket/i_shsp_socket.dart'; // GENERATED CODE - DO NOT MODIFY BY HAND
-import 'src/interfaces/wrapper/i_shsp_socket_wrapper.dart'; // GENERATED CODE - DO NOT MODIFY BY HAND
+import 'src/interfaces/socket/i_shsp_socket_migratable.dart'; // GENERATED CODE - DO NOT MODIFY BY HAND
 
 /// Connects every `@dependencyInjectable` class discovered under the scanned
 /// input directory to `RegistryManager.instance`, using each generated
@@ -38,9 +40,10 @@ mixin MainInjectionShspMixin { // GENERATED CODE - DO NOT MODIFY BY HAND
       ..connectInstance<IRegistryShspSocket, RegistryShspSocket>(() => RegistryShspSocket.dependencyInjectionFactory(key: key), key: key) // GENERATED CODE - DO NOT MODIFY BY HAND
       ..connectInstance<IShspSocket, ShspSocket>(() => ShspSocket.dependencyInjectionFactory(key: key, subkey: 'ipv4'), key: key, subkey: 'ipv4') // GENERATED CODE - DO NOT MODIFY BY HAND
       ..connectInstance<IShspSocket, ShspSocket>(() => ShspSocket.dependencyInjectionFactory(key: key, subkey: 'ipv6'), key: key, subkey: 'ipv6') // GENERATED CODE - DO NOT MODIFY BY HAND
-      ..connectInstance<IShspSocketWrapper, ShspSocketWrapper>(() => ShspSocketWrapper.dependencyInjectionFactory(key: key, subkey: 'ipv4'), key: key, subkey: 'ipv4') // GENERATED CODE - DO NOT MODIFY BY HAND
-      ..connectInstance<IShspSocketWrapper, ShspSocketWrapper>(() => ShspSocketWrapper.dependencyInjectionFactory(key: key, subkey: 'ipv6'), key: key, subkey: 'ipv6') // GENERATED CODE - DO NOT MODIFY BY HAND
-      ..connectInstance<IDualShspSocketWrapper, DualShspSocketWrapper>(() => DualShspSocketWrapper.dependencyInjectionFactory(key: key), key: key); // GENERATED CODE - DO NOT MODIFY BY HAND
+      ..connectInstance<IShspSocketMigratable, ShspSocketMigratable>(() => ShspSocketMigratable.dependencyInjectionFactory(key: key, subkey: 'ipv4'), key: key, subkey: 'ipv4') // GENERATED CODE - DO NOT MODIFY BY HAND
+      ..connectInstance<IShspSocketMigratable, ShspSocketMigratable>(() => ShspSocketMigratable.dependencyInjectionFactory(key: key, subkey: 'ipv6'), key: key, subkey: 'ipv6') // GENERATED CODE - DO NOT MODIFY BY HAND
+      ..connectInstance<IDualShspSocketAuto, DualShspSocketAuto>(() => DualShspSocketAuto.dependencyInjectionFactory(key: key), key: key) // GENERATED CODE - DO NOT MODIFY BY HAND
+      ..connectInstance<IDualShspSocketMigratable, DualShspSocketMigratable>(() => DualShspSocketMigratable.dependencyInjectionFactory(key: key), key: key); // GENERATED CODE - DO NOT MODIFY BY HAND
     afterRegisterAllSingletonsShsp(key: key); // GENERATED CODE - DO NOT MODIFY BY HAND
   } // GENERATED CODE - DO NOT MODIFY BY HAND
 

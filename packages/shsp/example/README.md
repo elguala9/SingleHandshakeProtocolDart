@@ -113,12 +113,12 @@ dart example/registry_management.dart
 
 ### 6. Socket Migration (`socket_migration.dart`) - v1.4.0+
 
-Demonstrates live socket migration using `ShspSocketWrapper` and `DualShspSocketMigratable`. As of v1.9.0, constructor uses the `Sockets` value object and IPv4 is optional.
+Demonstrates live socket migration using `ShspSocketMigratable` and `DualShspSocketMigratable`. As of v1.9.0, constructor uses the `Sockets` value object and IPv4 is optional.
 
 **Demonstrates:**
-- Single-socket migration with `ShspSocketWrapper`
-- Dual-socket migration with `DualShspSocketMigratable` (constructor now takes `Sockets`)
-- `fromWrappers` constructor for pre-configured socket injection
+- Single-socket migration with `ShspSocketMigratable`
+- Dual-socket migration with `DualShspSocketMigratable.fromSockets(...)`
+- The DI-shaped `DualShspSocketMigratable(ipv4Migratable: ..., ipv6Migratable: ...)` constructor for pre-configured socket injection
 - Callback preservation across socket migrations
 
 **Run:**

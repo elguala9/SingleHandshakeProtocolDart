@@ -1,6 +1,7 @@
 import 'dart:io';
 
 import 'package:shsp/shsp.dart';
+import 'package:singleton_manager/singleton_manager.dart';
 import 'package:test/test.dart';
 
 void main() {
@@ -11,7 +12,7 @@ void main() {
 
       setUp(() async {
         ipv4Socket = await ShspSocket.bind(InternetAddress.anyIPv4, 0);
-        autoSocket = DualShspSocketAuto(Sockets(ipv4SocketImpl: ipv4Socket));
+        autoSocket = DualShspSocketAuto.fromSockets(Sockets(ipv4SocketImpl: ipv4Socket));
       });
 
       tearDown(() {
@@ -30,8 +31,8 @@ void main() {
         expect(autoSocket, isA<IDualShspSocket>());
       });
 
-      test('ipv4SocketImpl is ShspSocketWrapper', () {
-        expect(autoSocket.ipv4SocketImpl, isA<ShspSocketWrapper>());
+      test('ipv4SocketImpl is ShspSocketMigratable', () {
+        expect(autoSocket.ipv4SocketImpl, isA<ShspSocketMigratable>());
       });
 
       test('ipv6SocketImpl is null when no ipv6 socket provided', () {
@@ -39,7 +40,7 @@ void main() {
       });
 
       test('construction with empty Sockets', () {
-        final empty = DualShspSocketAuto(Sockets());
+        final empty = DualShspSocketAuto.fromSockets(Sockets());
         expect(empty.ipv4SocketImpl, isNull);
         expect(empty.ipv6SocketImpl, isNull);
       });
@@ -64,9 +65,9 @@ void main() {
       setUp(() async {
         ipv4Socket = await ShspSocket.bind(InternetAddress.anyIPv4, 0);
         ipv6Socket = await ShspSocket.bindIfPossible(InternetAddress.anyIPv6, 0);
-        autoSocket = DualShspSocketAuto(Sockets(ipv4SocketImpl: ipv4Socket));
+        autoSocket = DualShspSocketAuto.fromSockets(Sockets(ipv4SocketImpl: ipv4Socket));
         if (ipv6Socket != null) {
-          autoSocket.ipv6SocketImpl = ShspSocketWrapper(ipv6Socket!);
+          autoSocket.ipv6SocketImpl = ShspSocketMigratable(ipv6Socket!);
         }
       });
 
@@ -74,25 +75,25 @@ void main() {
         autoSocket.close();
       });
 
-      test('ipv4SocketImpl is ShspSocketWrapper', () {
-        expect(autoSocket.ipv4SocketImpl, isA<ShspSocketWrapper>());
+      test('ipv4SocketImpl is ShspSocketMigratable', () {
+        expect(autoSocket.ipv4SocketImpl, isA<ShspSocketMigratable>());
       });
 
-      test('ipv6SocketImpl is ShspSocketWrapper when ipv6 is available', () {
+      test('ipv6SocketImpl is ShspSocketMigratable when ipv6 is available', () {
         if (ipv6Socket == null) return;
-        expect(autoSocket.ipv6SocketImpl, isA<ShspSocketWrapper>());
+        expect(autoSocket.ipv6SocketImpl, isA<ShspSocketMigratable>());
       });
     });
 
-    group('fromWrappers', () {
+    group('constructor with wrappers', () {
       late ShspSocket ipv4Socket;
-      late ShspSocketWrapper ipv4Wrapper;
+      late ShspSocketMigratable ipv4Migratable;
       late DualShspSocketAuto autoSocket;
 
       setUp(() async {
         ipv4Socket = await ShspSocket.bind(InternetAddress.anyIPv4, 0);
-        ipv4Wrapper = ShspSocketWrapper(ipv4Socket);
-        autoSocket = DualShspSocketAuto.fromWrappers(ipv4Wrapper: ipv4Wrapper);
+        ipv4Migratable = ShspSocketMigratable(ipv4Socket);
+        autoSocket = DualShspSocketAuto(ipv4Migratable: ipv4Migratable);
       });
 
       tearDown(() {
@@ -100,7 +101,51 @@ void main() {
       });
 
       test('ipv4SocketImpl is the exact wrapper passed in', () {
-        expect(autoSocket.ipv4SocketImpl, same(ipv4Wrapper));
+        expect(autoSocket.ipv4SocketImpl, same(ipv4Migratable));
+      });
+
+      test('construction with no wrappers', () {
+        final empty = DualShspSocketAuto();
+        expect(empty.ipv4SocketImpl, isNull);
+        expect(empty.ipv6SocketImpl, isNull);
+      });
+    });
+
+    group('dependencyInjectionFactory', () {
+      late ShspSocket ipv4Socket;
+      late ShspSocketMigratable ipv4Migratable;
+      const key = 'dual_shsp_socket_auto_test';
+
+      setUp(() async {
+        ipv4Socket = await ShspSocket.bind(InternetAddress.anyIPv4, 0);
+        ipv4Migratable = ShspSocketMigratable(ipv4Socket);
+        RegistryManager.instance.setInstance<IShspSocketMigratable>(
+          ipv4Migratable,
+          key: key,
+          subkey: 'ipv4',
+        );
+      });
+
+      tearDown(() {
+        ipv4Socket.close();
+      });
+
+      test('resolves the ipv4/ipv6 wrappers registered under key/subkey', () {
+        final auto = DualShspSocketAuto.dependencyInjectionFactory(key: key);
+        addTearDown(auto.close);
+
+        expect(auto.ipv4SocketImpl, same(ipv4Migratable));
+        expect(auto.ipv6SocketImpl, isNull);
+      });
+
+      test('constructs even when neither wrapper is registered', () {
+        final auto = DualShspSocketAuto.dependencyInjectionFactory(
+          key: 'unregistered_key',
+        );
+        addTearDown(auto.close);
+
+        expect(auto.ipv4SocketImpl, isNull);
+        expect(auto.ipv6SocketImpl, isNull);
       });
     });
 
@@ -113,7 +158,7 @@ void main() {
       setUp(() async {
         ipv4Socket = await ShspSocket.bind(InternetAddress.anyIPv4, 0);
         ipv6Socket = await ShspSocket.bindIfPossible(InternetAddress.anyIPv6, 0);
-        migratable = DualShspSocketMigratable(
+        migratable = DualShspSocketMigratable.fromSockets(
           Sockets(ipv4SocketImpl: ipv4Socket, ipv6SocketImpl: ipv6Socket),
         );
         autoSocket = DualShspSocketAuto.fromMigratable(migratable);
@@ -124,13 +169,13 @@ void main() {
       });
 
       test('ipv4SocketImpl is the migratable IPv4 wrapper', () {
-        expect(autoSocket.ipv4SocketImpl, same(migratable.ipv4SocketWrapper));
+        expect(autoSocket.ipv4SocketImpl, same(migratable.ipv4SocketMigratable));
       });
 
       test('ipv6SocketImpl is the migratable IPv6 wrapper, not the IPv4 one', () {
         if (ipv6Socket == null) return;
-        expect(autoSocket.ipv6SocketImpl, same(migratable.ipv6SocketWrapper));
-        expect(autoSocket.ipv6SocketImpl, isNot(same(migratable.ipv4SocketWrapper)));
+        expect(autoSocket.ipv6SocketImpl, same(migratable.ipv6SocketMigratable));
+        expect(autoSocket.ipv6SocketImpl, isNot(same(migratable.ipv4SocketMigratable)));
       });
     });
 
@@ -140,7 +185,7 @@ void main() {
 
       setUp(() async {
         ipv4Socket = await ShspSocket.bind(InternetAddress.anyIPv4, 0);
-        autoSocket = DualShspSocketAuto(Sockets(ipv4SocketImpl: ipv4Socket));
+        autoSocket = DualShspSocketAuto.fromSockets(Sockets(ipv4SocketImpl: ipv4Socket));
       });
 
       tearDown(() {
@@ -172,7 +217,7 @@ void main() {
       });
 
       test('throws StateError when no ipv4 socket bound', () {
-        final empty = DualShspSocketAuto(Sockets());
+        final empty = DualShspSocketAuto.fromSockets(Sockets());
         addTearDown(empty.close);
         expect(empty.refreshSocketIpv4, throwsStateError);
       });
@@ -186,9 +231,9 @@ void main() {
       setUp(() async {
         ipv4Socket = await ShspSocket.bind(InternetAddress.anyIPv4, 0);
         ipv6Socket = await ShspSocket.bindIfPossible(InternetAddress.anyIPv6, 0);
-        autoSocket = DualShspSocketAuto(Sockets(ipv4SocketImpl: ipv4Socket));
+        autoSocket = DualShspSocketAuto.fromSockets(Sockets(ipv4SocketImpl: ipv4Socket));
         if (ipv6Socket != null) {
-          autoSocket.ipv6SocketImpl = ShspSocketWrapper(ipv6Socket!);
+          autoSocket.ipv6SocketImpl = ShspSocketMigratable(ipv6Socket!);
         }
       });
 
@@ -224,7 +269,7 @@ void main() {
 
       test('throws StateError when no ipv6 socket bound', () async {
         final ipv4 = await ShspSocket.bind(InternetAddress.anyIPv4, 0);
-        final noIpv6 = DualShspSocketAuto(Sockets(ipv4SocketImpl: ipv4));
+        final noIpv6 = DualShspSocketAuto.fromSockets(Sockets(ipv4SocketImpl: ipv4));
         addTearDown(noIpv6.close);
         expect(noIpv6.refreshSocketIpv6, throwsStateError);
       });
@@ -236,7 +281,7 @@ void main() {
 
       setUp(() async {
         ipv4Socket = await ShspSocket.bind(InternetAddress.anyIPv4, 0);
-        autoSocket = DualShspSocketAuto(Sockets(ipv4SocketImpl: ipv4Socket));
+        autoSocket = DualShspSocketAuto.fromSockets(Sockets(ipv4SocketImpl: ipv4Socket));
       });
 
       tearDown(() {
@@ -274,7 +319,7 @@ void main() {
         addTearDown(() {
           if (!ipv6.isClosed) ipv6.close();
         });
-        autoSocket.ipv6SocketImpl = ShspSocketWrapper(ipv6);
+        autoSocket.ipv6SocketImpl = ShspSocketMigratable(ipv6);
 
         autoSocket.refreshSockets();
 
@@ -291,7 +336,7 @@ void main() {
 
       setUp(() async {
         ipv4Socket = await ShspSocket.bind(InternetAddress.anyIPv4, 0);
-        autoSocket = DualShspSocketAuto(Sockets(ipv4SocketImpl: ipv4Socket));
+        autoSocket = DualShspSocketAuto.fromSockets(Sockets(ipv4SocketImpl: ipv4Socket));
       });
 
       tearDown(() {
@@ -324,7 +369,7 @@ void main() {
 
         expect(autoSocket.ipv4Socket!.localPort, equals(newPort));
         expect(autoSocket.ipv4Socket!.localPort, isNot(equals(oldPort)));
-        if (oldWrapper is ShspSocketWrapper) {
+        if (oldWrapper is ShspSocketMigratable) {
           expect(newSocket.isClosed, isFalse);
         }
       });

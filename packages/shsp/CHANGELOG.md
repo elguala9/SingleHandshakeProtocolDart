@@ -7,6 +7,20 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Changed
+
+- `DualShspSocketAuto` is now `@dependencyInjectable` directly: its unnamed constructor takes `ipv4Migratable`/`ipv6Migratable` (resolved via `@Subkey('ipv4')`/`@Subkey('ipv6')`), and the previous `Sockets`-based unnamed constructor is now `DualShspSocketAuto.fromSockets(...)`
+- `main_injection.dart` now registers `IDualShspSocketAuto → DualShspSocketAuto` instead of `IDualShspSocketWrapper → DualShspSocketWrapper`
+- Renamed `ShspSocketWrapper` → `ShspSocketMigratable` and `IShspSocketWrapper` → `IShspSocketMigratable` (with `ShspSocketWrapperDelegationMixin` → `ShspSocketMigratableDelegationMixin`) so the single-socket and dual-socket migration types share the same naming (`ShspSocketMigratable` / `DualShspSocketMigratable`)
+- Renamed the associated members for the same reason: `getSocketWrapper()` → `getSocketMigratable()`, `ipv4SocketWrapper`/`ipv6SocketWrapper` → `ipv4SocketMigratable`/`ipv6SocketMigratable`, and the `ipv4Wrapper`/`ipv6Wrapper` parameters → `ipv4Migratable`/`ipv6Migratable`
+- `i_shsp_socket_wrapper.dart` moved from `src/interfaces/wrapper/` to `src/interfaces/socket/i_shsp_socket_migratable.dart`, alongside `i_shsp_socket.dart`/`i_shsp_socket_base.dart`
+- `DualShspSocketMigratable` is now `@dependencyInjectable` directly, mirroring `DualShspSocketAuto`: its unnamed constructor takes `ipv4Migratable`/`ipv6Migratable` (resolved via `@Subkey('ipv4')`/`@Subkey('ipv6')`), and the previous `.fromMigratables(...)` named constructor is merged into it; the old `Sockets`-based unnamed constructor is now `DualShspSocketMigratable.fromSockets(...)`
+- `main_injection.dart` now also registers `IDualShspSocketMigratable → DualShspSocketMigratable`, completing the DI tree: `RawDatagramSocket` → `IShspSocket` → `IShspSocketMigratable` → both `IDualShspSocketAuto` and `IDualShspSocketMigratable` resolve independently from the same ipv4/ipv6 instances
+
+### Removed
+
+- `DualShspSocketWrapper`, `IDualShspSocketWrapper`, `DualShspSocketWrapperDelegationMixin` — merged into `DualShspSocketAuto`, which now owns its own DI resolution instead of being wrapped by a delegating facade
+
 ## [1.10.1] - 2026-07-15
 
 ### Fixed
