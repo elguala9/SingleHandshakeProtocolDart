@@ -1,5 +1,5 @@
 import 'dart:io';
-import '../i_shsp_socket.dart';
+import '../socket/i_shsp_socket.dart';
 import '../../impl/utility/message_callback_map.dart';
 
 /// Factory interface for creating ShspSocket instances

@@ -1,0 +1,19 @@
+import 'dart:io';
+
+import '../../../shsp.dart';
+
+abstract interface class IDualShspSocketMigratable
+    implements DualShspSocket {
+  /// Migrates the socket for the given address family. Defaults to IPv6;
+  /// pass [InternetAddressType.IPv4] to migrate the IPv4 socket.
+  void migrateSocket(
+    IShspSocket socket, [
+    InternetAddressType type = InternetAddressType.IPv6,
+  ]);
+
+  /// The socket wrapper for the given address family. Defaults to IPv6;
+  /// pass [InternetAddressType.IPv4] for the IPv4 wrapper.
+  IShspSocketMigratable getSocketMigratable([
+    InternetAddressType type = InternetAddressType.IPv6,
+  ]);
+}

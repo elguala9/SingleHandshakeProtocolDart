@@ -1,9 +1,6 @@
-import 'i_shsp_peer.dart';
-import 'package:callback_handler/callback_handler.dart';
-import '../types/instance_profile.dart';
+import '../../shsp.dart';
 
-typedef CallbackOn = CallbackHandler<void, void>;
-typedef CallbackOnError = CallbackHandler<dynamic, void>;
+
 
 /// Interface for SHSP Instance
 /// Extends IShspPeer with handshake and connection state management

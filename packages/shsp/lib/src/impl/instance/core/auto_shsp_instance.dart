@@ -2,11 +2,14 @@ import 'dart:io';
 
 import 'package:meta/meta.dart';
 import '../../../interfaces/i_compression_codec.dart';
-import '../../../interfaces/i_shsp_socket.dart';
+import '../../../interfaces/socket/i_shsp_socket.dart';
+import '../../../interfaces/socket/i_shsp_socket_base.dart';
 import '../../../types/peer_types.dart';
 
 import '../../socket/core/shsp_socket_singleton.dart';
+import '../../mixins/socket_change_listener_mixin.dart';
 import 'shsp_instance.dart';
+import 'package:singleton_manager/singleton_manager.dart';
 
 /// An [ShspInstance] that automatically uses the global [ShspSocketSingleton] socket.
 ///
@@ -38,23 +41,32 @@ import 'shsp_instance.dart';
 ///   remotePeer: PeerInfo(address: remoteAddress, port: remotePort),
 /// );
 /// ```
-class AutoShspInstance extends ShspInstance {
-  AutoShspInstance._({
+@dependencyInjectable
+class AutoShspInstance extends ShspInstance with SocketChangeListenerMixin {
+  AutoShspInstance({
     required super.remotePeer,
-    required super.socket,
+    @Subkey.inherited() required super.socket,
     required super.keepAliveSeconds,
     ShspSocketSingleton? singleton,
   }) {
     if (singleton != null) {
-      _singleton = singleton;
-      // Save reference so we can deregister in close()
-      _socketChangedListener = (newSocket) {
-        // Re-register this instance's callback with the new socket
-        newSocket.setMessageCallback(remotePeer, socketCallbackFunction);
-      };
-      singleton.socketChangedCallback.register(_socketChangedListener!);
+      initSocketChangeListener(singleton);
     }
   }
+
+  factory AutoShspInstance.dependencyInjectionFactory({String key = 'default', String subkey = 'default'}) { // GENERATED CODE - DO NOT MODIFY BY HAND
+    final remotePeer = RegistryManager.instance.getInstance<PeerInfo>(key: key); // GENERATED CODE - DO NOT MODIFY BY HAND
+    final socket = RegistryManager.instance.getInstance<IShspSocketBase>(key: key, subkey: subkey); // GENERATED CODE - DO NOT MODIFY BY HAND
+    final keepAliveSeconds = RegistryManager.instance.getInstance<int>(key: key); // GENERATED CODE - DO NOT MODIFY BY HAND
+    final singleton = RegistryManager.instance.tryGetInstance<ShspSocketSingleton>(key: key); // GENERATED CODE - DO NOT MODIFY BY HAND
+
+    return AutoShspInstance( // GENERATED CODE - DO NOT MODIFY BY HAND
+      remotePeer: remotePeer, // GENERATED CODE - DO NOT MODIFY BY HAND
+      socket: socket, // GENERATED CODE - DO NOT MODIFY BY HAND
+      keepAliveSeconds: keepAliveSeconds, // GENERATED CODE - DO NOT MODIFY BY HAND
+      singleton: singleton, // GENERATED CODE - DO NOT MODIFY BY HAND
+    ); // GENERATED CODE - DO NOT MODIFY BY HAND
+  } // GENERATED CODE - DO NOT MODIFY BY HAND
 
   /// Factory solo per i test — consente di iniettare un socket esplicito.
   ///
@@ -65,14 +77,11 @@ class AutoShspInstance extends ShspInstance {
     required PeerInfo remotePeer,
     required IShspSocket socket,
     int keepAliveSeconds = 30,
-  }) => AutoShspInstance._(
+  }) => AutoShspInstance(
     remotePeer: remotePeer,
     socket: socket,
     keepAliveSeconds: keepAliveSeconds,
   );
-
-  ShspSocketSingleton? _singleton;
-  void Function(IShspSocket)? _socketChangedListener;
 
   /// Crea un [AutoShspInstance] per comunicare con [remotePeer].
   ///
@@ -101,7 +110,7 @@ class AutoShspInstance extends ShspInstance {
       compressionCodec: compressionCodec,
     );
 
-    return AutoShspInstance._(
+    return AutoShspInstance(
       remotePeer: remotePeer,
       socket: singleton.socket,
       keepAliveSeconds: keepAliveSeconds,
@@ -117,11 +126,7 @@ class AutoShspInstance extends ShspInstance {
   /// separatamente.
   @override
   void close() {
-    if (_socketChangedListener != null) {
-      _singleton!.socketChangedCallback.unregister(_socketChangedListener!);
-      _socketChangedListener = null;
-      _singleton = null;
-    }
+    deregisterSocketChangeListener();
     super.close();
   }
 }

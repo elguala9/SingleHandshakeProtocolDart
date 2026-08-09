@@ -13,18 +13,11 @@ export 'registry_shsp_socket.dart';
 ///   InputRegistryShspSocket(ipv4Port: 8080, ipv6Port: 8081),
 /// );
 ///
-/// // Or initialize from DI
-/// RegistrySingletonShspSocket.initializeDI();
-///
 /// // Access sockets
 /// final ipv4 = RegistrySingletonShspSocket.instance.getByKey(SocketType.ipv4);
 /// ```
 class RegistrySingletonShspSocket extends RegistryShspSocket {
   RegistrySingletonShspSocket._internal() : super();
-
-  RegistrySingletonShspSocket.initializeDI() {
-    initializeDI();
-  }
 
   static final RegistrySingletonShspSocket _instance =
       RegistrySingletonShspSocket._internal();
@@ -32,4 +25,4 @@ class RegistrySingletonShspSocket extends RegistryShspSocket {
   static RegistrySingletonShspSocket get instance => _instance;
 }
 
-typedef RegistrySingletonShspPeer<Key> = RegistrySingleton<Key, IShspPeer>;
+typedef RegistrySingletonShspPeer<Key> = KeyedRegistrySingleton<Key, IShspPeer>;

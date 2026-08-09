@@ -664,13 +664,29 @@ void main() {
 
     group('Edge Cases and Error Conditions', () {
       test('should handle binding to high port number', () async {
-        const highPort = 60000;
-        final socket = await ShspSocket.bind(
-          InternetAddress.loopbackIPv4,
-          highPort,
+        // A single hardcoded port can fall inside an OS-reserved dynamic
+        // range (observed on Windows with Hyper-V/WSL/Docker active, which
+        // excludes arbitrary high-port ranges at the OS level) and fail with
+        // a SocketException unrelated to ShspSocket itself. Try a few
+        // candidates so the test verifies "binding to a high port works" in
+        // general rather than depending on one specific port being free.
+        const candidatePorts = [60000, 60001, 60123, 55000, 50000];
+        ShspSocket? socket;
+        for (final port in candidatePorts) {
+          try {
+            socket = await ShspSocket.bind(InternetAddress.loopbackIPv4, port);
+            expect(socket.localPort, equals(port));
+            break;
+          } on SocketException {
+            continue;
+          }
+        }
+        expect(
+          socket,
+          isNotNull,
+          reason: 'none of the candidate high ports could be bound',
         );
-        expect(socket.localPort, equals(highPort));
-        socket.close();
+        socket!.close();
       });
 
       test('port 0 should use ephemeral port assignment', () async {

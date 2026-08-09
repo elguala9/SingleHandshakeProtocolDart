@@ -1,16 +1,13 @@
 import 'dart:io';
-import 'package:singleton_manager/singleton_manager.dart';
 
-import '../types/callback_types.dart';
-import '../types/peer_types.dart';
-import '../types/socket_profile.dart';
-import 'i_compression_codec.dart';
-import 'i_shsp_instance.dart';
+import '../../types/callback_types.dart';
+import '../../types/socket_profile.dart';
+import '../i_compression_codec.dart';
 import 'i_shsp_socket_base.dart';
 
 /// Interface for SHSP Socket
 abstract interface class IShspSocket
-    implements IShspSocketBase, IValueForRegistry, RawDatagramSocket {
+    implements IShspSocketBase, RawDatagramSocket {
   /// Returns the socket state as a serialized string (type, endpoints, registered callbacks)
   String serializedObject();
 
@@ -37,16 +34,8 @@ abstract interface class IShspSocket
   @Deprecated('use the get to retrive the onError and register directly there')
   void setErrorCallback(void Function(dynamic err) cb);
 
-  /// Associates a callback with incoming messages from a specific remote endpoint
-  void setMessageCallback(PeerInfo peer, MessageCallbackFunction cb);
 
-  /// Removes a message callback associated with a specific remote endpoint
-  /// Returns true if a callback was removed, false if no callback was found
-  bool removeMessageCallback(PeerInfo peer, MessageCallbackFunction cb);
-
-  /// Send data to a remote address (as string) and port
-  /// Returns the number of bytes written
-  int sendTo(List<int> buffer, PeerInfo peer);
+  
 
   /// Get the local address the socket is bound to
   InternetAddress? get localAddress;

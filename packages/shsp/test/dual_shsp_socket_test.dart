@@ -14,16 +14,33 @@ class MockDualMigratable implements IDualShspSocketMigratable {
   bool get isClosed => closed;
 
   @override
-  IShspSocket get ipv4Socket => throw UnimplementedError();
+  IShspSocket? getSocket([InternetAddressType type = InternetAddressType.IPv6]) {
+    if (type == InternetAddressType.IPv4) return ipv4SocketImpl;
+    return ipv6SocketImpl;
+  }
 
-  @override
+  IShspSocket? get ipv4Socket => throw UnimplementedError();
+
   IShspSocket? get ipv6Socket => null;
 
   @override
+  void migrateSocket(
+    IShspSocket socket, [
+    InternetAddressType type = InternetAddressType.IPv6,
+  ]) {}
+
   void migrateSocketIpv4(IShspSocket socket) {}
 
-  @override
   void migrateSocketIpv6(IShspSocket socket) {}
+
+  @override
+  IShspSocketMigratable getSocketMigratable([
+    InternetAddressType type = InternetAddressType.IPv6,
+  ]) => throw UnimplementedError();
+
+  IShspSocketMigratable get ipv4SocketMigratable => throw UnimplementedError();
+
+  IShspSocketMigratable get ipv6SocketMigratable => throw UnimplementedError();
 
   @override
   void applyProfile(ShspSocketProfile profile) {}
@@ -62,37 +79,47 @@ class MockDualMigratable implements IDualShspSocketMigratable {
   void setErrorCallback(void Function(dynamic err) cb) {}
 
   @override
-  CallbackOn get onClose => throw UnimplementedError();
+  CallbackOnWithSocket get onClose => throw UnimplementedError();
 
   @override
-  CallbackOnError get onError => throw UnimplementedError();
+  CallbackOnErrorWithSocket get onError => throw UnimplementedError();
 
   @override
-  CallbackOn get onListening => throw UnimplementedError();
+  CallbackOnWithSocket get onListening => throw UnimplementedError();
 
   @override
   String serializedObject() => '';
 
   @override
-  IShspSocket get ipv4SocketForMessages => throw UnimplementedError();
+  IShspSocket? get ipv4SocketForMessages => throw UnimplementedError();
 
   @override
   IShspSocket? get ipv6SocketForMessages => null;
 
   @override
-  IShspSocket get ipv4SocketForProfile => throw UnimplementedError();
+  IShspSocket? get ipv4SocketForProfile => throw UnimplementedError();
 
   @override
   IShspSocket? get ipv6SocketForProfile => null;
 
   @override
-  late IShspSocket ipv4SocketImpl;
+  late IShspSocket? ipv4SocketImpl;
 
   @override
   late IShspSocket? ipv6SocketImpl;
 
   @override
-  IShspSocket get socket => throw UnimplementedError();
+  RawDatagramSocket get socket => throw UnimplementedError();
+
+  IShspSocket refreshSocket([
+    InternetAddressType type = InternetAddressType.IPv6,
+  ]) => throw UnimplementedError();
+
+  Sockets refreshSockets() => throw UnimplementedError();
+
+  IShspSocket refreshSocketIpv4() => throw UnimplementedError();
+
+  IShspSocket refreshSocketIpv6() => throw UnimplementedError();
 }
 
 void main() {
@@ -140,7 +167,7 @@ void main() {
           if (!ipv4.isClosed) ipv4.close();
         });
 
-        dual = DualShspSocket.fromSockets(ipv4);
+        dual = DualShspSocket.fromSockets(Sockets(ipv4SocketImpl: ipv4));
         expect(dual.ipv4Socket, equals(ipv4));
       });
 
@@ -150,7 +177,7 @@ void main() {
           if (!ipv4.isClosed) ipv4.close();
         });
 
-        dual = DualShspSocket.fromSockets(ipv4);
+        dual = DualShspSocket.fromSockets(Sockets(ipv4SocketImpl: ipv4));
         expect(dual.ipv6Socket, isNull);
       });
 
@@ -172,7 +199,7 @@ void main() {
         }
 
         if (ipv6 != null) {
-          dual = DualShspSocket.fromSockets(ipv4, ipv6);
+          dual = DualShspSocket.fromSockets(Sockets(ipv4SocketImpl: ipv4, ipv6SocketImpl: ipv6));
           expect(dual.ipv6Socket, isNotNull);
         }
       });

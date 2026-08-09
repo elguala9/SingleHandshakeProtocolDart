@@ -91,31 +91,29 @@ void main() {
         expect(retrieved, isNotNull);
       });
 
-      test('falls back to IP match when port differs', () {
+      test('returns null when port differs', () {
         void myCallback(record) {}
         final addr = InternetAddress('192.168.1.100');
         map.addByAddress(addr, 8080, myCallback);
 
-        // Different port but same IP—should fallback to IP match
+        // Different port → no match
         final retrieved = map.getByAddress(addr, 9090);
-        expect(retrieved, isNotNull);
+        expect(retrieved, isNull);
       });
     });
 
-    // ── Fallback IP-only matching ───────────────────────────────────────────
-    group('getByAddress - IP-only fallback (NAT scenario)', () {
-      test('falls back to IP-only match when exact port not found', () {
+    // ── Exact port matching (no fallback) ──────────────────────────────────
+    group('getByAddress - no IP-only fallback', () {
+      test('returns null when exact port not found', () {
         void myCallback(record) {}
         final addr = InternetAddress('172.20.0.3');
-        // Register callback for :9002
         map.addByAddress(addr, 9002, myCallback);
 
-        // Query with remapped port :58349, should fallback to same IP
         final retrieved = map.getByAddress(addr, 58349);
-        expect(retrieved, isNotNull);
+        expect(retrieved, isNull);
       });
 
-      test('prefers exact match over IP fallback', () {
+      test('exact match works correctly', () {
         void callback1(record) {}
         void callback2(record) {}
         final addr = InternetAddress('192.168.1.100');
@@ -123,7 +121,6 @@ void main() {
         map.addByAddress(addr, 9090, callback2);
 
         final retrieved = map.getByAddress(addr, 8080);
-        // Should get the exact match handler, not any other port
         expect(retrieved, isNotNull);
       });
 
@@ -137,19 +134,19 @@ void main() {
         expect(retrieved, isNull);
       });
 
-      test('works with IPv6 addresses', () {
+      test('returns null for IPv6 with different port', () {
         void myCallback(record) {}
         final addr = InternetAddress('2001:db8::1');
         map.addByAddress(addr, 8080, myCallback);
 
         final retrieved = map.getByAddress(addr, 58349);
-        expect(retrieved, isNotNull);
+        expect(retrieved, isNull);
       });
     });
 
     // ── Multiple ports for same IP ──────────────────────────────────────────
     group('getByAddress - ambiguous IP (multiple ports)', () {
-      test('returns first match when multiple callbacks registered for same IP',
+      test('returns null when multiple callbacks registered for same IP',
           () {
         void callback1(record) {}
         void callback2(record) {}
@@ -159,9 +156,8 @@ void main() {
         map.addByAddress(addr, 9090, callback2);
         map.addByAddress(addr, 7070, callback3);
 
-        // Query with unmapped port—should return *one* of them (first in iteration)
         final retrieved = map.getByAddress(addr, 58349);
-        expect(retrieved, isNotNull);
+        expect(retrieved, isNull);
       });
     });
 
@@ -193,6 +189,40 @@ void main() {
 
         expect(map.containsAddress(addr, 8080), isTrue);
         expect(map.containsAddress(addr, 9090), isFalse);
+      });
+
+      test('removeKey removes the callback for that key only', () {
+        void callback1(record) {}
+        void callback2(record) {}
+        map.add('192.168.1.100:8080', callback1);
+        map.add('192.168.1.100:9090', callback2);
+
+        map.removeKey('192.168.1.100:8080');
+
+        expect(map.containsKey('192.168.1.100:8080'), isFalse);
+        expect(map.containsKey('192.168.1.100:9090'), isTrue);
+      });
+
+      test('removeCallback drops the key regardless of the callback passed', () {
+        void registered(record) {}
+        void other(record) {}
+        map.add('192.168.1.100:8080', registered);
+
+        // The callback argument is ignored by design — one handler per key.
+        map.removeCallback('192.168.1.100:8080', other);
+
+        expect(map.containsKey('192.168.1.100:8080'), isFalse);
+      });
+
+      test('removing an unknown key is a no-op', () {
+        void myCallback(record) {}
+        map.add('192.168.1.100:8080', myCallback);
+
+        map.remove('10.0.0.1:1234');
+        map.removeKey('10.0.0.1:1234');
+        map.removeCallback('10.0.0.1:1234', myCallback);
+
+        expect(map.length, equals(1));
       });
     });
 
