@@ -5,21 +5,36 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
-## [Unreleased]
+## [1.11.0] - 2026-08-09
+
+### Added
+
+- `src/config/shsp_config.dart`: `config_manager`-backed configuration surface — `initShspConfig()`, `shspConfigSector`, `defaultShspConfig` and `ShspConfigExtension` (`defaultKeepAliveSeconds`, `defaultHandshakeTimeoutMs`, `defaultHandshakeIntervalMs`, `defaultRetryMaxAttempts`, `defaultRetryInitialDelayMs`, `defaultRetryBackoffMultiplier`), replacing hardcoded defaults with overridable, deep-mergeable settings
+- `main_injection.dart` (moved to `src/`): generated `MainInjectionShspMixin`/`MainInjectionShsp` with `registerAllSingletonsShsp()` / `registerAllSingletonsShspAsync()` and before/after hooks, wiring every `@dependencyInjectable` SHSP class into `RegistryManager`
+- `src/impl/registry/dual_shsp_registry_wiring.dart`: `connectDualShspSockets()` (binds IPv4/IPv6 `RawDatagramSocket`s best-effort, registering whichever succeeded under the `'ipv4'`/`'ipv6'` subkeys, and throwing `SocketException` only if neither could be bound), `connectShspSocketMigratableSubkeys()`, `connectAutoShspPeerSubkeys()`, `connectAutoShspInstanceSubkeys()`, and `DualShspInjector` wiring all of the above into the DI before-register hooks
+- `src/impl/migration/shsp_socket_migration.dart` / `dual_shsp_socket_migration.dart`: `migrateShspSocket()`, `migrateShspSocketIpv4()`, `migrateShspSocketIpv6()` and `migrateDualShspSockets()`, swapping the registered `RawDatagramSocket`/`IShspSocket` for a subkey/family while carrying the previous socket's profile over to the new one, without replacing the live `IShspSocketMigratable`/`IDualShspSocketMigratable` router
+- `IDualShspSocket.getSocket([InternetAddressType])` / `DualShspSocket.getSocket()`: unified accessor for the IPv4/IPv6 socket, replacing direct `ipv4Socket`/`ipv6Socket` field access in handshake and registry code
+- `RegistryShspSocket`, `DualShspSocketAuto`, `DualShspSocketMigratable` and related classes are now `@dependencyInjectable`, with generated `dependencyInjectionFactory()` constructors resolving optional dependencies via `RegistryManager.tryGetInstance()`
+- `DualShspSocketAuto` is now `@dependencyInjectable` directly: its unnamed constructor takes `ipv4Migratable`/`ipv6Migratable` (resolved via `@Subkey('ipv4')`/`@Subkey('ipv6')`), and the previous `Sockets`-based unnamed constructor is now `DualShspSocketAuto.fromSockets(...)`
+- `DualShspSocketMigratable` is now `@dependencyInjectable` directly, mirroring `DualShspSocketAuto`: its unnamed constructor takes `ipv4Migratable`/`ipv6Migratable`, and the previous `.fromMigratables(...)` named constructor is merged into it; the old `Sockets`-based unnamed constructor is now `DualShspSocketMigratable.fromSockets(...)`
 
 ### Changed
 
-- `DualShspSocketAuto` is now `@dependencyInjectable` directly: its unnamed constructor takes `ipv4Migratable`/`ipv6Migratable` (resolved via `@Subkey('ipv4')`/`@Subkey('ipv6')`), and the previous `Sockets`-based unnamed constructor is now `DualShspSocketAuto.fromSockets(...)`
-- `main_injection.dart` now registers `IDualShspSocketAuto → DualShspSocketAuto` instead of `IDualShspSocketWrapper → DualShspSocketWrapper`
+- `RegistryManager` (generic keyed registry, `registry_utility.dart`) renamed to `KeyedRegistry`/`KeyedRegistryManager`/`KeyedRegistrySingleton`, dropped its `IValueForRegistry` type bound, and now supports arbitrary `Value` types
+- `RegistryShspSocket` switched from `Registry` to `KeyedRegistry`, gained an optional-socket constructor and a `destroy()` that iterates registered sockets directly instead of delegating to the removed `Registry.destroyAll()`
 - Renamed `ShspSocketWrapper` → `ShspSocketMigratable` and `IShspSocketWrapper` → `IShspSocketMigratable` (with `ShspSocketWrapperDelegationMixin` → `ShspSocketMigratableDelegationMixin`) so the single-socket and dual-socket migration types share the same naming (`ShspSocketMigratable` / `DualShspSocketMigratable`)
 - Renamed the associated members for the same reason: `getSocketWrapper()` → `getSocketMigratable()`, `ipv4SocketWrapper`/`ipv6SocketWrapper` → `ipv4SocketMigratable`/`ipv6SocketMigratable`, and the `ipv4Wrapper`/`ipv6Wrapper` parameters → `ipv4Migratable`/`ipv6Migratable`
 - `i_shsp_socket_wrapper.dart` moved from `src/interfaces/wrapper/` to `src/interfaces/socket/i_shsp_socket_migratable.dart`, alongside `i_shsp_socket.dart`/`i_shsp_socket_base.dart`
-- `DualShspSocketMigratable` is now `@dependencyInjectable` directly, mirroring `DualShspSocketAuto`: its unnamed constructor takes `ipv4Migratable`/`ipv6Migratable` (resolved via `@Subkey('ipv4')`/`@Subkey('ipv6')`), and the previous `.fromMigratables(...)` named constructor is merged into it; the old `Sockets`-based unnamed constructor is now `DualShspSocketMigratable.fromSockets(...)`
-- `main_injection.dart` now also registers `IDualShspSocketMigratable → DualShspSocketMigratable`, completing the DI tree: `RawDatagramSocket` → `IShspSocket` → `IShspSocketMigratable` → both `IDualShspSocketAuto` and `IDualShspSocketMigratable` resolve independently from the same ipv4/ipv6 instances
+- `main_injection.dart` now registers `IDualShspSocketAuto → DualShspSocketAuto` and `IDualShspSocketMigratable → DualShspSocketMigratable` instead of `IDualShspSocketWrapper → DualShspSocketWrapper`, completing the DI tree: `RawDatagramSocket` → `IShspSocket` → `IShspSocketMigratable` → both `IDualShspSocketAuto` and `IDualShspSocketMigratable` resolve independently from the same ipv4/ipv6 instances
+- `RegistryShspSocket.initialize()` / `bind()` updated to use `getSocket()` and `ShspSocketMigratable`/`DualShspSocketMigratable` instead of the removed wrapper types; `initializeDI()` removed
+- Generated DI factories (`AutoShspInstance`, `AutoShspPeer`, `RegistryShspSocket`, `ShspSocket`, `DualShspSocketAuto`, `DualShspSocketMigratable`) resolve optional dependencies via `RegistryManager.tryGetInstance()` instead of the removed `getInstanceNullable()`, following the `singleton_manager`/`singleton_manager_generator` bump to `^2.2.2`/`^2.3.2`
 
 ### Removed
 
+- `handshake_ip.dart`, `IHandshakeIP` and the `stun` package dependency — STUN-based public/local IP discovery dropped entirely, including its tests
+- `initialize_point.dart` and its examples/tests (`initializePointDualShsp`, `initializePointRegistryAccess`) — superseded by `main_injection.dart` + `dual_shsp_registry_wiring.dart`
 - `DualShspSocketWrapper`, `IDualShspSocketWrapper`, `DualShspSocketWrapperDelegationMixin` — merged into `DualShspSocketAuto`, which now owns its own DI resolution instead of being wrapped by a delegating facade
+- `RegistrySingletonShspSocket.initializeDI()`
 
 ## [1.10.1] - 2026-07-15
 

@@ -5,6 +5,29 @@ All notable changes to the Single HandShake Protocol monorepo are documented in 
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [1.11.0] - 2026-08-09
+
+### Added
+
+- Configurable SHSP settings (`initShspConfig()`, `ShspConfigExtension`) backed by `config_manager`, replacing hardcoded keep-alive/handshake/retry defaults
+- `main_injection.dart` + `dual_shsp_registry_wiring.dart` for DI wiring of sockets, peers and instances, replacing the previous `initialize_point.dart` entry points
+- Socket migration helpers (`migrateShspSocket()`, `migrateDualShspSockets()`) to swap a registered `RawDatagramSocket` while carrying over the previous socket's profile
+- `IDualShspSocket.getSocket()` / `DualShspSocket.getSocket()` as the unified IPv4/IPv6 socket accessor
+
+### Changed
+
+- Generic keyed registry renamed `RegistryManager` → `KeyedRegistry`/`KeyedRegistryManager`/`KeyedRegistrySingleton`, now supporting arbitrary value types
+- `ShspSocketWrapper`/`IShspSocketWrapper` renamed to `ShspSocketMigratable`/`IShspSocketMigratable` for consistency with `DualShspSocketMigratable`
+- Generated DI factories now resolve optional dependencies via `RegistryManager.tryGetInstance()`
+
+### Removed
+
+- STUN-based public/local IP discovery (`handshake_ip.dart`, `IHandshakeIP`) and the `stun` dependency
+- `initialize_point.dart` and its examples/tests, superseded by the new DI wiring
+- `DualShspSocketWrapper`/`IDualShspSocketWrapper`, merged into `DualShspSocketAuto`
+
+See [`packages/shsp/CHANGELOG.md`](packages/shsp/CHANGELOG.md) for full details.
+
 ## [1.10.1] - 2026-07-15
 
 ### Fixed
