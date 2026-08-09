@@ -92,7 +92,6 @@ class MockShspInstance implements IShspInstance {
   @override
   void onMessage(List<int> msg, PeerInfo info) {}
 
-  @override
   void destroy() {}
 
   /// Simulate peer responding with handshake

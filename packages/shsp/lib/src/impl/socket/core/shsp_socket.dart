@@ -1,17 +1,43 @@
 import 'dart:async';
 import 'dart:io';
 import 'package:meta/meta.dart';
-import 'package:singleton_manager/singleton_manager.dart';
 import '../../../../shsp.dart';
+import 'package:singleton_manager/singleton_manager.dart';
 
-/// SHSP Socket implementation wrapping RawDatagramSocket
+/// SHSP Socket implementation wrapping RawDatagramSocket.
+///
+/// Resolves [rawSocket] via DI when tagged `@Subkey.inherited()` — connect a
+/// `RawDatagramSocket` into [RegistryManager] under the `'ipv4'`/`'ipv6'`
+/// subkey (see `connectDualShspSockets`) and call
+/// [dependencyInjectionFactory]:
+/// ```dart
+/// await connectDualShspSockets();
+/// final socket = ShspSocket.dependencyInjectionFactory(subkey: 'ipv4');
+/// ```
+@dependencyInjectable
 class ShspSocket extends RawShspSocket
     with
         IdempotentCloseMixin,
         ShspSocketCallbacksMixin,
         ShspSocketCompressionMixin,
         ShspSocketProfileMixin
-    implements IShspSocket, IValueForRegistry {
+    implements IShspSocket {
+  /// Resolves [rawSocket] via DI — see the class docs above.
+  ShspSocket(
+    @Subkey.inherited() RawDatagramSocket rawSocket, [
+    ICompressionCodec? compressionCodec,
+  ]) : this.fromRaw(rawSocket, compressionCodec);
+
+  factory ShspSocket.dependencyInjectionFactory({String key = 'default', String subkey = 'default'}) { // GENERATED CODE - DO NOT MODIFY BY HAND
+    final rawSocket = RegistryManager.instance.getInstance<RawDatagramSocket>(key: key, subkey: subkey); // GENERATED CODE - DO NOT MODIFY BY HAND
+    final compressionCodec = RegistryManager.instance.tryGetInstance<ICompressionCodec>(key: key); // GENERATED CODE - DO NOT MODIFY BY HAND
+
+    return ShspSocket( // GENERATED CODE - DO NOT MODIFY BY HAND
+      rawSocket, // GENERATED CODE - DO NOT MODIFY BY HAND
+      compressionCodec, // GENERATED CODE - DO NOT MODIFY BY HAND
+    ); // GENERATED CODE - DO NOT MODIFY BY HAND
+  } // GENERATED CODE - DO NOT MODIFY BY HAND
+
   /// Internal constructor for factory creation
   ShspSocket.internal(
     super.socket,
@@ -54,6 +80,35 @@ class ShspSocket extends RawShspSocket
     _localPort = rawSocket.port;
     _setupEventListeners();
     invokeOnListening();
+  }
+
+  /// Creates a new ShspSocket wrapping an existing RawDatagramSocket,
+  /// restoring all message callbacks from an existing profile.
+  ///
+  /// This restores all message callbacks registered on the old socket
+  /// without needing to re-register them manually. Useful for reusing
+  /// an already-bound RawDatagramSocket while maintaining peer message
+  /// handlers from a previous ShspSocket.
+  factory ShspSocket.withRawAndProfile(
+    RawDatagramSocket rawSocket,
+    ShspSocketProfile profile, [
+    ICompressionCodec? compressionCodec,
+  ]) {
+    final newSocket = ShspSocket.fromRaw(rawSocket, compressionCodec);
+    newSocket._restoreProfile(profile);
+    return newSocket;
+  }
+
+  /// Re-registers every message listener recorded in [profile] onto this socket.
+  void _restoreProfile(ShspSocketProfile profile) {
+    for (final entry in profile.messageListeners.entries) {
+      final key = entry.key;
+      final handlers = entry.value;
+
+      for (final listener in handlers) {
+        _messageCallbacksImpl.add(key, listener);
+      }
+    }
   }
 
   late MessageCallbackMap _messageCallbacksImpl;
@@ -212,18 +267,7 @@ class ShspSocket extends RawShspSocket
   ]) async {
     // Create a new socket
     final newSocket = await bind(address, port, compressionCodec);
-
-    // Restore all message callbacks from profile
-    for (final entry in profile.messageListeners.entries) {
-      final key = entry.key;
-      final handlers = entry.value;
-
-      for (final listener in handlers) {
-        // Re-register the listener in the new socket
-        newSocket._messageCallbacksImpl.add(key, listener);
-      }
-    }
-
+    newSocket._restoreProfile(profile);
     return newSocket;
   }
 

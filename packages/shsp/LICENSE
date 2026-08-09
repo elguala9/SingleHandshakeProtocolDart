@@ -22,7 +22,6 @@ This software includes the following third-party components:
 - json_annotation: Licensed under the Apache License 2.0
 - json_serializable: Licensed under the Apache License 2.0
 - clock_dart: Licensed under the MIT License
-- stun: Licensed under the MIT License
 - archive: Licensed under the Apache License 2.0
 - lints: Licensed under the Apache License 2.0
 - test: Licensed under the Apache License 2.0

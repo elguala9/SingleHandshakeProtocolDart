@@ -1,5 +1,4 @@
 import 'dart:io';
-import 'package:singleton_manager/singleton_manager.dart';
 
 import '../../types/callback_types.dart';
 import '../../types/socket_profile.dart';
@@ -8,7 +7,7 @@ import 'i_shsp_socket_base.dart';
 
 /// Interface for SHSP Socket
 abstract interface class IShspSocket
-    implements IShspSocketBase, IValueForRegistry, RawDatagramSocket {
+    implements IShspSocketBase, RawDatagramSocket {
   /// Returns the socket state as a serialized string (type, endpoints, registered callbacks)
   String serializedObject();
 

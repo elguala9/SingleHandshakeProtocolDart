@@ -10,7 +10,7 @@ A high-performance Dart package implementing the Single HandShake Protocol (SHSP
 - **Pluggable Compression**: Built-in support for GZip, LZ4, and Zstd codecs
 - **Auto-Wiring Classes**: `AutoShspPeer` and `AutoShspInstance` for simplified usage
 - **Global Socket Management**: `ShspSocketSingleton` for seamless socket switching
-- **Live Socket Migration**: `ShspSocketWrapper` and `DualShspSocketMigratable` allow swapping the underlying socket at runtime without losing peer references or callbacks
+- **Live Socket Migration**: `ShspSocketMigratable` and `DualShspSocketMigratable` allow swapping the underlying socket at runtime without losing peer references or callbacks
 - **Cross-Platform**: Runs on Dart CLI, Flutter mobile, and web
 - **IPv4/IPv6 Support**: Dual-stack ready with automatic address formatting
 - **Comprehensive Testing**: 625+ passing tests ensuring reliability
@@ -154,7 +154,7 @@ for (final socket in socketRegistry.values) {
 
 ## Socket Migration (v1.4.0+) and DI (v1.5.0+)
 
-`ShspSocketWrapper` and `DualShspSocketMigratable` allow you to replace the underlying socket at runtime without invalidating any references held by peers or instances.
+`ShspSocketMigratable` and `DualShspSocketMigratable` allow you to replace the underlying socket at runtime without invalidating any references held by peers or instances.
 
 As of v1.5.0, `IDualShspSocketMigratable` is the primary DI type registered by `initializePointDualShsp()`:
 
@@ -174,7 +174,7 @@ import 'package:shsp/shsp.dart';
 
 // Create a migratable dual socket
 final ipv4 = await ShspSocket.bind(InternetAddress.anyIPv4, 8080);
-final migratable = DualShspSocketMigratable(Sockets(ipv4SocketImpl: ipv4));
+final migratable = DualShspSocketMigratable.fromSockets(Sockets(ipv4SocketImpl: ipv4));
 
 // Register a peer callback — this reference stays valid across migrations
 final peer = PeerInfo(address: InternetAddress.loopbackIPv4, port: 9001);
@@ -190,11 +190,11 @@ migratable.migrateSocketIpv4(newIpv4);
 migratable.close();
 ```
 
-For single-socket migration use `ShspSocketWrapper` directly:
+For single-socket migration use `ShspSocketMigratable` directly:
 
 ```dart
 final socket = await ShspSocket.bind(InternetAddress.anyIPv4, 8080);
-final wrapper = ShspSocketWrapper(socket);
+final wrapper = ShspSocketMigratable(socket);
 
 // Register callbacks
 wrapper.setListeningCallback(() => print('Listening'));
@@ -258,7 +258,7 @@ Protocol contracts for extensibility:
 - **Handshake**: `IShspHandshake`
 - **Factories** (for dependency injection): `IShspSocketFactory`, `IShspPeerFactory`, `IShspInstanceFactory`
 - **Utilities**: `IAddressUtility`, `ICallbackMap<T>`, `IKeepAliveTimer`, `IMessageCallbackMap`, `IRawShspSocket`, `IDualShspSocket`, `IDualShspSocketMigratable`
-- **Wrappers** (v1.4.0+): `IShspSocketWrapper`
+- **Wrappers** (v1.4.0+): `IShspSocketMigratable`
 - **Singletons**: `IMessageCallbackMapSingleton`, `IShspSocketInfoSingleton`
 
 ### Implementations
@@ -269,7 +269,7 @@ Concrete implementations:
 - `AutoShspPeer`: Auto-wiring peer (recommended for most use cases)
 - `AutoShspInstance`: Auto-wiring instance
 - `ShspSocketSingleton`: Global socket management
-- `ShspSocketWrapper`: Proxy wrapper enabling live socket migration (v1.4.0+)
+- `ShspSocketMigratable`: Proxy wrapper enabling live socket migration (v1.4.0+)
 - `DualShspSocketMigratable`: Dual-stack socket with live IPv4/IPv6 migration support (v1.4.0+)
 - Compression codecs: `GZipCodec`, `LZ4Codec`, `ZstdCodec`
 
@@ -306,7 +306,7 @@ Comprehensive examples are available in the `example/` directory:
 3. **Socket Singleton with Compression** - Global socket management with data compression
 4. **Using Interfaces** - Dependency injection and interface-based design
 5. **Registry Management** (v1.2.0+) - Advanced instance management with registry patterns
-6. **Socket Migration** (v1.4.0+) - Live socket swapping with `ShspSocketWrapper` and `DualShspSocketMigratable`
+6. **Socket Migration** (v1.4.0+) - Live socket swapping with `ShspSocketMigratable` and `DualShspSocketMigratable`
 
 [View all examples](https://github.com/lgualandi/SingleHandShakeProtocolDart/tree/main/packages/shsp/example)
 

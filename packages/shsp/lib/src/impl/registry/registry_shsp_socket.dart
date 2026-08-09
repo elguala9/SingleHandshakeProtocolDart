@@ -38,36 +38,53 @@ class InputRegistryShspSocket {
 /// await registry.bind(InputRegistryShspSocket(ipv4Port: 8080));
 /// final ipv4 = registry.getByKey(SocketType.ipv4);
 /// ```
+///
+/// Or resolve its IPv4/IPv6 sockets via DI — connect each [IShspSocket]
+/// into [RegistryManager] under the matching `'ipv4'`/`'ipv6'` subkey (see
+/// `connectDualShspSockets`) and call [dependencyInjectionFactory]:
+/// ```dart
+/// await connectDualShspSockets();
+/// final registry = RegistryShspSocket.dependencyInjectionFactory();
+/// ```
+@dependencyInjectable
 class RegistryShspSocket
-    with Registry<SocketType, IShspSocket>
+    with KeyedRegistry<SocketType, IShspSocket>
     implements IRegistryShspSocket {
-  RegistryShspSocket();
-
-  factory RegistryShspSocket.initializeDI() {
-    final instance = RegistryShspSocket();
-    instance.initializeDI();
-    return instance;
+  RegistryShspSocket({
+    @Subkey('ipv4') IShspSocket? ipv4Socket,
+    @Subkey('ipv6') IShspSocket? ipv6Socket,
+  }) {
+    if (ipv4Socket != null) _registerSocket(SocketType.ipv4, ipv4Socket);
+    if (ipv6Socket != null) _registerSocket(SocketType.ipv6, ipv6Socket);
   }
+
+  // ignore: avoid_unused_constructor_parameters, // GENERATED CODE - DO NOT MODIFY BY HAND
+  factory RegistryShspSocket.dependencyInjectionFactory({String key = 'default', String subkey = 'default'}) { // GENERATED CODE - DO NOT MODIFY BY HAND
+    final ipv4Socket = RegistryManager.instance.tryGetInstance<IShspSocket>(key: key, subkey: 'ipv4'); // GENERATED CODE - DO NOT MODIFY BY HAND
+    final ipv6Socket = RegistryManager.instance.tryGetInstance<IShspSocket>(key: key, subkey: 'ipv6'); // GENERATED CODE - DO NOT MODIFY BY HAND
+
+    return RegistryShspSocket( // GENERATED CODE - DO NOT MODIFY BY HAND
+      ipv4Socket: ipv4Socket, // GENERATED CODE - DO NOT MODIFY BY HAND
+      ipv6Socket: ipv6Socket, // GENERATED CODE - DO NOT MODIFY BY HAND
+    ); // GENERATED CODE - DO NOT MODIFY BY HAND
+  } // GENERATED CODE - DO NOT MODIFY BY HAND
 
   /// Register sockets from an [IDualShspSocketMigratable].
   ///
   /// Returns [ReturnTypeInitialization.ipv4and6] if both are registered,
   /// [ReturnTypeInitialization.ipv4only] if only IPv4 is available.
   ReturnTypeInitialization initialize(IDualShspSocketMigratable dualSocket) {
-    final ipv4 = dualSocket.ipv4Socket;
+    final ipv4 = dualSocket.getSocket(InternetAddressType.IPv4);
     if (ipv4 != null) {
       _registerSocket(SocketType.ipv4, ipv4);
     }
-    if (dualSocket.ipv6Socket != null) {
-      _registerSocket(SocketType.ipv6, dualSocket.ipv6Socket!);
+    final ipv6 = dualSocket.getSocket(InternetAddressType.IPv6);
+    if (ipv6 != null) {
+      _registerSocket(SocketType.ipv6, ipv6);
       return ReturnTypeInitialization.ipv4and6;
     }
     return ReturnTypeInitialization.ipv4only;
   }
-
-  /// Initialize using a DI-provided [IDualShspSocketMigratable].
-  ReturnTypeInitialization initializeDI() =>
-      initialize(SingletonDIAccess.get<IDualShspSocketMigratable>());
 
   /// Bind new sockets from addresses/ports and register them.
   ///
@@ -90,9 +107,9 @@ class RegistryShspSocket
       );
     }
 
-    final IDualShspSocketMigratable dualSocket = DualShspSocketMigratable.fromWrappers(
-      ipv4Wrapper: ShspSocketWrapper(ipv4Socket),
-      ipv6Wrapper: ipv6Socket != null ? ShspSocketWrapper(ipv6Socket) : null,
+    final IDualShspSocketMigratable dualSocket = DualShspSocketMigratable(
+      ipv4Migratable: ShspSocketMigratable(ipv4Socket),
+      ipv6Migratable: ipv6Socket != null ? ShspSocketMigratable(ipv6Socket) : null,
     );
     return initialize(dualSocket);
   }
@@ -105,8 +122,12 @@ class RegistryShspSocket
     }
   }
 
-  @override
-  void destroy() => destroyAll();
+  void destroy() {
+    for (final type in keys) {
+      getInstance(type).destroy();
+    }
+    clearRegistry();
+  }
 }
 
 /// Backward-compatibility alias.
