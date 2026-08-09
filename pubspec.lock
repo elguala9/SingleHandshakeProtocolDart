@@ -101,10 +101,10 @@ packages:
     dependency: transitive
     description:
       name: callback_handler
-      sha256: "629f09b8d987720aad662927b938d87307994d49be66493c031298d7bc2f819b"
+      sha256: "84a4f1a20c839c578380101501699088a512038961966c9fb54cb855314f9191"
       url: "https://pub.dev"
     source: hosted
-    version: "0.0.3"
+    version: "0.0.4"
   charcode:
     dependency: transitive
     description:
