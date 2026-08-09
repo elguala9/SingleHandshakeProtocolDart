@@ -2,8 +2,9 @@ import 'dart:io';
 import 'dart:async';
 
 import '../../types/peer_types.dart';
-import '../../interfaces/i_shsp_socket.dart';
+import '../../interfaces/socket/i_shsp_socket.dart';
 import '../utility/message_callback_map.dart';
+import '../../config/shsp_config.dart';
 
 // Inputs for implementations factories
 
@@ -27,8 +28,8 @@ class ShspInstanceInput {
     required this.remotePeer,
     this.socket,
     this.rawSocket,
-    this.keepAliveSeconds = 30,
-  });
+    int? keepAliveSeconds,
+  }) : keepAliveSeconds = keepAliveSeconds ?? defaultShspKeepAliveSeconds();
 
   final PeerInfo remotePeer;
   final IShspSocket? socket;

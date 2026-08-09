@@ -1,12 +1,8 @@
 import 'dart:io';
 
 import 'package:meta/meta.dart';
-import '../../interfaces/i_compression_codec.dart';
-import '../../interfaces/i_shsp_socket.dart';
-import '../../types/peer_types.dart';
-
-import 'shsp_peer.dart';
-import '../socket/core/shsp_socket_singleton.dart';
+import '../../../shsp.dart';
+import 'package:singleton_manager/singleton_manager.dart';
 
 /// A [ShspPeer] that automatically uses the global [ShspSocketSingleton] socket.
 ///
@@ -30,21 +26,32 @@ import '../socket/core/shsp_socket_singleton.dart';
 ///   remotePeer: PeerInfo(address: remoteAddress, port: remotePort),
 /// );
 /// ```
-class AutoShspPeer extends ShspPeer {
-  AutoShspPeer._({
+@dependencyInjectable
+class AutoShspPeer extends ShspPeer with SocketChangeListenerMixin {
+  AutoShspPeer({
     required super.remotePeer,
-    required super.socket,
+    @Subkey.inherited() required super.socket,
     super.messageCallback,
     ShspSocketSingleton? singleton,
   }) {
     if (singleton != null) {
-      // Register to be notified when the singleton socket changes
-      singleton.socketChangedCallback.register((newSocket) {
-        // Re-register this peer's callback with the new socket
-        newSocket.setMessageCallback(remotePeer, socketCallbackFunction);
-      });
+      initSocketChangeListener(singleton);
     }
   }
+
+  factory AutoShspPeer.dependencyInjectionFactory({String key = 'default', String subkey = 'default'}) { // GENERATED CODE - DO NOT MODIFY BY HAND
+    final remotePeer = RegistryManager.instance.getInstance<PeerInfo>(key: key); // GENERATED CODE - DO NOT MODIFY BY HAND
+    final socket = RegistryManager.instance.getInstance<IShspSocketBase>(key: key, subkey: subkey); // GENERATED CODE - DO NOT MODIFY BY HAND
+    final messageCallback = RegistryManager.instance.tryGetInstance<MessageCallback>(key: key); // GENERATED CODE - DO NOT MODIFY BY HAND
+    final singleton = RegistryManager.instance.tryGetInstance<ShspSocketSingleton>(key: key); // GENERATED CODE - DO NOT MODIFY BY HAND
+
+    return AutoShspPeer( // GENERATED CODE - DO NOT MODIFY BY HAND
+      remotePeer: remotePeer, // GENERATED CODE - DO NOT MODIFY BY HAND
+      socket: socket, // GENERATED CODE - DO NOT MODIFY BY HAND
+      messageCallback: messageCallback, // GENERATED CODE - DO NOT MODIFY BY HAND
+      singleton: singleton, // GENERATED CODE - DO NOT MODIFY BY HAND
+    ); // GENERATED CODE - DO NOT MODIFY BY HAND
+  } // GENERATED CODE - DO NOT MODIFY BY HAND
 
   /// Factory solo per i test — consente di iniettare un socket esplicito.
   ///
@@ -55,7 +62,7 @@ class AutoShspPeer extends ShspPeer {
     required PeerInfo remotePeer,
     required IShspSocket socket,
     MessageCallback? messageCallback,
-  }) => AutoShspPeer._(
+  }) => AutoShspPeer(
     remotePeer: remotePeer,
     socket: socket,
     messageCallback: messageCallback,
@@ -88,7 +95,7 @@ class AutoShspPeer extends ShspPeer {
       compressionCodec: compressionCodec,
     );
 
-    return AutoShspPeer._(
+    return AutoShspPeer(
       remotePeer: remotePeer,
       socket: singleton.socket,
       messageCallback: messageCallback,
@@ -104,6 +111,7 @@ class AutoShspPeer extends ShspPeer {
   /// separatamente.
   @override
   void close() {
+    deregisterSocketChangeListener();
     super.close();
   }
 }

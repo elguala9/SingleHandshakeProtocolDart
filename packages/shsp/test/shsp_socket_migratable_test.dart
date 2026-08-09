@@ -3,13 +3,13 @@ import 'package:shsp/shsp.dart';
 import 'package:test/test.dart';
 
 void main() {
-  group('ShspSocketWrapper', () {
+  group('ShspSocketMigratable', () {
     late ShspSocket innerSocket;
-    late ShspSocketWrapper wrapper;
+    late ShspSocketMigratable wrapper;
 
     setUp(() async {
       innerSocket = await ShspSocket.bind(InternetAddress.anyIPv4, 0);
-      wrapper = ShspSocketWrapper(innerSocket);
+      wrapper = ShspSocketMigratable(innerSocket);
     });
 
     tearDown(() {
@@ -18,15 +18,15 @@ void main() {
 
     // ── Construction ─────────────────────────────────────────────────────────
 
-    test('throws ArgumentError when wrapping another ShspSocketWrapper', () {
+    test('throws ArgumentError when wrapping another ShspSocketMigratable', () {
       expect(
-        () => ShspSocketWrapper(wrapper),
+        () => ShspSocketMigratable(wrapper),
         throwsArgumentError,
       );
     });
 
-    test('implements IShspSocketWrapper', () {
-      expect(wrapper, isA<IShspSocketWrapper>());
+    test('implements IShspSocketMigratable', () {
+      expect(wrapper, isA<IShspSocketMigratable>());
     });
 
     // ── Delegation ───────────────────────────────────────────────────────────

@@ -1,17 +1,19 @@
-import '../../../interfaces/i_shsp_socket.dart';
+import '../../../interfaces/socket/i_shsp_socket.dart';
 import '../../../types/socket_profile.dart';
 
 /// Mixin for managing profile extraction and application to dual sockets
 mixin DualShspSocketProfileMixin {
   /// Protected getters for sockets (implemented by the class using this mixin)
-  IShspSocket get ipv4SocketForProfile;
+  IShspSocket? get ipv4SocketForProfile;
   IShspSocket? get ipv6SocketForProfile;
 
   /// Extract profiles from both sockets and merge them.
   ///
   /// The merged profile contains all message listeners from both IPv4 and IPv6 sockets.
   ShspSocketProfile extractProfile() {
-    final ipv4Profile = ipv4SocketForProfile.extractProfile();
+    final ipv4 = ipv4SocketForProfile;
+    final ipv4Profile =
+        ipv4?.extractProfile() ?? const ShspSocketProfile(messageListeners: {});
 
     final mergedListeners = Map<String, List<OnMessageListener>>.from(
       ipv4Profile.messageListeners,
@@ -44,7 +46,7 @@ mixin DualShspSocketProfileMixin {
   ///
   /// Callbacks are registered on both IPv4 and IPv6 sockets for redundancy.
   void applyProfile(ShspSocketProfile profile) {
-    ipv4SocketForProfile.applyProfile(profile);
+    ipv4SocketForProfile?.applyProfile(profile);
     ipv6SocketForProfile?.applyProfile(profile);
   }
 }

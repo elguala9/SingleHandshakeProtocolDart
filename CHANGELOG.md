@@ -5,6 +5,109 @@ All notable changes to the Single HandShake Protocol monorepo are documented in 
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [1.11.0] - 2026-08-09
+
+### Added
+
+- Configurable SHSP settings (`initShspConfig()`, `ShspConfigExtension`) backed by `config_manager`, replacing hardcoded keep-alive/handshake/retry defaults
+- `main_injection.dart` + `dual_shsp_registry_wiring.dart` for DI wiring of sockets, peers and instances, replacing the previous `initialize_point.dart` entry points
+- Socket migration helpers (`migrateShspSocket()`, `migrateDualShspSockets()`) to swap a registered `RawDatagramSocket` while carrying over the previous socket's profile
+- `IDualShspSocket.getSocket()` / `DualShspSocket.getSocket()` as the unified IPv4/IPv6 socket accessor
+
+### Changed
+
+- Generic keyed registry renamed `RegistryManager` → `KeyedRegistry`/`KeyedRegistryManager`/`KeyedRegistrySingleton`, now supporting arbitrary value types
+- `ShspSocketWrapper`/`IShspSocketWrapper` renamed to `ShspSocketMigratable`/`IShspSocketMigratable` for consistency with `DualShspSocketMigratable`
+- Generated DI factories now resolve optional dependencies via `RegistryManager.tryGetInstance()`
+
+### Removed
+
+- STUN-based public/local IP discovery (`handshake_ip.dart`, `IHandshakeIP`) and the `stun` dependency
+- `initialize_point.dart` and its examples/tests, superseded by the new DI wiring
+- `DualShspSocketWrapper`/`IDualShspSocketWrapper`, merged into `DualShspSocketAuto`
+
+See [`packages/shsp/CHANGELOG.md`](packages/shsp/CHANGELOG.md) for full details.
+
+## [1.10.1] - 2026-07-15
+
+### Fixed
+
+- `AutoShspPeer.close()` never unregistered its socket-changed listener from the singleton, leaking the callback registration after close
+
+### Changed
+
+- Duplicated lifecycle/validation/delegation logic extracted into reusable public mixins: `IdempotentCloseMixin`, `MessageSizeValidationMixin`, `SocketChangeListenerMixin`, `SocketProfileTransferMixin`, `ShspSocketWrapperDelegationMixin`, `DualShspSocketWrapperDelegationMixin` (all exported from the `shsp.dart` barrel)
+- `ShspPeer`, `ShspSocket`, `ShspSocketWrapper`, `DualShspSocketWrapper`, `BaseShspSocketSingleton`, `AutoShspPeer` and `AutoShspInstance` refactored to use the new mixins (no behavioral change besides the fix above)
+
+## [1.10.0] - 2026-07-13
+
+### Added
+
+- `DualShspSocketAuto.fromMigratable()` to build an auto-refreshing dual socket from an existing `DualShspSocketMigratable`
+- `IDualShspSocketMigratable.ipv4SocketWrapper` / `ipv6SocketWrapper` getters
+
+### Changed
+
+- `ShspSocket.bindDefault()` now defaults `ipv6` to `true`
+- `buildDualSocket()` now returns `IDualShspSocketAuto` (built via `DualShspSocketAuto.create()`), used by `initializePointDualShsp()` and `initializePointRegistryAccess()`
+- Both initialize-point functions now also register the socket under `IDualShspSocketAuto`, alongside the existing `IDualShspSocketMigratable` registration
+- `DualShspSocketWrapperDI` resolves `IDualShspSocketAuto` from DI instead of `IDualShspSocketMigratable`
+- Socket wrapper files reorganized: `socket/wrappers/` merged into `socket/core/` and `socket/dual/`
+
+### Fixed
+
+- Copy-paste bug in `DualShspSocketAuto.fromMigratable()` assigning the IPv4 wrapper to both address families
+- `DualShspSocketWrapper` and `Sockets` were missing from the public `shsp.dart` barrel export after the wrapper file move; barrel regenerated
+- Test fixes for the default-IPv6 change and `AddressUtility` async call sites
+
+### Test Coverage
+
+- Added regression coverage for `DualShspSocketAuto.fromMigratable()` and full constructor/delegation coverage for `DualShspSocketWrapper`, previously untested
+
+## [1.9.0] - 2026-07-12
+
+### Added
+
+#### DualShspSocket Architecture Overhaul
+- **DualShspSocket as pure router**: `IDualShspSocket` no longer extends `IShspSocket` — now a dedicated dual-stack router interface extending `IShspSocketBase`
+- **IShspSocketBase extracted**: Core socket members (callbacks, send, close, destroy) separated from the `RawDatagramSocket` contract
+- **Optional IPv4/IPv6**: Both address families are now independently optional; `DualShspSocket.create()` works with any available combination
+- **IDualShspSocketAuto**: New interface for auto-detecting and refreshing dual-stack socket instances on network changes
+
+#### DualShspSocketAuto
+- Automatically refreshes underlying sockets to handle network interface changes
+- `refreshSocketIpv4()`, `refreshSocketIpv6()`, `refreshSockets()` methods for on-demand refresh
+- Implements `IDualShspSocketMigratable` for seamless migration
+
+#### New Types
+- `Sockets` value object encapsulating optional IPv4/IPv6 `IShspSocket` references, used throughout dual-socket constructors
+
+#### Enhanced Callbacks
+- `CallbackOnWithSocket` and `CallbackOnErrorWithSocket` carry the source socket reference in `DualShspSocket` events
+
+### Changed
+
+#### Interface Reorganization
+- Interfaces reorganized into `socket/`, `dual/`, and `wrapper/` subdirectories for better discoverability
+- `IDualShspSocket` moved to `src/interfaces/dual/i_dual_shsp_socket.dart`
+- `IShspSocket` moved to `src/interfaces/socket/i_shsp_socket.dart`
+
+#### DualShspSocket Constructor (Breaking)
+- Constructor and `fromSockets` now accept `Sockets` instead of individual socket parameters
+- IPv4/IPv6 precedence changed: local address, port, and compression codec prefer IPv6
+
+#### ISendTo Validation
+- `sendTo()` now validates address family matches available socket, throws `StateError` on mismatch
+
+### Fixed
+- Handshake IP mapping race condition
+- Dual socket callback forwarding now correctly identifies source socket
+- Message callback map IPv4/IPv6 key parity
+- Constructor consistency across factory implementations
+
+### Test Coverage
+- **1,589+ new test lines**: comprehensive dual socket tests (1,286 lines) and auto-detection tests (303 lines)
+
 ## [1.8.0] - 2026-04-20
 
 ### Added

@@ -40,7 +40,7 @@ void main() {
         final result = AddressUtility.parseAddress('1.2.3.4:8080');
         expect(result, isNotNull);
         expect(result!['address'], equals('1.2.3.4'));
-        expect(result['port'], equals('8080'));
+        expect(result['port'], equals(8080));
       });
 
       test('returns null when no colon present', () {
@@ -106,7 +106,7 @@ void main() {
     group('getLocalIp', () {
       test('returns a non-null non-empty string', () async {
         try {
-          final ip = AddressUtility.getLocalIp();
+          final ip = await AddressUtility.getLocalIp();
           expect(ip, isNotNull);
           expect(ip, isNotEmpty);
         } on ShspNetworkException {
@@ -132,7 +132,7 @@ void main() {
 
       test('returned IP is not the loopback address 127.0.0.1', () async {
         try {
-          final ip = AddressUtility.getLocalIp();
+          final ip = await AddressUtility.getLocalIp();
           expect(ip, isNot(equals('127.0.0.1')));
         } on ShspNetworkException {
           markTestSkipped('No non-loopback network interface available');
@@ -142,7 +142,7 @@ void main() {
 
     group('canCreateIPv6Socket', () {
       test('returns a bool (true or false, both acceptable — just does not throw)', () async {
-        final canCreate = AddressUtility.canCreateIPv6Socket();
+        final canCreate = await AddressUtility.canCreateIPv6Socket();
         expect(canCreate, isA<bool>());
       });
     });

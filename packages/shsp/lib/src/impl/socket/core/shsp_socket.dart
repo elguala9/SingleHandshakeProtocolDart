@@ -1,28 +1,43 @@
 import 'dart:async';
 import 'dart:io';
 import 'package:meta/meta.dart';
+import '../../../../shsp.dart';
 import 'package:singleton_manager/singleton_manager.dart';
-import '../../../types/peer_types.dart';
-import '../../../types/remote_info.dart';
-import '../../../types/socket_profile.dart';
-import '../../../interfaces/exceptions/shsp_exceptions.dart';
-import '../../../interfaces/i_compression_codec.dart';
-import '../../../interfaces/i_shsp_instance.dart'
-    show CallbackOn, CallbackOnError;
-import '../../../interfaces/i_shsp_socket.dart';
-import '../../utility/message_callback_map.dart';
-import '../../utility/raw_shsp_socket.dart';
-import '../features/shsp_socket_callbacks.dart';
-import '../features/shsp_socket_compression.dart';
-import '../features/shsp_socket_profile.dart';
 
-/// SHSP Socket implementation wrapping RawDatagramSocket
+/// SHSP Socket implementation wrapping RawDatagramSocket.
+///
+/// Resolves [rawSocket] via DI when tagged `@Subkey.inherited()` — connect a
+/// `RawDatagramSocket` into [RegistryManager] under the `'ipv4'`/`'ipv6'`
+/// subkey (see `connectDualShspSockets`) and call
+/// [dependencyInjectionFactory]:
+/// ```dart
+/// await connectDualShspSockets();
+/// final socket = ShspSocket.dependencyInjectionFactory(subkey: 'ipv4');
+/// ```
+@dependencyInjectable
 class ShspSocket extends RawShspSocket
     with
+        IdempotentCloseMixin,
         ShspSocketCallbacksMixin,
         ShspSocketCompressionMixin,
         ShspSocketProfileMixin
-    implements IShspSocket, IValueForRegistry {
+    implements IShspSocket {
+  /// Resolves [rawSocket] via DI — see the class docs above.
+  ShspSocket(
+    @Subkey.inherited() RawDatagramSocket rawSocket, [
+    ICompressionCodec? compressionCodec,
+  ]) : this.fromRaw(rawSocket, compressionCodec);
+
+  factory ShspSocket.dependencyInjectionFactory({String key = 'default', String subkey = 'default'}) { // GENERATED CODE - DO NOT MODIFY BY HAND
+    final rawSocket = RegistryManager.instance.getInstance<RawDatagramSocket>(key: key, subkey: subkey); // GENERATED CODE - DO NOT MODIFY BY HAND
+    final compressionCodec = RegistryManager.instance.tryGetInstance<ICompressionCodec>(key: key); // GENERATED CODE - DO NOT MODIFY BY HAND
+
+    return ShspSocket( // GENERATED CODE - DO NOT MODIFY BY HAND
+      rawSocket, // GENERATED CODE - DO NOT MODIFY BY HAND
+      compressionCodec, // GENERATED CODE - DO NOT MODIFY BY HAND
+    ); // GENERATED CODE - DO NOT MODIFY BY HAND
+  } // GENERATED CODE - DO NOT MODIFY BY HAND
+
   /// Internal constructor for factory creation
   ShspSocket.internal(
     super.socket,
@@ -67,6 +82,35 @@ class ShspSocket extends RawShspSocket
     invokeOnListening();
   }
 
+  /// Creates a new ShspSocket wrapping an existing RawDatagramSocket,
+  /// restoring all message callbacks from an existing profile.
+  ///
+  /// This restores all message callbacks registered on the old socket
+  /// without needing to re-register them manually. Useful for reusing
+  /// an already-bound RawDatagramSocket while maintaining peer message
+  /// handlers from a previous ShspSocket.
+  factory ShspSocket.withRawAndProfile(
+    RawDatagramSocket rawSocket,
+    ShspSocketProfile profile, [
+    ICompressionCodec? compressionCodec,
+  ]) {
+    final newSocket = ShspSocket.fromRaw(rawSocket, compressionCodec);
+    newSocket._restoreProfile(profile);
+    return newSocket;
+  }
+
+  /// Re-registers every message listener recorded in [profile] onto this socket.
+  void _restoreProfile(ShspSocketProfile profile) {
+    for (final entry in profile.messageListeners.entries) {
+      final key = entry.key;
+      final handlers = entry.value;
+
+      for (final listener in handlers) {
+        _messageCallbacksImpl.add(key, listener);
+      }
+    }
+  }
+
   late MessageCallbackMap _messageCallbacksImpl;
   late CallbackOn _onClose;
   late CallbackOnError _onError;
@@ -75,7 +119,6 @@ class ShspSocket extends RawShspSocket
 
   InternetAddress? _localAddress;
   int? _localPort;
-  bool _closed = false;
 
   /// Setup event listeners for the raw socket
   void _setupEventListeners() {
@@ -137,7 +180,7 @@ class ShspSocket extends RawShspSocket
   /// final socketIPv6 = await ShspSocket.bindDefault(ipv6: true);
   /// ```
   static Future<ShspSocket> bindDefault({
-    bool ipv6 = false,
+    bool ipv6 = true,
     int port = 0,
     ICompressionCodec? compressionCodec,
   }) async {
@@ -198,6 +241,19 @@ class ShspSocket extends RawShspSocket
     return shspSocket;
   }
 
+  static Future<ShspSocket?> bindIfPossible(
+    InternetAddress address,
+    int port, [
+    ICompressionCodec? compressionCodec,
+  ]) async {
+    try{
+      return ShspSocket.bind(address, port, compressionCodec);
+    }
+    catch(error){
+      return null;
+    }
+  }
+
   /// Creates a new ShspSocket from an existing profile.
   ///
   /// This restores all message callbacks registered on the old socket
@@ -211,18 +267,7 @@ class ShspSocket extends RawShspSocket
   ]) async {
     // Create a new socket
     final newSocket = await bind(address, port, compressionCodec);
-
-    // Restore all message callbacks from profile
-    for (final entry in profile.messageListeners.entries) {
-      final key = entry.key;
-      final handlers = entry.value;
-
-      for (final listener in handlers) {
-        // Re-register the listener in the new socket
-        newSocket._messageCallbacksImpl.add(key, listener);
-      }
-    }
-
+    newSocket._restoreProfile(profile);
     return newSocket;
   }
 
@@ -242,24 +287,10 @@ class ShspSocket extends RawShspSocket
   }
 
   @override
-  void close() {
-    // Make close() idempotent - can be called multiple times safely
-    if (_closed) return;
-    _closed = true;
-
-    // Cancel the stream subscription if active
+  void closeImpl() {
     _socketSubscription?.cancel();
-
-    // Clear all message callbacks to prevent memory leaks
     clearCallbacks();
-
-    // Close the underlying socket
     socket.close();
-  }
-
-  @override
-  void destroy() {
-    close();
   }
 
   // ...existing code...
@@ -278,7 +309,7 @@ class ShspSocket extends RawShspSocket
 
   /// Check if the socket is closed
   @override
-  bool get isClosed => _closed;
+  bool get isClosed => super.isClosed;
 
   /// Getter for profile mixin to access message callbacks
   MessageCallbackMap get messageCallbacksForProfile => _messageCallbacksImpl;

@@ -1,6 +1,6 @@
 # Setup Instructions - Unified SHSP Package
 
-> **Note:** As of v1.8.0, SHSP is a single unified package. The previous multi-package structure (types, interfaces, implementations) has been consolidated into `packages/shsp/`.
+> **Note:** As of v1.9.0, SHSP is a single unified package. The previous multi-package structure (types, interfaces, implementations) has been consolidated into `packages/shsp/`.
 
 ## Prerequisites
 
@@ -51,7 +51,7 @@ dart run example/socket_example.dart
 ```
 SingleHandShakeProtocolDart/
 ├── packages/
-│   ├── shsp/                   # Main unified SHSP package (v1.8.0)
+│   ├── shsp/                   # Main unified SHSP package (v1.9.0)
 │   │   ├── lib/
 │   │   │   ├── src/
 │   │   │   │   ├── interfaces/     # Protocol contracts
@@ -79,7 +79,7 @@ Add to your `pubspec.yaml`:
 
 ```yaml
 dependencies:
-  shsp: ^1.8.0
+  shsp: ^1.9.0
 ```
 
 Then run:

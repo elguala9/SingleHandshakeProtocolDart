@@ -1,6 +1,6 @@
 # Publication Guide for SHSP Package
 
-> **Note:** As of v1.8.0, SHSP is published as a single unified package. The previous multi-package approach (shsp_types, shsp_interfaces, shsp_implementations) has been consolidated.
+> **Note:** As of v1.9.0, SHSP is published as a single unified package. The previous multi-package approach (shsp_types, shsp_interfaces, shsp_implementations) has been consolidated.
 
 This guide explains how to publish the unified SHSP package to pub.dev.
 
@@ -23,8 +23,8 @@ Before publishing, verify:
 Create a release branch and tag:
 
 ```bash
-git checkout -b release/v1.8.0
-git tag -a v1.8.0 -m "Release v1.8.0"
+git checkout -b release/v1.9.0
+git tag -a v1.9.0 -m "Release v1.9.0"
 ```
 
 ### 2. Validate the Package
@@ -66,15 +66,15 @@ After successful publication:
 1. Visit https://pub.dev/packages/shsp
 2. Verify version is listed correctly
 3. Check that documentation is rendered properly
-4. Test installation: `dart pub add shsp:^1.8.0`
+4. Test installation: `dart pub add shsp:^1.9.0`
 
 ### 5. Create Release on GitHub
 
 After pub.dev confirmation:
 
 ```bash
-git push origin release/v1.8.0
-git push origin v1.8.0
+git push origin release/v1.9.0
+git push origin v1.9.0
 ```
 
 Create a GitHub release with:
@@ -86,7 +86,7 @@ Create a GitHub release with:
 
 - **Package Name**: `shsp`
 - **Repository**: https://github.com/lgualandi/SingleHandShakeProtocolDart
-- **Current Version**: 1.8.0
+- **Current Version**: 1.9.0
 - **License**: LGPL-3.0-only
 - **Dart SDK**: >=3.9.4 <4.0.0
 
@@ -128,6 +128,7 @@ If a dependency fails to resolve:
 
 | Version | Date | Status |
 |---------|------|--------|
-| 1.8.0 | 2026-04-20 | Current |
+| 1.9.0 | 2026-07-12 | Current |
+| 1.8.0 | 2026-04-20 | Released |
 | 1.7.1 | 2026-04-11 | Released |
 | 1.7.0 | 2026-03-30 | Released |
