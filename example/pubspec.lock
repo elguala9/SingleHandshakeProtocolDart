@@ -73,6 +73,14 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "1.19.1"
+  config_manager:
+    dependency: transitive
+    description:
+      name: config_manager
+      sha256: "81f02939cfaac167b852f3c3d21a19f5fc0498edd2e0a0f98c09fc445e8f9d5f"
+      url: "https://pub.dev"
+    source: hosted
+    version: "0.4.2"
   console:
     dependency: transitive
     description:
@@ -199,15 +207,15 @@ packages:
       path: "../packages/shsp"
       relative: true
     source: path
-    version: "1.9.0"
+    version: "1.10.1"
   singleton_manager:
     dependency: transitive
     description:
       name: singleton_manager
-      sha256: "0e75b05998f07ad61c8c08efc2c2d5a5a04bcc4a10ed1ddcdd22ed116ccc74a2"
+      sha256: a4507b7ccd09be944274893f3c37510aeff34f020044084dbb9cd72f11df5b41
       url: "https://pub.dev"
     source: hosted
-    version: "0.6.1"
+    version: "2.2.2"
   source_span:
     dependency: transitive
     description:
@@ -224,14 +232,6 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "1.4.1"
-  stun:
-    dependency: transitive
-    description:
-      name: stun
-      sha256: "493fd0a7cef42b097d645cbed30504456c0e28e2b794f5096edf499c02aa539f"
-      url: "https://pub.dev"
-    source: hosted
-    version: "1.2.0"
   term_glyph:
     dependency: transitive
     description:

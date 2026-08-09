@@ -190,6 +190,40 @@ void main() {
         expect(map.containsAddress(addr, 8080), isTrue);
         expect(map.containsAddress(addr, 9090), isFalse);
       });
+
+      test('removeKey removes the callback for that key only', () {
+        void callback1(record) {}
+        void callback2(record) {}
+        map.add('192.168.1.100:8080', callback1);
+        map.add('192.168.1.100:9090', callback2);
+
+        map.removeKey('192.168.1.100:8080');
+
+        expect(map.containsKey('192.168.1.100:8080'), isFalse);
+        expect(map.containsKey('192.168.1.100:9090'), isTrue);
+      });
+
+      test('removeCallback drops the key regardless of the callback passed', () {
+        void registered(record) {}
+        void other(record) {}
+        map.add('192.168.1.100:8080', registered);
+
+        // The callback argument is ignored by design — one handler per key.
+        map.removeCallback('192.168.1.100:8080', other);
+
+        expect(map.containsKey('192.168.1.100:8080'), isFalse);
+      });
+
+      test('removing an unknown key is a no-op', () {
+        void myCallback(record) {}
+        map.add('192.168.1.100:8080', myCallback);
+
+        map.remove('10.0.0.1:1234');
+        map.removeKey('10.0.0.1:1234');
+        map.removeCallback('10.0.0.1:1234', myCallback);
+
+        expect(map.length, equals(1));
+      });
     });
 
     // ── Clear and length ────────────────────────────────────────────────────

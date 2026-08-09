@@ -1,6 +1,6 @@
 name: single_hand_shake_protocol_monorepo
 description: A Dart monorepo for Single HandShake Protocol
-version: 1.10.1
+version: 1.11.0
 publish_to: none
 
 environment:
@@ -9,7 +9,6 @@ environment:
 dependencies:
   shsp:
     path: packages/shsp
-  stun: ^1.0.1
   json_serializable: ^6.12.0
   build_runner: ^2.10.5
   json_annotation: ^4.10.0
@@ -19,6 +18,7 @@ dev_dependencies:
   melos: ^7.4.0
   lints: ^6.0.0
   test: ^1.29.0
+
 
 workspace:
   - packages/shsp
@@ -135,6 +135,11 @@ melos:
     barrels:
       run: melos exec --ignore=shsp_tests -- dart pub run index_generator
       description: Generate barrel files (indexes) for all packages using index_generator.
+
+    # Regenerate the singleton registry for the shsp package
+    registry:
+      run: melos exec --scope=shsp -- dart run singleton_manager_generator --input lib --registry-output lib/src/main_injection.dart
+      description: Regenerate the singleton registry (lib/main_injection.dart) for the shsp package.
 
     # === DOCKER NAT TESTING COMMANDS ===
 

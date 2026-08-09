@@ -104,12 +104,16 @@ class DualShspSocket
     return DualShspSocket(Sockets(ipv4SocketImpl: ipv4Socket, ipv6SocketImpl: ipv6Socket));
   }
 
-  /// Exposes the IPv4 socket for direct access if needed
   @override
+  IShspSocket? getSocket([InternetAddressType type = InternetAddressType.IPv6]) {
+    if (type == InternetAddressType.IPv4) return ipv4SocketImpl;
+    return ipv6SocketImpl;
+  }
+
+  /// Exposes the IPv4 socket for direct access if needed
   IShspSocket? get ipv4Socket => ipv4SocketImpl;
 
   /// Exposes the IPv6 socket for direct access if available
-  @override
   IShspSocket? get ipv6Socket => ipv6SocketImpl;
 
   /// Get the underlying RawDatagramSocket from the IPv4 socket (for backward compatibility)

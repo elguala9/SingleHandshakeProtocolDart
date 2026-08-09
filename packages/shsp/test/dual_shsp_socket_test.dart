@@ -14,16 +14,33 @@ class MockDualMigratable implements IDualShspSocketMigratable {
   bool get isClosed => closed;
 
   @override
+  IShspSocket? getSocket([InternetAddressType type = InternetAddressType.IPv6]) {
+    if (type == InternetAddressType.IPv4) return ipv4SocketImpl;
+    return ipv6SocketImpl;
+  }
+
   IShspSocket? get ipv4Socket => throw UnimplementedError();
 
-  @override
   IShspSocket? get ipv6Socket => null;
 
   @override
+  void migrateSocket(
+    IShspSocket socket, [
+    InternetAddressType type = InternetAddressType.IPv6,
+  ]) {}
+
   void migrateSocketIpv4(IShspSocket socket) {}
 
-  @override
   void migrateSocketIpv6(IShspSocket socket) {}
+
+  @override
+  IShspSocketMigratable getSocketMigratable([
+    InternetAddressType type = InternetAddressType.IPv6,
+  ]) => throw UnimplementedError();
+
+  IShspSocketMigratable get ipv4SocketMigratable => throw UnimplementedError();
+
+  IShspSocketMigratable get ipv6SocketMigratable => throw UnimplementedError();
 
   @override
   void applyProfile(ShspSocketProfile profile) {}
@@ -94,11 +111,15 @@ class MockDualMigratable implements IDualShspSocketMigratable {
   @override
   RawDatagramSocket get socket => throw UnimplementedError();
 
-  @override
-  IShspSocketWrapper get ipv4SocketWrapper => throw UnimplementedError();
+  IShspSocket refreshSocket([
+    InternetAddressType type = InternetAddressType.IPv6,
+  ]) => throw UnimplementedError();
 
-  @override
-  IShspSocketWrapper get ipv6SocketWrapper => throw UnimplementedError();
+  Sockets refreshSockets() => throw UnimplementedError();
+
+  IShspSocket refreshSocketIpv4() => throw UnimplementedError();
+
+  IShspSocket refreshSocketIpv6() => throw UnimplementedError();
 }
 
 void main() {

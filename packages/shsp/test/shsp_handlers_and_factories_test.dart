@@ -96,7 +96,6 @@ class MockShspInstance implements IShspInstance {
   @override
   void onMessage(List<int> msg, PeerInfo info) {}
 
-  @override
   void destroy() {}
 
   void setOpen() {
