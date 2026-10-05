@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'dart:io';
 import 'package:callback_handler/callback_handler.dart';
 import '../../types/callback_types.dart';
@@ -13,14 +14,33 @@ typedef CallbackOnMessage = CallbackHandler<MessageRecord, void>;
 class MessageCallbackMap implements IMessageCallbackMap {
   final Map<String, CallbackOnMessage> _handlers = {};
 
+  /// Invoked when a registered message callback throws.
+  ///
+  /// When `null`, such errors are reported to the current [Zone] instead
+  /// (the [CallbackHandler] default). Set this so a throwing callback is
+  /// treated as non-fatal and surfaced through a controlled channel (e.g. the
+  /// owning socket's error callback) rather than as an uncaught async error.
+  void Function(Object error, StackTrace stackTrace)? onError;
+
   /// Add a callback for a specific remote endpoint
   /// Key format: IPv4 "192.168.1.100:8080" or IPv6 "[2001:db8::1]:8080"
   /// If a callback already exists for this key, it will be replaced
   @override
   void add(String key, MessageCallbackFunction callback) {
-    final handler = CallbackOnMessage();
+    final handler = CallbackOnMessage(onError: _forwardError);
     handler.register((params) => callback(params));
     _handlers[key] = handler;
+  }
+
+  /// Routes an error thrown by a registered callback to [onError] if set,
+  /// otherwise falls back to the current [Zone].
+  void _forwardError(Object error, StackTrace stackTrace) {
+    final handler = onError;
+    if (handler != null) {
+      handler(error, stackTrace);
+    } else {
+      Zone.current.handleUncaughtError(error, stackTrace);
+    }
   }
 
   /// Get a callback invoker for a specific remote endpoint

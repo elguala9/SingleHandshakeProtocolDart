@@ -11,9 +11,9 @@ Test completo per tutte le interfacce e implementazioni del progetto Single Hand
 - **shsp_socket_test.dart**: Test esistente per `ShspSocket`
 
 ### Test Handshake
-- **handshake_ownership_test.dart**: Test per `HandshakeOwnership` (implementazione di `IHandshakeOwnership`)
 - **handshake_time_test.dart**: Test per `HandshakeTime` (implementazione di `IHandshakeTime`)
-- **handshake_initiator_signal_handler_test.dart**: Test per le interfacce di segnalazione handshake
+
+> Nota: `HandshakeOwnership`, `HandshakeSignal` e `SecuritySignal` (auth peer via firma e NAT/address signaling) sono stati rimossi in quanto non-goal esplicito della Sezione 11.1 di SHSP-protocol.md e non usati nel flusso reale di handshake.
 
 ### Test Utility
 - **address_utility_test.dart**: Test per `AddressUtility` (utility per formattazione indirizzi)
@@ -22,7 +22,7 @@ Test completo per tutte le interfacce e implementazioni del progetto Single Hand
 - **message_callback_map_test.dart**: Test per `MessageCallbackMap` (gestione callback messaggi)
 
 ### Test Types
-- **peer_types_test.dart**: Test per `PeerInfo`, `HandshakeSignal`, `SecuritySignal`
+- **peer_types_test.dart**: Test per `PeerInfo`
 - **remote_info_test.dart**: Test per `RemoteInfo`
 - **stun_types_test.dart**: Test per `StunResponse`, `LocalInfo`
 
@@ -32,9 +32,7 @@ Test completo per tutte le interfacce e implementazioni del progetto Single Hand
 packages/tests/test/
 ├── all_tests.dart                          # Test runner principale
 ├── shsp_test.dart                         # Test core Shsp
-├── handshake_ownership_test.dart         # Test handshake ownership
 ├── handshake_time_test.dart              # Test handshake time
-├── handshake_initiator_signal_handler_test.dart  # Test signal handler
 ├── utility/                              # Test utility
 │   ├── address_utility_test.dart
 │   ├── callback_map_test.dart
@@ -80,23 +78,18 @@ I test coprono:
 
 ### ✅ Implementazioni Complete
 - `Shsp` - Implementazione base IShsp
-- `HandshakeOwnership` - Gestione ownership handshake
 - `HandshakeTime` - Gestione timing handshake
 - Tutte le utility classes
 
 ### ✅ Interfacce Testate
 - `IShsp`
-- `IHandshakeOwnership`
 - `IHandshakeTime`
-- `IHandshakeInitiatorSignalHandler`
 
 ### ✅ Tipi Testati
 - `PeerInfo` con serializzazione JSON
 - `RemoteInfo` con serializzazione JSON
 - `StunResponse` con gestione binary data
-- `LocalInfo` 
-- `HandshakeSignal` con tutti i campi
-- `SecuritySignal`
+- `LocalInfo`
 
 ### ✅ Scenari Coperti
 - Serializzazione/deserializzazione JSON

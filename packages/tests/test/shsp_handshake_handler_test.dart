@@ -83,7 +83,10 @@ void main() {
     });
 
     test('handshakeInstance timeout se non risponde', () async {
-      // Solo uno fa handshake, l'altro no
+      // The peer is unreachable (socket closed), so no handshake-ack can ever
+      // come back and instance A must time out without reaching OPEN.
+      socketB.close();
+
       final futureA = ShspHandshakeHandler.handshakeInstance(
         instanceA,
         const ShspHandshakeHandlerOptions(

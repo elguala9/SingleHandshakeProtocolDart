@@ -169,7 +169,9 @@ void main() {
         socket3.close();
       });
 
-      test('data messages are compressed with specified codec', () async {
+      test('data messages are transmitted as opaque bytes, not auto-compressed', () async {
+        // Per SHSP spec Section 9, the socket never applies compression on
+        // its own. The codec is only available as an app-level utility.
         final codec = GZipCodec();
         final socket1 = await ShspSocket.bind(address, 0, codec);
         final socket2 = await ShspSocket.bind(address, 0, codec);
@@ -182,21 +184,21 @@ void main() {
         socket2.setMessageCallback(
           PeerInfo(address: address, port: socket1.localPort!),
           (record) {
-            // Should receive decompressed message with original length
+            // Should receive the exact same bytes sent, untouched
             expect(record.msg.length, equals(501)); // 1 prefix + 500
             expect(record.msg[0], equals(0x00)); // Data prefix
+            expect(record.msg, equals(dataMessage));
             messageReceived = true;
           },
         );
 
-        // Send data message (will be compressed)
         final bytesSent = socket1.sendTo(
           dataMessage,
           PeerInfo(address: address, port: socket2.localPort!),
         );
 
-        // Bytes sent should be much less due to compression
-        expect(bytesSent, lessThan(501));
+        // No automatic compression: bytes sent should equal message length
+        expect(bytesSent, equals(dataMessage.length));
 
         await Future.delayed(const Duration(milliseconds: 100));
         expect(messageReceived, isTrue);

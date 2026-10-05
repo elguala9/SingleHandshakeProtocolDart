@@ -4,7 +4,6 @@ library;
 
 export 'src/config/shsp_config.dart';
 export 'src/impl/connection/connection.dart';
-export 'src/impl/connection/handshake_ownership.dart';
 export 'src/impl/connection/handshake_time.dart';
 export 'src/impl/factory/factory_inputs.dart';
 export 'src/impl/factory/shsp_factories.dart';
@@ -84,6 +83,7 @@ export 'src/interfaces/utility/i_raw_shsp_socket.dart';
 export 'src/interfaces/utility/i_shsp_socket_info_singleton.dart';
 export 'src/main_injection.dart';
 export 'src/types/callback_types.dart';
+export 'src/types/connection_state.dart';
 export 'src/types/index.dart';
 export 'src/types/instance_profile.dart';
 export 'src/types/internet_address_converter.dart';

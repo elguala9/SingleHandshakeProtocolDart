@@ -3,6 +3,7 @@
 library;
 
 export 'callback_types.dart';
+export 'connection_state.dart';
 export 'instance_profile.dart';
 export 'internet_address_converter.dart';
 export 'peer_types.dart';

@@ -498,7 +498,6 @@ void main() {
       });
 
       test('should send large message', () async {
-        // Generate message starting from 1 to avoid 0x00 prefix which triggers compression
         final testMsg = List<int>.generate(1000, (i) => (i + 1) % 256);
         final completer = Completer<void>();
         final socket2Port = socket2.localPort!;
@@ -878,7 +877,7 @@ void main() {
       });
     });
 
-    group('GZip Compression Tests', () {
+    group('Payload opacity (spec Section 9: compression is not part of SHSP)', () {
       late ShspSocket socket1;
       late ShspSocket socket2;
       late InternetAddress address;
@@ -895,9 +894,8 @@ void main() {
       });
 
       test(
-        'data messages (0x00) are compressed and decompressed correctly',
+        'data messages (0x00) are transmitted byte-for-byte, without automatic compression',
         () async {
-          // Create a large repetitive message to ensure good compression
           final originalMessage = List<int>.generate(
             500,
             (i) => 0x41,
@@ -908,7 +906,7 @@ void main() {
           socket2.setMessageCallback(
             PeerInfo(address: address, port: socket1.localPort!),
             (record) {
-              // Should receive the original uncompressed message with prefix
+              // Should receive the exact same bytes sent, untouched
               expect(record.msg.length, equals(501)); // 1 (prefix) + 500
               expect(record.msg[0], equals(0x00)); // Data prefix
               expect(record.msg.sublist(1), equals(originalMessage));
@@ -921,11 +919,8 @@ void main() {
             PeerInfo(address: address, port: socket2.localPort!),
           );
 
-          // Bytes sent should be much less than 501 due to compression
-          expect(bytesSent, lessThan(501));
-          print(
-            'Compression: 501 bytes → $bytesSent bytes (${((1 - bytesSent / 501) * 100).toStringAsFixed(1)}% reduction)',
-          );
+          // No automatic compression: bytes sent should equal message length
+          expect(bytesSent, equals(dataMessage.length));
 
           await completer.future.timeout(
             const Duration(seconds: 2),
@@ -936,12 +931,13 @@ void main() {
         },
       );
 
-      test('protocol messages (0x01-0x04) are NOT compressed', () async {
+      test('protocol messages (0x01-0x05) are NOT compressed', () async {
         final protocolMessages = [
           [0x01], // Handshake
-          [0x02], // Closing
-          [0x03], // Closed
-          [0x04], // KeepAlive
+          [0x02], // Handshake-Ack
+          [0x03], // Closing
+          [0x04], // Closed
+          [0x05], // KeepAlive
         ];
         int receivedCount = 0;
         final completer = Completer<void>();
@@ -951,9 +947,9 @@ void main() {
           (record) {
             // Protocol messages should pass through unchanged
             expect(record.msg.length, equals(1));
-            expect([0x01, 0x02, 0x03, 0x04], contains(record.msg[0]));
+            expect([0x01, 0x02, 0x03, 0x04, 0x05], contains(record.msg[0]));
             receivedCount++;
-            if (receivedCount == 4) {
+            if (receivedCount == 5) {
               completer.complete();
             }
           },
@@ -973,7 +969,7 @@ void main() {
         await completer.future.timeout(
           const Duration(seconds: 2),
           onTimeout: () {
-            fail('Protocol messages not received (received: $receivedCount/4)');
+            fail('Protocol messages not received (received: $receivedCount/5)');
           },
         );
       });

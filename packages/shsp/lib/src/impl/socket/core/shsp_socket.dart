@@ -19,7 +19,6 @@ class ShspSocket extends RawShspSocket
     with
         IdempotentCloseMixin,
         ShspSocketCallbacksMixin,
-        ShspSocketCompressionMixin,
         ShspSocketProfileMixin
     implements IShspSocket {
   /// Resolves [rawSocket] via DI — see the class docs above.
@@ -45,10 +44,11 @@ class ShspSocket extends RawShspSocket
     ICompressionCodec? compressionCodec,
   ]) {
     _messageCallbacksImpl = messageCallbacks;
-    initCompressionCodec(compressionCodec);
+    _compressionCodec = compressionCodec ?? GZipCodec();
     _onClose = CallbackOn();
     _onError = CallbackOnError();
     _onListening = CallbackOn();
+    _messageCallbacksImpl.onError = (error, _) => invokeOnError(error);
     _setupEventListeners();
   }
 
@@ -72,10 +72,11 @@ class ShspSocket extends RawShspSocket
     ICompressionCodec? compressionCodec,
   ]) : super(rawSocket) {
     _messageCallbacksImpl = MessageCallbackMap();
-    initCompressionCodec(compressionCodec);
+    _compressionCodec = compressionCodec ?? GZipCodec();
     _onClose = CallbackOn();
     _onError = CallbackOnError();
     _onListening = CallbackOn();
+    _messageCallbacksImpl.onError = (error, _) => invokeOnError(error);
     _localAddress = rawSocket.address;
     _localPort = rawSocket.port;
     _setupEventListeners();
@@ -112,6 +113,7 @@ class ShspSocket extends RawShspSocket
   }
 
   late MessageCallbackMap _messageCallbacksImpl;
+  late ICompressionCodec _compressionCodec;
   late CallbackOn _onClose;
   late CallbackOnError _onError;
   late CallbackOn _onListening;
@@ -150,8 +152,10 @@ class ShspSocket extends RawShspSocket
     final Datagram? datagram = socket.receive();
     if (datagram != null) {
       final rinfo = RemoteInfo(address: datagram.address, port: datagram.port);
-      final data = decompressIfData(datagram.data);
-      onMessage(data, rinfo);
+      // SHSP treats the payload as opaque bytes (spec Section 9: "Compression
+      // is not part of SHSP"). Any decompression is the application's
+      // responsibility, done after receiving via onMessage.
+      onMessage(datagram.data, rinfo);
     }
   }
 
@@ -282,8 +286,10 @@ class ShspSocket extends RawShspSocket
 
   @override
   int sendTo(List<int> buffer, PeerInfo peer) {
-    final data = compressIfData(buffer);
-    return super.send(data, peer.address, peer.port);
+    // SHSP MUST NOT interpret, transform, or compress the payload (spec
+    // Section 9). Any compression is the application's responsibility,
+    // done before calling sendTo/sendMessage.
+    return super.send(buffer, peer.address, peer.port);
   }
 
   @override
@@ -313,6 +319,12 @@ class ShspSocket extends RawShspSocket
 
   /// Getter for profile mixin to access message callbacks
   MessageCallbackMap get messageCallbacksForProfile => _messageCallbacksImpl;
+
+  /// The compression codec associated with this socket. Kept for application
+  /// use and for plumbing through reconnects/singletons; the socket itself
+  /// no longer applies it automatically to sent/received payloads.
+  @override
+  ICompressionCodec get compressionCodec => _compressionCodec;
 
   /// Getters for callback mixin
   @override
