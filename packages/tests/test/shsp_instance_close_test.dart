@@ -84,14 +84,14 @@ void main() {
       await Future.delayed(const Duration(milliseconds: 500));
       expect(instanceB.open, isFalse); // open deve tornare false dopo closed
       expect(instanceA.open, isFalse); // open deve tornare false dopo closed
-      // if closed i can send message to recreate the connection
+      // Spec Section 5: a CLOSED session MUST NOT be reused; handshakes are ignored
       instanceB.sendHandshake();
       instanceA.sendHandshake();
       await Future.delayed(const Duration(milliseconds: 500));
       instanceB.sendHandshake();
       instanceA.sendHandshake();
       await Future.delayed(const Duration(milliseconds: 500));
-      expect(instanceA.open, isTrue); // open deve essere true dopo handshake
+      expect(instanceA.open, isFalse); // resta chiusa
     });
   });
 }

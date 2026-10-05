@@ -39,13 +39,13 @@ mixin ShspInstanceHandshakeMixin {
 
   /// Send a handshake probe (0x01), carrying the mandatory VERSION byte
   /// (Section 4, Section 6, Section 13). Exits CREATED into HANDSHAKING
-  /// (Section 5); also allowed from CLOSED so a session can be re-created
-  /// over the same instance (e.g. UDP reconnection), matching the
-  /// pre-existing observable behavior. Left untouched once past HANDSHAKING
+  /// (Section 5). A CLOSED session MUST NOT be reused (Section 5): the call
+  /// is a no-op there; reconnect by creating a new instance (e.g.
+  /// `ShspInstance.withProfile`). Left untouched once past HANDSHAKING
   /// (OPEN/CLOSING) so a redundant call never downgrades an active session.
   void sendHandshake() {
-    if (connectionState == ShspConnectionState.created ||
-        connectionState == ShspConnectionState.closed) {
+    if (connectionState == ShspConnectionState.closed) return;
+    if (connectionState == ShspConnectionState.created) {
       connectionState = ShspConnectionState.handshaking;
     }
     sendMessageInternal([handshakePrefix, shspVersion]);
@@ -85,13 +85,11 @@ mixin ShspInstanceHandshakeMixin {
       // (Section 6 point 6, Section 12) and is not used for any security
       // or negotiation decision.
       // Received a valid handshake probe from the other peer: exits CREATED
-      // into HANDSHAKING (Section 5); also allowed from CLOSED to support
-      // re-creating a session over the same instance, matching the
-      // pre-existing observable behavior. Left untouched once past
-      // HANDSHAKING so a redundant/duplicate probe never downgrades an
-      // active session (Section 6 point 9).
-      if (connectionState == ShspConnectionState.created ||
-          connectionState == ShspConnectionState.closed) {
+      // into HANDSHAKING (Section 5). Left untouched once past HANDSHAKING
+      // so a redundant/duplicate probe never downgrades an active session
+      // (Section 6 point 9). CLOSED sessions never get here (discarded by
+      // the caller).
+      if (connectionState == ShspConnectionState.created) {
         connectionState = ShspConnectionState.handshaking;
       }
       onHandshake.call(null);
@@ -104,7 +102,11 @@ mixin ShspInstanceHandshakeMixin {
   @protected
   bool isHandshakeAck(List<int> msg) {
     if (msg.isNotEmpty && msg[0] == handshakeAckPrefix) {
-      connectionState = ShspConnectionState.open;
+      // An ack only confirms the handshake while HANDSHAKING; a stray ack in
+      // CLOSING/CLOSED must not revive the session (Section 5).
+      if (connectionState == ShspConnectionState.handshaking) {
+        connectionState = ShspConnectionState.open;
+      }
       // Note: onOpen callback is called from the main instance
       return true;
     }
@@ -115,8 +117,12 @@ mixin ShspInstanceHandshakeMixin {
   @protected
   bool isClosingMessage(List<int> msg) {
     if (msg.isNotEmpty && msg[0] == closingPrefix) {
-      connectionState = ShspConnectionState.closing;
-      onClosing.call(null);
+      // Section 6 point 8: Closing in HANDSHAKING must not open the session.
+      // It is only meaningful (and surfaced) for an OPEN session.
+      if (connectionState == ShspConnectionState.open) {
+        connectionState = ShspConnectionState.closing;
+        onClosing.call(null);
+      }
       return true;
     }
     return false;

@@ -118,6 +118,9 @@ class ShspInstance extends ShspPeer
     // the liveness timeout, before any dispatch happens below.
     _resetLiveness();
 
+    // Section 5 (CLOSED): no further incoming message may be processed.
+    if (_connectionState == ShspConnectionState.closed) return;
+
     // Section 5 (CREATED): no message other than a Handshake probe (0x01)
     // can legitimately be received while still in this state; anything else
     // MUST be discarded. Note this is keyed on the prefix byte alone: a
@@ -136,14 +139,20 @@ class ShspInstance extends ShspPeer
       return;
     }
     if (msg.isNotEmpty && msg[0] == handshakeAckPrefix) {
-      final wasOpen = open;
+      final wasHandshaking =
+          _connectionState == ShspConnectionState.handshaking;
       isHandshakeAck(msg);
       // Only fire onOpen on the OPEN transition, not on every subsequent ack.
-      if (!wasOpen) onOpen.call(null);
+      if (wasHandshaking) _onOpened();
       return;
     }
     if (isClosingMessage(msg)) return;
-    if (isClosedMessage(msg)) return;
+    if (isClosedMessage(msg)) {
+      // Section 8: Closed received -> CLOSED; release resources (timers,
+      // socket callback). State is already closed, so no Closed is echoed.
+      close();
+      return;
+    }
 
     // Section 6, point 7: Data or Keep-alive received while still HANDSHAKING
     // (i.e. our own ack was never received, but the peer's traffic was) is
@@ -153,7 +162,7 @@ class ShspInstance extends ShspPeer
     if (_isKeepAlive(msg) || _isData(msg)) {
       if (_connectionState == ShspConnectionState.handshaking) {
         _connectionState = ShspConnectionState.open;
-        onOpen.call(null);
+        _onOpened();
       }
     }
 
@@ -169,6 +178,13 @@ class ShspInstance extends ShspPeer
       'Message type not recognized by ShspInstance',
       messageType: msg.isNotEmpty ? '0x${msg[0].toRadixString(16)}' : 'empty',
     );
+  }
+
+  /// Common OPEN-transition side effects: starts the periodic keep-alive
+  /// (Section 7) and notifies listeners.
+  void _onOpened() {
+    startKeepAlive();
+    onOpen.call(null);
   }
 
   bool _isData(List<int> msg) {
@@ -194,14 +210,21 @@ class ShspInstance extends ShspPeer
 
   @override
   void sendMessage(List<int> message) {
-    message.insert(0, dataPrefix);
-    if (open == false) {
+    final instanceId = '${remotePeer.address.address}:${remotePeer.port}';
+    if (_connectionState == ShspConnectionState.closed) {
       throw ShspInstanceException(
-        'Cannot send message: connection is not open',
-        instanceId: '${remotePeer.address.address}:${remotePeer.port}',
+        'Cannot send message: connection is closed',
+        instanceId: instanceId,
       );
     }
-    sendMessageInternal(message);
+    if (!open) {
+      throw ShspInstanceException(
+        'Cannot send message: connection is not open',
+        instanceId: instanceId,
+      );
+    }
+    // Do not mutate the caller's list.
+    sendMessageInternal([dataPrefix, ...message]);
   }
 
   @override
@@ -233,6 +256,7 @@ class ShspInstance extends ShspPeer
     } finally {
       stopKeepAlive();
       _stopLiveness();
+      _connectionState = ShspConnectionState.closed;
       super.close();
     }
   }

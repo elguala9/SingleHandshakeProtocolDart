@@ -99,6 +99,7 @@ class MockShspInstance implements IShspInstance {
     _handshakeState = true;
     _openState = true;
     onHandshake.call(null);
+    onOpen.call(null);
   }
 }
 

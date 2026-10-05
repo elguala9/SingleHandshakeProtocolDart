@@ -126,9 +126,10 @@ void main() {
           closingFired = true;
         });
 
-        // Leave CREATED first: a Closing message received while CREATED is
-        // discarded per Section 5.
+        // Closing is only meaningful on an OPEN session: it is discarded in
+        // CREATED (Section 5) and does not open a HANDSHAKING one (Section 6.8).
         instance.onMessage([0x01, 0x00], remotePeer);
+        instance.onMessage([0x02], remotePeer);
         instance.onMessage([0x03], remotePeer);
         await Future.microtask(() {});
 

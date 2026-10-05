@@ -64,7 +64,7 @@ class _ShspHandshakeRetryImpl implements ShspHandshakeRetry {
     required this.options,
     this.onMaxAttemptsExhausted,
   }) {
-    _onHandshakeListener = (_) => _onHandshakeReceived();
+    _onOpenListener = (_) => _onOpened();
     _start();
   }
 
@@ -75,15 +75,16 @@ class _ShspHandshakeRetryImpl implements ShspHandshakeRetry {
   bool _active = true;
   int _attemptCount = 0;
   Timer? _retryTimer;
-  late final void Function(void) _onHandshakeListener;
+  late final void Function(void) _onOpenListener;
 
   void _start() {
     // Send initial probe immediately
     instance.sendHandshake();
     _attemptCount++;
 
-    // Register listener for successful handshake
-    instance.onHandshake.register(_onHandshakeListener);
+    // Retransmit until OPEN (spec Section 6, point 4), not merely until the
+    // peer's probe is observed: our own probe may still have been lost.
+    instance.onOpen.register(_onOpenListener);
 
     // Schedule first retry if max attempts not reached
     if (_attemptCount < options.maxAttempts) {
@@ -114,16 +115,28 @@ class _ShspHandshakeRetryImpl implements ShspHandshakeRetry {
         if (_attemptCount < options.maxAttempts) {
           _scheduleNextRetry();
         } else {
-          _cleanup();
-          onMaxAttemptsExhausted?.call();
+          // Give the last probe a full interval to be answered before
+          // reporting exhaustion.
+          _scheduleExhaustion(delayMs);
         }
+      } else {
+        _cleanup();
       }
     });
   }
 
-  void _onHandshakeReceived() {
+  void _scheduleExhaustion(int delayMs) {
+    _retryTimer = Timer(Duration(milliseconds: delayMs), () {
+      if (!_active) return;
+      final opened = instance.open;
+      _cleanup();
+      if (!opened) onMaxAttemptsExhausted?.call();
+    });
+  }
+
+  void _onOpened() {
     if (!_active) return;
-    // Handshake succeeded, stop retrying
+    // Session is OPEN, stop retrying
     _cleanup();
   }
 
@@ -134,7 +147,7 @@ class _ShspHandshakeRetryImpl implements ShspHandshakeRetry {
     _retryTimer = null;
     // Defer unregister to next microtask to avoid concurrent modification
     Future.microtask(() {
-      instance.onHandshake.unregister(_onHandshakeListener);
+      instance.onOpen.unregister(_onOpenListener);
     });
   }
 
