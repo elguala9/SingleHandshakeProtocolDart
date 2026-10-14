@@ -1,11 +1,10 @@
+import 'dart:async';
 import 'dart:developer';
 
 import '../../../../shsp.dart';
 
 const int dataPrefix = 0x00;
 const int keepAlivePrefix = 0x05;
-
-// TO DO (Extension) : Add callback for extra data after prefixes (eg. handshake with data)
 
 /// SHSP Instance: manages handshake, closure, keep-alive and data messages.
 class ShspInstance extends ShspPeer
@@ -22,7 +21,6 @@ class ShspInstance extends ShspPeer
     onOpen = CallbackOn();
     onClosing = CallbackOn();
     onClose = CallbackOn();
-    _startLiveness();
   }
 
   /// Factory: creates a new SHSP instance with configurable keep-alive.
@@ -63,7 +61,10 @@ class ShspInstance extends ShspPeer
       remotePeer: remotePeer,
       socket: socket,
       keepAliveSeconds: profile.keepAliveSeconds,
-    );
+      livenessTimeoutSeconds: profile.livenessTimeoutSeconds,
+    )
+      ..closingRetransmitInterval = profile.closingRetransmitInterval
+      ..closingTimeout = profile.closingTimeout;
     profile.onHandshakeListeners.forEach(instance.onHandshake.register);
     profile.onOpenListeners.forEach(instance.onOpen.register);
     profile.onClosingListeners.forEach(instance.onClosing.register);
@@ -80,9 +81,9 @@ class ShspInstance extends ShspPeer
   int _keepAliveSecondsValue = 15;
   KeepAliveTimer? _keepAliveTimerValue;
 
-  /// Liveness timeout in seconds (Section 7): if no message (data, control or
-  /// keep-alive) is received from the peer within this duration, the session
-  /// is closed locally, without waiting for a peer response. `null` disables
+  /// Liveness timeout in seconds (Section 7), applied while OPEN or CLOSING:
+  /// if no message is received from the peer within this duration, the
+  /// session is closed locally (abortive close), without waiting for a peer response. `null` disables
   /// this behavior entirely.
   final int? livenessTimeoutSeconds;
 
@@ -90,6 +91,15 @@ class ShspInstance extends ShspPeer
   /// resettable periodic timer; it is unrelated to the outgoing keep-alive
   /// timer managed by [ShspInstanceKeepAliveMixin].
   KeepAliveTimer? _livenessTimerValue;
+
+  /// Interval between Closing retransmissions while CLOSING (Section 8).
+  Duration closingRetransmitInterval = const Duration(milliseconds: 500);
+
+  /// Maximum time spent in CLOSING waiting for the peer's Closed (Section 8).
+  Duration closingTimeout = const Duration(seconds: 3);
+
+  Timer? _closingRetransmitTimer;
+  Timer? _closingTimeoutTimer;
 
   @override
   late CallbackOn onOpen;
@@ -113,93 +123,99 @@ class ShspInstance extends ShspPeer
 
   @override
   void onMessage(List<int> msg, PeerInfo info) {
-    // Section 7: any message received from the peer (handshake, ack,
-    // closing, closed, keep-alive or data) is proof of liveness and resets
-    // the liveness timeout, before any dispatch happens below.
-    _resetLiveness();
+    // Section 3: a zero-byte datagram is never a valid SHSP message.
+    if (msg.isEmpty) return;
 
     // Section 5 (CLOSED): no further incoming message may be processed.
     if (_connectionState == ShspConnectionState.closed) return;
 
-    // Section 5 (CREATED): no message other than a Handshake probe (0x01)
-    // can legitimately be received while still in this state; anything else
-    // MUST be discarded. Note this is keyed on the prefix byte alone: a
-    // malformed handshake probe (e.g. missing VERSION byte) still reaches
-    // the isHandshake()/protocol-error handling below instead of being
-    // silently swallowed here.
+    final prefix = msg[0];
+
+    // Section 5 (CREATED): only a Handshake probe (0x01) can legitimately be
+    // received while still in this state; anything else MUST be discarded.
     if (_connectionState == ShspConnectionState.created &&
-        !(msg.isNotEmpty && msg[0] == handshakePrefix)) {
+        prefix != handshakePrefix) {
       return;
     }
 
-    // Check protocol messages first
-    if (isHandshake(msg)) {
-      // Reply with a dedicated handshake acknowledgment (0x02) as required by the spec.
-      sendHandshakeAck();
-      return;
+    switch (prefix) {
+      case handshakePrefix:
+        // Section 6 step 2: every well-formed probe received in CREATED,
+        // HANDSHAKING or OPEN MUST be acknowledged, including duplicates and
+        // probes received after OPEN. Probes received in CLOSING are not.
+        if (_connectionState == ShspConnectionState.closing) return;
+        if (!isHandshake(msg)) return;
+        _resetLiveness();
+        // The ack is best-effort: its loss is already covered by probe
+        // retransmission and implicit confirmation, so a transient send
+        // failure must not propagate out of the receive path.
+        try {
+          sendHandshakeAck();
+        } catch (e) {
+          log('Error sending handshake ack: $e', name: 'ShspInstance');
+        }
+        return;
+      case handshakeAckPrefix:
+        _resetLiveness();
+        final wasHandshaking =
+            _connectionState == ShspConnectionState.handshaking;
+        isHandshakeAck(msg);
+        // Only fire onOpen on the OPEN transition, not on every subsequent ack.
+        if (wasHandshaking) _onOpened();
+        return;
+      case closingPrefix:
+        _onClosingReceived();
+        return;
+      case closedPrefix:
+        // Section 8: Closed received -> CLOSED, no reply; release resources.
+        _teardown(sendClosedMessage: false);
+        return;
+      case keepAlivePrefix:
+      case dataPrefix:
+        // Section 7: only well-formed messages reset the liveness timeout.
+        _resetLiveness();
+        // Section 6 step 6: Data or Keep-alive received while HANDSHAKING is
+        // an implicit handshake confirmation.
+        if (_connectionState == ShspConnectionState.handshaking) {
+          _connectionState = ShspConnectionState.open;
+          _onOpened();
+        }
+        if (prefix == dataPrefix) super.onMessage(msg, info);
+        return;
+      default:
+        // Section 4: unknown prefixes are discarded without affecting state.
+        log(
+          'Discarded message with unknown prefix 0x${prefix.toRadixString(16)}',
+          name: 'ShspInstance',
+        );
     }
-    if (msg.isNotEmpty && msg[0] == handshakeAckPrefix) {
-      final wasHandshaking =
-          _connectionState == ShspConnectionState.handshaking;
-      isHandshakeAck(msg);
-      // Only fire onOpen on the OPEN transition, not on every subsequent ack.
-      if (wasHandshaking) _onOpened();
-      return;
-    }
-    if (isClosingMessage(msg)) return;
-    if (isClosedMessage(msg)) {
-      // Section 8: Closed received -> CLOSED; release resources (timers,
-      // socket callback). State is already closed, so no Closed is echoed.
-      close();
-      return;
-    }
+  }
 
-    // Section 6, point 7: Data or Keep-alive received while still HANDSHAKING
-    // (i.e. our own ack was never received, but the peer's traffic was) is
-    // treated as an implicit handshake confirmation: transition to OPEN
-    // before processing/forwarding the message itself. Closing/Closed
-    // messages are excluded (point 8) via the early returns above.
-    if (_isKeepAlive(msg) || _isData(msg)) {
-      if (_connectionState == ShspConnectionState.handshaking) {
-        _connectionState = ShspConnectionState.open;
-        _onOpened();
-      }
+  /// Section 8 (responder / simultaneous close): reply with Closed and move
+  /// to CLOSED, surfacing the closing notification first.
+  void _onClosingReceived() {
+    // In a simultaneous close the local side initiated the close itself and
+    // already knows the session is closing: do not surface it again.
+    if (_connectionState != ShspConnectionState.closing) {
+      onClosing.call(null);
     }
-
-    if (_isKeepAlive(msg)) return;
-
-    // Pass to parent for user callback
-    if (_isData(msg)) {
-      super.onMessage(msg, info);
-      return;
-    }
-
-    throw ShspProtocolException(
-      'Message type not recognized by ShspInstance',
-      messageType: msg.isNotEmpty ? '0x${msg[0].toRadixString(16)}' : 'empty',
-    );
+    // close() sends the mandatory Closed reply and releases resources.
+    close();
   }
 
   /// Common OPEN-transition side effects: starts the periodic keep-alive
   /// (Section 7) and notifies listeners.
   void _onOpened() {
     startKeepAlive();
+    _startLiveness();
+    // Section 6 step 7: send one keep-alive promptly so the peer can confirm
+    // the handshake implicitly even if all our acknowledgments were lost.
+    try {
+      keepAlive();
+    } catch (e) {
+      log('Error sending initial keep-alive: $e', name: 'ShspInstance');
+    }
     onOpen.call(null);
-  }
-
-  bool _isData(List<int> msg) {
-    if (msg.isNotEmpty && msg[0] == dataPrefix) {
-      return true;
-    }
-    return false;
-  }
-
-  /// Check if message is a keep-alive (0x05)
-  bool _isKeepAlive(List<int> msg) {
-    if (msg.isNotEmpty && msg[0] == keepAlivePrefix) {
-      return true;
-    }
-    return false;
   }
 
   @override
@@ -221,6 +237,14 @@ class ShspInstance extends ShspPeer
       throw ShspInstanceException(
         'Cannot send message: connection is not open',
         instanceId: instanceId,
+      );
+    }
+    // Section 3: the application payload of a Data message MUST NOT be empty.
+    if (message.isEmpty) {
+      throw ShspValidationException(
+        'Application payload cannot be empty',
+        field: 'message',
+        value: message,
       );
     }
     // Do not mutate the caller's list.
@@ -246,19 +270,73 @@ class ShspInstance extends ShspPeer
     super.sendMessage(message);
   }
 
-  /// Override close() to ensure keep-alive and liveness timers are stopped
+  /// Graceful close (Section 8, initiator): sends Closing, enters CLOSING and
+  /// retransmits Closing every [closingRetransmitInterval] until the peer's
+  /// Closed is received or [closingTimeout] expires, after which a
+  /// best-effort Closed is sent and the session moves to CLOSED.
+  /// A no-op unless the session is OPEN.
+  ///
+  /// A failure to transmit the first Closing is tolerated (Section 8): it is
+  /// logged, the session still enters CLOSING and relies on retransmissions
+  /// and the closing timeout. No error is raised to the caller.
   @override
-  void close() {
+  void sendClosing() {
+    if (_connectionState != ShspConnectionState.open) return;
     try {
-      if (open) sendClosed();
+      super.sendClosing();
+    } catch (e) {
+      log('Error sending closing: $e', name: 'ShspInstance');
+      _connectionState = ShspConnectionState.closing;
+    }
+    stopKeepAlive();
+    _closingRetransmitTimer = Timer.periodic(closingRetransmitInterval, (_) {
+      if (_connectionState != ShspConnectionState.closing) return;
+      try {
+        sendMessageUnchecked([closingPrefix]);
+      } catch (_) {
+        // Tolerated (Section 8).
+      }
+    });
+    _closingTimeoutTimer = Timer(closingTimeout, close);
+  }
+
+  void _stopClosingTimers() {
+    _closingRetransmitTimer?.cancel();
+    _closingRetransmitTimer = null;
+    _closingTimeoutTimer?.cancel();
+    _closingTimeoutTimer = null;
+  }
+
+  /// Abortive close (Section 8): sends a best-effort Closed if the session
+  /// was HANDSHAKING, OPEN or CLOSING, then moves to CLOSED and releases
+  /// resources. Idempotent: on a CLOSED session no message is sent and
+  /// [onClose] is not fired again.
+  @override
+  void close() => _teardown(sendClosedMessage: true);
+
+  /// Single CLOSED transition used by every close path (local close, Closing
+  /// or Closed received, closing timeout, liveness timeout, handshake retry
+  /// exhaustion). Fires [onClose] exactly once, after resources are released.
+  void _teardown({required bool sendClosedMessage}) {
+    final previous = _connectionState;
+    if (previous == ShspConnectionState.closed) {
+      super.close();
+      return;
+    }
+    try {
+      if (sendClosedMessage && previous != ShspConnectionState.created) {
+        sendClosed();
+      }
     } catch (_) {
       // Ignore send errors during close (e.g. socket already closed)
     } finally {
+      _stopClosingTimers();
       stopKeepAlive();
       _stopLiveness();
       _connectionState = ShspConnectionState.closed;
       super.close();
     }
+    onClose.call(null);
   }
 
   /// Starts the liveness timeout (Section 7), if configured. A no-op when
@@ -310,6 +388,9 @@ class ShspInstance extends ShspPeer
   @override
   ShspInstanceProfile extractProfile() => ShspInstanceProfile(
     keepAliveSeconds: keepAliveSeconds,
+    livenessTimeoutSeconds: livenessTimeoutSeconds,
+    closingRetransmitInterval: closingRetransmitInterval,
+    closingTimeout: closingTimeout,
     onHandshakeListeners: _extractListeners<OnVoidListener>(onHandshake),
     onOpenListeners: _extractListeners<OnVoidListener>(onOpen),
     onClosingListeners: _extractListeners<OnVoidListener>(onClosing),

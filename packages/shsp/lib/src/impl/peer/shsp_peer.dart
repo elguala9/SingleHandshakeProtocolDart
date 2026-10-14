@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import '../../../shsp.dart';
 
 /// SHSP Peer implementation
@@ -45,7 +47,13 @@ class ShspPeer with IdempotentCloseMixin, MessageSizeValidationMixin implements 
 
   @override
   void sendMessage(List<int> message) {
-    validateOutgoingMessage(message, isClosed, remotePeer.address.address, remotePeer.port);
+    validateOutgoingMessage(
+      message,
+      isClosed,
+      remotePeer.address.address,
+      remotePeer.port,
+      ipv6: remotePeer.address.type == InternetAddressType.IPv6,
+    );
 
     final bytes = socket.sendTo(message, remotePeer);
     if (bytes == 0) {

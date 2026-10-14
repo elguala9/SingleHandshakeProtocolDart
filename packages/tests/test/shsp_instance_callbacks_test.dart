@@ -216,9 +216,9 @@ void main() {
       await Future.delayed(const Duration(milliseconds: 500));
 
       // Closing sequence
+      // B's Closing is answered by A with Closed (Section 8): A surfaces
+      // onClosing, then onClose.
       instanceB.sendClosing();
-      await Future.delayed(const Duration(milliseconds: 500));
-      instanceB.sendClosed();
       await Future.delayed(const Duration(milliseconds: 500));
 
       expect(

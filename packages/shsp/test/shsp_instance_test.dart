@@ -38,10 +38,7 @@ void main() {
           handshakeFired = true;
         });
 
-        expect(
-          () => instance.onMessage([0x01], remotePeer),
-          throwsA(isA<ShspProtocolException>()),
-        );
+        expect(() => instance.onMessage([0x01], remotePeer), returnsNormally);
 
         await Future.microtask(() {});
 
@@ -69,7 +66,7 @@ void main() {
 
       test(
         'Data message received while HANDSHAKING is treated as implicit '
-        'handshake confirmation and transitions to OPEN (Section 6 point 7)',
+        'handshake confirmation and transitions to OPEN (Section 6 step 6)',
         () async {
           var openFiredCount = 0;
           instance.onOpen.register((_) {
@@ -102,7 +99,7 @@ void main() {
       test(
         'Keep-alive message received while HANDSHAKING is treated as '
         'implicit handshake confirmation and transitions to OPEN '
-        '(Section 6 point 7)',
+        '(Section 6 step 6)',
         () async {
           var openFiredCount = 0;
           instance.onOpen.register((_) {
@@ -120,7 +117,7 @@ void main() {
         },
       );
 
-      test('[0x03] message triggers onClosing callback', () async {
+      test('[0x03] message triggers onClosing callback and closes the session', () async {
         var closingFired = false;
         instance.onClosing.register((_) {
           closingFired = true;
@@ -134,7 +131,9 @@ void main() {
         await Future.microtask(() {});
 
         expect(closingFired, isTrue);
-        expect(instance.closing, isTrue);
+        // Section 8: the responder replies Closed and moves to CLOSED.
+        expect(instance.closing, isFalse);
+        expect(instance.open, isFalse);
       });
 
       test('[0x04] message triggers onClose callback and sets openState = false', () async {
@@ -206,31 +205,21 @@ void main() {
       );
 
       test(
-        'unrecognized prefix throws ShspProtocolException once past CREATED',
-        () {
-          // Leave CREATED first, otherwise the message would be silently
-          // discarded per Section 5 instead of reaching the protocol-error path.
-          instance.onMessage([0x01, 0x00], remotePeer);
-
-          expect(
-            () => instance.onMessage([0x99], remotePeer),
-            throwsA(isA<ShspProtocolException>()),
-          );
-        },
-      );
-
-      test(
-        'empty message throws ShspProtocolException with messageType "empty" once past CREATED',
+        'unrecognized prefix is discarded once past CREATED (Section 4)',
         () {
           instance.onMessage([0x01, 0x00], remotePeer);
 
-          try {
-            instance.onMessage([], remotePeer);
-          } on ShspProtocolException catch (e) {
-            expect(e.messageType, contains('empty'));
-          }
+          expect(() => instance.onMessage([0x99], remotePeer), returnsNormally);
+          expect(instance.handshake, isTrue);
         },
       );
+
+      test('empty message is discarded once past CREATED (Section 3)', () {
+        instance.onMessage([0x01, 0x00], remotePeer);
+
+        expect(() => instance.onMessage([], remotePeer), returnsNormally);
+        expect(instance.handshake, isTrue);
+      });
     });
 
     group('sendMessage', () {

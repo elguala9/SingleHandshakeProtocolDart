@@ -118,28 +118,26 @@ void main() {
       await Future.delayed(const Duration(milliseconds: 500));
       expect(instanceA.open, isTrue); // open deve essere true dopo handshake
       instanceB.sendClosing();
-      await Future.delayed(const Duration(milliseconds: 500));
       expect(instanceB.closing, isTrue);
-      expect(instanceA.open, isTrue);
+      await Future.delayed(const Duration(milliseconds: 500));
+      // Section 8: A replies Closed, so B leaves CLOSING for CLOSED.
+      expect(instanceB.closing, isFalse);
+      expect(instanceA.open, isFalse);
     });
 
     test(
       'Keep-alive received while HANDSHAKING implicitly confirms the '
-      'handshake and opens the connection (Section 6 point 7)',
+      'handshake and opens the connection (Section 6 step 6)',
       () async {
         // B sends its probe; A auto-replies with an ack, so B becomes OPEN.
         // A itself never receives an explicit ack (A never sent its own
-        // probe), so A stays HANDSHAKING at this point.
+        // probe). B sends a keep-alive immediately on reaching OPEN
+        // (Section 6 step 7), which reaches A while A is still HANDSHAKING
+        // and must be treated as an implicit handshake confirmation.
         instanceB.sendHandshake();
         await Future.delayed(const Duration(milliseconds: 100));
-        expect(instanceA.handshake, isTrue);
-        expect(instanceA.open, isFalse);
 
-        // B's keep-alive now reaches A while A is still HANDSHAKING: this
-        // must be treated as an implicit handshake confirmation.
-        instanceB.keepAlive();
-        await Future.delayed(const Duration(milliseconds: 100));
-
+        expect(instanceB.open, isTrue);
         expect(instanceA.handshake, isTrue);
         expect(instanceA.open, isTrue);
       },

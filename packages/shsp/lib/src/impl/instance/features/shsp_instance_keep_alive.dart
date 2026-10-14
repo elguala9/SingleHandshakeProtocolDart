@@ -18,11 +18,13 @@ mixin ShspInstanceKeepAliveMixin {
   /// Get keep-alive interval in seconds
   int get keepAliveSeconds => keepAliveSecondsValue;
 
-  /// Set keep-alive interval in seconds (restarts the timer)
+  /// Set keep-alive interval in seconds. Restarts the timer only if it was
+  /// already running, so it never starts one on a non-OPEN session.
   set keepAliveSeconds(int seconds) {
     keepAliveSecondsValue = seconds;
+    final wasRunning = keepAliveTimerValue != null;
     stopKeepAlive();
-    startKeepAlive();
+    if (wasRunning) startKeepAlive();
   }
 
   /// Send a keep-alive message (if connection is open and not closing)

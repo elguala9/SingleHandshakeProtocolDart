@@ -120,13 +120,25 @@ void main() {
       expect(instance.open, isTrue);
     });
 
-    test('probe without VERSION byte is malformed: no ack, no transition',
+    test('probe without VERSION byte is malformed: discarded, no ack',
         () async {
       await wire.send([0x01]);
       expect(wire.received, isEmpty);
       expect(handshakes, 0);
       expect(instance.handshake, isFalse);
-      expect(errors, isNotEmpty);
+    });
+
+    test('bytes after VERSION are ignored (Section 4)', () async {
+      await wire.send([0x01, 0x00, 0xAA, 0xBB]);
+      expect(wire.received.single, [0x02]);
+      expect(handshakes, 1);
+    });
+
+    test('duplicate probes are all acked, onHandshake fires once', () async {
+      await wire.send([0x01, 0x00]);
+      await wire.send([0x01, 0x00]);
+      expect(wire.count(0x02), 2);
+      expect(handshakes, 1);
     });
 
     test('malformed probe never becomes an implicit version 0x00', () async {
@@ -220,15 +232,19 @@ void main() {
       expect(messages, 0);
     });
 
-    test('Closing in HANDSHAKING does NOT open the session', () async {
+    test('Closing in HANDSHAKING does NOT open; replies Closed, CLOSED',
+        () async {
+      wire.received.clear();
       await wire.send([0x03]);
       expect(instance.open, isFalse);
-      expect(instance.closing, isFalse);
       expect(opens, 0);
-      expect(closings, 0);
-      // still able to complete the handshake afterwards
+      expect(wire.received, [
+        [0x04],
+      ]);
+      expect(closes, 1);
+      // CLOSED is terminal: a late ack does not open the session.
       await wire.send([0x02]);
-      expect(instance.open, isTrue);
+      expect(instance.open, isFalse);
     });
 
     test('Closed in HANDSHAKING does NOT open and ends the session',
@@ -239,10 +255,10 @@ void main() {
       expect(closes, 1);
     });
 
-    test('unknown prefix in HANDSHAKING is a protocol error, state kept',
+    test('unknown prefix in HANDSHAKING is discarded, state kept',
         () async {
       await wire.send([0x7F]);
-      expect(errors, isNotEmpty);
+      expect(errors, isEmpty);
       expect(instance.open, isFalse);
       expect(instance.handshake, isTrue);
     });
@@ -261,9 +277,15 @@ void main() {
       expect(messages, 1);
     });
 
-    test('unknown prefix is a protocol error and does not close', () async {
+    test('unknown prefix is discarded and does not close', () async {
       await wire.send([0x42]);
-      expect(errors, isNotEmpty);
+      expect(errors, isEmpty);
+      expect(instance.open, isTrue);
+    });
+
+    test('probe received while OPEN is still acknowledged', () async {
+      await wire.send([0x01, 0x00]);
+      expect(wire.received.single, [0x02]);
       expect(instance.open, isTrue);
     });
 
@@ -297,17 +319,28 @@ void main() {
       );
     });
 
-    test('Closing: surfaces notification, state CLOSING, still receives',
-        () async {
+    test('Closing received: notifies, replies Closed, CLOSED', () async {
       await wire.send([0x03]);
       expect(closings, 1);
-      expect(instance.closing, isTrue);
+      expect(closes, 1);
+      expect(wire.received, [
+        [0x04],
+      ]);
+      expect(instance.open, isFalse);
+      expect(instance.closing, isFalse);
+    });
+
+    test('local CLOSING still delivers incoming Data', () async {
+      instance.sendClosing();
       await wire.send([0x00, 1]);
-      expect(messages, 1); // CLOSING keeps processing incoming messages
+      expect(instance.closing, isTrue);
+      expect(messages, 1);
     });
 
     test('CLOSING rejects Data and Keep-alive sends', () async {
-      await wire.send([0x03]);
+      instance.sendClosing();
+      await Future.delayed(_tick);
+      wire.received.clear();
       expect(() => instance.sendMessage([1]), throwsA(isA<ShspInstanceException>()));
       instance.keepAlive();
       await Future.delayed(_tick);
@@ -321,12 +354,46 @@ void main() {
       expect(closings, 1);
     });
 
-    test('Closing then Closed -> CLOSED', () async {
-      await wire.send([0x03]);
+    test('local Closing then peer Closed -> CLOSED, onClose once', () async {
+      instance.sendClosing();
       await wire.send([0x04]);
       expect(closes, 1);
       expect(instance.open, isFalse);
       expect(instance.closing, isFalse);
+      // Retransmission stops after CLOSED.
+      wire.received.clear();
+      await Future.delayed(const Duration(milliseconds: 700));
+      expect(wire.received, isEmpty);
+    });
+
+    test(
+        'simultaneous close: Closing while CLOSING replies Closed, '
+        'no onClosing on the initiator', () async {
+      instance.sendClosing();
+      await Future.delayed(_tick);
+      wire.received.clear();
+      await wire.send([0x03]);
+      expect(closings, 0);
+      expect(closes, 1);
+      expect(wire.received, [
+        [0x04],
+      ]);
+    });
+
+    test('closing timeout sends best-effort Closed and moves to CLOSED',
+        () async {
+      instance.closingTimeout = const Duration(milliseconds: 150);
+      instance.sendClosing();
+      await Future.delayed(const Duration(milliseconds: 300));
+      expect(instance.open, isFalse);
+      expect(closes, 1);
+      expect(wire.count(0x04), 1);
+    });
+
+    test('local close() fires onClose exactly once', () async {
+      instance.close();
+      instance.close();
+      expect(closes, 1);
     });
 
     test('Closed directly from OPEN -> CLOSED, onClose once', () async {
@@ -429,13 +496,16 @@ void main() {
       expect(messages, 0);
     });
 
-    test('close() before OPEN sends nothing and is terminal', () async {
+    test('close() in HANDSHAKING sends Closed (abortive) and is terminal',
+        () async {
       instance.sendHandshake();
       await Future.delayed(_tick);
       wire.received.clear();
       instance.close();
       await Future.delayed(_tick);
-      expect(wire.received, isEmpty);
+      expect(wire.received, [
+        [0x04],
+      ]);
       await wire.send([0x02]);
       expect(instance.open, isFalse);
     });

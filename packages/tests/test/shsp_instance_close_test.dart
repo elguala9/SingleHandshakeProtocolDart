@@ -63,9 +63,12 @@ void main() {
         await Future.delayed(const Duration(milliseconds: 500));
         expect(instanceA.open, isTrue); // open deve essere true dopo handshake
         instanceB.sendClosing();
-        await Future.delayed(const Duration(milliseconds: 500));
         expect(instanceB.closing, isTrue);
-        expect(instanceA.open, isTrue);
+        await Future.delayed(const Duration(milliseconds: 500));
+        // Section 8: A replies Closed to B's Closing; both end CLOSED.
+        expect(instanceA.open, isFalse);
+        expect(instanceB.open, isFalse);
+        expect(instanceB.closing, isFalse);
 
         expect(() => instanceA.sendMessage([1, 2, 3]), throwsException);
         expect(() => instanceB.sendMessage([1, 2, 3]), throwsException);

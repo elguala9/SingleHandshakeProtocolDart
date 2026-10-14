@@ -65,6 +65,7 @@ class _ShspHandshakeRetryImpl implements ShspHandshakeRetry {
     this.onMaxAttemptsExhausted,
   }) {
     _onOpenListener = (_) => _onOpened();
+    _onCloseListener = (_) => _onClosed();
     _start();
   }
 
@@ -76,6 +77,7 @@ class _ShspHandshakeRetryImpl implements ShspHandshakeRetry {
   int _attemptCount = 0;
   Timer? _retryTimer;
   late final void Function(void) _onOpenListener;
+  late final void Function(void) _onCloseListener;
 
   void _start() {
     // Send initial probe immediately
@@ -85,13 +87,15 @@ class _ShspHandshakeRetryImpl implements ShspHandshakeRetry {
     // Retransmit until OPEN (spec Section 6, point 4), not merely until the
     // peer's probe is observed: our own probe may still have been lost.
     instance.onOpen.register(_onOpenListener);
+    // A session closed during the handshake (peer Closing/Closed, local
+    // close) ends retries without reporting exhaustion.
+    instance.onClose.register(_onCloseListener);
 
     // Schedule first retry if max attempts not reached
     if (_attemptCount < options.maxAttempts) {
       _scheduleNextRetry();
     } else {
-      _cleanup();
-      onMaxAttemptsExhausted?.call();
+      _exhaust();
     }
   }
 
@@ -128,10 +132,31 @@ class _ShspHandshakeRetryImpl implements ShspHandshakeRetry {
   void _scheduleExhaustion(int delayMs) {
     _retryTimer = Timer(Duration(milliseconds: delayMs), () {
       if (!_active) return;
-      final opened = instance.open;
-      _cleanup();
-      if (!opened) onMaxAttemptsExhausted?.call();
+      if (instance.open) {
+        _cleanup();
+      } else {
+        _exhaust();
+      }
     });
+  }
+
+  /// Section 6 step 5: exhausting the attempt budget without reaching OPEN
+  /// moves the session to CLOSED and is reported as a distinct outcome.
+  void _exhaust() {
+    _cleanup();
+    // Unregister first so the close below is not mistaken for a peer close.
+    instance.onClose.unregister(_onCloseListener);
+    try {
+      instance.close();
+    } catch (_) {
+      // Tolerated: teardown proceeds regardless (Section 8).
+    }
+    onMaxAttemptsExhausted?.call();
+  }
+
+  void _onClosed() {
+    if (!_active) return;
+    _cleanup();
   }
 
   void _onOpened() {
@@ -148,6 +173,7 @@ class _ShspHandshakeRetryImpl implements ShspHandshakeRetry {
     // Defer unregister to next microtask to avoid concurrent modification
     Future.microtask(() {
       instance.onOpen.unregister(_onOpenListener);
+      instance.onClose.unregister(_onCloseListener);
     });
   }
 

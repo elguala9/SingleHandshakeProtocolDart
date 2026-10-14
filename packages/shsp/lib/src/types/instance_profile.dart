@@ -11,6 +11,9 @@ typedef OnPeerListener = CallbackWithReturn<PeerInfo, void>;
 class ShspInstanceProfile {
   const ShspInstanceProfile({
     this.keepAliveSeconds = 30,
+    this.livenessTimeoutSeconds = 60,
+    this.closingRetransmitInterval = const Duration(milliseconds: 500),
+    this.closingTimeout = const Duration(seconds: 3),
     this.onHandshakeListeners = const [],
     this.onOpenListeners = const [],
     this.onClosingListeners = const [],
@@ -19,6 +22,11 @@ class ShspInstanceProfile {
   });
 
   final int keepAliveSeconds;
+
+  /// Liveness timeout in seconds; `null` disables it.
+  final int? livenessTimeoutSeconds;
+  final Duration closingRetransmitInterval;
+  final Duration closingTimeout;
   final List<OnVoidListener> onHandshakeListeners;
   final List<OnVoidListener> onOpenListeners;
   final List<OnVoidListener> onClosingListeners;

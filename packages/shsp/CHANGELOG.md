@@ -5,6 +5,29 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [Unreleased]
+
+### Changed
+
+- Aligned `ShspInstance` with the revised SHSP spec (`SHSP-protocol.md`):
+  - every received handshake probe is acknowledged, including duplicates and probes received after OPEN; probes in CLOSING are ignored
+  - a keep-alive is sent immediately on reaching OPEN; the liveness timeout now runs only while OPEN/CLOSING
+  - receiving `Closing` (`0x03`) in HANDSHAKING/OPEN/CLOSING replies with `Closed` (`0x04`) and moves to CLOSED
+  - `sendClosing()` is now a graceful close: it retransmits `Closing` every `closingRetransmitInterval` (500 ms) until `Closed` is received or `closingTimeout` (3 s) expires, then sends a best-effort `Closed`
+  - `close()` is an abortive close and also sends `Closed` while HANDSHAKING
+  - unknown prefixes, empty datagrams and malformed handshakes are discarded instead of throwing `ShspProtocolException`; bytes after the handshake `VERSION` are ignored
+  - handshake acknowledgments are best-effort: a transient send failure no longer propagates out of the receive path
+  - `onClose` fires exactly once on every close path (local `close()`, Closing/Closed received, closing timeout, liveness timeout, retry exhaustion), after resources are released
+  - `onHandshake` fires only for the first probe received from the peer, not for duplicates
+  - `onClosing` is not fired on the initiator in a simultaneous close
+  - the liveness timeout is reset only by well-formed messages
+  - the `keepAliveSeconds` setter restarts the timer only if it was already running
+- `ShspInstanceProfile` carries `livenessTimeoutSeconds`, `closingRetransmitInterval` and `closingTimeout`, restored by `ShspInstance.withProfile`
+- `ShspHandshakeRetryHandler` closes the instance when the attempt budget is exhausted, and stops (without reporting exhaustion) if the session is closed during the handshake
+- `ShspHandshakeHandler.handshakeInstance` returns early if the session is closed during the handshake
+- `ShspInstance.sendMessage` rejects an empty application payload with `ShspValidationException`
+- Maximum datagram size is now per address family: 65,507 bytes (IPv4) and 65,527 bytes (IPv6, `MessageSizeValidationMixin.maxMessageSizeIPv6`)
+
 ## [1.11.0] - 2026-08-09
 
 ### Added

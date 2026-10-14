@@ -23,6 +23,8 @@ mixin ShspInstanceHandshakeMixin {
   late CallbackOn onClosing;
   late CallbackOn onClose;
 
+  bool _peerProbeObserved = false;
+
   /// Get handshake state: true from HANDSHAKING onward (i.e. as soon as the
   /// session has left CREATED).
   bool get handshake => connectionState != ShspConnectionState.created;
@@ -56,8 +58,11 @@ mixin ShspInstanceHandshakeMixin {
     sendMessageInternal([handshakeAckPrefix]);
   }
 
-  /// Send a closing signal. Transitions the session into CLOSING (Section 5).
+  /// Send a closing signal (graceful close request, Section 8). Transitions
+  /// the session into CLOSING (Section 5). Only meaningful while OPEN; a
+  /// no-op in any other state.
   void sendClosing() {
+    if (connectionState != ShspConnectionState.open) return;
     sendMessageInternal([closingPrefix]);
     connectionState = ShspConnectionState.closing;
   }
@@ -72,27 +77,32 @@ mixin ShspInstanceHandshakeMixin {
   ///
   /// The VERSION byte is mandatory (Section 4, Section 6, Section 13): a
   /// handshake datagram with no body (1 byte total) is malformed and is
-  /// discarded as a protocol error (Section 10), never treated as an
+  /// discarded (Section 10), never treated as an
   /// implicit VERSION = 0x00.
   @protected
   bool isHandshake(List<int> msg) {
     if (msg.isNotEmpty && msg[0] == handshakePrefix) {
       if (msg.length < 2) {
-        // Protocol error: malformed handshake, message discarded (Section 10)
+        // Malformed handshake, message discarded (Section 10)
         return false;
       }
       // The peer-declared VERSION byte (msg[1]) is purely declarative
-      // (Section 6 point 6, Section 12) and is not used for any security
+      // (Section 6 step 9, Section 12) and is not used for any security
       // or negotiation decision.
+      // Any bytes following VERSION are ignored (Section 4, extensibility).
       // Received a valid handshake probe from the other peer: exits CREATED
       // into HANDSHAKING (Section 5). Left untouched once past HANDSHAKING
-      // so a redundant/duplicate probe never downgrades an active session
-      // (Section 6 point 9). CLOSED sessions never get here (discarded by
-      // the caller).
+      // so a redundant/duplicate probe never downgrades an active session.
+      // CLOSED sessions never get here (discarded by the caller).
       if (connectionState == ShspConnectionState.created) {
         connectionState = ShspConnectionState.handshaking;
       }
-      onHandshake.call(null);
+      // Notify only on the first probe observed from the counterpart, not on
+      // every duplicate/retransmitted probe.
+      if (!_peerProbeObserved) {
+        _peerProbeObserved = true;
+        onHandshake.call(null);
+      }
       return true;
     }
     return false;
@@ -113,31 +123,17 @@ mixin ShspInstanceHandshakeMixin {
     return false;
   }
 
-  /// Check if message is a closing signal (0x03)
+  /// Check if message is a closing signal (0x03). State transitions and the
+  /// mandatory `Closed` reply (Section 8) are handled by the instance.
   @protected
-  bool isClosingMessage(List<int> msg) {
-    if (msg.isNotEmpty && msg[0] == closingPrefix) {
-      // Section 6 point 8: Closing in HANDSHAKING must not open the session.
-      // It is only meaningful (and surfaced) for an OPEN session.
-      if (connectionState == ShspConnectionState.open) {
-        connectionState = ShspConnectionState.closing;
-        onClosing.call(null);
-      }
-      return true;
-    }
-    return false;
-  }
+  bool isClosingMessage(List<int> msg) =>
+      msg.isNotEmpty && msg[0] == closingPrefix;
 
-  /// Check if message is a closed signal (0x04)
+  /// Check if message is a closed signal (0x04). The CLOSED transition and
+  /// the [onClose] notification are handled by the instance.
   @protected
-  bool isClosedMessage(List<int> msg) {
-    if (msg.isNotEmpty && msg[0] == closedPrefix) {
-      connectionState = ShspConnectionState.closed;
-      onClose.call(null);
-      return true;
-    }
-    return false;
-  }
+  bool isClosedMessage(List<int> msg) =>
+      msg.isNotEmpty && msg[0] == closedPrefix;
 
   /// Send message (internal, subclass must implement)
   @protected

@@ -198,8 +198,9 @@ no distinguished initiator or responder role at the protocol level.
    unless it sends Data first. Together with steps 2 and 6 this lets the counterpart confirm the
    handshake without waiting for the regular keep-alive interval.
 8. A peer that receives `[0x03]` (Closing) or `[0x04]` (Closed) while in HANDSHAKING MUST NOT
-   transition to OPEN as a result; it handles the message per [Section 8](#8-connection-termination)
-   and the session ends in CLOSED.
+   transition to OPEN as a result. It handles the message exactly as specified in
+   [Section 8](#8-connection-termination) — replying `[0x04]` to a received `[0x03]`, not replying to a
+   received `[0x04]` — and the session ends in CLOSED.
 9. The `VERSION` byte carried in the probe is a **declarative** identifier of the sender's protocol
    version; it is not negotiated, and the acknowledgment does not echo it. A `VERSION` value different
    from the local peer's own does not by itself block or alter the handshake. An implementation MAY,

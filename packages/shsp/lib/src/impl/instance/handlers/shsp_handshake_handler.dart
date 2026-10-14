@@ -36,6 +36,8 @@ class ShspHandshakeHandler {
     }
 
     instance.onOpen.register(openListener);
+    // Stop early if the session is closed during the handshake.
+    instance.onClose.register(openListener);
     instance.sendHandshake();
 
     final periodicTimer = Timer.periodic(
@@ -50,6 +52,7 @@ class ShspHandshakeHandler {
 
     periodicTimer.cancel();
     instance.onOpen.unregister(openListener);
+    instance.onClose.unregister(openListener);
 
     if (instance.open) onOpen?.call(instance);
 
