@@ -1,0 +1,91 @@
+# Example task-config.yaml — replace with your own.
+# See todo-mcp-task-manager.txt for the full spec of every field below.
+
+statuses:
+  - created
+  - finished
+  # "created" and "finished" are reserved (always present, fixed role,
+  # not renamable). Add as many custom statuses as you want anywhere in
+  # the list, e.g. "started", "review", "blocked", "waiting-approval", etc.
+
+priorities:
+  - low
+  - medium
+  - high
+  - critical
+
+types:
+  feature:
+    sections:
+      # Each section accepts an optional "presence": Mandatory | Optional
+      # (default: Mandatory). Optional sections are not generated on task
+      # creation, not reported as missing by check_task and not restored by fix_task.
+      - name: Related RFC
+        presence: Optional
+        description: "Which RFC (if any) this feature implements or refers to, e.g. \"rfc/some-proposal.md\""
+      - name: Need
+        description: "Why this feature is being built"
+      - name: Projects affected
+        description: "Which projects in the repo are touched"
+      - name: Feature name
+        description: "Name of the feature to build"
+      - name: Files to create
+        description: "Files that will be created during the work"
+      - name: Files changed
+        description: "Existing files that will be modified; note who last touched that part of the code"
+      - name: Regressions
+        description: "Possible regressions"
+      - name: Test
+        description: "Tests to write/run"
+      - name: What will be done
+        description: "Changes or additions to be made"
+      - name: Effects
+        description: "What changes in the project"
+
+  fix:
+    sections:
+      - name: Related RFC
+        description: "Which RFC (if any) this fix implements or refers to, e.g. \"rfc/some-proposal.md\""
+      - name: Description
+        description: "What's broken and how to reproduce it"
+      - name: Failing test
+        description: "The test that caught the bug, if any"
+      - name: Dependencies
+        description: "Dependencies on other work"
+      - name: In practice
+        description: "The problem with concrete examples"
+      - name: Requirements to fix
+        description: "Whether the AI can do this fully autonomously or needs something from the user"
+      - name: Projects affected
+        description: "All projects touched by the fix"
+      - name: Feature name
+        description: "Branch/feature name under which the fix will be implemented"
+      - name: Files to create
+        description: "Files that will be created during the work"
+      - name: Files changed
+        description: "Existing files that will be modified; note who last touched that part of the code"
+      - name: Regressions
+        description: "Possible regressions"
+      - name: What will be done
+        description: "The changes to the projects"
+      - name: Effects
+        description: "What effects this has on the project"
+
+  rfc:
+    sections:
+      - name: Abstract
+        description: "Short summary of what this RFC proposes"
+      - name: Terminology
+        description: "States that MUST, MUST NOT, SHOULD, SHOULD NOT, MAY are to be interpreted as described in RFC 2119"
+      - name: Motivation
+        description: "Why this is needed, what problem it solves"
+      - name: Specification
+        description: "What the implementation MUST, SHOULD, or MAY do, in a verifiable way"
+      - name: Rationale
+        description: "Why this approach was chosen over alternatives"
+      - name: Backwards Compatibility
+        description: "Impact on existing code/behavior and any breaking changes"
+      - name: Security Considerations
+        description: "Security implications of the proposal, if any"
+      - name: References
+        description: "Related documents, tasks, or RFCs"
