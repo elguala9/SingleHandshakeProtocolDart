@@ -7,11 +7,12 @@
 
 This document specifies SHSP, a minimal session-establishment protocol layered over UDP. It follows
 RFC-style structure and uses the key words **MUST**, **MUST NOT**, **SHOULD**, **SHOULD NOT**, **MAY**
-as defined in RFC 2119. The specification is protocol-first: it defines wire format, state machine,
-and required behavior independently of any particular implementation. Numeric defaults given in this
-document (timer values, retry counts) are RECOMMENDED starting points, not fixed protocol constants;
-a conforming implementation MAY expose them as configuration as long as both endpoints of a session
-remain interoperable at the wire level.
+as defined in BCP 14 [RFC 2119] [RFC 8174] when, and only when, they appear in all capitals. The
+specification is protocol-first: it defines wire format, state machine, and required behavior
+independently of any particular implementation. Numeric defaults given in this document (timer values,
+retry counts, size limits) are RECOMMENDED starting points, not fixed protocol constants; a conforming
+implementation MAY expose them as configuration as long as both endpoints of a session remain
+interoperable at the wire level.
 
 Peer authentication, address/NAT signaling, address-discovery/relay, and payload compression are
 explicit non-goals of this specification, delegated to any protocol or application layered above SHSP
@@ -30,14 +31,14 @@ interoperable.
 4. [Wire format](#4-wire-format)
 5. [Connection states](#5-connection-states)
 6. [Handshake procedure](#6-handshake-procedure)
-7. [Keep-alive](#7-keep-alive)
+7. [Keep-alive and liveness](#7-keep-alive-and-liveness)
 8. [Connection termination](#8-connection-termination)
 9. [Payload compression](#9-payload-compression)
 10. [Error handling](#10-error-handling)
-11. [Known limitations and future work](#11-known-limitations-and-future-work)
+11. [Known limitations](#11-known-limitations)
     - 11.1 [Explicit non-goals](#111-explicit-non-goals)
     - 11.2 [Version compatibility is not negotiated, by design](#112-version-compatibility-is-not-negotiated-by-design)
-    - 11.3 [Peer liveness timeout](#113-peer-liveness-timeout)
+    - 11.3 [No session identifier on the wire](#113-no-session-identifier-on-the-wire)
 12. [Security considerations](#12-security-considerations)
 13. [Conformance](#13-conformance)
 14. [Versioning](#14-versioning)
@@ -50,8 +51,8 @@ two endpoints ("peers") a connection-like abstraction — open / closing / close
 multi-round-trip negotiation of protocols such as TCP's three-way handshake or TLS.
 
 The name "single handshake" refers to the fact that a session is considered established as soon as
-each side has observed **one** handshake message from the other side; there is no multi-phase exchange
-of capabilities or keys, and no negotiation of versions. A single message type, possibly repeated for
+each side has observed an acknowledgment of **one** handshake message it sent; there is no multi-phase
+exchange of capabilities or keys, and no negotiation of versions. A single message type, repeated for
 reliability over lossy UDP, is sufficient to open a session.
 
 SHSP targets peer-to-peer scenarios across NATs, where the handshake message doubles as a NAT-punching
@@ -69,78 +70,95 @@ concurrently.
 - **Endpoint**: an implementation of this protocol, capable of hosting one or more concurrent sessions
   over a shared or per-session UDP socket.
 - **Message**: a single UDP datagram, interpreted in its entirety as one SHSP protocol unit.
-- **Open**: the state in which both peers have confirmed the handshake and application data may flow.
+- **Application payload**: the bytes carried in the body of a Data message.
+- **Open**: the state in which the local peer has confirmed the handshake and application data may flow.
 
 ## 3. Transport
 
-- SHSP runs exclusively over **UDP**. It is not defined over TCP, WebSocket, or any other transport.
+- SHSP runs exclusively over **UDP** [RFC 768]. It is not defined over TCP, WebSocket, or any other
+  transport.
 - SHSP is address-family agnostic: both **IPv4 and IPv6** are supported. An endpoint operating in
   dual-stack mode routes each outgoing message according to the destination address's family.
 - SHSP relies on UDP's inherent datagram framing: **one transmitted datagram corresponds to exactly
   one logical SHSP message**. The protocol defines no length prefix, delimiter, or reassembly logic of
   its own.
-- The maximum message size is bounded by the maximum UDP payload size (65,507 bytes for IPv4/IPv6
-  unicast). A conforming sender MUST reject messages larger than this limit, and MUST reject empty
-  messages.
-- SHSP does not fragment or reassemble messages exceeding the UDP datagram limit; that responsibility
-  belongs to lower layers, with the attendant risk of IP-level fragmentation for large datagrams.
+- A message is never empty: it always contains at least the 1-byte type prefix. A received datagram of
+  zero bytes MUST be discarded.
+- The maximum message size is bounded by the maximum UDP payload size: **65,507 bytes over IPv4** and
+  **65,527 bytes over IPv6** (jumbograms excluded). Since the type prefix occupies one byte, the maximum
+  application payload of a Data message is one byte less (65,506 / 65,526 bytes). A conforming sender
+  MUST reject a Data send whose application payload is empty or exceeds the limit for the destination's
+  address family.
+- SHSP does not fragment or reassemble messages; large datagrams rely on IP-level fragmentation, which
+  is frequently dropped by NATs and firewalls. Senders SHOULD keep messages at or below **1,200 bytes**
+  unless the path is known to support larger datagrams; segmentation of larger application data is an
+  application-layer concern.
 - Underlying transport resources (e.g. sockets) MAY be replaced at runtime without being visible on
   the wire; such continuity is a local implementation concern, not a protocol property.
 
 ## 4. Wire format
 
 Every SHSP message is a single UDP payload consisting of a 1-byte type prefix, optionally followed by
-a body. No additional header is defined (no sequence number, no length field, no checksum beyond what
-UDP itself provides).
+a body. No additional header is defined (no sequence number, no length field, no session identifier,
+no checksum beyond what UDP itself provides).
 
-| Prefix (hex) | Name           | Body | Direction / meaning                                           |
-|--------------|----------------|------|-----------------------------------------------------------------|
-| `0x00`       | Data           | Application payload (opaque bytes) | User data; valid only once the session is open |
-| `0x01`       | Handshake      | 1 byte, mandatory: protocol version (`0x00` = version 0, `0x01` = version 1, ...) | Handshake probe |
-| `0x02`       | Handshake-Ack  | none | Handshake acknowledgment (confirms the session as open) |
-| `0x03`       | Closing        | none | Announce intent to close (soft close)                           |
-| `0x04`       | Closed         | none | Confirm final close                                              |
-| `0x05`       | Keep-alive     | none | Heartbeat while open                                             |
+| Prefix (hex) | Name           | Body | Meaning                                                       |
+|--------------|----------------|------|---------------------------------------------------------------|
+| `0x00`       | Data           | Application payload (opaque bytes, at least 1 byte) | User data; valid only once the session is open |
+| `0x01`       | Handshake      | 1 byte, mandatory: protocol version (`0x00` for this revision) | Handshake probe |
+| `0x02`       | Handshake-Ack  | none | Acknowledges a received handshake probe                       |
+| `0x03`       | Closing        | none | Requests a graceful close                                     |
+| `0x04`       | Closed         | none | Final close (confirmation of `Closing`, or abortive close)    |
+| `0x05`       | Keep-alive     | none | Heartbeat while open                                          |
 
 Notes:
 
 - The body of a Data message is opaque to SHSP: whatever bytes the application hands to SHSP for
   sending are the bytes delivered to the receiving application, unmodified. SHSP does not compress,
   encrypt, or otherwise transform this payload (see [Section 9](#9-payload-compression)).
-- Receipt of any prefix byte other than the six listed above MUST be treated as a protocol error.
+- A message whose prefix byte is not one of the six listed above MUST be discarded without affecting
+  session state. An implementation MAY log it or count it for diagnostics; it MUST NOT close the
+  session because of it.
 - The `VERSION` byte in a Handshake message is mandatory. A Handshake message received without it
-  (i.e. a 1-byte datagram containing only the `0x01` prefix) MUST be treated as malformed; it MUST NOT
-  be interpreted as an implicit version `0x00`.
+  (i.e. a 1-byte datagram containing only the `0x01` prefix) is malformed and MUST be discarded; it
+  MUST NOT be interpreted as an implicit version `0x00`.
+- **Extensibility**: a receiver MUST ignore any bytes following the `VERSION` byte of a Handshake
+  message, and any body attached to a Handshake-Ack, Closing, Closed, or Keep-alive message, and MUST
+  process the message as if those bytes were absent. Senders conforming to this revision MUST NOT add
+  such bytes. This reserves room for future revisions without breaking existing receivers.
 
 ## 5. Connection states
 
 Each side of a session maintains an independent state machine with the following states:
 
 ```
-CREATED -> HANDSHAKING -> OPEN -> CLOSING (optional) -> CLOSED
+CREATED ──► HANDSHAKING ──► OPEN ──► CLOSING ──► CLOSED
+               │              │                    ▲
+               └──────────────┴────────────────────┘
+                   (Closed sent/received, Closing received,
+                    handshake failure, liveness timeout)
 ```
 
 - **CREATED**: session exists; no handshake message sent or received yet. A peer exits CREATED as soon
   as it either sends its own handshake probe (Section 6, step 1) or receives one from its counterpart —
-  both events move it into HANDSHAKING (see the definition below). Because a conforming peer only sends
-  a non-handshake message (Data, Keep-alive, Closing, Closed) after observing a probe from its
-  counterpart (see [Section 6](#6-handshake-procedure)), and because sending its own probe already exits
-  CREATED, no message other than a Handshake probe (`0x01`) can legitimately be received while still in
-  this state. A message with any other prefix received while in CREATED MUST be discarded.
+  both events move it into HANDSHAKING. A message with any prefix other than Handshake (`0x01`)
+  received while in CREATED MUST be discarded.
 - **HANDSHAKING**: at least one handshake probe has been sent and/or a probe has been received from
-  the peer, but the session is not yet open.
-- **OPEN**: the handshake has been confirmed by receipt of an acknowledgment (see
-  [Section 6](#6-handshake-procedure)). Data messages MAY be sent and received; keep-alive is active.
-- **CLOSING**: a soft-close has been announced, locally or by the peer. A peer in CLOSING MUST NOT send
-  further Data or Keep-alive messages, but MUST continue to receive and process incoming messages from
-  the peer (including a subsequent `Closed`). Termination is imminent.
-- **CLOSED**: a final close has been sent or received. No further messages MAY be sent, and no further
-  incoming messages for this session MAY be processed; a session MUST NOT be reused once CLOSED. An
-  implementation MUST release the resources associated with the session at this point (e.g. closing an
-  owned socket, discarding registered callbacks) rather than continuing to process datagrams for it.
+  the peer, but the session is not yet open. Exits to OPEN (Section 6), or to CLOSED on handshake
+  failure or on a termination signal (Section 8).
+- **OPEN**: the handshake has been confirmed (Section 6, steps 3 and 6). Data messages MAY be sent and
+  received; keep-alive is active.
+- **CLOSING**: the local peer has requested a graceful close by sending `Closing` and is waiting for
+  the peer's `Closed`. A peer in CLOSING MUST NOT send Data or Keep-alive messages, but MUST continue
+  to receive and process incoming messages, including delivering received Data to the application.
+  CLOSING is bounded by a closing timeout (Section 8).
+- **CLOSED**: terminal. No further messages MAY be sent, and incoming messages for this session MUST
+  NOT be processed; a session MUST NOT be reused once CLOSED. An implementation MUST release the
+  resources associated with the session (e.g. closing a socket it owns exclusively, discarding
+  registered callbacks); resources shared with other sessions are released only when no longer used.
 
-The state machine is driven purely by locally observed events (messages sent or received); there is no
-shared or negotiated state between peers beyond what these messages convey.
+The state machine is driven purely by locally observed events (messages sent or received, local
+timers); there is no shared or negotiated state between peers beyond what these messages convey.
 
 ## 6. Handshake procedure
 
@@ -150,122 +168,144 @@ no distinguished initiator or responder role at the protocol level.
 1. **Each side independently** sends its own handshake probe carrying its own protocol version:
    `[0x01, VERSION]`. Sending this probe is unconditional — it is not sent in reply to anything, but as
    part of initiating the session on that side. Both peers do this concurrently; neither waits for the
-   other's probe before sending its own. Implementations conforming to **this revision** of the
-   specification MUST send `VERSION = 0x00` (see [Section 13](#13-conformance)).
-2. On receiving `[0x01, VERSION]`, a peer records that a probe has been observed from its counterpart,
-   together with the counterpart's declared version, and MUST reply with a handshake acknowledgment:
-   `[0x02]`, and SHOULD do so immediately. The acknowledgment carries no body — the version is declared
-   only once, by the peer that sent the original probe. A peer that never acknowledges a received probe
-   prevents its counterpart from ever reaching OPEN.
-3. On receiving `[0x02]` (a handshake acknowledgment), a peer transitions to OPEN. Because both sides
-   send their own probe independently (step 1), each side's probe triggers an ack from the other,
-   allowing both sides to reach OPEN without depending on each other's ack for anything but their own
-   transition.
-4. Because UDP is unreliable, a peer SHOULD retransmit its handshake probe at a bounded interval until
-   it reaches OPEN or a timeout elapses. Silence past the timeout MUST NOT raise a protocol error; it
-   is a normal outcome that the caller is expected to observe by checking session state.
-5. For NAT-traversal scenarios, where a single fixed-interval attempt window may not suffice to align
-   both peers' NAT mappings, a peer SHOULD instead use an exponential-backoff retry strategy, bounded
-   by a maximum attempt count. Exhausting the attempt budget without reaching OPEN MUST be reported to
-   the caller as a distinct, non-exceptional outcome (e.g. via a callback or status value), not as an
-   error.
-6. The `VERSION` byte carried in the probe is a **declarative** identifier of the sender's protocol
-   version; it is not negotiated, and the acknowledgment does not repeat or echo it. Receipt of a
-   `VERSION` value different from the local peer's own does not by itself block, alter, or downgrade
-   the handshake — an implementation MAY use it for logging, diagnostics, or an out-of-band
-   compatibility policy, but MUST NOT derive security-relevant behavior from it (see
-   [Section 12](#12-security-considerations)). Beyond this version byte, the handshake carries no
-   capability or key negotiation.
-7. **Implicit confirmation.** Because a conforming peer only sends Data (`0x00`) or Keep-alive (`0x05`)
-   while its own session is OPEN (Section 7, Section 10), receiving either of these while still in
-   HANDSHAKING (i.e. before having received `[0x02]` for one's own probe) is proof that the counterpart
-   has already reached OPEN, which in turn is only possible if the local peer's earlier acknowledgment
-   reached it. A peer that receives `0x00` or `0x05` while in HANDSHAKING SHOULD treat this as an
-   implicit handshake confirmation, equivalent to receiving `[0x02]`, and transition to OPEN. This
-   compensates for the case where the local peer's own `[0x02]` acknowledgment to the counterpart was
-   lost, while the counterpart's subsequent traffic was not.
-8. Conversely, a peer that receives `[0x03]` (Closing) or `[0x04]` (Closed) while still in HANDSHAKING
-   MUST NOT transition to OPEN as a result; the session remains unopened and is handled per
-   [Section 8](#8-connection-termination) instead.
-9. Once a peer has reached OPEN, it SHOULD stop sending `[0x02]` in response to further (duplicate)
-   handshake probes from the same counterpart. This is safe because, per point 7 above, the peer's
-   regular OPEN traffic (Data, and in particular the periodic Keep-alive of
-   [Section 7](#7-keep-alive)) already gives the counterpart everything it needs to detect that the
-   handshake succeeded, even if a specific `[0x02]` was lost. An implementation MAY still choose to keep
-   acknowledging duplicate probes; both behaviors are conforming.
+   other's probe before sending its own. Implementations conforming to **this revision** MUST send
+   `VERSION = 0x00` (see [Section 13](#13-conformance)).
+2. On receiving a well-formed `[0x01, VERSION]` while in CREATED, HANDSHAKING, or OPEN, a peer MUST
+   reply with a handshake acknowledgment `[0x02]`, and SHOULD do so immediately. This applies to
+   **every** received probe, including duplicates and probes received after the local peer has already
+   reached OPEN: the counterpart's own transition depends on receiving at least one acknowledgment, and
+   any individual acknowledgment may be lost. Receiving a probe while OPEN does not change the local
+   state. A probe received while in CLOSING or CLOSED is not acknowledged.
+3. On receiving `[0x02]` while in HANDSHAKING, a peer transitions to OPEN. A `[0x02]` received in any
+   other state is discarded. Because both sides send their own probe independently (step 1), each
+   side's probe triggers an ack from the other, allowing both sides to reach OPEN.
+4. **Retransmission.** Because UDP is unreliable, a peer MUST retransmit its handshake probe while in
+   HANDSHAKING, at a bounded interval (RECOMMENDED initial interval: 500 ms), until it reaches OPEN or
+   its handshake timeout or attempt budget is exhausted.
+5. For NAT-traversal scenarios, where a fixed-interval attempt window may not suffice to align both
+   peers' NAT mappings, a peer SHOULD use exponential backoff (RECOMMENDED: doubling the interval, capped
+   at 8 s), bounded by a maximum attempt count. Expiry of the handshake timeout, or exhaustion of the
+   attempt budget, without reaching OPEN moves the session to CLOSED and MUST be reported to the caller
+   as a distinct, non-exceptional outcome (e.g. via a callback or status value), not as an error.
+6. **Implicit confirmation.** Because a conforming peer only sends Data (`0x00`) or Keep-alive (`0x05`)
+   while its own session is OPEN, receiving either of these while in HANDSHAKING proves that the
+   counterpart has reached OPEN, which is only possible if it received the local peer's probe and the
+   local peer received its probe or is about to. A peer that receives `0x00` or `0x05` while in
+   HANDSHAKING MUST treat this as equivalent to receiving `[0x02]` and transition to OPEN; a received
+   Data message is then delivered to the application normally. This covers the case where every
+   acknowledgment to the local peer was lost while the counterpart's subsequent traffic was not.
+7. A peer that reaches OPEN SHOULD send one Keep-alive (`[0x05]`) promptly (RECOMMENDED: immediately)
+   unless it sends Data first. Together with steps 2 and 6 this lets the counterpart confirm the
+   handshake without waiting for the regular keep-alive interval.
+8. A peer that receives `[0x03]` (Closing) or `[0x04]` (Closed) while in HANDSHAKING MUST NOT
+   transition to OPEN as a result; it handles the message per [Section 8](#8-connection-termination)
+   and the session ends in CLOSED.
+9. The `VERSION` byte carried in the probe is a **declarative** identifier of the sender's protocol
+   version; it is not negotiated, and the acknowledgment does not echo it. A `VERSION` value different
+   from the local peer's own does not by itself block or alter the handshake. An implementation MAY,
+   as a local policy, refuse to proceed with a peer whose `VERSION` it does not support, by sending
+   `[0x04]` and moving to CLOSED (reported to the caller as a version-mismatch outcome). It MUST NOT
+   derive security-relevant behavior from the value (see [Section 12](#12-security-considerations)).
+   Beyond this byte, the handshake carries no capability or key negotiation.
 
 Sequence diagram (happy path — both peers send their own probe independently, per step 1):
 
 ```
-Peer A                              Peer B
-  |--- [0x01, VERSION] handshake -->|
-  |<-- [0x01, VERSION] handshake ---|            (B's own probe, sent independently)
-  |                                 |
-  | (A's probe observed by B)       | (B's probe observed by A)
-  |<-- [0x02] ack -------------------|            (B acks A's probe)
-  |--- [0x02] ack ------------------->|            (A acks B's probe)
-  |                                 |
-  | (transitions to OPEN)           | (transitions to OPEN)
-  |=== both peers OPEN ==============|
+Peer A                                Peer B
+  |---- [0x01, VERSION] handshake ---->|
+  |<--- [0x01, VERSION] handshake -----|   (B's own probe, sent independently)
+  |                                    |
+  |<--- [0x02] ack --------------------|   (B acks A's probe)
+  |---- [0x02] ack ------------------->|   (A acks B's probe)
+  |                                    |
+  | (A: HANDSHAKING -> OPEN)           | (B: HANDSHAKING -> OPEN)
+  |---- [0x05] keep-alive ------------>|   (step 7)
+  |<--- [0x05] keep-alive -------------|
+  |======== both peers OPEN ===========|
 ```
 
-In practice both sides may send probes concurrently, and the exact interleaving of probes and
-acknowledgments varies. A conforming implementation MUST tolerate duplicate probes and acknowledgments
-arriving in any order or multiplicity.
+In practice the exact interleaving of probes and acknowledgments varies. A conforming implementation
+MUST tolerate duplicate probes and acknowledgments arriving in any order or multiplicity.
 
-## 7. Keep-alive
+## 7. Keep-alive and liveness
 
 Once a session is OPEN, a peer SHOULD periodically send a keep-alive message (`[0x05]`) to signal
-liveness to its counterpart. A conforming implementation:
+liveness and to keep NAT mappings open. A conforming implementation:
 
-- sends keep-alive only while the session is open and not closing;
-- SHOULD suppress a scheduled keep-alive if other outbound traffic (data or control) has already been
-  sent recently, to avoid redundant signaling on active sessions;
+- sends keep-alive only while the session is OPEN;
+- MAY suppress a scheduled keep-alive if a Data message has been sent within the current keep-alive
+  interval, since Data equally signals liveness;
 - MUST treat failures in local keep-alive processing as non-fatal to the session.
 
-An endpoint MAY be configured with a **liveness timeout**: a duration after which, if no message of
-any kind (data, control, or keep-alive) has been received from the peer, the session is considered
-unresponsive. On expiry of this timeout:
+An endpoint MAY be configured with a **liveness timeout**, applied in the OPEN and CLOSING states: if
+no message of any kind has been received from the peer for this duration, the session is considered
+unresponsive. On expiry:
 
-- the endpoint SHOULD close the session locally, following the same procedure as a local `close()`
-  (Section 8), without waiting for or requiring any message from the peer;
-- the timeout MUST be reset on receipt of **any** message from the peer, not only keep-alive messages;
-- this is a purely local, unilateral decision — the peer is not notified that it was deemed
-  unresponsive except via the normal `Closed` message sent as part of local teardown, which it MAY
-  never receive if it truly is unreachable.
+- the endpoint SHOULD terminate the session with an abortive close (Section 8: send `[0x04]`
+  best-effort and move to CLOSED), without waiting for any message from the peer;
+- the timer MUST be reset on receipt of **any** well-formed message from the peer, not only keep-alive;
+- this is a purely local, unilateral decision — the peer learns of it only through the `Closed`
+  message, which it may never receive if it truly is unreachable.
 
-The liveness timeout is OPTIONAL and its duration is a local configuration choice; this specification
-does not mandate a default. An endpoint with no liveness timeout configured relies solely on the
-application to decide when a session is stale.
+The handshake has its own timeout (Section 6, steps 4–5); the liveness timeout does not apply in
+HANDSHAKING.
 
-As a RECOMMENDED starting point (a local configuration default, not a protocol constant — see "Status
-of this document"), a liveness timeout of **60 seconds** paired with a keep-alive interval of **15
-seconds** gives the peer three to four opportunities to be heard from before the session is declared
-unresponsive, tolerating the occasional lost datagram without prematurely closing a healthy session. An
-implementation MAY scale the keep-alive interval to roughly a quarter to a third of the configured
-liveness timeout to preserve this margin if the timeout is changed.
+As a RECOMMENDED starting point (a local configuration default, not a protocol constant), a liveness
+timeout of **60 seconds** paired with a keep-alive interval of **15 seconds** gives the peer three to
+four opportunities to be heard from before the session is declared unresponsive. When either value is
+changed, the keep-alive interval SHOULD remain roughly a quarter to a third of the liveness timeout.
+Because many NATs expire idle UDP mappings after 30 seconds or less, a keep-alive interval above
+25 seconds is NOT RECOMMENDED for sessions crossing a NAT.
+
+Since a peer's keep-alive interval is not known to its counterpart, a liveness timeout shorter than
+about three times the peer's expected keep-alive interval risks closing healthy sessions; endpoints
+that disable keep-alive SHOULD document this so that their counterparts can configure accordingly.
 
 ## 8. Connection termination
 
-Two termination signals exist:
+Two termination messages exist:
 
-- **Closing** (`[0x03]`, soft): announces intent to close. Sets the local state to CLOSING. Once in
-  CLOSING, a peer MUST NOT send further Data or Keep-alive messages, but MUST continue to receive and
-  process incoming messages from the peer. Upon receipt, a peer SHOULD surface a "closing" notification
-  to the receiving application.
-- **Closed** (`[0x04]`, final): confirms termination. Upon receipt, a peer MUST clear its OPEN and
-  CLOSING state, transition to CLOSED, and SHOULD surface a "closed" notification to the application. A
-  `Closed` message MAY be sent regardless of current session state — a peer MUST be able to announce
-  closure even while already in a closing or otherwise degraded state.
+- **Closing** (`[0x03]`): a request for a graceful close.
+- **Closed** (`[0x04]`): the final close — either the confirmation of a received `Closing`, or an
+  abortive close sent unilaterally.
 
-Closing a session that is OPEN SHOULD first send `[0x03]` to announce intent and transition to CLOSING,
-then send `[0x04]` before releasing local resources associated with the session. Once `[0x04]` has been
-sent or received, the session is CLOSED: a peer MUST NOT send or process any further message for this
-session, and MUST release its associated resources (e.g. close an owned socket, discard registered
-callbacks). Closure MUST be idempotent: a repeated close request on an already-closed session MUST NOT
-raise an error or cause any message to be retransmitted. Failure to transmit the final close message
-(e.g. because the underlying transport is already unavailable) MUST be tolerated rather than propagated
-as an error, since the local side proceeds with teardown regardless.
+**Graceful close (initiator).** To close a session that is OPEN, a peer sends `[0x03]` and enters
+CLOSING. While in CLOSING it SHOULD retransmit `[0x03]` at a bounded interval (RECOMMENDED: 500 ms)
+until it receives `[0x04]` or a **closing timeout** expires (RECOMMENDED: 3 s). On receipt of `[0x04]`
+it moves to CLOSED. On expiry of the closing timeout it sends `[0x04]` once, best-effort, and moves to
+CLOSED.
+
+**Graceful close (responder).** A peer that receives `[0x03]` while in HANDSHAKING or OPEN MUST reply
+with `[0x04]`, SHOULD surface a "closing"/"closed" notification to the application, and moves to
+CLOSED. A peer that receives `[0x03]` while itself in CLOSING (simultaneous close) MUST reply with
+`[0x04]` and moves to CLOSED.
+
+**Abortive close.** A peer MAY at any time before CLOSED (including during HANDSHAKING, on handshake
+failure, on liveness timeout, or on local shutdown) send `[0x04]` once, best-effort, and move directly
+to CLOSED.
+
+**Receiving Closed.** A peer that receives `[0x04]` in HANDSHAKING, OPEN, or CLOSING MUST move to
+CLOSED and SHOULD surface a "closed" notification to the application. It MUST NOT reply.
+
+**Common rules.**
+
+- Once CLOSED, a peer MUST NOT send or process any further message for this session (late
+  retransmissions of `[0x03]` from the peer are therefore not answered; the peer's own closing timeout
+  covers this case), and MUST release the session's resources.
+- Closure MUST be idempotent: a repeated close request on a session that is CLOSING or CLOSED MUST NOT
+  raise an error, and on a CLOSED session MUST NOT cause any message to be sent.
+- Failure to transmit `[0x03]` or `[0x04]` (e.g. because the underlying transport is already
+  unavailable) MUST be tolerated rather than propagated as an error; the local side proceeds with
+  teardown regardless.
+
+Sequence diagram (graceful close):
+
+```
+Peer A                                Peer B
+  |---- [0x03] closing --------------->|   (A: OPEN -> CLOSING)
+  |<--- [0x04] closed -----------------|   (B: OPEN -> CLOSED)
+  | (A: CLOSING -> CLOSED)             |
+```
 
 ## 9. Payload compression
 
@@ -274,77 +314,97 @@ convention for the Data message body; the body is opaque application payload, tr
 delivered byte-for-byte (Section 4). SHSP MUST NOT interpret, transform, or assume any particular
 encoding of this payload.
 
-If an application wants its data compressed on the wire, it MUST compress the payload itself before
-handing it to SHSP for sending, and decompress it itself after receiving it from SHSP — from SHSP's
-point of view, the compressed bytes are simply the Data message body, indistinguishable from
-uncompressed application data. Codec choice, and any agreement between the two ends of a session on
-which codec (if any) is in use, is entirely an application-layer concern, out of scope of this
-specification.
+An application that wants its data compressed on the wire compresses the payload itself before handing
+it to SHSP, and decompresses it after receiving it from SHSP; from SHSP's point of view the compressed
+bytes are simply the Data message body. Codec choice, and any agreement between the two ends of a
+session on which codec (if any) is in use, is entirely an application-layer concern, out of scope of
+this specification.
 
 ## 10. Error handling
 
-The following error conditions are defined by this specification and SHOULD be preserved by any
-conforming implementation:
+The following conditions are defined by this specification and SHOULD be preserved by any conforming
+implementation:
 
 | Condition | Behavior |
 |---|---|
-| Unrecognized message type prefix | Protocol error raised to the application |
-| Send attempted while not open | Send rejected: session not open |
-| Send attempted while closing | Send rejected: session is closing |
-| Send attempted on a closed session | Send rejected: session is closed |
-| Message received for a session already CLOSED | Discarded; the session's resources (e.g. socket, callbacks) have already been released and no further processing occurs |
-| Empty or oversized (> 65,507 bytes) message | Validation error, message not sent |
-| Transport reports zero bytes written | Network error: outbound buffer may be full |
-| Bind to an invalid port | Validation error: port out of range |
-| Handshake timeout reached without opening | No exception; caller must check session state |
-| Handshake retries exhausted | No exception; a distinct outcome is reported |
-| Double close / already-closed session | No-op (idempotent) |
-| Send with no local transport bound for the destination's address family | State error naming the missing family |
-| Handshake message missing the mandatory `VERSION` byte (1-byte datagram) | Protocol error: malformed handshake, message discarded |
-| Data (`0x00`) or Keep-alive (`0x05`) received while in HANDSHAKING | Treated as implicit handshake confirmation; peer transitions to OPEN (Section 6, point 7) |
-| Closing (`0x03`) or Closed (`0x04`) received while in HANDSHAKING | Session does not transition to OPEN; handled per Section 8 |
-| Any message with a prefix other than Handshake (`0x01`) received while in CREATED | Message discarded (cannot legitimately originate from a conforming peer) |
+| Zero-byte datagram received | Discarded |
+| Unrecognized message type prefix | Discarded; MAY be logged; session state unaffected |
+| Handshake missing the mandatory `VERSION` byte (1-byte datagram) | Malformed; discarded |
+| Extra bytes after `VERSION`, or body on a control message | Extra bytes ignored; message processed normally |
+| Any message other than Handshake (`0x01`) received in CREATED | Discarded |
+| Handshake-Ack (`0x02`) received outside HANDSHAKING | Discarded |
+| Handshake (`0x01`) received in OPEN | Acknowledged with `0x02`; state unchanged |
+| Data (`0x00`) or Keep-alive (`0x05`) received in HANDSHAKING | Implicit confirmation; transition to OPEN (Section 6, step 6) |
+| Closing (`0x03`) received in HANDSHAKING, OPEN, or CLOSING | Reply `0x04`; transition to CLOSED |
+| Closed (`0x04`) received in HANDSHAKING, OPEN, or CLOSING | Transition to CLOSED; no reply |
+| Any message received for a CLOSED session | Discarded; no processing |
+| Data send attempted while not OPEN (CREATED, HANDSHAKING) | Send rejected: session not open |
+| Data send attempted while CLOSING | Send rejected: session is closing |
+| Data send attempted on a CLOSED session | Send rejected: session is closed |
+| Data send with empty or oversized application payload (Section 3) | Validation error; message not sent |
+| Handshake timeout or retries exhausted without opening | Session CLOSED; distinct non-exceptional outcome reported |
+| Closing timeout expired without receiving `0x04` | Best-effort `0x04` sent; session CLOSED; no error |
+| Double close / close of an already-closed session | No-op (idempotent) |
+
+Implementation notes (non-normative): local API conditions such as binding to an out-of-range port,
+sending with no local socket bound for the destination's address family, or a transport reporting
+zero bytes written are local errors outside the scope of the wire protocol; implementations are
+encouraged to report them as distinct error types.
 
 The handshake carries a `VERSION` byte (Section 6), but it is **declarative only — there is no
-on-the-wire version negotiation, by design**. Compatibility between peers implementing different
-versions is not detected or enforced by the protocol; a mismatch is, at most, observable by the
-receiving application. Whether a given pair of versions can interoperate at all is a property of those
-versions, not a protocol-level guarantee (see
+on-the-wire version negotiation, by design** (see
 [Section 11.2](#112-version-compatibility-is-not-negotiated-by-design)).
 
-## 11. Known limitations and future work
+## 11. Known limitations
 
 ### 11.1 Explicit non-goals
 
-The following capabilities are **intentionally out of scope** of SHSP. They are not gaps to be closed
-by a future revision of this protocol; responsibility for them belongs to any protocol layered above
-SHSP, which is expected to run its own handshake/exchange once the SHSP session is open:
+The following capabilities are **intentionally out of scope** of SHSP. Responsibility for them belongs
+to any protocol layered above SHSP, which is expected to run its own handshake/exchange once the SHSP
+session is open:
 
 - **Peer authentication / nonce signing**: verifying that a peer is who it claims to be (e.g. by
-  signing a nonce with a private key, verifiable via a public key) is not a concern of SHSP. SHSP MUST
-  NOT be extended with such a mechanism; it belongs to a higher-layer protocol.
-- **NAT/address signaling**: exchanging public/local IPv4/IPv6 addresses, keys, or timing windows
-  between peers is not a concern of SHSP beyond the incidental NAT-punching side effect of the
-  handshake probe itself (Section 1). Any explicit signaling of this kind is the responsibility of a
-  higher-layer protocol.
-- **Address-discovery (STUN-like) and relay (TURN-like) mechanisms**: SHSP does not provide, and will
-  not provide, address discovery or relay/fallback for peers that cannot establish a direct UDP path
-  (e.g. behind symmetric NATs). This is left entirely to whatever layer supplies SHSP with a
-  destination address.
+  signing a nonce with a private key) is not a concern of SHSP and is out of scope of this
+  specification.
+- **NAT/address signaling**: exchanging public/local addresses, keys, or timing windows between peers
+  is not a concern of SHSP beyond the incidental NAT-punching side effect of the handshake probe
+  (Section 1).
+- **Address-discovery (STUN-like) and relay (TURN-like) mechanisms**: SHSP does not provide address
+  discovery or relay/fallback for peers that cannot establish a direct UDP path (e.g. behind symmetric
+  NATs). This is left to whatever layer supplies SHSP with a destination address.
 
 ### 11.2 Version compatibility is not negotiated, by design
 
 Version compatibility in SHSP is a property of the specific pair of versions involved, not a
 protocol-mediated outcome. There is deliberately **no negotiation**: a session either opens — because
-the two implementations involved are wire-compatible enough to complete the handshake and exchange
-data — or it does not. Some version pairs will be compatible with each other, others will not;
-`VERSION` (Section 6) lets a peer observe which is the case, but SHSP does not attempt to detect,
-report, or resolve a mismatch itself. This is a deliberate design choice, not an omission to be fixed.
+the two implementations are wire-compatible enough to complete the handshake and exchange data — or it
+does not. `VERSION` (Section 6) lets a peer observe which revision its counterpart implements, and a
+local policy MAY refuse unsupported versions (Section 6, step 9), but SHSP itself does not detect,
+report, or resolve a mismatch. Future revisions SHOULD remain compatible with the extensibility rules
+of Section 4 (ignored trailing bytes) so that older receivers keep working.
 
-### 11.3 Peer liveness timeout
+### 11.3 No session identifier on the wire
 
-Addressed: Section 7 specifies an optional, locally-configured liveness timeout that closes a session
-after a period without any received message.
+A session is identified only by the peers' (address, port) pair; messages carry no session identifier,
+nonce, or epoch. Consequences, accepted in this revision for simplicity:
+
+- **Stale messages.** Delayed datagrams from a previous session between the same address/port pair
+  (e.g. a late `0x02`, `0x00`, `0x05`, or `0x04`) cannot be distinguished from messages of a new
+  session and may spuriously open or close it. Endpoints SHOULD NOT start a new session with the same
+  peer address/port pair for a quiet period after the previous one reached CLOSED (RECOMMENDED: at
+  least the closing timeout plus the maximum expected path delay, e.g. 5 s), and SHOULD prefer a fresh
+  local port for a new session when practical.
+- **Peer restart.** If a peer restarts and opens a new session from the same address/port while the
+  other side is still OPEN, the other side simply acknowledges the new probes (Section 6, step 2) and
+  both sides end up OPEN, but the surviving side cannot tell that its counterpart lost all previous
+  session context. Applications needing to detect this SHOULD run their own session-level exchange
+  after the SHSP session opens.
+- **NAT rebinding.** If a NAT changes the peer's public port mid-session, its messages arrive from a
+  new address/port pair and are not associated with the existing session, which eventually expires
+  through the liveness timeout (Section 7).
+
+A future revision MAY address these by adding a session identifier to the Handshake body, which the
+extensibility rules of Section 4 allow without breaking receivers of this revision.
 
 ## 12. Security considerations
 
@@ -352,25 +412,25 @@ The protocol as specified provides **no confidentiality, integrity, or authentic
 
 - Any host able to send UDP packets to a listening endpoint can send handshake, data, or close
   messages; the protocol provides no mechanism to verify that a peer is who it claims to be.
-- Data payloads are sent in the clear; compression is not encryption and provides no confidentiality.
-- Because a `Closed` message is accepted from any source address matching the session's peer tuple,
-  and no authentication is defined, a third party capable of spoofing that address/port — feasible on
-  unauthenticated UDP paths — could disrupt a session.
-- The `VERSION` byte carried in the handshake probe (Section 6) is sent in the clear and is trivially
-  observable or forgeable by an on-path or spoofing attacker. This is an acceptable exposure only
-  because the byte is purely declarative: no security-relevant decision, negotiation, or downgrade path
-  MAY be driven by its value, at the SHSP layer or by any independent protocol layered above it. An
-  implementation MUST NOT treat the `VERSION` byte as authoritative input for selecting cryptographic
-  parameters or other security behavior.
-- Because no authentication is defined, a third party able to spoof the peer's source address/port can
-  send arbitrary messages (including keep-alive) that reset an endpoint's liveness timeout (Section 7).
-  This lets an attacker keep a session with an actually-unresponsive or hijacked peer artificially
-  alive, defeating local liveness-based cleanup. Applications relying on the liveness timeout for
-  resource reclamation SHOULD NOT treat it as a security control.
+- Data payloads are sent in the clear.
+- Because no message carries a nonce or session identifier (Section 11.3), an attacker able to spoof
+  the peer's address/port can complete a handshake with a single forged `0x02` (or `0x00`/`0x05`), close
+  a session with a forged `0x04` or `0x03`, inject Data, or keep a dead session alive by resetting the
+  liveness timeout (Section 7). Applications relying on the liveness timeout for resource reclamation
+  SHOULD NOT treat it as a security control.
+- **Resource exhaustion.** An endpoint that accepts sessions from previously unknown peers allocates
+  state on receipt of a single (possibly spoofed) probe. Such an endpoint SHOULD bound the number of
+  concurrent sessions in HANDSHAKING (globally and per source address) and SHOULD apply the handshake
+  timeout to sessions created by an incoming probe, so that unanswered half-open sessions are reclaimed.
+- **Reflection.** Every response defined by SHSP (`0x02`, `0x04`) is no larger than the message that
+  triggered it, so SHSP offers no amplification factor for reflection attacks. Implementations MUST NOT
+  add responses that are larger than their trigger.
+- The `VERSION` byte is sent in the clear and is trivially observable or forgeable. No
+  security-relevant decision, negotiation, or downgrade path MAY be driven by its value, at the SHSP
+  layer or by any protocol layered above it.
 - Applications requiring confidentiality, integrity, or peer authentication MUST implement these at a
-  layer above SHSP (e.g. by encrypting the data payload before it is handed to SHSP for transmission,
-  and running their own authenticated handshake once the SHSP session is open). This is a permanent
-  property of SHSP, not a gap awaiting a future revision (see
+  layer above SHSP (e.g. by encrypting the payload before it is handed to SHSP, and running their own
+  authenticated handshake once the SHSP session is open). This is a permanent property of SHSP (see
   [Section 11.1](#111-explicit-non-goals)).
 
 ## 13. Conformance
@@ -380,57 +440,80 @@ This section states, in one place, what an implementation MUST do to be a confor
 
 **Mandatory (interoperability-critical) — a conformant implementation MUST:**
 
-- Use the six message prefixes exactly as defined in [Section 4](#4-wire-format) (`0x00`–`0x05`), and
-  treat any other prefix as a protocol error.
-- Send `VERSION = 0x00` in every handshake probe ([Section 6](#6-handshake-procedure), step 1), and
-  reject/treat as malformed a handshake probe with no `VERSION` byte.
-- Implement the state machine of [Section 5](#5-connection-states) (CREATED → HANDSHAKING → OPEN →
-  CLOSING → CLOSED) with the transition triggers defined in Sections 6 and 8.
-- Reject empty messages and messages larger than 65,507 bytes ([Section 3](#3-transport)).
-- Treat the Data message body as opaque application bytes, applying no transformation of its own
-  ([Section 9](#9-payload-compression)).
-- Tolerate duplicate or out-of-order handshake probes and acknowledgments ([Section 6](#6-handshake-procedure)).
-- Handle `Closing` and `Closed` as defined in [Section 8](#8-connection-termination): accept `Closed`
-  regardless of current session state, treat closure as idempotent (no error, no retransmission on a
-  repeated close of an already-closed session), stop sending Data/Keep-alive once locally CLOSING, and
-  stop sending or processing any message and release associated resources once CLOSED.
+- Use the six message prefixes exactly as defined in [Section 4](#4-wire-format) (`0x00`–`0x05`),
+  discard messages with any other prefix, and ignore trailing bytes as specified there.
+- Send `VERSION = 0x00` in every handshake probe, and discard as malformed a probe with no `VERSION`
+  byte.
+- Implement the state machine of [Section 5](#5-connection-states) with the transitions defined in
+  Sections 6, 7, and 8.
+- Retransmit its handshake probe while in HANDSHAKING (Section 6, step 4).
+- Acknowledge every well-formed probe received in CREATED, HANDSHAKING, or OPEN (Section 6, step 2).
+- Treat Data or Keep-alive received in HANDSHAKING as implicit confirmation (Section 6, step 6).
+- Tolerate duplicate or out-of-order handshake probes and acknowledgments.
+- Reject Data sends with an empty or oversized application payload ([Section 3](#3-transport)).
+- Treat the Data message body as opaque application bytes ([Section 9](#9-payload-compression)).
+- Handle `Closing` and `Closed` as defined in [Section 8](#8-connection-termination): reply `0x04` to a
+  received `0x03`, accept `0x04` in any non-CLOSED state, bound CLOSING with a timeout, treat closure as
+  idempotent, stop sending Data/Keep-alive once CLOSING, and stop sending or processing any message and
+  release associated resources once CLOSED.
 
-Two independent conformant implementations that both satisfy the mandatory list above are guaranteed
-to be able to open a session and exchange Data messages with each other.
+Two conformant implementations that satisfy the mandatory list above, and between which UDP datagrams
+can be delivered in both directions within their configured handshake timeouts, will open a session and
+be able to exchange Data messages.
 
 **Local/configurable (not interoperability-critical) — a conformant implementation MAY vary:**
 
 - Handshake retransmission interval and strategy (fixed-interval or exponential backoff), and their
-  timeout/attempt-budget values ([Section 6](#6-handshake-procedure)).
-- Whether and how often keep-alive is sent, and whether a liveness timeout is configured, together with
-  its duration ([Section 7](#7-keep-alive)).
-- Whether the application layer built on top of SHSP applies compression, encryption, or any other
-  transformation to the Data payload before/after handing it to SHSP ([Section 9](#9-payload-compression)) —
-  this is invisible to SHSP and does not affect conformance.
+  timeout/attempt-budget values (Section 6).
+- Closing retransmission interval and closing timeout (Section 8).
+- Keep-alive interval, and whether a liveness timeout is configured, together with its duration
+  (Section 7), subject to the guidance given there.
+- Local policy on unsupported `VERSION` values (Section 6, step 9).
+- Whatever the application does to the Data payload before/after handing it to SHSP (Section 9).
 
-None of the items in this second list need to match between the two peers of a session for the session
-to interoperate at the SHSP level.
+None of the items in this second list need to match between the two peers for the session to
+interoperate at the SHSP level, provided the timing guidance of Section 7 is respected.
 
 ## 14. Versioning
 
 - This document specifies the wire format, state machine, and required behavior of SHSP independently
   of any single implementation's release cadence.
-- The handshake carries a declarative `VERSION` byte (Section 6). Implementations of this revision of
-  the specification MUST use `VERSION = 0x00` (Section 13); this value identifies the revision, but is
-  not used for on-the-wire negotiation and is not authoritative for interoperability decisions
-  (Section 11.2) — a receiving peer observing a different `VERSION` value knows it is talking to a
-  different revision, but SHSP itself does not decide what to do about it.
-- A future revision of this specification that changes wire-visible, interoperability-critical
-  behavior (the mandatory list in Section 13) MUST increment `VERSION`. A revision that only clarifies
-  wording or adjusts locally-configurable defaults MAY keep `VERSION` unchanged.
-- Changes to wire-visible behavior (message prefixes, handshake semantics, state transitions) SHOULD be
-  reflected in this document, with a revision note added below.
+- The handshake carries a declarative `VERSION` byte (Section 6). Implementations of this revision MUST
+  use `VERSION = 0x00`. This value identifies the revision but is not used for on-the-wire negotiation
+  (Section 11.2).
+- A future revision that changes wire-visible, interoperability-critical behavior (the mandatory list in
+  Section 13) MUST increment `VERSION`. A revision that only clarifies wording or adjusts
+  locally-configurable defaults MAY keep `VERSION` unchanged.
+- Changes to wire-visible behavior SHOULD be reflected in this document, with a revision note added
+  below.
 
+### Revision notes
+
+- **Draft, VERSION 0x00 (current)**: handshake acknowledgment made mandatory for every received probe
+  (including after OPEN); implicit confirmation and probe retransmission made mandatory; prompt
+  keep-alive after OPEN; graceful close redefined as a `Closing`/`Closed` exchange with retransmission
+  and closing timeout; unknown prefixes discarded instead of raised as errors; trailing-byte
+  extensibility rule; per-family size limits; documented absence of a session identifier. Since this
+  revision is still a draft, `VERSION` remains `0x00`.
 
 ## 15. References
 
-This document is protocol-first and does not bind its normative text to any single implementation's
-source layout. Implementers seeking a concrete reference for the behavior described above should
-consult the accompanying implementation's handshake, state-machine, and message-dispatch modules, and
-its changelog for the history of removed or superseded mechanisms (e.g. address-discovery support
-present in earlier revisions and removed as this specification's scope was narrowed).
+### Normative references
+
+- [RFC 768] Postel, J., "User Datagram Protocol", STD 6, RFC 768, August 1980.
+- [RFC 2119] Bradner, S., "Key words for use in RFCs to Indicate Requirement Levels", BCP 14,
+  RFC 2119, March 1997.
+- [RFC 8174] Leiba, B., "Ambiguity of Uppercase vs Lowercase in RFC 2119 Key Words", BCP 14,
+  RFC 8174, May 2017.
+
+### Informative references
+
+- [RFC 8085] Eggert, L., Fairhurst, G., and G. Shepherd, "UDP Usage Guidelines", BCP 145, RFC 8085,
+  March 2017.
+- [RFC 4787] Audet, F. and C. Jennings, "Network Address Translation (NAT) Behavioral Requirements for
+  Unicast UDP", BCP 127, RFC 4787, January 2007.
+
+This document does not bind its normative text to any single implementation's source layout.
+Implementers seeking a concrete reference should consult the accompanying implementation's handshake,
+state-machine, and message-dispatch modules, and its changelog for the history of removed or
+superseded mechanisms.
