@@ -6,6 +6,7 @@ import 'package:test/test.dart';
 class MockShspInstance implements IShspInstance {
   MockShspInstance({
     this.initialOpen = false,
+    this.failingSends = 0,
   }) {
     onHandshake = CallbackHandler<void, void>();
     onOpen = CallbackHandler<void, void>();
@@ -15,6 +16,9 @@ class MockShspInstance implements IShspInstance {
   }
 
   final bool initialOpen;
+
+  /// Number of leading [sendHandshake] calls that throw.
+  final int failingSends;
   int handshakeSendCount = 0;
   bool _handshakeState = false;
   bool _openState = false;
@@ -53,6 +57,9 @@ class MockShspInstance implements IShspInstance {
   @override
   void sendHandshake() {
     handshakeSendCount++;
+    if (handshakeSendCount <= failingSends) {
+      throw StateError('simulated transient send failure');
+    }
   }
 
   @override
@@ -229,6 +236,28 @@ void main() {
       // Should have sent fewer than max attempts because we stopped early
       expect(instance.handshakeSendCount, lessThan(5));
       expect(retry.isActive, isFalse);
+    });
+
+    test('tolerates a failing probe send and retransmits', () async {
+      final instance = MockShspInstance(failingSends: 2);
+      const options = ShspHandshakeRetryOptions(
+        maxAttempts: 4,
+        initialDelayMs: 10,
+        backoffMultiplier: 1,
+      );
+
+      expect(
+        () => ShspHandshakeRetryHandler.startRetry(
+          instance: instance,
+          options: options,
+        ),
+        returnsNormally,
+      );
+
+      await Future.delayed(const Duration(milliseconds: 200));
+
+      // Initial probe and first retry threw; the retries kept going.
+      expect(instance.handshakeSendCount, equals(4));
     });
   });
 }

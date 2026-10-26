@@ -47,6 +47,7 @@ export 'src/impl/socket/dual/simple_dual_socket_singleton.dart';
 export 'src/impl/socket/features/shsp_socket_callbacks.dart';
 export 'src/impl/socket/features/shsp_socket_compression.dart';
 export 'src/impl/socket/features/shsp_socket_profile.dart';
+export 'src/impl/socket/features/shsp_socket_send_queue.dart';
 export 'src/impl/utility/address_utility.dart';
 export 'src/impl/utility/callback_map.dart';
 export 'src/impl/utility/concat_utility.dart';

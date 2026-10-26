@@ -19,7 +19,8 @@ class ShspSocket extends RawShspSocket
     with
         IdempotentCloseMixin,
         ShspSocketCallbacksMixin,
-        ShspSocketProfileMixin
+        ShspSocketProfileMixin,
+        ShspSocketSendQueueMixin
     implements IShspSocket {
   /// Resolves [rawSocket] via DI — see the class docs above.
   ShspSocket(
@@ -137,7 +138,7 @@ class ShspSocket extends RawShspSocket
             // Read end of socket closed
             break;
           case RawSocketEvent.write:
-            // Write events are handled synchronously, no callback needed
+            drainSendQueue();
             break;
         }
       },
@@ -289,12 +290,23 @@ class ShspSocket extends RawShspSocket
     // SHSP MUST NOT interpret, transform, or compress the payload (spec
     // Section 9). Any compression is the application's responsibility,
     // done before calling sendTo/sendMessage.
-    return super.send(buffer, peer.address, peer.port);
+    return sendOrQueue(buffer, peer.address, peer.port);
   }
+
+  @override
+  int rawSend(List<int> buffer, InternetAddress address, int port) =>
+      super.send(buffer, address, port);
+
+  @override
+  set writeEventsEnabled(bool value) => socket.writeEventsEnabled = value;
+
+  @override
+  bool get isSendClosed => isClosed;
 
   @override
   void closeImpl() {
     _socketSubscription?.cancel();
+    clearSendQueue();
     clearCallbacks();
     socket.close();
   }

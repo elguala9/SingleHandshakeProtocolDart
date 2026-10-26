@@ -81,7 +81,7 @@ class _ShspHandshakeRetryImpl implements ShspHandshakeRetry {
 
   void _start() {
     // Send initial probe immediately
-    instance.sendHandshake();
+    _sendProbe();
     _attemptCount++;
 
     // Retransmit until OPEN (spec Section 6, point 4), not merely until the
@@ -99,6 +99,18 @@ class _ShspHandshakeRetryImpl implements ShspHandshakeRetry {
     }
   }
 
+  /// Sends one probe. A transient send failure (e.g. a full socket buffer)
+  /// is tolerated: it counts as a lost probe and the next retry covers it
+  /// (spec Section 6, point 4). Without this the error would escape from the
+  /// retry timer as an unhandled asynchronous error.
+  void _sendProbe() {
+    try {
+      instance.sendHandshake();
+    } catch (_) {
+      // Lost probe: retransmission recovers.
+    }
+  }
+
   void _scheduleNextRetry() {
     if (!_active) return;
 
@@ -112,7 +124,7 @@ class _ShspHandshakeRetryImpl implements ShspHandshakeRetry {
 
       // Send retry probe if peer hasn't responded
       if (!instance.open) {
-        instance.sendHandshake();
+        _sendProbe();
         _attemptCount++;
 
         // Schedule next retry or stop
