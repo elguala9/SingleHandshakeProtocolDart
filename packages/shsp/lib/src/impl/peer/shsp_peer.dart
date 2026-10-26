@@ -55,10 +55,15 @@ class ShspPeer with IdempotentCloseMixin, MessageSizeValidationMixin implements 
       ipv6: remotePeer.address.type == InternetAddressType.IPv6,
     );
 
+    // The socket queues datagrams it cannot take right now, so 0 only comes
+    // back from a closed socket (Dart closes a datagram socket on any error
+    // event, e.g. an ICMP unreachable). Report that, not a full buffer.
     final bytes = socket.sendTo(message, remotePeer);
     if (bytes == 0) {
       throw ShspNetworkException(
-        'Failed to send message - socket buffer may be full',
+        socket.isClosed
+            ? 'Failed to send message - socket is closed'
+            : 'Failed to send message - socket rejected the datagram',
         address: remotePeer.address.address,
         port: remotePeer.port,
       );
