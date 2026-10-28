@@ -156,6 +156,13 @@ class ShspSocket extends RawShspSocket
       // SHSP treats the payload as opaque bytes (spec Section 9: "Compression
       // is not part of SHSP"). Any decompression is the application's
       // responsibility, done after receiving via onMessage.
+      ShspTrafficTap.instance?.onReceive(
+        datagram.address,
+        datagram.port,
+        datagram.data.length,
+        messageCallbacksImpl.getByAddress(datagram.address, datagram.port) !=
+            null,
+      );
       onMessage(datagram.data, rinfo);
     }
   }
@@ -290,7 +297,10 @@ class ShspSocket extends RawShspSocket
     // SHSP MUST NOT interpret, transform, or compress the payload (spec
     // Section 9). Any compression is the application's responsibility,
     // done before calling sendTo/sendMessage.
-    return sendOrQueue(buffer, peer.address, peer.port);
+    final result = sendOrQueue(buffer, peer.address, peer.port);
+    ShspTrafficTap.instance
+        ?.onSend(peer.address, peer.port, buffer.length, result);
+    return result;
   }
 
   @override
